@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GamEncin\src\Engine.cpp">
+    <ClCompile Include="GamEncin\src\AnyObject.h">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GamEncin\src\main.cpp">
@@ -23,7 +23,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GamEncin\src\Engine.h">
+    <ClInclude Include="GamEncin\src\GamEncin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GamEncin\src\Object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GamEncin\src\SceneManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

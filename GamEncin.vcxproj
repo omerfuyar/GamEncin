@@ -104,6 +104,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalUsingDirectories>
+      </AdditionalUsingDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\GamEncin\src;%(AdditionalUsingDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -127,11 +130,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="GamEncin\src\Engine.cpp" />
+    <ClCompile Include="GamEncin\src\AnyObject.h" />
     <ClCompile Include="GamEncin\src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GamEncin\src\Engine.h" />
+    <ClInclude Include="GamEncin\src\GamEncin.h" />
+    <ClInclude Include="GamEncin\src\SceneManager.h" />
+    <ClInclude Include="GamEncin\src\Object.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMakeLists.txt" />
