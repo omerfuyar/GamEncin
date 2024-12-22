@@ -7,16 +7,19 @@ namespace GamEncin
 {
     class Object
     {
-    protected:
+    public:
+        Layer layer = Default;
         string name = "Object";
         Vector2 position;
-        
-    public:
+
         Object() = default;
         virtual ~Object() = default;
 
+        virtual void Awake() {}
         virtual void Start() {}
         virtual void Update() {}
         virtual void FixUpdate() {}
+
+
     };
 }

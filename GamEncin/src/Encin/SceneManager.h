@@ -17,6 +17,12 @@ namespace GamEncin
 			objects.push_back(obj);
 		}
 
+		void Awake()
+		{
+			for(auto& obj : objects)
+				obj->Awake();
+		}
+		
 		void Start()
 		{
 			for(auto& obj : objects)

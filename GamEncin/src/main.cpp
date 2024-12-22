@@ -5,37 +5,48 @@
 #include <thread>
 using namespace std::chrono;
 
-int main()
+#pragma region definitions
+
+SceneManager goManager;
+
+// Frame Rate Limit
+const int FPSlimit = 100;
+const auto frameDelay = 1000 / FPSlimit;
+bool haveFPSlimit = false;
+
+// Fixed Game loop
+const int fixFPSlimit = 50;
+const auto fixedDelay = 1000 / fixFPSlimit;
+
+auto lastFixedUpdate = high_resolution_clock::now();
+int frameCount = 0;
+int fps = 0;
+long long msPastFromStart = 0;
+
+#pragma endregion
+
+// Create and add objects to scene
+static void SceneBuilding()
 {
-	SceneManager goManager;
-
-	// Create and add objects
 	auto object1 = make_shared<AnyObject>();
+	
 	goManager.AddObject(object1);
+	
+}
 
-	// Call Start once before the loop
+static void GameLoops()
+{
+	// Awake all objects
+	goManager.Awake();
+
+	// Start all objects
 	goManager.Start();
-
-	// Frame Rate Limit
-	const int FPSlimit = 100;
-	const auto frameDelay = 1000 / FPSlimit;
-	bool haveFPSlimit = false;
-
-	// Fixed Game loop
-	const int fixFPSlimit = 50;
-	const auto fixedDelay = 1000 / fixFPSlimit;
-
-	auto lastFixedUpdate = high_resolution_clock::now();
-	int frameCount = 0;
-	int fps = 0;
-	long long msPastFromStart = 0;
 
 	while(true)
 	{
 		// Update all objects
 		goManager.Update();
 
-		// FixedUpdate at a consistent interval
 		auto now = high_resolution_clock::now();
 		auto fixElapsed = duration_cast<milliseconds>(now - lastFixedUpdate);
 
@@ -59,6 +70,13 @@ int main()
 
 		frameCount++;
 	}
+}
+
+int main()
+{
+	SceneBuilding();
+
+	GameLoops();
 
 	return 0;
 }

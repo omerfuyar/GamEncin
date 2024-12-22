@@ -3,6 +3,11 @@
 
 namespace GamEncin
 {
+	enum Layer
+	{
+		Default, IgnoreRay, UI, Player, Layer1, Layer2, Layer3
+	};
+
 	class Vector2
 	{
 	public:

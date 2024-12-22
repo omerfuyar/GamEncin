@@ -4,10 +4,15 @@
 class AnyObject : public Object
 {
 public:
+    void Awake() override
+    {
+
+    }
+
     void Start() override
     {
         name = "myObject";
-        position = Vector2(31,12.1f);
+        position = Vector2::one;
         //position = Vector2::down;
         std::cout << "X: " << position.x << "Y: " << position.y << "\n";
     }
