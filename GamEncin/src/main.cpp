@@ -11,7 +11,7 @@ int main()
 
 	// Create and add objects
 	auto object1 = make_shared<AnyObject>();
-	//goManager.AddObject(object1);
+	goManager.AddObject(object1);
 
 	// Call Start once before the loop
 	goManager.Start();

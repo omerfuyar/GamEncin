@@ -7,16 +7,18 @@ public:
     void Start() override
     {
         name = "myObject";
-        std::cout << "Engine is started: " << name << "\n";
+        position = Vector2(31,12.1f);
+        //position = Vector2::down;
+        std::cout << "X: " << position.x << "Y: " << position.y << "\n";
     }
 
     void Update() override
     {
-        std::cout << "Engine is updated: " << name << "\n";
+        std::cout << "X: " << position.x << "Y: " << position.y << "\n";
     }
 
     void FixUpdate() override
     {
-        std::cout << "Engine is fix updated: " << name << "\n";
+        std::cout << "X: " << position.x << "Y: " << position.y << "\n";
     }
 };

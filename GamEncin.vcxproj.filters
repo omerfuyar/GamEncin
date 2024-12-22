@@ -21,15 +21,21 @@
     <ClCompile Include="GamEncin\src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GamEncin\src\Encin\Tools.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GamEncin\src\GamEncin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GamEncin\src\Object.h">
+    <ClInclude Include="GamEncin\src\Encin\Object.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GamEncin\src\SceneManager.h">
+    <ClInclude Include="GamEncin\src\Encin\SceneManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GamEncin\src\Encin\Tools.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

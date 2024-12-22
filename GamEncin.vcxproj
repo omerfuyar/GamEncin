@@ -131,12 +131,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GamEncin\src\AnyObject.h" />
+    <ClCompile Include="GamEncin\src\Encin\Tools.cpp" />
     <ClCompile Include="GamEncin\src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GamEncin\src\GamEncin.h" />
-    <ClInclude Include="GamEncin\src\SceneManager.h" />
-    <ClInclude Include="GamEncin\src\Object.h" />
+    <ClInclude Include="GamEncin\src\Encin\SceneManager.h" />
+    <ClInclude Include="GamEncin\src\Encin\Object.h" />
+    <ClInclude Include="GamEncin\src\Encin\Tools.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMakeLists.txt" />
