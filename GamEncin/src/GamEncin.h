@@ -1,8 +1,13 @@
 // User Library
 #pragma once
-#include "Encin/Object.h"
+#include "Encin/Components.h"
 #include "Encin/SceneManager.h"
 #include "Encin/Tools.h"
+#include <iostream>
+#include <string>
 
 using namespace GamEncin;
 using namespace std;
+
+using std::string;
+using std::vector;

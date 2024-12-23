@@ -53,4 +53,53 @@ namespace GamEncin
 			y = newY;
 		}
 	};
+
+	class Vector3
+	{
+	public:
+		float x,
+			y,
+			z,
+			magnitude;
+
+		Vector3(float x = 0, float y = 0, float z = 0) : x(x), y(y),z(z)
+		{
+			magnitude = GetMagnitude();
+		}
+
+		~Vector3() = default;
+
+		static const Vector3 zero, one, up, right, down, left, forward, backward;
+
+		float GetMagnitude()
+		{
+			magnitude = sqrt(x * x + y * y + z * z);
+			return magnitude;
+		}
+
+		//Scales and returns the Vector3 magnitude of 1
+		Vector3 Normalize()
+		{
+			x /= magnitude;
+			y /= magnitude;
+			z /= magnitude;
+			magnitude = GetMagnitude();
+			return Vector3(x, y,z);
+		}
+
+		//Returns the normalized version of the Vector2
+		Vector3 Normalized()
+		{
+			Vector3 result = Vector3(x, y, z);
+			result.Normalize();
+			return result;
+		}
+
+		float Set(float newX, float newY, float newZ)
+		{
+			x = newX;
+			y = newY;
+			z = newZ;
+		}
+	};
 }

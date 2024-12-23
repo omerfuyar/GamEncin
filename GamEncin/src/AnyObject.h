@@ -6,24 +6,25 @@ class AnyObject : public Object
 public:
     void Awake() override
     {
-
+		Object::Awake();
+        //name = "myObject";
+        position = Vector3::one;
+        Layer layer = Default;
     }
 
     void Start() override
     {
-        name = "myObject";
-        position = Vector2::one;
-        //position = Vector2::down;
-        std::cout << "X: " << position.x << "Y: " << position.y << "\n";
+		Object::Start();
+        cout<< name;
     }
 
     void Update() override
     {
-        std::cout << "X: " << position.x << "Y: " << position.y << "\n";
+		Object::Update();
     }
 
     void FixUpdate() override
     {
-        std::cout << "X: " << position.x << "Y: " << position.y << "\n";
+		Object::FixUpdate();
     }
 };

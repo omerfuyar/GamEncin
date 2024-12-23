@@ -25,7 +25,7 @@ long long msPastFromStart = 0;
 
 #pragma endregion
 
-// Create and add objects to scene
+// Manually create and add objects to scene
 static void SceneBuilding()
 {
 	auto object1 = make_shared<AnyObject>();
