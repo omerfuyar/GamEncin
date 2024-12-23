@@ -8,12 +8,19 @@ namespace GamEncin
 		Default, IgnoreRay, UI, Player, Layer1, Layer2, Layer3
 	};
 
+	struct MathYaman
+	{
+	public:
+		//Euler, PI, Earth's gravity, Gravitational constant
+		static const float E, PI, GRAVITY, G;
+	};
+
 	class Vector2
 	{
 	public:
-		float x,
-			y,
-			magnitude;
+		static const Vector2 zero, one, up, right, down, left;
+
+		float x, y, magnitude;
 
 		Vector2(float x = 0, float y = 0) : x(x), y(y)
 		{
@@ -21,8 +28,6 @@ namespace GamEncin
 		}
 
 		~Vector2() = default;
-
-		static const Vector2 zero, one, up, right, down, left;
 
 		float GetMagnitude()
 		{
@@ -57,19 +62,16 @@ namespace GamEncin
 	class Vector3
 	{
 	public:
-		float x,
-			y,
-			z,
-			magnitude;
+		static const Vector3 zero, one, up, right, down, left, forward, backward;
+		
+		float x, y, z, magnitude;
 
-		Vector3(float x = 0, float y = 0, float z = 0) : x(x), y(y),z(z)
+		Vector3(float x = 0, float y = 0, float z = 0) : x(x), y(y), z(z)
 		{
 			magnitude = GetMagnitude();
 		}
 
 		~Vector3() = default;
-
-		static const Vector3 zero, one, up, right, down, left, forward, backward;
 
 		float GetMagnitude()
 		{
@@ -84,7 +86,7 @@ namespace GamEncin
 			y /= magnitude;
 			z /= magnitude;
 			magnitude = GetMagnitude();
-			return Vector3(x, y,z);
+			return Vector3(x, y, z);
 		}
 
 		//Returns the normalized version of the Vector2

@@ -29,7 +29,7 @@
     <ClInclude Include="GamEncin\src\GamEncin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GamEncin\src\Encin\Object.h">
+    <ClInclude Include="GamEncin\src\Encin\Components.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GamEncin\src\Encin\SceneManager.h">
@@ -41,5 +41,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMakeLists.txt" />
+    <Text Include="GamEncin\src\TODO.txt" />
   </ItemGroup>
 </Project>

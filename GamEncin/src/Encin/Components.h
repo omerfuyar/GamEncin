@@ -26,11 +26,13 @@ namespace GamEncin
 
 	class PsychicsBody : public Object
 	{
-		float mass = 1;
-		float drag = 0;
-		float angularDrag = 0;
-		float gravityScale = 1;
+	public:
+		float mass = 1,
+			drag = 0,
+			angularDrag = 0,
+			gravityScale = 1;
 
-		const float GRAVITY = 9.80665f;
+
+
 	};
 }

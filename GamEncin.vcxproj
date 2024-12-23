@@ -137,11 +137,12 @@
   <ItemGroup>
     <ClInclude Include="GamEncin\src\GamEncin.h" />
     <ClInclude Include="GamEncin\src\Encin\SceneManager.h" />
-    <ClInclude Include="GamEncin\src\Encin\Object.h" />
+    <ClInclude Include="GamEncin\src\Encin\Components.h" />
     <ClInclude Include="GamEncin\src\Encin\Tools.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMakeLists.txt" />
+    <Text Include="GamEncin\src\TODO.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

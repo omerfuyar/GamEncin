@@ -1,5 +1,5 @@
+#pragma once 
 #include "GamEncin.h"
-#include <iostream>
 
 class AnyObject : public Object
 {
@@ -15,7 +15,7 @@ public:
     void Start() override
     {
 		Object::Start();
-        cout<< name;
+        std::cout<< name <<"    "<< MathYaman::G;
     }
 
     void Update() override
