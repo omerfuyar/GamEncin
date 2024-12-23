@@ -10,8 +10,7 @@ using std::unique_ptr;
 
 namespace GamEncin
 {
-	//Objects Loop Manager
-	class SceneManager
+	class SceneManager //Objects Loop Manager
 	{
 	private:
 		SceneManager() {}

@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GamEncin\src\AnyObject.h">
+    <ClCompile Include="GamEncin\src\UserObjects.h">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GamEncin\src\main.cpp">

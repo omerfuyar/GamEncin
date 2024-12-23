@@ -4,8 +4,8 @@
 
 namespace GamEncin
 {
-	vector<shared_ptr<Object>> objects;
-	unique_ptr<SceneManager> INSTANCE = nullptr;
+	vector<shared_ptr<Object>> SceneManager::objects;
+	unique_ptr<SceneManager> SceneManager::INSTANCE = nullptr;
 	
 	const Vector2
 		Vector2::zero = Vector2(0, 0),

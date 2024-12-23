@@ -130,7 +130,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="GamEncin\src\AnyObject.h" />
+    <ClCompile Include="GamEncin\src\UserObjects.h" />
     <ClCompile Include="GamEncin\src\Encin\Tools.cpp" />
     <ClCompile Include="GamEncin\src\main.cpp" />
   </ItemGroup>
