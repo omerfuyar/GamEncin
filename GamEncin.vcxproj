@@ -51,7 +51,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalUsingDirectories>
       </AdditionalUsingDirectories>
-      <AdditionalIncludeDirectories>$(ProjectDir)\GamEncin\src;%(AdditionalUsingDirectories);$(ProjectDir)\GLFW\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\src;%(AdditionalUsingDirectories);$(ProjectDir)\GLFW\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -80,9 +80,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\UserObjects.h" />
+    <ClCompile Include="src\User\UserObjects.h" />
     <ClCompile Include="src\Encin\Tools.cpp" />
-    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\User\main.cpp" />
     <ClCompile Include="GLFW\deps\getopt.c" />
     <ClCompile Include="GLFW\deps\tinycthread.c" />
     <ClCompile Include="GLFW\src\cocoa_time.c" />
@@ -122,7 +122,7 @@
     <ClCompile Include="GLFW\src\xkb_unicode.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\GamEncin.h" />
+    <ClInclude Include="src\User\GamEncin.h" />
     <ClInclude Include="src\Encin\SceneManager.h" />
     <ClInclude Include="src\Encin\Components.h" />
     <ClInclude Include="src\Encin\Tools.h" />
@@ -161,7 +161,7 @@
     <ClInclude Include="GLFW\src\xkb_unicode.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="src\TODO.txt" />
+    <Text Include="src\User\TODO.txt" />
     <Text Include="LICENSE.txt" />
   </ItemGroup>
   <ItemGroup>

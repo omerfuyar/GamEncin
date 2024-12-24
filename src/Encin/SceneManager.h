@@ -116,6 +116,9 @@ namespace GamEncin
 			}
 		}
 
-		
+		static void Render()
+		{
+			
+		}
 	};
 }

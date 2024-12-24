@@ -15,10 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\UserObjects.h">
+    <ClCompile Include="src\User\UserObjects.h">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\main.cpp">
+    <ClCompile Include="src\User\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Encin\Tools.cpp">
@@ -137,7 +137,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\GamEncin.h">
+    <ClInclude Include="src\User\GamEncin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Encin\Components.h">
@@ -250,7 +250,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="src\TODO.txt" />
+    <Text Include="src\User\TODO.txt" />
     <Text Include="LICENSE.txt" />
   </ItemGroup>
   <ItemGroup>
