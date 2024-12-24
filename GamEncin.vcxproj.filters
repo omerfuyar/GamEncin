@@ -15,13 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GamEncin\src\UserObjects.h">
+    <ClCompile Include="src\UserObjects.h">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GamEncin\src\main.cpp">
+    <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GamEncin\src\Encin\Tools.cpp">
+    <ClCompile Include="src\Encin\Tools.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GLFW\deps\getopt.c">
@@ -137,16 +137,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GamEncin\src\GamEncin.h">
+    <ClInclude Include="src\GamEncin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GamEncin\src\Encin\Components.h">
+    <ClInclude Include="src\Encin\Components.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GamEncin\src\Encin\SceneManager.h">
+    <ClInclude Include="src\Encin\SceneManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GamEncin\src\Encin\Tools.h">
+    <ClInclude Include="src\Encin\Tools.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GLFW\deps\glad\gl.h">
@@ -250,7 +250,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="GamEncin\src\TODO.txt" />
+    <Text Include="src\TODO.txt" />
     <Text Include="LICENSE.txt" />
   </ItemGroup>
   <ItemGroup>
