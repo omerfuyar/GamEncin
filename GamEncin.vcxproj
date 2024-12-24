@@ -26,7 +26,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
+    <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
@@ -51,15 +51,13 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalUsingDirectories>
       </AdditionalUsingDirectories>
-      <AdditionalIncludeDirectories>$(ProjectDir)\src;%(AdditionalUsingDirectories);$(ProjectDir)\GLFW\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\GamEncin\src;%(AdditionalUsingDirectories);$(ProjectDir)\GLFW\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
-      <AdditionalDependencies>
-      </AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)\GLFW;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw.lib;</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -70,97 +68,39 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)\Dependencies\GLFW\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\GamEncin\src;%(AdditionalUsingDirectories);$(ProjectDir)\GLFW\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>glfw.lib;</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)\GLFW;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GamEncin\src\Encin\Tools.cpp" />
+    <ClCompile Include="GamEncin\src\User\main.cpp" />
     <ClCompile Include="src\User\UserObjects.h" />
     <ClCompile Include="src\Encin\Tools.cpp" />
     <ClCompile Include="src\User\main.cpp" />
-    <ClCompile Include="GLFW\deps\getopt.c" />
-    <ClCompile Include="GLFW\deps\tinycthread.c" />
-    <ClCompile Include="GLFW\src\cocoa_time.c" />
-    <ClCompile Include="GLFW\src\context.c" />
-    <ClCompile Include="GLFW\src\egl_context.c" />
-    <ClCompile Include="GLFW\src\glx_context.c" />
-    <ClCompile Include="GLFW\src\init.c" />
-    <ClCompile Include="GLFW\src\input.c" />
-    <ClCompile Include="GLFW\src\linux_joystick.c" />
-    <ClCompile Include="GLFW\src\monitor.c" />
-    <ClCompile Include="GLFW\src\null_init.c" />
-    <ClCompile Include="GLFW\src\null_joystick.c" />
-    <ClCompile Include="GLFW\src\null_monitor.c" />
-    <ClCompile Include="GLFW\src\null_window.c" />
-    <ClCompile Include="GLFW\src\osmesa_context.c" />
-    <ClCompile Include="GLFW\src\platform.c" />
-    <ClCompile Include="GLFW\src\posix_module.c" />
-    <ClCompile Include="GLFW\src\posix_poll.c" />
-    <ClCompile Include="GLFW\src\posix_thread.c" />
-    <ClCompile Include="GLFW\src\posix_time.c" />
-    <ClCompile Include="GLFW\src\vulkan.c" />
-    <ClCompile Include="GLFW\src\wgl_context.c" />
-    <ClCompile Include="GLFW\src\win32_init.c" />
-    <ClCompile Include="GLFW\src\win32_joystick.c" />
-    <ClCompile Include="GLFW\src\win32_module.c" />
-    <ClCompile Include="GLFW\src\win32_monitor.c" />
-    <ClCompile Include="GLFW\src\win32_thread.c" />
-    <ClCompile Include="GLFW\src\win32_time.c" />
-    <ClCompile Include="GLFW\src\win32_window.c" />
-    <ClCompile Include="GLFW\src\window.c" />
-    <ClCompile Include="GLFW\src\wl_init.c" />
-    <ClCompile Include="GLFW\src\wl_monitor.c" />
-    <ClCompile Include="GLFW\src\wl_window.c" />
-    <ClCompile Include="GLFW\src\x11_init.c" />
-    <ClCompile Include="GLFW\src\x11_monitor.c" />
-    <ClCompile Include="GLFW\src\x11_window.c" />
-    <ClCompile Include="GLFW\src\xkb_unicode.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GamEncin\src\Encin\Components.h" />
+    <ClInclude Include="GamEncin\src\Encin\SceneManager.h" />
+    <ClInclude Include="GamEncin\src\Encin\Tools.h" />
+    <ClInclude Include="GamEncin\src\User\GamEncin.h" />
+    <ClInclude Include="GamEncin\src\User\UserObjects.h" />
     <ClInclude Include="src\User\GamEncin.h" />
     <ClInclude Include="src\Encin\SceneManager.h" />
     <ClInclude Include="src\Encin\Components.h" />
     <ClInclude Include="src\Encin\Tools.h" />
-    <ClInclude Include="GLFW\deps\getopt.h" />
-    <ClInclude Include="GLFW\deps\glad\gl.h" />
-    <ClInclude Include="GLFW\deps\glad\gles2.h" />
-    <ClInclude Include="GLFW\deps\glad\vulkan.h" />
-    <ClInclude Include="GLFW\deps\linmath.h" />
-    <ClInclude Include="GLFW\deps\mingw\dinput.h" />
-    <ClInclude Include="GLFW\deps\mingw\xinput.h" />
-    <ClInclude Include="GLFW\deps\mingw\_mingw_dxhelper.h" />
-    <ClInclude Include="GLFW\deps\nuklear.h" />
-    <ClInclude Include="GLFW\deps\nuklear_glfw_gl2.h" />
-    <ClInclude Include="GLFW\deps\stb_image_write.h" />
-    <ClInclude Include="GLFW\deps\tinycthread.h" />
     <ClInclude Include="GLFW\include\GLFW\glfw3.h" />
     <ClInclude Include="GLFW\include\GLFW\glfw3native.h" />
-    <ClInclude Include="GLFW\src\cocoa_joystick.h" />
-    <ClInclude Include="GLFW\src\cocoa_platform.h" />
-    <ClInclude Include="GLFW\src\cocoa_time.h" />
-    <ClInclude Include="GLFW\src\internal.h" />
-    <ClInclude Include="GLFW\src\linux_joystick.h" />
-    <ClInclude Include="GLFW\src\mappings.h" />
-    <ClInclude Include="GLFW\src\null_joystick.h" />
-    <ClInclude Include="GLFW\src\null_platform.h" />
-    <ClInclude Include="GLFW\src\platform.h" />
-    <ClInclude Include="GLFW\src\posix_poll.h" />
-    <ClInclude Include="GLFW\src\posix_thread.h" />
-    <ClInclude Include="GLFW\src\posix_time.h" />
-    <ClInclude Include="GLFW\src\win32_joystick.h" />
-    <ClInclude Include="GLFW\src\win32_platform.h" />
-    <ClInclude Include="GLFW\src\win32_thread.h" />
-    <ClInclude Include="GLFW\src\win32_time.h" />
-    <ClInclude Include="GLFW\src\wl_platform.h" />
-    <ClInclude Include="GLFW\src\x11_platform.h" />
-    <ClInclude Include="GLFW\src\xkb_unicode.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="GamEncin\src\User\TODO.txt" />
     <Text Include="src\User\TODO.txt" />
     <Text Include="LICENSE.txt" />
   </ItemGroup>
@@ -168,6 +108,9 @@
     <None Include=".gitattributes" />
     <None Include=".gitignore" />
     <None Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="GLFW\glfw3.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
