@@ -39,6 +39,9 @@ namespace GamEncin
 
 		static void Awake()
 		{
+			//Initialize GLFW before everything
+			if(!glfwInit()) return;
+
 			for(auto& obj : objects)
 				obj->Awake();
 		}
@@ -59,6 +62,12 @@ namespace GamEncin
 		{
 			for(auto& obj : objects)
 				obj->FixUpdate();
+		}
+
+		static void End()
+		{
+
+			glfwTerminate();
 		}
 
 		static void GameLoops()
@@ -116,19 +125,10 @@ namespace GamEncin
 				frameCount++;
 			}
 		}
-
 		
 		static void Render()
 		{
-			GLFWwindow* window;
-			/* Initialize the library */
-			if(!glfwInit())
-			{
-				return; // Exit the function if initialization fails
-			}
-
-			/* Create a windowed mode window and its OpenGL context */
-			window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+			GLFWwindow* window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
 			if(!window)
 			{
 				glfwTerminate();
@@ -150,9 +150,6 @@ namespace GamEncin
 				/* Poll for and process events */
 				glfwPollEvents();
 			}
-
-			glfwTerminate();
 		}
-
 	};
 }

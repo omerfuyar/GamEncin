@@ -3,5 +3,7 @@
 -add body to components
 -add colliders
 -add collision detection
--add graphics and handle windows
 -add input system
+-edit scenemanager rendering system
+-figure out how everything will be rendered
+-learn how to use glfw and functions
