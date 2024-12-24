@@ -15,15 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\User\UserObjects.h">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\User\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Encin\Tools.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GamEncin\src\Encin\Tools.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -32,18 +23,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\User\GamEncin.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Encin\Components.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Encin\SceneManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Encin\Tools.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GLFW\include\GLFW\glfw3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -67,9 +46,8 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="src\User\TODO.txt" />
     <Text Include="LICENSE.txt" />
-    <Text Include="GamEncin\src\User\TODO.txt" />
+    <Text Include="GamEncin\src\TODO.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />

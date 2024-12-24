@@ -12,6 +12,7 @@ int main(void)
 {
 	SceneBuilding();
 
+	SceneManager::GetInstance().Render();
 
 	SceneManager::GetInstance().GameLoops();
 

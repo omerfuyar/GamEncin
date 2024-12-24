@@ -1,5 +1,6 @@
 #pragma once 
 #include "GamEncin.h"
+#include <iostream>
 
 class TestObject : public Object
 {
@@ -15,6 +16,7 @@ public:
 	void Start() override
 	{
 		Object::Start();
+		std::cout << "qwe";
 	}
 
 	void Update() override

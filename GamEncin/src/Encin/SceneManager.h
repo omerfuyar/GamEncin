@@ -117,18 +117,22 @@ namespace GamEncin
 			}
 		}
 
+		
 		static void Render()
 		{
-			GLFWwindow* window = nullptr;
-
+			GLFWwindow* window;
 			/* Initialize the library */
 			if(!glfwInit())
+			{
+				return; // Exit the function if initialization fails
+			}
 
-				/* Create a windowed mode window and its OpenGL context */
-				window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+			/* Create a windowed mode window and its OpenGL context */
+			window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
 			if(!window)
 			{
 				glfwTerminate();
+				return; // Exit the function if window creation fails
 			}
 
 			/* Make the window's context current */
