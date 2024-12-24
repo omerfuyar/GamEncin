@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
-      <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
@@ -26,19 +18,6 @@
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -57,12 +36,6 @@
   </ImportGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -70,34 +43,6 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-    </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-    </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
-  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -106,11 +51,15 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalUsingDirectories>
       </AdditionalUsingDirectories>
-      <AdditionalIncludeDirectories>$(ProjectDir)\GamEncin\src;%(AdditionalUsingDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\GamEncin\src;%(AdditionalUsingDirectories);$(ProjectDir)\GLFW\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -121,6 +70,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)\Dependencies\GLFW\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -133,16 +83,91 @@
     <ClCompile Include="GamEncin\src\UserObjects.h" />
     <ClCompile Include="GamEncin\src\Encin\Tools.cpp" />
     <ClCompile Include="GamEncin\src\main.cpp" />
+    <ClCompile Include="GLFW\deps\getopt.c" />
+    <ClCompile Include="GLFW\deps\tinycthread.c" />
+    <ClCompile Include="GLFW\src\cocoa_time.c" />
+    <ClCompile Include="GLFW\src\context.c" />
+    <ClCompile Include="GLFW\src\egl_context.c" />
+    <ClCompile Include="GLFW\src\glx_context.c" />
+    <ClCompile Include="GLFW\src\init.c" />
+    <ClCompile Include="GLFW\src\input.c" />
+    <ClCompile Include="GLFW\src\linux_joystick.c" />
+    <ClCompile Include="GLFW\src\monitor.c" />
+    <ClCompile Include="GLFW\src\null_init.c" />
+    <ClCompile Include="GLFW\src\null_joystick.c" />
+    <ClCompile Include="GLFW\src\null_monitor.c" />
+    <ClCompile Include="GLFW\src\null_window.c" />
+    <ClCompile Include="GLFW\src\osmesa_context.c" />
+    <ClCompile Include="GLFW\src\platform.c" />
+    <ClCompile Include="GLFW\src\posix_module.c" />
+    <ClCompile Include="GLFW\src\posix_poll.c" />
+    <ClCompile Include="GLFW\src\posix_thread.c" />
+    <ClCompile Include="GLFW\src\posix_time.c" />
+    <ClCompile Include="GLFW\src\vulkan.c" />
+    <ClCompile Include="GLFW\src\wgl_context.c" />
+    <ClCompile Include="GLFW\src\win32_init.c" />
+    <ClCompile Include="GLFW\src\win32_joystick.c" />
+    <ClCompile Include="GLFW\src\win32_module.c" />
+    <ClCompile Include="GLFW\src\win32_monitor.c" />
+    <ClCompile Include="GLFW\src\win32_thread.c" />
+    <ClCompile Include="GLFW\src\win32_time.c" />
+    <ClCompile Include="GLFW\src\win32_window.c" />
+    <ClCompile Include="GLFW\src\window.c" />
+    <ClCompile Include="GLFW\src\wl_init.c" />
+    <ClCompile Include="GLFW\src\wl_monitor.c" />
+    <ClCompile Include="GLFW\src\wl_window.c" />
+    <ClCompile Include="GLFW\src\x11_init.c" />
+    <ClCompile Include="GLFW\src\x11_monitor.c" />
+    <ClCompile Include="GLFW\src\x11_window.c" />
+    <ClCompile Include="GLFW\src\xkb_unicode.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GamEncin\src\GamEncin.h" />
     <ClInclude Include="GamEncin\src\Encin\SceneManager.h" />
     <ClInclude Include="GamEncin\src\Encin\Components.h" />
     <ClInclude Include="GamEncin\src\Encin\Tools.h" />
+    <ClInclude Include="GLFW\deps\getopt.h" />
+    <ClInclude Include="GLFW\deps\glad\gl.h" />
+    <ClInclude Include="GLFW\deps\glad\gles2.h" />
+    <ClInclude Include="GLFW\deps\glad\vulkan.h" />
+    <ClInclude Include="GLFW\deps\linmath.h" />
+    <ClInclude Include="GLFW\deps\mingw\dinput.h" />
+    <ClInclude Include="GLFW\deps\mingw\xinput.h" />
+    <ClInclude Include="GLFW\deps\mingw\_mingw_dxhelper.h" />
+    <ClInclude Include="GLFW\deps\nuklear.h" />
+    <ClInclude Include="GLFW\deps\nuklear_glfw_gl2.h" />
+    <ClInclude Include="GLFW\deps\stb_image_write.h" />
+    <ClInclude Include="GLFW\deps\tinycthread.h" />
+    <ClInclude Include="GLFW\include\GLFW\glfw3.h" />
+    <ClInclude Include="GLFW\include\GLFW\glfw3native.h" />
+    <ClInclude Include="GLFW\src\cocoa_joystick.h" />
+    <ClInclude Include="GLFW\src\cocoa_platform.h" />
+    <ClInclude Include="GLFW\src\cocoa_time.h" />
+    <ClInclude Include="GLFW\src\internal.h" />
+    <ClInclude Include="GLFW\src\linux_joystick.h" />
+    <ClInclude Include="GLFW\src\mappings.h" />
+    <ClInclude Include="GLFW\src\null_joystick.h" />
+    <ClInclude Include="GLFW\src\null_platform.h" />
+    <ClInclude Include="GLFW\src\platform.h" />
+    <ClInclude Include="GLFW\src\posix_poll.h" />
+    <ClInclude Include="GLFW\src\posix_thread.h" />
+    <ClInclude Include="GLFW\src\posix_time.h" />
+    <ClInclude Include="GLFW\src\win32_joystick.h" />
+    <ClInclude Include="GLFW\src\win32_platform.h" />
+    <ClInclude Include="GLFW\src\win32_thread.h" />
+    <ClInclude Include="GLFW\src\win32_time.h" />
+    <ClInclude Include="GLFW\src\wl_platform.h" />
+    <ClInclude Include="GLFW\src\x11_platform.h" />
+    <ClInclude Include="GLFW\src\xkb_unicode.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="CMakeLists.txt" />
     <Text Include="GamEncin\src\TODO.txt" />
+    <Text Include="LICENSE.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".gitattributes" />
+    <None Include=".gitignore" />
+    <None Include="README.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,2 +1,7 @@
--TODO add math to tools
--TODO add body to components
+-TODO 
+-add math to tools
+-add body to components
+-add colliders
+-add collision detection
+-add graphics and handle windows
+-add input system
