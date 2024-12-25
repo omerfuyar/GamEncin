@@ -26,7 +26,7 @@ namespace GamEncin
 		//These functions will always be called in any object.
 	};
 
-	class PsychicsBody : public Object
+	class PsychicsBody
 	{
 	public:
 		float
@@ -34,5 +34,10 @@ namespace GamEncin
 			drag = 0,
 			angularDrag = 0,
 			gravityScale = 1;
+	};
+
+	class Renderer
+	{
+	public:
 	};
 }

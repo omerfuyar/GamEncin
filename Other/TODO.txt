@@ -1,5 +1,7 @@
 -TODO 
 -add math to tools
+-add matricies to math tools
+-add operators to vectors
 -add body to components
 -add colliders
 -add collision detection
@@ -7,3 +9,4 @@
 -edit scenemanager rendering system
 -figure out how everything will be rendered
 -learn how to use glfw and functions
+-learn typedef keyword

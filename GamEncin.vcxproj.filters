@@ -24,6 +24,9 @@
     <ClCompile Include="GLAD\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GamEncin\src\Encin\SceneManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GLFW\include\GLFW\glfw3.h">
@@ -56,7 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="LICENSE.txt" />
-    <Text Include="GamEncin\src\TODO.txt" />
+    <Text Include="TODO.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />

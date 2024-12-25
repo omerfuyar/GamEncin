@@ -104,4 +104,24 @@ namespace GamEncin
 			z = newZ;
 		}
 	};
+	
+	class Vector4
+	{
+	public:
+		static const Vector4 zero, one;
+		
+		float x, y, z,w;
+
+		Vector4(float x = 0, float y = 0, float z = 0, float w = 0) : x(x), y(y), z(z), w(w) {}
+
+		~Vector4() = default;
+
+		float Set(float newX, float newY, float newZ,float newW)
+		{
+			x = newX;
+			y = newY;
+			z = newZ;
+			w= newW;
+		}
+	};
 }

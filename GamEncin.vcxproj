@@ -80,6 +80,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GamEncin\src\Encin\SceneManager.cpp" />
     <ClCompile Include="GamEncin\src\Encin\Tools.cpp" />
     <ClCompile Include="GamEncin\src\User\main.cpp" />
     <ClCompile Include="GLAD\glad.c" />
@@ -96,7 +97,7 @@
     <ClInclude Include="GLFW\include\GLFW\glfw3native.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="GamEncin\src\TODO.txt" />
+    <Text Include="TODO.txt" />
     <Text Include="LICENSE.txt" />
   </ItemGroup>
   <ItemGroup>

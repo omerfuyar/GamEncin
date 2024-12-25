@@ -1,12 +1,10 @@
 #pragma once
+#include "Components.h"
 #include "SceneManager.h"
 #include "Tools.h"
 
 namespace GamEncin
 {
-	vector<shared_ptr<Object>> SceneManager::objects;
-	unique_ptr<SceneManager> SceneManager::INSTANCE = nullptr;
-	
 	const Vector2
 		Vector2::zero = Vector2(0, 0),
 		Vector2::one = Vector2(1, 1),
@@ -24,6 +22,10 @@ namespace GamEncin
 		Vector3::left = Vector3(-1, 0, 0),
 		Vector3::forward = Vector3(0, 0, 1),
 		Vector3::backward = Vector3(0, 0, -1);
+
+	const Vector4
+		Vector4::zero = Vector4(0, 0, 0, 0),
+		Vector4::one = Vector4(1, 1, 1, 1);
 
 	const float MathYaman::E = 2.7182817F,
 		MathYaman::PI = 3.1415927F,
