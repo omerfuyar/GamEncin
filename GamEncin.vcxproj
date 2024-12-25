@@ -51,7 +51,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalUsingDirectories>
       </AdditionalUsingDirectories>
-      <AdditionalIncludeDirectories>$(ProjectDir)\GamEncin\src;%(AdditionalUsingDirectories);$(ProjectDir)\GLFW\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\GamEncin\src;%(AdditionalUsingDirectories);$(ProjectDir)\GLFW\include;$(ProjectDir)\GLAD\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -68,7 +68,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)\GamEncin\src;%(AdditionalUsingDirectories);$(ProjectDir)\GLFW\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\GamEncin\src;%(AdditionalUsingDirectories);$(ProjectDir)\GLFW\include;$(ProjectDir)\GLAD\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -82,6 +82,7 @@
   <ItemGroup>
     <ClCompile Include="GamEncin\src\Encin\Tools.cpp" />
     <ClCompile Include="GamEncin\src\User\main.cpp" />
+    <ClCompile Include="GLAD\glad.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GamEncin\src\Encin\Components.h" />
@@ -89,6 +90,8 @@
     <ClInclude Include="GamEncin\src\Encin\Tools.h" />
     <ClInclude Include="GamEncin\src\User\GamEncin.h" />
     <ClInclude Include="GamEncin\src\User\UserObjects.h" />
+    <ClInclude Include="GLAD\include\GLAD\glad.h" />
+    <ClInclude Include="GLAD\include\KHR\khrplatform.h" />
     <ClInclude Include="GLFW\include\GLFW\glfw3.h" />
     <ClInclude Include="GLFW\include\GLFW\glfw3native.h" />
   </ItemGroup>
