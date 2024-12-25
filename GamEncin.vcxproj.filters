@@ -59,12 +59,17 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="LICENSE.txt" />
-    <Text Include="TODO.txt" />
+    <Text Include="Other\TODO.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
     <None Include=".gitattributes" />
     <None Include=".gitignore" />
+    <None Include="Other\IndexOpenGL.pdf" />
+    <None Include="Other\ShadersOpenGL.pdf" />
+    <None Include="Other\TexturesOpenGL.pdf" />
+    <None Include="Other\TriangleOpenGL.pdf" />
+    <None Include="Other\WindowOpenGL.pdf" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="GLFW\glfw3.lib" />

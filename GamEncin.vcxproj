@@ -97,12 +97,17 @@
     <ClInclude Include="GLFW\include\GLFW\glfw3native.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="TODO.txt" />
+    <Text Include="Other\TODO.txt" />
     <Text Include="LICENSE.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitattributes" />
     <None Include=".gitignore" />
+    <None Include="Other\IndexOpenGL.pdf" />
+    <None Include="Other\ShadersOpenGL.pdf" />
+    <None Include="Other\TexturesOpenGL.pdf" />
+    <None Include="Other\TriangleOpenGL.pdf" />
+    <None Include="Other\WindowOpenGL.pdf" />
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
