@@ -1,5 +1,8 @@
 #pragma once
 #include <cmath>
+#include <vector>
+
+using std::vector;
 
 namespace GamEncin
 {
@@ -103,6 +106,8 @@ namespace GamEncin
 			y = newY;
 			z = newZ;
 		}
+
+		static float* VerticesVectorToFloatArr(vector<Vector3> vertices);
 	};
 	
 	class Vector4

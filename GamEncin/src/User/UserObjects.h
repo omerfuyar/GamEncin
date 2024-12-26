@@ -2,30 +2,33 @@
 #include "GamEncin.h"
 #include <iostream>
 
-class TestObject : public Object
+using namespace GamEncin;
+
+class TestObject : public GamEncin::Object, public GamEncin::Renderer
 {
 public:
 	void Awake() override
 	{
-		Object::Awake();
 		//name = "myObject";
 		position = Vector3::one;
 		Layer layer = Default;
+		vertices = {
+			Vector3(-0.5f,-0.5f,0),
+			Vector3(0.5f,-0.5f,0),
+			Vector3(0,0.5f,0)
+		};
 	}
 
 	void Start() override
 	{
-		Object::Start();
 		std::cout << "qwe";
 	}
 
 	void Update() override
 	{
-		Object::Update();
 	}
 
 	void FixUpdate() override
 	{
-		Object::FixUpdate();
 	}
 };

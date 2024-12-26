@@ -1,12 +1,24 @@
 #pragma once
+#include "SceneManager.h"
 #include "Tools.h"
 #include <iostream>
 #include <string>
+
 using std::string;
+using std::vector;
 
 namespace GamEncin
 {
-	class Object
+	class Component
+	{
+	public:
+		virtual void Awake() {}
+		virtual void Start() {}
+		virtual void Update() {}
+		virtual void FixUpdate() {}
+	};
+
+	class Object : public Component
 	{
 	public:
 		Layer layer = Default;
@@ -17,16 +29,10 @@ namespace GamEncin
 			scale = Vector3::one;
 
 		Object() = default;
-		virtual ~Object() = default;
-
-		virtual void Awake() {}
-		virtual void Start() {}
-		virtual void Update() {}
-		virtual void FixUpdate() {}
-		//These functions will always be called in any object.
+		~Object() = default;
 	};
 
-	class PsychicsBody
+	class PsychicsBody : Component
 	{
 	public:
 		float
@@ -36,8 +42,18 @@ namespace GamEncin
 			gravityScale = 1;
 	};
 
-	class Renderer
+	class Renderer : Component
 	{
 	public:
+		vector<Vector3> vertices;
+		void Start() override
+		{
+			SceneManager::GetInstance().SendVerticesDataToBuffer(vertices);
+		}
+		
+		void Update() override
+		{
+			SceneManager::GetInstance().SendVerticesDataToBuffer(vertices);
+		}
 	};
 }

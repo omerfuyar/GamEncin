@@ -5,6 +5,11 @@
 
 namespace GamEncin
 {
+	const float MathYaman::E = 2.7182817F,
+		MathYaman::PI = 3.1415927F,
+		MathYaman::G = (float) (6.67 / 1e11),
+		MathYaman::GRAVITY = 9.81F;
+
 	const Vector2
 		Vector2::zero = Vector2(0, 0),
 		Vector2::one = Vector2(1, 1),
@@ -23,12 +28,24 @@ namespace GamEncin
 		Vector3::forward = Vector3(0, 0, 1),
 		Vector3::backward = Vector3(0, 0, -1);
 
+	float* Vector3::VerticesVectorToFloatArr(vector<Vector3> vertices)
+	{
+		size_t size = vertices.size() * 3; // coordinate count
+		GLfloat* result = new GLfloat[size];
+		
+		int j = 0;
+		for(int i = 0; i < size; i += 3)
+		{
+			result[i] = vertices.at(j).x;
+			result[i + 1] = vertices.at(j).y;
+			result[i + 2] = vertices.at(j).z;
+			j++;
+		}
+
+		return result;
+	}
+
 	const Vector4
 		Vector4::zero = Vector4(0, 0, 0, 0),
 		Vector4::one = Vector4(1, 1, 1, 1);
-
-	const float MathYaman::E = 2.7182817F,
-		MathYaman::PI = 3.1415927F,
-		MathYaman::G = (float) (6.67 / 1e11),
-		MathYaman::GRAVITY = 9.81F;
 }

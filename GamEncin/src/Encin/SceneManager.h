@@ -1,5 +1,6 @@
 #pragma once
 #include "Components.h"
+#include "Tools.h"
 #include <chrono>
 #include <GLAD/glad.h>
 #include <GLFW/glfw3.h>
@@ -25,7 +26,7 @@ namespace GamEncin
 		static unique_ptr<SceneManager> INSTANCE; //Singleton Instance
 
 		//these can be moved to initial render function
-		static const char* vertexShaderSourceCode; 
+		static const char* vertexShaderSourceCode;
 		static const char* fragmentShaderSourceCode;
 
 		static GLFWwindow* window;
@@ -45,7 +46,7 @@ namespace GamEncin
 			return *INSTANCE;
 		}
 
-		static void AddObject(shared_ptr<Object> obj)
+		static void AddObject(std::shared_ptr<GamEncin::Object> obj)
 		{
 			objects.push_back(obj);
 		}
@@ -111,6 +112,19 @@ namespace GamEncin
 			glfwPollEvents();
 		}
 
+		static void SendVerticesDataToBuffer(vector<Vector3> vertices)
+		{
+			float* verticesArr = Vector3::VerticesVectorToFloatArr(vertices);
+			size_t arrLength = vertices.size() * 3;
+			glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * arrLength, verticesArr, GL_DYNAMIC_DRAW); 
+			// copy the vertex data into the buffer's memory
+
+			glVertexAttribPointer(0, arrLength, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*) 0);
+			// attribute start pos, 3 floats of data, not normalized, stride: 3 floats, offset: 0
+
+			glEnableVertexAttribArray(0); // enable the attribute at location 0
+		}
+
 		static void InitialRender()
 		{
 			if(!glfwInit())
@@ -128,10 +142,14 @@ namespace GamEncin
 
 			glfwMakeContextCurrent(window);
 
+			//Registers a callback function that is called when the window is resized
 			glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 			if(!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
 				End(-2); // Exit the function if GLAD initialization fails
+
+			// In OpenGL, objects like VAOs, VBOs, shaders, and textures are handles or IDs that reference data stored in the GPU. So we use GLuint to store them.
+			// lifecycle / pipeline of each object: creation -> binding -> configuration -> usage -> unbinding / deletion.
 
 			GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
 			glShaderSource(vertexShader, 1, &vertexShaderSourceCode, NULL);
@@ -149,26 +167,16 @@ namespace GamEncin
 			glDeleteShader(vertexShader);
 			glDeleteShader(fragmentShader);
 
-			GLfloat vertices[] = {
-				-0.5f, -0.5f, 0.0f,
-				0.5f, -0.5f, 0.0f,
-				0.0f, 0.5f, 0.0f
-			};
+			glGenVertexArrays(1, &VAO);	// Stores vertex attribute configurations
+			glGenBuffers(1, &VBO); // Stores vertex data in GPU memory
 
-			glGenVertexArrays(1, &VAO);	
-			glGenBuffers(1, &VBO);
+			// Binding makes an object the active one in the context (window). When we call a function, what it does depends on the internal state of opengl - on the context/object. There can be only one active object of each type at a time. fe: only one active VAO, VBO, texture, etc.
+			glBindVertexArray(VAO); // set the VAO as the current Vertex Array Object
+			glBindBuffer(GL_ARRAY_BUFFER, VBO); // set the VBO as the current buffer object
 
-			glBindVertexArray(VAO);
-
-			glBindBuffer(GL_ARRAY_BUFFER, VBO);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*) 0);
-			// position attribute, 3 floats, not normalized, stride 3 floats, offset 0
-			glEnableVertexAttribArray(0);
-
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
-			glBindVertexArray(0);
+			//not mandatory, but unbinding VBO and VAO is a good practice
+			//glBindBuffer(GL_ARRAY_BUFFER, 0);
+			//glBindVertexArray(0);
 		}
 
 		static void GameLoops()
