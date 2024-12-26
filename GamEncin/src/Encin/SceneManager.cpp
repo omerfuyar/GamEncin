@@ -6,7 +6,7 @@ namespace GamEncin
 	unique_ptr<SceneManager> SceneManager::INSTANCE;
 	GLFWwindow* SceneManager::window;
 
-	GLuint SceneManager::shaderProgram, SceneManager::VAO;
+	GLuint SceneManager::shaderProgram, SceneManager::VBO, SceneManager::VAO;
 
 	const char* SceneManager::vertexShaderSourceCode =
 		"#version 330 core\n"

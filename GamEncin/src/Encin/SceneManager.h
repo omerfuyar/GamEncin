@@ -29,7 +29,7 @@ namespace GamEncin
 		static const char* fragmentShaderSourceCode;
 
 		static GLFWwindow* window;
-		static GLuint shaderProgram, VAO; // Vertex Array Object
+		static GLuint shaderProgram, VBO, VAO; // Vertex Buffer Object, Vertex Array Object
 
 		SceneManager(const SceneManager&) = delete;
 		SceneManager& operator=(const SceneManager&) = delete;
@@ -94,9 +94,9 @@ namespace GamEncin
 			glViewport(0, 0, width, height);
 		}
 
-		static void RenderFrame(GLFWwindow* window)
+		static void RenderFrame()
 		{
-			glfwPollEvents(); 
+			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 			glClear(GL_COLOR_BUFFER_BIT);
 
@@ -107,6 +107,8 @@ namespace GamEncin
 			glDrawArrays(GL_TRIANGLES, 0, 3);
 
 			glfwSwapBuffers(window);
+
+			glfwPollEvents();
 		}
 
 		static void InitialRender()
@@ -119,17 +121,17 @@ namespace GamEncin
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-			window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+			window = glfwCreateWindow(640, 480, "GamEncin", NULL, NULL);
 
 			if(!window)
 				End(-1); // Exit the function if window creation fails
 
 			glfwMakeContextCurrent(window);
 
+			glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
 			if(!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
 				End(-2); // Exit the function if GLAD initialization fails
-
-			glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 			GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
 			glShaderSource(vertexShader, 1, &vertexShaderSourceCode, NULL);
@@ -139,7 +141,7 @@ namespace GamEncin
 			glShaderSource(fragmentShader, 1, &fragmentShaderSourceCode, NULL);
 			glCompileShader(fragmentShader);
 
-			GLuint shaderProgram = glCreateProgram();
+			shaderProgram = glCreateProgram();
 			glAttachShader(shaderProgram, vertexShader);
 			glAttachShader(shaderProgram, fragmentShader);
 			glLinkProgram(shaderProgram);
@@ -153,12 +155,11 @@ namespace GamEncin
 				0.0f, 0.5f, 0.0f
 			};
 
-			GLuint VBO; //Vertex Buffer Object
-
-			glGenVertexArrays(1, &VAO);
+			glGenVertexArrays(1, &VAO);	
 			glGenBuffers(1, &VBO);
 
 			glBindVertexArray(VAO);
+
 			glBindBuffer(GL_ARRAY_BUFFER, VBO);
 			glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
@@ -194,12 +195,12 @@ namespace GamEncin
 			Awake();
 
 			Start();
-			RenderFrame(window); //render starts with start function
+			RenderFrame(); //render starts with start function
 
 			while(!glfwWindowShouldClose(window))
 			{
 				Update();
-				RenderFrame(window); //rendering in update, not in fixupdate
+				RenderFrame(); //rendering in update, not in fixupdate
 
 				auto now = high_resolution_clock::now();
 				auto fixElapsed = duration_cast<milliseconds>(now - lastFixedUpdate);

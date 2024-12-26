@@ -9,4 +9,8 @@
 -edit scenemanager rendering system
 -figure out how everything will be rendered
 -learn how to use glfw and functions
--learn typedef keyword
+
+====================================================================================================
+
+typedef keyword = typedef is used to give a type a new name.
+like "typedef unsigned long long uLlong;" will give 'unsigned long long' a new name 'uLlong'
