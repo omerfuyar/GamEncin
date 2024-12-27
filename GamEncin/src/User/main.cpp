@@ -5,7 +5,8 @@
 void SceneBuilding()
 {
 	auto object1 = std::make_shared<TestObject>();
-	SceneManager::GetInstance().AddObject(std::static_pointer_cast<Object>(object1));
+	SceneManager::GetInstance().AddObject(object1);
+	
 }
 
 int main(void)

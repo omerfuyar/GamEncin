@@ -20,8 +20,10 @@ namespace GamEncin
 
 	class Vector2
 	{
-	public:
+	private:
 		static const Vector2 zero, one, up, right, down, left;
+
+	public:
 
 		float x, y, magnitude;
 
@@ -60,13 +62,27 @@ namespace GamEncin
 			x = newX;
 			y = newY;
 		}
+
+		//Returns a Vector2(0, 0)
+		static const Vector2 Zero() { return zero; }
+		//Returns a Vector2(1, 1)
+		static const Vector2 One() { return one; }
+		//Returns a Vector2(0, 1)
+		static const Vector2 Up() { return up; }
+		//Returns a Vector2(1, 0)
+		static const Vector2 Right() { return right; }
+		//Returns a Vector2(0, -1)
+		static const Vector2 Down() { return down; }
+		//Returns a Vector2(-1, 0)
+		static const Vector2 Left() { return left; }
 	};
 
 	class Vector3
 	{
-	public:
+	private:
 		static const Vector3 zero, one, up, right, down, left, forward, backward;
-		
+
+	public:
 		float x, y, z, magnitude;
 
 		Vector3(float x = 0, float y = 0, float z = 0) : x(x), y(y), z(z)
@@ -108,25 +124,49 @@ namespace GamEncin
 		}
 
 		static float* VerticesVectorToFloatArr(vector<Vector3> vertices);
+
+		//Returns a Vector3(0, 0, 0)
+		static const Vector3 Zero() { return zero; }
+		//Returns a Vector3(1, 1, 1)
+		static const Vector3 One() { return one; }
+		//Returns a Vector3(0, 1, 0)
+		static const Vector3 Up() { return up; }
+		//Returns a Vector3(1, 0, 0)
+		static const Vector3 Right() { return right; }
+		//Returns a Vector3(0, -1, 0)
+		static const Vector3 Down() { return down; }
+		//Returns a Vector3(-1, 0, 0)
+		static const Vector3 Left() { return left; }
+		//Returns a Vector3(0, 0, 1)
+		static const Vector3 Forward() { return forward; }
+		//Returns a Vector3(0, 0, -1)
+		static const Vector3 Backward() { return backward; }
 	};
-	
+
 	class Vector4
 	{
-	public:
+	private:
 		static const Vector4 zero, one;
-		
-		float x, y, z,w;
+
+	public:
+
+		float x, y, z, w;
 
 		Vector4(float x = 0, float y = 0, float z = 0, float w = 0) : x(x), y(y), z(z), w(w) {}
 
 		~Vector4() = default;
 
-		float Set(float newX, float newY, float newZ,float newW)
+		float Set(float newX, float newY, float newZ, float newW)
 		{
 			x = newX;
 			y = newY;
 			z = newZ;
-			w= newW;
+			w = newW;
 		}
+
+		//Returns a Vector4(0, 0, 0, 0)
+		static const Vector4 Zero() { return zero; }
+		//Returns a Vector4(1, 1, 1, 1)
+		static const Vector4 One() { return one; }
 	};
 }

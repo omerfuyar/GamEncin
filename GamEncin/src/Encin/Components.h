@@ -26,10 +26,30 @@ namespace GamEncin
 		Vector3
 			position,
 			rotation,
-			scale = Vector3::one;
+			scale = Vector3::One();
 
 		Object() = default;
 		~Object() = default;
+
+		void Awake() override
+		{
+
+		}
+
+		void Start() override
+		{
+			std::cout << "Object Start\n";
+		}
+
+		void Update() override
+		{
+
+		}
+
+		void FixUpdate() override
+		{
+
+		}
 	};
 
 	class PsychicsBody : Component
@@ -40,20 +60,52 @@ namespace GamEncin
 			drag = 0,
 			angularDrag = 0,
 			gravityScale = 1;
+
+		void Awake() override
+		{
+
+		}
+
+		void Start() override
+		{
+			std::cout << "PsychicsBody Start\n";
+		}
+
+		void Update() override
+		{
+
+		}
+
+		void FixUpdate() override
+		{
+
+		}
 	};
 
 	class Renderer : Component
 	{
 	public:
 		vector<Vector3> vertices;
+
+		void Awake() override
+		{
+
+		}
+
 		void Start() override
 		{
+			std::cout << "Renderer Start\n";		
 			SceneManager::GetInstance().SendVerticesDataToBuffer(vertices);
 		}
-		
+
 		void Update() override
 		{
-			SceneManager::GetInstance().SendVerticesDataToBuffer(vertices);
+
+		}
+
+		void FixUpdate() override
+		{
+
 		}
 	};
 }
