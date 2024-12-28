@@ -1,9 +1,9 @@
-#include "Components.h"
+#include "ECS.h"
 #include "SceneManager.h"
 
 namespace GamEncin
 {
-	vector<shared_ptr<Object>> SceneManager::objects; //Objects in the scene
+	vector<shared_ptr<Entity>> SceneManager::objects; //Objects in the scene
 	unique_ptr<SceneManager> SceneManager::INSTANCE;
 
 	GLFWwindow* SceneManager::window;
@@ -36,7 +36,7 @@ namespace GamEncin
 		return *INSTANCE;
 	}
 
-	void SceneManager::AddObject(shared_ptr<Object> obj)
+	void SceneManager::AddObject(shared_ptr<Entity> obj)
 	{
 		objects.push_back(obj);
 	}

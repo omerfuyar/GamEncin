@@ -15,7 +15,7 @@ using std::unique_ptr;
 
 namespace GamEncin
 {
-	class Object; // Forward Declaration
+	class Entity; // Forward Declaration
 
 	class SceneManager //Objects Loop Manager
 	{
@@ -23,7 +23,7 @@ namespace GamEncin
 		SceneManager() {}
 
 	public:
-		static vector<shared_ptr<Object>> objects; //Objects in the scene
+		static vector<shared_ptr<Entity>> objects; //Objects in the scene
 		static unique_ptr<SceneManager> INSTANCE; //Singleton Instance
 
 		//these can be moved to initial render function
@@ -40,7 +40,7 @@ namespace GamEncin
 
 		static SceneManager& GetInstance();
 
-		static void AddObject(shared_ptr<Object> obj);
+		static void AddObject(shared_ptr<Entity> obj);
 
 		static void Awake();
 

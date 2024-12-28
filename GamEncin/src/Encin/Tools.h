@@ -1,8 +1,12 @@
 #pragma once
 #include <cmath>
+#include <map>
+#include <string>
 #include <vector>
 
 using std::vector;
+using std::string;
+using std::map;
 
 namespace GamEncin
 {
@@ -25,27 +29,75 @@ namespace GamEncin
 
 	public:
 
-		float x, y, magnitude;
+		float x, y;
 
-		Vector2(float x = 0, float y = 0) : x(x), y(y)
-		{
-			magnitude = GetMagnitude();
-		}
+		Vector2(float x = 0, float y = 0) : x(x), y(y) {};
 
 		~Vector2() = default;
 
+#pragma region Operators
+
+		Vector2 operator + (const Vector2& other)
+		{
+			return Vector2(x + other.x, y + other.y);
+		}
+
+		Vector2 operator += (const Vector2& other)
+		{
+			x += other.x;
+			y += other.y;
+			return Vector2(x, y);
+		}
+
+		Vector2 operator - (const Vector2& other)
+		{
+			return Vector2(x - other.x, y - other.y);
+		}
+
+		Vector2 operator -= (const Vector2& other)
+		{
+			x -= other.x;
+			y -= other.y;
+			return Vector2(x, y);
+		}
+
+		Vector2 operator * (const float other)
+		{
+			return Vector2(x * other, y * other);
+		}
+
+		Vector2 operator *= (const float other)
+		{
+			x *= other;
+			y *= other;
+			return Vector2(x, y);
+		}
+
+		Vector2 operator / (const float other)
+		{
+			return Vector2(x / other, y / other);
+		}
+
+		Vector2 operator /= (const float other)
+		{
+			x /= other;
+			y /= other;
+			return Vector2(x, y);
+		}
+
+#pragma endregion
+
 		float GetMagnitude()
 		{
-			magnitude = sqrt(x * x + y * y);
-			return magnitude;
+			return sqrt(x * x + y * y);
 		}
 
 		//Scales and returns the Vector2 magnitude of 1
 		Vector2 Normalize()
 		{
+			float magnitude = GetMagnitude();
 			x /= magnitude;
 			y /= magnitude;
-			magnitude = GetMagnitude();
 			return Vector2(x, y);
 		}
 
@@ -83,28 +135,80 @@ namespace GamEncin
 		static const Vector3 zero, one, up, right, down, left, forward, backward;
 
 	public:
-		float x, y, z, magnitude;
+		float x, y, z;
 
-		Vector3(float x = 0, float y = 0, float z = 0) : x(x), y(y), z(z)
-		{
-			magnitude = GetMagnitude();
-		}
+		Vector3(float x = 0, float y = 0, float z = 0) : x(x), y(y), z(z) {}
 
 		~Vector3() = default;
 
+#pragma region Operators
+
+		Vector3 operator + (const Vector3& other)
+		{
+			return Vector3(x + other.x, y + other.y, z + other.z);
+		}
+
+		Vector3 operator += (const Vector3& other)
+		{
+			x += other.x;
+			y += other.y;
+			z += other.z;
+			return Vector3(x, y, z);
+		}
+
+		Vector3 operator - (const Vector3& other)
+		{
+			return Vector3(x - other.x, y - other.y, z - other.z);
+		}
+
+		Vector3 operator -= (const Vector3& other)
+		{
+			x -= other.x;
+			y -= other.y;
+			z -= other.z;
+			return Vector3(x, y, z);
+		}
+
+		Vector3 operator * (const float other)
+		{
+			return Vector3(x * other, y * other, z * other);
+		}
+
+		Vector3 operator *= (const float other)
+		{
+			x *= other;
+			y *= other;
+			z *= other;
+			return Vector3(x, y, z);
+		}
+
+		Vector3 operator / (const float other)
+		{
+			return Vector3(x / other, y / other, z / other);
+		}
+
+		Vector3 operator /= (const float other)
+		{
+			x /= other;
+			y /= other;
+			z /= other;
+			return Vector3(x, y, z);
+		}
+
+#pragma endregion
+
 		float GetMagnitude()
 		{
-			magnitude = sqrt(x * x + y * y + z * z);
-			return magnitude;
+			return sqrt(x * x + y * y + z * z);
 		}
 
 		//Scales and returns the Vector3 magnitude of 1
 		Vector3 Normalize()
 		{
+			float magnitude = GetMagnitude();
 			x /= magnitude;
 			y /= magnitude;
 			z /= magnitude;
-			magnitude = GetMagnitude();
 			return Vector3(x, y, z);
 		}
 

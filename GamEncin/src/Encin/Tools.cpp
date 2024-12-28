@@ -1,6 +1,4 @@
 #pragma once
-#include "Components.h"
-#include "SceneManager.h"
 #include "Tools.h"
 
 namespace GamEncin

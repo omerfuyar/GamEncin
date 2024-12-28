@@ -1,7 +1,9 @@
 // User Library
 #pragma once
-#include "Encin/Components.h"
+#include "Encin/ComponentManager.h"
+#include "Encin/EntityManager.h"
 #include "Encin/SceneManager.h"
+#include "Encin/SystemManager.h"
 #include "Encin/Tools.h"
 #include <iostream>
 
