@@ -24,9 +24,6 @@
     <ClCompile Include="GLAD\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GamEncin\src\Encin\SceneManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GamEncin\src\Encin\EntityManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -42,9 +39,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GLFW\include\GLFW\glfw3native.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GamEncin\src\Encin\SceneManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GamEncin\src\Encin\Tools.h">

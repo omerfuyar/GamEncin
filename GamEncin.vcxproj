@@ -82,7 +82,6 @@
   <ItemGroup>
     <ClCompile Include="GamEncin\src\Encin\ComponentManager.cpp" />
     <ClCompile Include="GamEncin\src\Encin\EntityManager.cpp" />
-    <ClCompile Include="GamEncin\src\Encin\SceneManager.cpp" />
     <ClCompile Include="GamEncin\src\Encin\Tools.cpp" />
     <ClCompile Include="GamEncin\src\User\main.cpp" />
     <ClCompile Include="GLAD\glad.c" />
@@ -92,7 +91,6 @@
     <ClInclude Include="GamEncin\src\Encin\ComponentManager.h" />
     <ClInclude Include="GamEncin\src\Encin\ECS.h" />
     <ClInclude Include="GamEncin\src\Encin\EntityManager.h" />
-    <ClInclude Include="GamEncin\src\Encin\SceneManager.h" />
     <ClInclude Include="GamEncin\src\Encin\Tools.h" />
     <ClInclude Include="GamEncin\src\User\GamEncin.h" />
     <ClInclude Include="GamEncin\src\User\UserObjects.h" />

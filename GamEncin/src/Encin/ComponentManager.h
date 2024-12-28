@@ -3,25 +3,30 @@
 
 namespace GamEncin
 {
-	class Component 
+	class Component
 	{
 	public:
 	};
 
-	class Transform : Component
+	class Transform : public Component
 	{
+	public:
 		Vector3
 			position,
 			rotation,
 			scale = Vector3::One();
 
-		void Translate(Vector3 amount)
-		{
-			position += amount;
-		}
+		// Adds to position
+		void Translate(Vector3 amount);
+
+		// Adds to rotation
+		void Rotate(Vector3 amount);
+
+		// adds to scale
+		void Scale(Vector3 amount);
 	};
 
-	class PsychicsBody : Component
+	class PsychicsBody : public Component
 	{
 	public:
 		float
@@ -32,10 +37,10 @@ namespace GamEncin
 
 	};
 
-	class Renderer : Component
+	class Renderer : public Component
 	{
 	public:
 		vector<Vector3> vertices;
-		
+
 	};
 }

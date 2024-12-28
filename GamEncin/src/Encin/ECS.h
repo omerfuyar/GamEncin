@@ -1,3 +1,4 @@
+//Developer library
 #pragma once
 #include "ComponentManager.h"
 #include "EntityManager.h"
