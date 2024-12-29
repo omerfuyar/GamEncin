@@ -82,6 +82,7 @@
     <None Include="Other\TexturesOpenGL.pdf" />
     <None Include="Other\TriangleOpenGL.pdf" />
     <None Include="Other\WindowOpenGL.pdf" />
+    <None Include=".editorconfig" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="GLFW\glfw3.lib" />

@@ -9,15 +9,15 @@ namespace GamEncin
         position += amount;
     }
 
-	void Transform::Rotate(Vector3 amount)
-	{
-		rotation += amount;
-	}
+    void Transform::Rotate(Vector3 amount)
+    {
+        rotation += amount;
+    }
 
-	void Transform::Scale(Vector3 amount)
-	{
-		scale += amount;
-	}
+    void Transform::Scale(Vector3 amount)
+    {
+        scale += amount;
+    }
 
 #pragma endregion
 }

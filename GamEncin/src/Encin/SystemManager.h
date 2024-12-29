@@ -14,76 +14,76 @@ using std::unique_ptr;
 
 namespace GamEncin
 {
-	class TransformManager
-	{
-	public:
-		void Awake();
-		void Start();
-		void Update();
-		void FixUpdate();
-	};
+    class TransformManager
+    {
+    public:
+        void Awake();
+        void Start();
+        void Update();
+        void FixUpdate();
+    };
 
-	class PsychicsBodyManager
-	{
-	public:
-		void Awake();
-		void Start();
-		void Update();
-		void FixUpdate();
-	};
+    class PsychicsBodyManager
+    {
+    public:
+        void Awake();
+        void Start();
+        void Update();
+        void FixUpdate();
+    };
 
-	class RendererManager
-	{
-	public:
-		void Awake();
-		void Start();
-		void Update();
-		void FixUpdate();
+    class RendererManager
+    {
+    public:
+        void Awake();
+        void Start();
+        void Update();
+        void FixUpdate();
 
-		void RenderFrame();
-		void SendVerticesDataToBuffer(vector<Vector3> vertices);
-	};
+        void RenderFrame();
+        void SendVerticesDataToBuffer(vector<Vector3> vertices);
+    };
 
-	class SystemManager
-	{
-	public:
-		TransformManager transformManager;
-		PsychicsBodyManager psychicsBodyManager;
-		RendererManager rendererManager;
+    class SystemManager
+    {
+    public:
+        TransformManager transformManager;
+        PsychicsBodyManager psychicsBodyManager;
+        RendererManager rendererManager;
 
-		void Awake();
-		void Start();
-		void Update();
-		void FixUpdate();
+        void Awake();
+        void Start();
+        void Update();
+        void FixUpdate();
 
-		void End(int exitCode);
-		void GameLoops();
-	}; 
-	
-	class Application
-	{
-	public:
-		SystemManager systemManager;
+        void End(int exitCode);
+        void GameLoops();
+    };
 
-		const char* vertexShaderSourceCode =
-			"#version 330 core\n"
-			"layout (location = 0) in vec3 aPos;\n"
-			"void main()\n"
-			"{\n"
-			"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-			"}\0";
+    class Application
+    {
+    public:
+        SystemManager systemManager;
 
-		const char* fragmentShaderSourceCode =
-			"#version 330 core\n"
-			"out vec4 FragColor;\n"
-			"void main()\n"
-			"{\n"
-			"   FragColor = vec4(0.8f, 0.3f, 0.02f, 1.0f);\n"
-			"}\n\0";
+        const char* vertexShaderSourceCode =
+            "#version 330 core\n"
+            "layout (location = 0) in vec3 aPos;\n"
+            "void main()\n"
+            "{\n"
+            "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+            "}\0";
 
-		static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-		void InitialRender();
+        const char* fragmentShaderSourceCode =
+            "#version 330 core\n"
+            "out vec4 FragColor;\n"
+            "void main()\n"
+            "{\n"
+            "   FragColor = vec4(0.8f, 0.3f, 0.02f, 1.0f);\n"
+            "}\n\0";
 
-		void Run();
-	};
+        static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+        void InitialRender();
+
+        void Run();
+    };
 }
