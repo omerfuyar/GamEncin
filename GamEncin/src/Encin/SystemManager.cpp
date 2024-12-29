@@ -2,6 +2,14 @@
 
 namespace GamEncin
 {
+	GLFWwindow* window;
+
+	GLuint shaderProgram, VBO, VAO; // Vertex Buffer Object, Vertex Array Object
+
+	unordered_map<EntityID, Transform> transformComponents;
+	unordered_map<EntityID, PsychicsBody> psychicsBodyComponents;
+	unordered_map<EntityID, Renderer> rendererComponents;
+
 #pragma region Application
 
 	void Application::framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -186,7 +194,7 @@ namespace GamEncin
 #pragma endregion
 
 #pragma region Psychics Body Manager
-
+	
 	void PsychicsBodyManager::Awake()
 	{
 

@@ -1,41 +1,56 @@
 #include "ECS.h"
+#include <algorithm>
+
+using std::find;
+using std::distance;
+
 namespace GamEncin
 {
-	Entity::Entity()
+	unordered_map<EntityID, Entity> entities;
+
+	Entity::Entity(EntityID createdID)
 	{
-		id = 0;
-		tag = "Default Tag";
-		layer = Default;
-		name = "Object";
-		components = vector<Component>();
+		id = createdID;
 	}
 
 	void Entity::AddComponent(Component component)
-	{
-
+	{	
+		components.insert({component.type, component});
 	}
 
 	void Entity::RemoveComponent(Component component)
 	{
-
+		components.erase(find(components.begin(), components.end(), component));
 	}
 
-	Component* Entity::GetComponent()
+
+	Component Entity::GetComponent(Component component)
 	{
-		return nullptr;
+		if(components.find(component.type) != components.end())
+		{
+			return components.at(component.type);
+		}
+		else
+		{
+			return NullComponent();
+		}
 	}
 
 #pragma region Entity Manager
 
-	EntityID EntityManager::CreateEntity()
+	Entity EntityManager::CreateEntity()
 	{
 		last_id++;
-		entities_components.insert({last_id, Entity()});
-		return last_id;
+		Entity createdEntity = Entity(last_id);
+		entities.insert({last_id, createdEntity});
+		createdEntity.AddComponent(Object());
+		return createdEntity;
 	}
 
-	void EntityManager::DestroyEntity(Entity* entity)
+	void EntityManager::DestroyEntity(Entity entity)
 	{
-
+		entities.erase(entity.id);
 	}
+
+#pragma endregion
 }

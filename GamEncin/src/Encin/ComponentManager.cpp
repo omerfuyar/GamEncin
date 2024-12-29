@@ -3,7 +3,7 @@
 namespace GamEncin
 {
 #pragma region Transform
-    
+
     void Transform::Translate(Vector3 amount)
     {
         position += amount;
@@ -20,5 +20,4 @@ namespace GamEncin
 	}
 
 #pragma endregion
-    
 }

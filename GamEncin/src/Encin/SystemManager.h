@@ -9,16 +9,11 @@
 
 using namespace std::chrono;
 
-using std::vector;
 using std::shared_ptr;
 using std::unique_ptr;
 
 namespace GamEncin
 {
-	GLFWwindow* window;
-
-	GLuint shaderProgram, VBO, VAO; // Vertex Buffer Object, Vertex Array Object
-
 	class TransformManager
 	{
 	public:
@@ -26,7 +21,6 @@ namespace GamEncin
 		void Start();
 		void Update();
 		void FixUpdate();
-
 	};
 
 	class PsychicsBodyManager
@@ -36,7 +30,6 @@ namespace GamEncin
 		void Start();
 		void Update();
 		void FixUpdate();
-
 	};
 
 	class RendererManager
@@ -88,7 +81,7 @@ namespace GamEncin
 			"   FragColor = vec4(0.8f, 0.3f, 0.02f, 1.0f);\n"
 			"}\n\0";
 
-		void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+		static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 		void InitialRender();
 
 		void Run();

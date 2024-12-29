@@ -1,16 +1,13 @@
 -TODO 
 -add math to tools
 -add matricies to math tools
--add operators to vectors
--add body to components
 -add colliders
 -add collision detection
 -add input system
 -edit scenemanager rendering system
 -figure out how everything will be rendered
 -learn how to use glfw and functions
--switch to ECS
--transfer scenemanager to systemmanager
+-component dependencies
 
 ====================================================================================================
 

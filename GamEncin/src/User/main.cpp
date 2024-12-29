@@ -6,11 +6,6 @@ void SceneBuilding()
 {
 	EntityManager entityManager;
 	//SystemManager systemManager;
-
-	cout << entityManager.CreateEntity();
-	cout << entityManager.CreateEntity();
-	cout << entityManager.CreateEntity();
-	
 }
 
 int main(void)

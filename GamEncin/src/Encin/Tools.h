@@ -1,12 +1,12 @@
 #pragma once
 #include <cmath>
-#include <map>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 using std::vector;
 using std::string;
-using std::map;
+using std::unordered_map;
 
 namespace GamEncin
 {

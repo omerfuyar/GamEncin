@@ -3,26 +3,20 @@
 
 namespace GamEncin
 {
-	class Entity; // Forward declaration
-
 	using EntityID = unsigned int;
-	map<EntityID, Component> entities_components;
 
-	class Entity : public Component
+	class Entity
 	{
 	public:
 		EntityID id;
-		string tag;
-		Layer layer;
-		string name;
-		vector<Component> components;
+		unordered_map<ComponentType, Component> components;
 
-		Entity();
+		Entity(EntityID createdID);
 		~Entity() = default;
 
 		void AddComponent(Component component);
 		void RemoveComponent(Component component);
-		Component* GetComponent();
+		Component GetComponent(Component component);
 	};
 
 	class EntityManager
@@ -33,7 +27,7 @@ namespace GamEncin
 		EntityManager() = default;
 		~EntityManager() = default;
 
-		EntityID CreateEntity();
-		void DestroyEntity(Entity* entity);
+		Entity CreateEntity();
+		void DestroyEntity(Entity entity);
 	};
 }
