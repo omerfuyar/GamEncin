@@ -17,6 +17,8 @@ namespace GamEncin
     class TransformManager
     {
     public:
+        unordered_map<EntityID, Transform> transformComponents;
+
         void Awake();
         void Start();
         void Update();
@@ -26,6 +28,8 @@ namespace GamEncin
     class PsychicsBodyManager
     {
     public:
+        unordered_map<EntityID, PsychicsBody> psychicsBodyComponents;
+
         void Awake();
         void Start();
         void Update();
@@ -35,6 +39,8 @@ namespace GamEncin
     class RendererManager
     {
     public:
+        unordered_map<EntityID, Renderer> rendererComponents;
+
         void Awake();
         void Start();
         void Update();
@@ -60,9 +66,22 @@ namespace GamEncin
         void GameLoops();
     };
 
-    class Application
+    class Application //singleton
     {
+    private:
+        Application() : systemManager() {}
+        ~Application() = default;
+
     public:
+        static Application& GetInstance()
+        {
+            static Application instance;
+            return instance;
+        }
+
+        Application(const Application&) = delete;
+        void operator=(const Application&) = delete;
+
         SystemManager systemManager;
 
         const char* vertexShaderSourceCode =

@@ -6,10 +6,6 @@ namespace GamEncin
 
     GLuint shaderProgram, VBO, VAO; // Vertex Buffer Object, Vertex Array Object
 
-    unordered_map<EntityID, Transform> transformComponents;
-    unordered_map<EntityID, PsychicsBody> psychicsBodyComponents;
-    unordered_map<EntityID, Renderer> rendererComponents;
-
 #pragma region Application
 
     void Application::framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -107,10 +103,24 @@ namespace GamEncin
 
     void SystemManager::End(int exitCode)
     {
-        if(exitCode == -1) //GLFW Error
-            fprintf(stderr, "ERROR: Error occurred in GLFW3\n");
-        if(exitCode == -2) //GLAD Error
-            fprintf(stderr, "ERROR: Error occurred in GLAD\n");
+        switch(exitCode)
+        {
+            case -1:
+                fprintf(stderr, "ERROR: Error occurred in GLFW3\n");
+                break;
+            case -2:
+                fprintf(stderr, "ERROR: Error occurred in GLAD\n");
+                break;
+            case -3:
+                fprintf(stderr, "ERROR: Component not found\n");
+                break;
+            case -4:
+                fprintf(stderr, "ERROR: Component already exists\n");
+                break;
+            default:
+                fprintf(stderr, "ERROR: Unknown error occurred\n");
+                break;
+        }
 
         glfwTerminate(); //Terminate GLFW
         exit(exitCode); //Exit the program

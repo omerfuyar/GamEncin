@@ -5,7 +5,7 @@ namespace GamEncin
 {
     enum ComponentType
     {
-        NullCT, ObjectCT, TransformCT, PsychicsBodyCT, RendererCT
+        UNRECOGNIZED_TOKEN_CT, TransformCT, PsychicsBodyCT, RendererCT
     };
 
     class Component
@@ -19,26 +19,16 @@ namespace GamEncin
         }
     };
 
-    class NullComponent : public Component
+    class UNRECOGNIZED_TOKEN : public Component
     {
     public:
-        NullComponent() { type = NullCT; };
-    };
-
-    class Object : public Component
-    {
-    public:
-        Object() { type = ObjectCT; };
-
-        string name = "Object";
-        string tag = "Default Tag";
-        Layer layer = Default;
+        UNRECOGNIZED_TOKEN() : Component() { type = UNRECOGNIZED_TOKEN_CT; };
     };
 
     class Transform : public Component
     {
     public:
-        Transform() { type = TransformCT; };
+        Transform() : Component() { type = TransformCT; };
 
         Vector3
             position,
@@ -58,7 +48,7 @@ namespace GamEncin
     class PsychicsBody : public Component
     {
     public:
-        PsychicsBody() { type = PsychicsBodyCT; };
+        PsychicsBody() : Component() { type = PsychicsBodyCT; };
 
         float
             mass = 1,
@@ -70,7 +60,7 @@ namespace GamEncin
     class Renderer : public Component
     {
     public:
-        Renderer() { type = RendererCT; };
+        Renderer() : Component() { type = RendererCT; };
 
         vector<Vector3> vertices;
     };
