@@ -1,4 +1,5 @@
 #include "ECS.h"
+#include <memory>
 
 namespace GamEncin
 {
@@ -25,63 +26,68 @@ namespace GamEncin
                 Application::GetInstance().systemManager.rendererManager.rendererComponents.erase(id);
                 break;
             default:
-                Application::GetInstance().systemManager.End(-3);
+                Application::GetInstance().systemManager.End(-13); //Component type not found
                 break;
         }
     }
-
-    Component Entity::AddComponent(ComponentType componentT)
-    {
-        if(components.find(componentT) != components.end())
-            Application::GetInstance().systemManager.End(-4); //Component already exists
-
-        Component component = Component();
-
-        switch(componentT)
-        {
-            case TransformCT:
-                component = Transform();
-                Application::GetInstance().systemManager.transformManager.transformComponents.insert({id, static_cast<Transform&>(component)});
-                break;
-
-            case PsychicsBodyCT:
-                component = PsychicsBody();
-                Application::GetInstance().systemManager.psychicsBodyManager.psychicsBodyComponents.insert({id, static_cast<PsychicsBody&>(component)});
-                break;
-
-            case RendererCT:
-                component = Renderer();
-                Application::GetInstance().systemManager.rendererManager.rendererComponents.insert({id, static_cast<Renderer&>(component)});
-                break;
-
-            default:
-                Application::GetInstance().systemManager.End(-3); //Component type not found
-                break;
-        }
-
-        components.insert({component.type, component});
-        return component;
-    }
-
 
     template <typename Type>
-    Type Entity::GetComponent()
+    Type& Entity::AddComponent()
     {
-        Type createdComponent = Type();
-        if(components.find(createdComponent.type) != components.end())
+        auto createdComponent = std::make_unique<Type>();
+        ComponentType componentType = createdComponent->type;
+
+        SystemManager& systemManager = Application::GetInstance().systemManager;
+
+        if(components.find(componentType) != components.end())
+            systemManager.End(-14); //Component already exists
+
+        switch(componentType)
         {
-            return static_cast<Type&>(components.at(createdComponent.type));
+            case TransformCT:
+                systemManager.transformManager.transformComponents[id] = dynamic_cast<Transform*>(createdComponent);
+                break;
+            case PsychicsBodyCT:
+                systemManager.psychicsBodyManager.psychicsBodyComponents[id] = dynamic_cast<PsychicsBody*>(createdComponent);
+                break;
+            case RendererCT:
+                systemManager.rendererManager.rendererComponents[id] = dynamic_cast<Renderer*>(createdComponent);
+                break;
+            default:
+                systemManager.End(-13); //Component type not found
+                break;
+        }
+
+        //components[componentType] = dynamic_cast<Type&>(createdComponent);
+        components[componentType] = std::move(createdComponent);
+
+        return *dynamic_cast<Type*>(components[componentType]);
+    }
+
+    template <typename Type>
+    Type& Entity::GetComponent()
+    {
+        Type createdComponent;
+        ComponentType componentType = createdComponent.type;
+
+        if(components.find(componentType) != components.end())
+        {
+            return static_cast<Type&>(components[componentType]);
         }
         else
         {
-            Application::GetInstance().systemManager.End(-3);
+            Application::GetInstance().systemManager.End(-12); //Component not found in entity
         }
     }
 
     // Explicit instantiations
-    template Transform Entity::GetComponent<Transform>();
-    template PsychicsBody Entity::GetComponent<PsychicsBody>();
-    template Renderer Entity::GetComponent<Renderer>();
+    template Transform& Entity::AddComponent<Transform>();
+    template PsychicsBody& Entity::AddComponent<PsychicsBody>();
+    template Renderer& Entity::AddComponent<Renderer>();
+
+    template Transform& Entity::GetComponent<Transform>();
+    template PsychicsBody& Entity::GetComponent<PsychicsBody>();
+    template Renderer& Entity::GetComponent<Renderer>();
 
 #pragma endregion
 

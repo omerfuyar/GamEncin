@@ -18,14 +18,15 @@ namespace GamEncin
         ~Entity() = default;
 
         //Adds a new component to the entity and returns it
-        Component AddComponent(ComponentType componentT);
+        template <typename Type>
+        Type& AddComponent();
 
         //Removes a specific component type
         void RemoveComponent(ComponentType componentT);
 
         //Gets a specific component in the entity
         template <typename Type>
-        Type GetComponent();
+        Type& GetComponent();
     };
 
     class EntityManager //singleton

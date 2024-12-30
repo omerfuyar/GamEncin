@@ -12,6 +12,7 @@ namespace GamEncin
     {
     public:
         ComponentType type;
+        virtual ~Component() = default;
 
         bool operator==(const Component& otherComponent)
         {

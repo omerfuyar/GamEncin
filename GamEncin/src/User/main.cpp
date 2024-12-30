@@ -7,18 +7,14 @@ void SceneBuilding()
     Application& app = Application::GetInstance();
     EntityManager& entityManager = EntityManager::GetInstance();
 
-    //Entity qwe = entityManager.CreateEntity();
-    //
-    //Transform zxc = qwe.AddComponent<Transform>();
-    //Transform hmhg = qwe.GetComponent<Transform>();
-    //
-    //if(hmhg == zxc)
-    //    cout << "true" << "\n";
-    //else
-    //    cout << "false" << "\n";
-    //
-    //cout << "hmhg: " << hmhg.position.x << "\n";
-    //cout << "zxc: " << zxc.position.x << "\n";
+    Entity entity1 = entityManager.CreateEntity();
+
+    cout << entity1.id << "\n";
+    cout << &entity1.AddComponent<Transform>() << "\n";
+    cout << &entity1.GetComponent<Transform>() << "\n";
+
+    cout << &app.systemManager.transformManager.transformComponents[entity1.id] << "\n";
+    cout << &app.systemManager.transformManager.transformComponents.at(entity1.id) << "\n";
 }
 
 int main(void)

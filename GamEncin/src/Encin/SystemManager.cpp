@@ -111,10 +111,13 @@ namespace GamEncin
             case -2:
                 fprintf(stderr, "ERROR: Error occurred in GLAD\n");
                 break;
-            case -3:
-                fprintf(stderr, "ERROR: Component not found\n");
+            case -12:
+                fprintf(stderr, "ERROR: Component could not found in entity\n");
                 break;
-            case -4:
+            case -13:
+                fprintf(stderr, "ERROR: Component type could not found\n");
+                break;
+            case -14:
                 fprintf(stderr, "ERROR: Component already exists\n");
                 break;
             default:
