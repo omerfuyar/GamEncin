@@ -15,7 +15,7 @@ namespace GamEncin
 
         if(components.find(componentType) == components.end())
         {
-            Application::GetInstance().systemManager.End(-12); //Component not found in entity
+            Application::GetInstance().End(-12); //Component not found in entity
         }
 
         components.erase(componentType);
@@ -32,7 +32,7 @@ namespace GamEncin
                 systemManager.rendererManager.rendererComponents.erase(id);
                 break;
             default:
-                systemManager.End(-13); //Component type not found
+                Application::GetInstance().End(-13); //Component type not found
                 break;
         }
     }
@@ -46,7 +46,7 @@ namespace GamEncin
 
         if(components.find(componentType) != components.end())
         {
-            systemManager.End(-14); //Component already exists
+            Application::GetInstance().End(-14); //Component already exists
         }
 
         components[componentType] = createdComponent;
@@ -63,7 +63,7 @@ namespace GamEncin
                 systemManager.rendererManager.rendererComponents[id] = dynamic_cast<Renderer*>(components[componentType]);
                 break;
             default:
-                systemManager.End(-13); //Component type not found
+                Application::GetInstance().End(-13); //Component type not found
                 break;
         }
 
@@ -78,7 +78,7 @@ namespace GamEncin
 
         if(components.find(componentType) == components.end())
         {
-            Application::GetInstance().systemManager.End(-12); //Component not found in entity
+            Application::GetInstance().End(-12); //Component not found in entity
         }
 
         return *static_cast<Type*>(components[componentType]);

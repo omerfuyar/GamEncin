@@ -62,7 +62,6 @@ namespace GamEncin
         void Update();
         void FixUpdate();
 
-        void End(int exitCode);
         void GameLoops();
     };
 
@@ -104,5 +103,6 @@ namespace GamEncin
         void InitialRender();
 
         void Run();
+        void End(int exitCode);
     };
 }

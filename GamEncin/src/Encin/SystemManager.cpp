@@ -16,7 +16,7 @@ namespace GamEncin
     void Application::InitialRender()
     {
         if(!glfwInit())
-            systemManager.End(-1); // Exit the function if GLFW initialization fails
+            End(-1); // Exit the function if GLFW initialization fails
 
         // Configure the OpenGL version
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -26,7 +26,7 @@ namespace GamEncin
         window = glfwCreateWindow(640, 480, "GamEncin", NULL, NULL);
 
         if(!window)
-            systemManager.End(-1); // Exit the function if window creation fails
+            End(-1); // Exit the function if window creation fails
 
         glfwMakeContextCurrent(window);
 
@@ -34,7 +34,7 @@ namespace GamEncin
         glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
         if(!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
-            systemManager.End(-2); // Exit the function if GLAD initialization fails
+            End(-2); // Exit the function if GLAD initialization fails
 
         // In OpenGL, objects like VAOs, VBOs, shaders, and textures are handles or IDs that reference data stored in the GPU. So we use GLuint to store them.
         // lifecycle / pipeline of each object: creation -> binding -> configuration -> usage -> unbinding / deletion.
@@ -69,31 +69,7 @@ namespace GamEncin
         systemManager.GameLoops();
     }
 
-#pragma endregion
-
-#pragma region System Manager
-
-    void SystemManager::Awake()
-    {
-
-    }
-
-    void SystemManager::Start()
-    {
-
-    }
-
-    void SystemManager::Update()
-    {
-
-    }
-
-    void SystemManager::FixUpdate()
-    {
-
-    }
-
-    void SystemManager::End(int exitCode)
+    void Application::End(int exitCode)
     {
         switch(exitCode)
         {
@@ -119,6 +95,30 @@ namespace GamEncin
 
         glfwTerminate(); //Terminate GLFW
         exit(exitCode); //Exit the program
+    }
+
+#pragma endregion
+
+#pragma region System Manager
+
+    void SystemManager::Awake()
+    {
+
+    }
+
+    void SystemManager::Start()
+    {
+
+    }
+
+    void SystemManager::Update()
+    {
+
+    }
+
+    void SystemManager::FixUpdate()
+    {
+
     }
 
     void SystemManager::GameLoops()
@@ -169,7 +169,7 @@ namespace GamEncin
             frameCount++;
         }
 
-        End(31); // time to 31
+        Application::GetInstance().End(31); // time to 31
     }
 
 #pragma endregion

@@ -14,6 +14,8 @@ void SceneBuilding()
     cout << entity1.AddComponent<Transform>().position.x << "\n";
     cout << entity1.GetComponent<Transform>().position.x << "\n";
     cout << app.systemManager.transformManager.transformComponents[entity1.id]->position.x << "\n";
+
+    app.Run();
 }
 
 int main(void)
