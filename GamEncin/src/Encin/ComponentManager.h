@@ -64,5 +64,6 @@ namespace GamEncin
         Renderer() : Component() { type = RendererCT; };
 
         vector<Vector3> vertices;
+        void SendVerticesDataToBuffer(vector<Vector3> vertices);
     };
 }

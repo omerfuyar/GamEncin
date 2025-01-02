@@ -9,43 +9,35 @@
 
 using namespace std::chrono;
 
-using std::shared_ptr;
-using std::unique_ptr;
-
 namespace GamEncin
 {
-    class Manager
+    template <class ComponentT>
+    class ComponentManager
     {
     public:
+        map<EntityID, ComponentT*> managerComponents;
 
         virtual void UpdateManager() {}
     };
 
-    class TransformManager : public Manager
+    class TransformManager : public ComponentManager<Transform>
     {
     public:
-        unordered_map<EntityID, Transform*> transformComponents;
-
         void UpdateManager() override;
     };
 
-    class PsychicsBodyManager : public Manager
+    class PsychicsBodyManager : public ComponentManager<PsychicsBody>
     {
     public:
-        unordered_map<EntityID, PsychicsBody*> psychicsBodyComponents;
-
         void UpdateManager() override;
     };
 
-    class RendererManager : public Manager
+    class RendererManager : public ComponentManager<Renderer>
     {
     public:
-        unordered_map<EntityID, Renderer*> rendererComponents;
-
         void UpdateManager() override;
 
         void RenderFrame();
-        void SendVerticesDataToBuffer(vector<Vector3> vertices);
     };
 
     class SystemManager
@@ -54,8 +46,6 @@ namespace GamEncin
         TransformManager transformManager;
         PsychicsBodyManager psychicsBodyManager;
         RendererManager rendererManager;
-
-        vector<Manager> managers;
 
         void Awake();
         void Start();
@@ -68,7 +58,7 @@ namespace GamEncin
     class Application //singleton
     {
     private:
-        Application() : systemManager() {}
+        Application() {}
         ~Application() = default;
 
     public:

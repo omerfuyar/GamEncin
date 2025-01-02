@@ -1,4 +1,5 @@
 #include "ECS.h"
+#include <iostream>
 
 namespace GamEncin
 {
@@ -113,7 +114,7 @@ namespace GamEncin
 
     void SystemManager::Update()
     {
-
+        transformManager.UpdateManager();
     }
 
     void SystemManager::FixUpdate()
@@ -178,10 +179,15 @@ namespace GamEncin
 
     void TransformManager::UpdateManager()
     {
-        size_t mapSize = transformComponents.size();
-        for(int i = 0; i < mapSize; i++)
+        size_t mapSize = managerComponents.size();
+
+        EntityManager& entityManager = EntityManager::GetInstance();
+
+
+        for(auto entity : entityManager.entities)
         {
-            transformComponents[i]->position.x += 0.01f;
+            managerComponents[entity.first]->position.x += 0.01f;
+            std::cout << managerComponents[entity.first]->position.x << "\n";
         }
     }
 
@@ -211,21 +217,6 @@ namespace GamEncin
         glfwSwapBuffers(window);
 
         glfwPollEvents();
-    }
-
-    void RendererManager::SendVerticesDataToBuffer(vector<Vector3> vertices)
-    {
-        float* verticesFloatArr = Vector3::VerticesVectorToFloatArr(vertices);
-
-        size_t arrLength = vertices.size() * 3; // float count
-
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * arrLength, verticesFloatArr, GL_DYNAMIC_DRAW);
-        // copy the vertex data into the buffer's memory
-
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*) 0);
-        // attribute start pos, arrLength floats of data, not normalized, stride: 3 floats (for triangles), offset: 0
-
-        glEnableVertexAttribArray(0); // enable the attribute at location 0
     }
 
     void RendererManager::UpdateManager()

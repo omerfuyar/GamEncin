@@ -23,13 +23,13 @@ namespace GamEncin
         switch(componentType)
         {
             case TransformCT:
-                systemManager.transformManager.transformComponents.erase(id);
+                systemManager.transformManager.managerComponents.erase(id);
                 break;
             case PsychicsBodyCT:
-                systemManager.psychicsBodyManager.psychicsBodyComponents.erase(id);
+                systemManager.psychicsBodyManager.managerComponents.erase(id);
                 break;
             case RendererCT:
-                systemManager.rendererManager.rendererComponents.erase(id);
+                systemManager.rendererManager.managerComponents.erase(id);
                 break;
             default:
                 Application::GetInstance().End(-13); //Component type not found
@@ -54,13 +54,13 @@ namespace GamEncin
         switch(componentType)
         {
             case TransformCT:
-                systemManager.transformManager.transformComponents[id] = dynamic_cast<Transform*>(components[componentType]);
+                systemManager.transformManager.managerComponents[id] = dynamic_cast<Transform*>(components[componentType]);
                 break;
             case PsychicsBodyCT:
-                systemManager.psychicsBodyManager.psychicsBodyComponents[id] = dynamic_cast<PsychicsBody*>(components[componentType]);
+                systemManager.psychicsBodyManager.managerComponents[id] = dynamic_cast<PsychicsBody*>(components[componentType]);
                 break;
             case RendererCT:
-                systemManager.rendererManager.rendererComponents[id] = dynamic_cast<Renderer*>(components[componentType]);
+                systemManager.rendererManager.managerComponents[id] = dynamic_cast<Renderer*>(components[componentType]);
                 break;
             default:
                 Application::GetInstance().End(-13); //Component type not found

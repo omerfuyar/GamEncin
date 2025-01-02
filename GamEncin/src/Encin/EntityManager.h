@@ -21,15 +21,15 @@ namespace GamEncin
         ~Entity() = default;
 
         //Adds a new component to the entity and returns it
-        template <typename Type>
+        template <class Type>
         Type& AddComponent();
 
         //Removes a specific component type
-        template <typename Type>
+        template <class Type>
         void RemoveComponent();
 
         //Gets a specific component in the entity
-        template <typename Type>
+        template <class Type>
         Type& GetComponent();
     };
 
@@ -40,7 +40,7 @@ namespace GamEncin
         ~EntityManager() = default;
 
     public:
-        unordered_map<EntityID, Entity> entities;
+        map<EntityID, Entity> entities;
 
         EntityManager(const EntityManager&) = delete;
         void operator=(const EntityManager&) = delete;

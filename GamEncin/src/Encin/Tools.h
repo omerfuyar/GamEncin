@@ -1,5 +1,6 @@
 #pragma once
 #include <cmath>
+#include <map>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -7,6 +8,7 @@
 using std::vector;
 using std::string;
 using std::unordered_map;
+using std::map;
 
 namespace GamEncin
 {
