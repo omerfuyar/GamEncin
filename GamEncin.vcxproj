@@ -101,7 +101,6 @@
     <ClInclude Include="GamEncin\src\Encin\SystemManager.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Other\TODO.txt" />
     <Text Include="LICENSE.txt" />
   </ItemGroup>
   <ItemGroup>

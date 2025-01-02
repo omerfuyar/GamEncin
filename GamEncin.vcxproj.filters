@@ -71,7 +71,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="LICENSE.txt" />
-    <Text Include="Other\TODO.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />

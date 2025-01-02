@@ -14,7 +14,7 @@ namespace GamEncin
         ComponentType type;
         virtual ~Component() = default;
 
-        bool operator==(const Component& otherComponent)
+        bool isSameType(const Component& otherComponent)
         {
             return type == otherComponent.type;
         }

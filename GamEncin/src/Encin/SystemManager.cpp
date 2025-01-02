@@ -75,30 +75,22 @@ namespace GamEncin
 
     void SystemManager::Awake()
     {
-        transformManager.Awake();
-        psychicsBodyManager.Awake();
-        rendererManager.Awake();
+
     }
 
     void SystemManager::Start()
     {
-        transformManager.Start();
-        psychicsBodyManager.Start();
-        rendererManager.Start();
+
     }
 
     void SystemManager::Update()
     {
-        transformManager.Update();
-        psychicsBodyManager.Update();
-        rendererManager.Update();
+
     }
 
     void SystemManager::FixUpdate()
     {
-        transformManager.FixUpdate();
-        psychicsBodyManager.FixUpdate();
-        rendererManager.FixUpdate();
+
     }
 
     void SystemManager::End(int exitCode)
@@ -184,46 +176,20 @@ namespace GamEncin
 
 #pragma region Transform Manager
 
-    void TransformManager::Awake()
+    void TransformManager::UpdateManager()
     {
-
-    }
-
-    void TransformManager::Start()
-    {
-
-    }
-
-    void TransformManager::Update()
-    {
-
-    }
-
-    void TransformManager::FixUpdate()
-    {
-
+        size_t mapSize = transformComponents.size();
+        for(int i = 0; i < mapSize; i++)
+        {
+            transformComponents[i]->position.x += 0.01f;
+        }
     }
 
 #pragma endregion
 
 #pragma region Psychics Body Manager
 
-    void PsychicsBodyManager::Awake()
-    {
-
-    }
-
-    void PsychicsBodyManager::Start()
-    {
-
-    }
-
-    void PsychicsBodyManager::Update()
-    {
-
-    }
-
-    void PsychicsBodyManager::FixUpdate()
+    void PsychicsBodyManager::UpdateManager()
     {
 
     }
@@ -262,22 +228,7 @@ namespace GamEncin
         glEnableVertexAttribArray(0); // enable the attribute at location 0
     }
 
-    void RendererManager::Awake()
-    {
-
-    }
-
-    void RendererManager::Start()
-    {
-
-    }
-
-    void RendererManager::Update()
-    {
-
-    }
-
-    void RendererManager::FixUpdate()
+    void RendererManager::UpdateManager()
     {
 
     }

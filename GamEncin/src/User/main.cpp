@@ -10,11 +10,10 @@ void SceneBuilding()
     Entity entity1 = entityManager.CreateEntity();
 
     cout << entity1.id << "\n";
-    cout << &entity1.AddComponent<Transform>() << "\n";
-    cout << &entity1.GetComponent<Transform>() << "\n";
 
-    cout << &app.systemManager.transformManager.transformComponents[entity1.id] << "\n";
-    cout << &app.systemManager.transformManager.transformComponents.at(entity1.id) << "\n";
+    cout << entity1.AddComponent<Transform>().position.x << "\n";
+    cout << entity1.GetComponent<Transform>().position.x << "\n";
+    cout << app.systemManager.transformManager.transformComponents[entity1.id]->position.x << "\n";
 }
 
 int main(void)

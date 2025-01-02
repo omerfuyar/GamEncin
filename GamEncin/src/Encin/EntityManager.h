@@ -9,12 +9,15 @@ namespace GamEncin
     {
     public:
         EntityID id;
-        unordered_map<ComponentType, Component> components;
+        unordered_map<ComponentType, Component*> components;
         string name = "Object";
         string tag = "Default Tag";
         Layer layer = Default;
 
-        Entity(EntityID createdID);
+        Entity(EntityID createdID)
+        {
+            id = createdID;
+        }
         ~Entity() = default;
 
         //Adds a new component to the entity and returns it
@@ -22,7 +25,8 @@ namespace GamEncin
         Type& AddComponent();
 
         //Removes a specific component type
-        void RemoveComponent(ComponentType componentT);
+        template <typename Type>
+        void RemoveComponent();
 
         //Gets a specific component in the entity
         template <typename Type>

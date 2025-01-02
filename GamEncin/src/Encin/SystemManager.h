@@ -14,37 +14,35 @@ using std::unique_ptr;
 
 namespace GamEncin
 {
-    class TransformManager
+    class Manager
     {
     public:
-        unordered_map<EntityID, Transform> transformComponents;
 
-        void Awake();
-        void Start();
-        void Update();
-        void FixUpdate();
+        virtual void UpdateManager() {}
     };
 
-    class PsychicsBodyManager
+    class TransformManager : public Manager
     {
     public:
-        unordered_map<EntityID, PsychicsBody> psychicsBodyComponents;
+        unordered_map<EntityID, Transform*> transformComponents;
 
-        void Awake();
-        void Start();
-        void Update();
-        void FixUpdate();
+        void UpdateManager() override;
     };
 
-    class RendererManager
+    class PsychicsBodyManager : public Manager
     {
     public:
-        unordered_map<EntityID, Renderer> rendererComponents;
+        unordered_map<EntityID, PsychicsBody*> psychicsBodyComponents;
 
-        void Awake();
-        void Start();
-        void Update();
-        void FixUpdate();
+        void UpdateManager() override;
+    };
+
+    class RendererManager : public Manager
+    {
+    public:
+        unordered_map<EntityID, Renderer*> rendererComponents;
+
+        void UpdateManager() override;
 
         void RenderFrame();
         void SendVerticesDataToBuffer(vector<Vector3> vertices);
@@ -56,6 +54,8 @@ namespace GamEncin
         TransformManager transformManager;
         PsychicsBodyManager psychicsBodyManager;
         RendererManager rendererManager;
+
+        vector<Manager> managers;
 
         void Awake();
         void Start();
@@ -73,15 +73,6 @@ namespace GamEncin
         ~Application() = default;
 
     public:
-        static Application& GetInstance()
-        {
-            static Application instance;
-            return instance;
-        }
-
-        Application(const Application&) = delete;
-        void operator=(const Application&) = delete;
-
         SystemManager systemManager;
 
         const char* vertexShaderSourceCode =
@@ -99,6 +90,15 @@ namespace GamEncin
             "{\n"
             "   FragColor = vec4(0.8f, 0.3f, 0.02f, 1.0f);\n"
             "}\n\0";
+
+        static Application& GetInstance()
+        {
+            static Application instance;
+            return instance;
+        }
+
+        Application(const Application&) = delete;
+        void operator=(const Application&) = delete;
 
         static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
         void InitialRender();

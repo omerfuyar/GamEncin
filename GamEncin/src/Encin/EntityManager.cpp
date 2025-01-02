@@ -6,27 +6,33 @@ namespace GamEncin
 
 #pragma region Entity
 
-    Entity::Entity(EntityID createdID)
+    template <typename Type>
+    void Entity::RemoveComponent()
     {
-        id = createdID;
-    }
+        Type tempComponent;
+        ComponentType componentType = tempComponent.type;
+        SystemManager& systemManager = Application::GetInstance().systemManager;
 
-    void Entity::RemoveComponent(ComponentType componentT)
-    {
-        components.erase(componentT);
-        switch(componentT)
+        if(components.find(componentType) == components.end())
+        {
+            Application::GetInstance().systemManager.End(-12); //Component not found in entity
+        }
+
+        components.erase(componentType);
+
+        switch(componentType)
         {
             case TransformCT:
-                Application::GetInstance().systemManager.transformManager.transformComponents.erase(id);
+                systemManager.transformManager.transformComponents.erase(id);
                 break;
             case PsychicsBodyCT:
-                Application::GetInstance().systemManager.psychicsBodyManager.psychicsBodyComponents.erase(id);
+                systemManager.psychicsBodyManager.psychicsBodyComponents.erase(id);
                 break;
             case RendererCT:
-                Application::GetInstance().systemManager.rendererManager.rendererComponents.erase(id);
+                systemManager.rendererManager.rendererComponents.erase(id);
                 break;
             default:
-                Application::GetInstance().systemManager.End(-13); //Component type not found
+                systemManager.End(-13); //Component type not found
                 break;
         }
     }
@@ -34,56 +40,58 @@ namespace GamEncin
     template <typename Type>
     Type& Entity::AddComponent()
     {
-        auto createdComponent = std::make_unique<Type>();
+        Type* createdComponent = new Type();
         ComponentType componentType = createdComponent->type;
-
         SystemManager& systemManager = Application::GetInstance().systemManager;
 
         if(components.find(componentType) != components.end())
+        {
             systemManager.End(-14); //Component already exists
+        }
+
+        components[componentType] = createdComponent;
 
         switch(componentType)
         {
             case TransformCT:
-                systemManager.transformManager.transformComponents[id] = dynamic_cast<Transform*>(createdComponent);
+                systemManager.transformManager.transformComponents[id] = dynamic_cast<Transform*>(components[componentType]);
                 break;
             case PsychicsBodyCT:
-                systemManager.psychicsBodyManager.psychicsBodyComponents[id] = dynamic_cast<PsychicsBody*>(createdComponent);
+                systemManager.psychicsBodyManager.psychicsBodyComponents[id] = dynamic_cast<PsychicsBody*>(components[componentType]);
                 break;
             case RendererCT:
-                systemManager.rendererManager.rendererComponents[id] = dynamic_cast<Renderer*>(createdComponent);
+                systemManager.rendererManager.rendererComponents[id] = dynamic_cast<Renderer*>(components[componentType]);
                 break;
             default:
                 systemManager.End(-13); //Component type not found
                 break;
         }
 
-        //components[componentType] = dynamic_cast<Type&>(createdComponent);
-        components[componentType] = std::move(createdComponent);
-
-        return *dynamic_cast<Type*>(components[componentType]);
+        return *static_cast<Type*>(components[componentType]);
     }
 
     template <typename Type>
     Type& Entity::GetComponent()
     {
-        Type createdComponent;
-        ComponentType componentType = createdComponent.type;
+        Type tempComponent;
+        ComponentType componentType = tempComponent.type;
 
-        if(components.find(componentType) != components.end())
-        {
-            return static_cast<Type&>(components[componentType]);
-        }
-        else
+        if(components.find(componentType) == components.end())
         {
             Application::GetInstance().systemManager.End(-12); //Component not found in entity
         }
+
+        return *static_cast<Type*>(components[componentType]);
     }
 
-    // Explicit instantiations
+    //Explicit template instantiation
     template Transform& Entity::AddComponent<Transform>();
     template PsychicsBody& Entity::AddComponent<PsychicsBody>();
     template Renderer& Entity::AddComponent<Renderer>();
+
+    template void Entity::RemoveComponent<Transform>();
+    template void Entity::RemoveComponent<PsychicsBody>();
+    template void Entity::RemoveComponent<Renderer>();
 
     template Transform& Entity::GetComponent<Transform>();
     template PsychicsBody& Entity::GetComponent<PsychicsBody>();
