@@ -1,10 +1,12 @@
 #pragma once
+#include <array>
 #include <cmath>
 #include <map>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
+using std::array;
 using std::vector;
 using std::string;
 using std::unordered_map;
