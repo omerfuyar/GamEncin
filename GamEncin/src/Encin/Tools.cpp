@@ -3,11 +3,6 @@
 
 namespace GamEncin
 {
-    const float MathYaman::E = 2.7182817F,
-        MathYaman::PI = 3.1415927F,
-        MathYaman::G = (float) (6.67 / 1e11),
-        MathYaman::GRAVITY = 9.81F;
-
     const Vector2
         Vector2::zero = Vector2(0, 0),
         Vector2::one = Vector2(1, 1),

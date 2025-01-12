@@ -3,6 +3,7 @@
 #include <cmath>
 #include <map>
 #include <string>
+#include <thread>
 #include <unordered_map>
 #include <vector>
 
@@ -11,6 +12,8 @@ using std::vector;
 using std::string;
 using std::unordered_map;
 using std::map;
+using std::shared_ptr;
+using std::unique_ptr;
 
 namespace GamEncin
 {
@@ -19,12 +22,15 @@ namespace GamEncin
         Default, IgnoreRay, UI, Player, Layer1, Layer2, Layer3
     };
 
-    struct MathYaman
+    namespace MathYaman
     {
-    public:
         //Euler, PI, Earth's gravity, Gravitational constant
-        static const float E, PI, GRAVITY, G;
-    };
+        static const float E = 2.7182817F,
+            PI = 3.1415927F,
+            GRAVITY = 9.81F,
+            G = (float) (6.67 / 1e11);
+
+    }
 
     class Vector2
     {

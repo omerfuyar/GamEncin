@@ -80,13 +80,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="GamEncin\src\Encin\ECS.cpp" />
+    <ClCompile Include="GamEncin\src\Encin\Application.cpp" />
     <ClCompile Include="GamEncin\src\Encin\Tools.cpp" />
     <ClCompile Include="GamEncin\src\User\main.cpp" />
     <ClCompile Include="GLAD\glad.c" />
+    <ClCompile Include="GamEncin\src\Encin\Objects.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GamEncin\src\Encin\ECS.h" />
+    <ClInclude Include="GamEncin\src\Encin\Encin.h" />
+    <ClInclude Include="GamEncin\src\Encin\Application.h" />
     <ClInclude Include="GamEncin\src\Encin\Tools.h" />
     <ClInclude Include="GamEncin\src\User\GamEncin.h" />
     <ClInclude Include="GamEncin\src\User\UserObjects.h" />
@@ -94,6 +96,7 @@
     <ClInclude Include="GLAD\include\KHR\khrplatform.h" />
     <ClInclude Include="GLFW\include\GLFW\glfw3.h" />
     <ClInclude Include="GLFW\include\GLFW\glfw3native.h" />
+    <ClInclude Include="GamEncin\src\Encin\Objects.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="LICENSE.txt" />
