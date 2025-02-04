@@ -9,13 +9,21 @@ using namespace std::chrono;
 
 namespace GamEncin
 {
+    class Scene;
+
     class Application //singleton
     {
     private:
-        Application() {}
+        Application() {};
         ~Application() = default;
 
     public:
+        vector<Scene*> scenes;
+
+        const int FPSlimit = 0; // 0 : no limit
+        const int fixedFPS = 50;
+        bool printFPS = false;
+
         static Application& GetInstance()
         {
             static Application instance;
@@ -34,6 +42,6 @@ namespace GamEncin
         void InitialRender();
         static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
         void GameLoops();
-        void End(int exitCode);
+        void End(EndType et);
     };
 }

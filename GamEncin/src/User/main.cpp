@@ -3,15 +3,18 @@
 
 void SceneBuilding()
 {
+    Scene scene;
+
+    Object& object1 = scene.CreateObject();
 }
 
 int main(void)
 {
     SceneBuilding();
 
-    Application& manager = Application::GetInstance();
+    Application& app = Application::GetInstance();
 
-    manager.Run();
+    app.Run();
 
     return 0;
 }

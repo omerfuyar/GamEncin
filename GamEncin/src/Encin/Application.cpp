@@ -13,34 +13,46 @@ namespace GamEncin
         "#version 330 core\n"
         "layout (location = 0) in vec3 aPos;\n"
         "void main()\n"
-        "{\n"
-        "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-        "}\0";
+        "{ gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0); }";
 
     const char* fragmentShaderSourceCode =
         "#version 330 core\n"
         "out vec4 FragColor;\n"
         "void main()\n"
-        "{\n"
-        "   FragColor = vec4(0.8f, 0.3f, 0.02f, 1.0f);\n"
-        "}\n\0";
+        "{ FragColor = vec4(0.8f, 0.3f, 0.02f, 1.0f); }";
 
 #pragma endregion
 
     void Application::Awake()
     {
+        for(Scene* scene : scenes)
+        {
+            scene->Awake();
+        }
     }
 
     void Application::Start()
     {
+        for(Scene* scene : scenes)
+        {
+            scene->Start();
+        }
     }
 
     void Application::Update()
     {
+        for(Scene* scene : scenes)
+        {
+            scene->Update();
+        }
     }
 
     void Application::FixUpdate()
     {
+        for(Scene* scene : scenes)
+        {
+            scene->FixUpdate();
+        }
     }
 
     void Application::RenderFrame()
@@ -67,7 +79,7 @@ namespace GamEncin
     void Application::InitialRender()
     {
         if(!glfwInit())
-            End(-1); // Exit the function if GLFW initialization fails
+            End(GLFWErr); // Exit the function if GLFW initialization fails
 
         // Configure the OpenGL version
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -77,7 +89,7 @@ namespace GamEncin
         window = glfwCreateWindow(640, 480, "GamEncin", NULL, NULL);
 
         if(!window)
-            End(-1); // Exit the function if window creation fails
+            End(GLFWErr); // Exit the function if window creation fails
 
         glfwMakeContextCurrent(window);
 
@@ -85,7 +97,7 @@ namespace GamEncin
         glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
         if(!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
-            End(-2); // Exit the function if GLAD initialization fails
+            End(GLADErr); // Exit the function if GLAD initialization fails
 
         // In OpenGL, objects like VAOs, VBOs, shaders, and textures are handles or IDs that reference data stored in the GPU. So we use GLuint to store them.
         // lifecycle / pipeline of each object: creation -> binding -> configuration -> usage -> unbinding / deletion.
@@ -121,14 +133,8 @@ namespace GamEncin
 
     void Application::GameLoops()
     {
-        // Frame Rate Limit
-        const int FPSlimit = 100;
-        const auto frameDelay = 1000 / FPSlimit;
-        bool haveFPSlimit = false;
-
         // Fixed Game loop
-        const int fixFPSlimit = 50;
-        const auto fixedDelay = 1000 / fixFPSlimit;
+        const auto fixedDelay = 1000 / fixedFPS;
 
         // Others
         auto lastFixedUpdate = high_resolution_clock::now();
@@ -157,45 +163,48 @@ namespace GamEncin
                 {
                     fps = frameCount;
                     frameCount = 0;
-                    std::cout << fps << "\n"; //print fps
+                    if(printFPS)
+                        std::cout << fps << "\n"; //print fps
                 }
             }
 
-            if(haveFPSlimit) // frame delay
+            if(FPSlimit != 0) // frame delay
+            {
+                const auto frameDelay = 1000 / FPSlimit;
                 std::this_thread::sleep_for(milliseconds(frameDelay));
+            }
 
             frameCount++;
         }
 
-        End(31); // time to 31
+        End(Safe); // time to 31
     }
 
-    void Application::End(int exitCode)
+    void Application::End(EndType et)
     {
-        if(exitCode == -1) //GLFW Error
-            fprintf(stderr, "ERROR: Error occurred in GLFW3\n");
-        if(exitCode == -2) //GLAD Error
-            fprintf(stderr, "ERROR: Error occurred in GLAD\n");
-        switch(exitCode)
+        switch(et)
         {
-            case -1:
+            case Safe:
+                fprintf(stderr, "Program ended safely\n");
+                break;
+            case Warning:
+                fprintf(stderr, "Program ended with warning(s)\n");
+                break;
+            case GLFWErr:
                 fprintf(stderr, "ERROR: Error occurred in GLFW3\n");
                 break;
-            case -2:
+            case GLADErr:
                 fprintf(stderr, "ERROR: Error occurred in GLAD\n");
                 break;
-            case -3:
-                fprintf(stderr, "ERROR: Component not found\n");
-                break;
-            case -4:
-                fprintf(stderr, "ERROR: Component already exists\n");
+            case ObjCouldNotFind:
+                fprintf(stderr, "ERROR: Object could not be found\n");
                 break;
             default:
                 fprintf(stderr, "ERROR: Unknown error occurred\n");
                 break;
         }
 
-        glfwTerminate(); //Terminate GLFW
-        exit(exitCode); //Exit the program
+        glfwTerminate();
+        exit(et);
     }
 }

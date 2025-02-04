@@ -22,14 +22,18 @@ namespace GamEncin
         Default, IgnoreRay, UI, Player, Layer1, Layer2, Layer3
     };
 
+    enum EndType
+    {
+        Safe, Warning, UnkErr, GLFWErr, GLADErr, ObjCouldNotFind
+    };;
+
     namespace MathYaman
     {
         //Euler, PI, Earth's gravity, Gravitational constant
         static const float E = 2.7182817F,
             PI = 3.1415927F,
             GRAVITY = 9.81F,
-            G = (float) (6.67 / 1e11);
-
+            G = 6.67F / 1e11F;
     }
 
     class Vector2
