@@ -1,14 +1,11 @@
 #include "Encin.h"
 #include <algorithm>
+#include <chrono>
 #include <iostream>
 
 namespace GamEncin
 {
-    Scene::Scene()
-    {
-        Application::GetInstance().scenes.push_back(this);
-        std::cout << "Scene added\n";
-    }
+#pragma region Object
 
     void Object::SendVerticesDataToBuffer(vector<Vector3> vertices)
     {
@@ -23,6 +20,36 @@ namespace GamEncin
         // attribute start pos, arrLength floats of data, not normalized, stride: 3 floats (for triangles), offset: 0
 
         glEnableVertexAttribArray(0); // enable the attribute at location 0
+    }
+
+    void Object::Awake()
+    {
+        std::cout << "Object awake\n";
+    }
+
+    void Object::Start()
+    {
+        std::cout << "Object start\n";
+    }
+
+    void Object::Update()
+    {
+        //std::cout << "Object update\n";
+    }
+
+    void Object::FixUpdate()
+    {
+        std::cout << "Object fix update\n";
+    }
+
+#pragma endregion
+
+#pragma region Scene
+
+    Scene::Scene()
+    {
+        Application::GetInstance().scenes.push_back(this);
+        std::cout << "Scene added\n";
     }
 
     Object& Scene::CreateObject()
@@ -51,9 +78,13 @@ namespace GamEncin
         auto obj = std::find(objects.begin(), objects.end(), &object);
 
         if(obj != objects.end())
+        {
             objects.erase(obj);
+        }
         else
+        {
             Application::GetInstance().End(ObjCouldNotFind);
+        }
     }
 
     void Scene::Clear()
@@ -63,7 +94,6 @@ namespace GamEncin
 
     void Scene::Awake()
     {
-        std::cout << objects.size();
         for(Object* object : objects)
         {
             object->Awake();
@@ -72,6 +102,7 @@ namespace GamEncin
 
     void Scene::Start()
     {
+        objects.size();
         for(Object* object : objects)
         {
             object->Start();
@@ -88,9 +119,11 @@ namespace GamEncin
 
     void Scene::FixUpdate()
     {
-        for(auto object : objects)
+        for(Object* object : objects)
         {
             object->FixUpdate();
         }
     }
+
+#pragma endregion
 }

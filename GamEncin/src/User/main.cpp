@@ -1,18 +1,18 @@
 #include "GamEncin.h"
 #include "UserObjects.h"
 
-void SceneBuilding()
+void SceneBuilding(Application& app)
 {
-    Scene scene;
+    Scene& scene1 = app.CreateAndUseScene();
 
-    Object& object1 = scene.CreateObject();
+    Object& object1 = scene1.CreateObject();
 }
 
 int main(void)
 {
-    SceneBuilding();
-
     Application& app = Application::GetInstance();
+
+    SceneBuilding(app);
 
     app.Run();
 

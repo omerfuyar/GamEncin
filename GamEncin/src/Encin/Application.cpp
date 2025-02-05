@@ -23,36 +23,44 @@ namespace GamEncin
 
 #pragma endregion
 
+    Scene& Application::CreateScene()
+    {
+        Scene* scene = new Scene();
+        scenes.push_back(scene);
+        return *scene;
+    }
+
+    void Application::SetCurrentScene(Scene& scene)
+    {
+        currentScene = &scene;
+    }
+
+    Scene& Application::CreateAndUseScene()
+    {
+        Scene* scene = new Scene();
+        scenes.push_back(scene);
+        SetCurrentScene(*scene);
+        return *scene;
+    }
+
     void Application::Awake()
     {
-        for(Scene* scene : scenes)
-        {
-            scene->Awake();
-        }
+        currentScene->Awake();
     }
 
     void Application::Start()
     {
-        for(Scene* scene : scenes)
-        {
-            scene->Start();
-        }
+        currentScene->Start();
     }
 
     void Application::Update()
     {
-        for(Scene* scene : scenes)
-        {
-            scene->Update();
-        }
+        currentScene->Update();
     }
 
     void Application::FixUpdate()
     {
-        for(Scene* scene : scenes)
-        {
-            scene->FixUpdate();
-        }
+        currentScene->FixUpdate();
     }
 
     void Application::RenderFrame()
@@ -177,7 +185,7 @@ namespace GamEncin
             frameCount++;
         }
 
-        End(Safe); // time to 31
+        End(Safe);
     }
 
     void Application::End(EndType et)

@@ -19,6 +19,7 @@ namespace GamEncin
 
     public:
         vector<Scene*> scenes;
+        Scene* currentScene;
 
         const int FPSlimit = 0; // 0 : no limit
         const int fixedFPS = 50;
@@ -30,9 +31,13 @@ namespace GamEncin
             return instance;
         }
 
+
         Application(const Application&) = delete;
         void operator=(const Application&) = delete;
 
+        Scene& CreateScene();
+        Scene& CreateAndUseScene();
+        void SetCurrentScene(Scene& scene);
         void Awake();
         void Start();
         void Update();

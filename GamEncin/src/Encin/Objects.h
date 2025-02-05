@@ -25,10 +25,10 @@ namespace GamEncin
         vector<Vector3> vertices;
 
         void SendVerticesDataToBuffer(vector<Vector3> vertices);
-        void Awake() {};
-        void Start() {};
-        void Update() {};
-        void FixUpdate() {};
+        void Awake();
+        void Start();
+        void Update();
+        void FixUpdate();
     };
 
     class Scene
