@@ -8,6 +8,9 @@ namespace GamEncin
     class Object
     {
     public:
+        Object() {}
+        virtual ~Object() {}
+
         string name = "Object",
             tag = "Default Tag";
 
@@ -25,10 +28,10 @@ namespace GamEncin
         vector<Vector3> vertices;
 
         void SendVerticesDataToBuffer(vector<Vector3> vertices);
-        void Awake();
-        void Start();
-        void Update();
-        void FixUpdate();
+        virtual void Awake();
+        virtual void Start();
+        virtual void Update();
+        virtual void FixUpdate();
     };
 
     class Scene
@@ -38,7 +41,13 @@ namespace GamEncin
 
         vector<Object*> objects;
 
-        Object& CreateObject();
+        template <typename T>
+        T& CreateObject()
+        {
+            T* object = new T();
+            objects.push_back(dynamic_cast<Object*>(object));
+            return *object;
+        }
         void AddObject(Object& object);
         void RemoveObject(Object& object);
         void Clear();

@@ -19,10 +19,10 @@ namespace GamEncin
 
     public:
         vector<Scene*> scenes;
-        Scene* currentScene;
+        Scene* currentScene = nullptr;
 
         const int FPSlimit = 0; // 0 : no limit
-        const int fixedFPS = 50;
+        int fixedFPS = 50;
         bool printFPS = false;
 
         static Application& GetInstance()
@@ -30,7 +30,6 @@ namespace GamEncin
             static Application instance;
             return instance;
         }
-
 
         Application(const Application&) = delete;
         void operator=(const Application&) = delete;

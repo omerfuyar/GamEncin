@@ -24,7 +24,7 @@ namespace GamEncin
 
     enum EndType
     {
-        Safe, Warning, UnkErr, GLFWErr, GLADErr, ObjCouldNotFind
+        Safe, Warning, UnkErr, GLFWErr, GLADErr, ObjCouldNotFoundErr, TypeMismachErr
     };;
 
     namespace MathYaman

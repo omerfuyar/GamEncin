@@ -5,7 +5,11 @@ void SceneBuilding(Application& app)
 {
     Scene& scene1 = app.CreateAndUseScene();
 
-    Object& object1 = scene1.CreateObject();
+    TestObject* object1 = new TestObject;
+
+    scene1.AddObject(*object1);
+
+    //TestObject& object1 = scene1.CreateObject<TestObject>();
 }
 
 int main(void)

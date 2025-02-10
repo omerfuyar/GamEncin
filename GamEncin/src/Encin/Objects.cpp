@@ -52,13 +52,6 @@ namespace GamEncin
         std::cout << "Scene added\n";
     }
 
-    Object& Scene::CreateObject()
-    {
-        Object* object = new Object();
-        objects.push_back(object);
-        return *object;
-    }
-
     void Scene::AddObject(Object& object)
     {
         objects.push_back(&object);
@@ -66,15 +59,6 @@ namespace GamEncin
 
     void Scene::RemoveObject(Object& object)
     {
-        for(int i = 0; i < objects.size(); i++)
-        {
-            if(objects[i] == &object)
-            {
-                objects.erase(objects.begin() + i);
-                break;
-            }
-        }
-
         auto obj = std::find(objects.begin(), objects.end(), &object);
 
         if(obj != objects.end())
@@ -83,7 +67,7 @@ namespace GamEncin
         }
         else
         {
-            Application::GetInstance().End(ObjCouldNotFind);
+            Application::GetInstance().End(ObjCouldNotFoundErr);
         }
     }
 
@@ -102,7 +86,6 @@ namespace GamEncin
 
     void Scene::Start()
     {
-        objects.size();
         for(Object* object : objects)
         {
             object->Start();

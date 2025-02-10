@@ -1,16 +1,18 @@
 #pragma once 
 #include "GamEncin.h"
 
-class TestObject : Object
+class TestObject : public Object
 {
 public:
-    void Start()
+    TestObject() {}
+
+    void Start() override
     {
         cout << "Derived Function";
     }
 
-    void Update()
+    void FixUpdate()override
     {
-        cout << "Derived Function";
+        cout << "Derived Function" << "\n";
     }
 };

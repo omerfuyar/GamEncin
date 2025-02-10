@@ -204,8 +204,11 @@ namespace GamEncin
             case GLADErr:
                 fprintf(stderr, "ERROR: Error occurred in GLAD\n");
                 break;
-            case ObjCouldNotFind:
+            case ObjCouldNotFoundErr:
                 fprintf(stderr, "ERROR: Object could not be found\n");
+                break;
+            case TypeMismachErr:
+                fprintf(stderr, "ERROR: Type mismatch occurred\n");
                 break;
             default:
                 fprintf(stderr, "ERROR: Unknown error occurred\n");
