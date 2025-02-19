@@ -67,7 +67,7 @@ namespace GamEncin
         }
         else
         {
-            Application::GetInstance().End(ObjCouldNotFoundErr);
+            Application::GetInstance().Stop(ObjCouldNotFoundErr);
         }
     }
 

@@ -1,7 +1,7 @@
 #pragma once
 #include "Tools.h"
-#include <GLAD/glad.h>
-#include <GLFW/glfw3.h>
+#include <glad.h>
+#include <glfw3.h>
 
 namespace GamEncin
 {
@@ -48,6 +48,7 @@ namespace GamEncin
             objects.push_back(dynamic_cast<Object*>(object));
             return *object;
         }
+
         void AddObject(Object& object);
         void RemoveObject(Object& object);
         void Clear();

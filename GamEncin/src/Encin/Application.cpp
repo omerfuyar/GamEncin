@@ -87,7 +87,7 @@ namespace GamEncin
     void Application::InitialRender()
     {
         if(!glfwInit())
-            End(GLFWErr); // Exit the function if GLFW initialization fails
+            Stop(GLFWErr); // Exit the function if GLFW initialization fails
 
         // Configure the OpenGL version
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -97,7 +97,7 @@ namespace GamEncin
         window = glfwCreateWindow(640, 480, "GamEncin", NULL, NULL);
 
         if(!window)
-            End(GLFWErr); // Exit the function if window creation fails
+            Stop(GLFWErr); // Exit the function if window creation fails
 
         glfwMakeContextCurrent(window);
 
@@ -105,7 +105,7 @@ namespace GamEncin
         glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
         if(!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
-            End(GLADErr); // Exit the function if GLAD initialization fails
+            Stop(GLADErr); // Exit the function if GLAD initialization fails
 
         // In OpenGL, objects like VAOs, VBOs, shaders, and textures are handles or IDs that reference data stored in the GPU. So we use GLuint to store them.
         // lifecycle / pipeline of each object: creation -> binding -> configuration -> usage -> unbinding / deletion.
@@ -167,12 +167,11 @@ namespace GamEncin
                 lastFixedUpdate = now;
                 msPastFromStart += fixedDelay;
 
-                if(msPastFromStart % 1000 == 0)
+                if(printFPS && msPastFromStart % 1000 == 0)
                 {
                     fps = frameCount;
+                    std::cout << fps << std::endl;
                     frameCount = 0;
-                    if(printFPS)
-                        std::cout << fps << "\n"; //print fps
                 }
             }
 
@@ -185,10 +184,10 @@ namespace GamEncin
             frameCount++;
         }
 
-        End(Safe);
+        Stop(Safe);
     }
 
-    void Application::End(EndType et)
+    void Application::Stop(EndType et)
     {
         switch(et)
         {

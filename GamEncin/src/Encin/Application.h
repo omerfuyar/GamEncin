@@ -1,8 +1,8 @@
 #pragma once
 #include "Tools.h"
 #include <chrono>
-#include <GLAD/glad.h>
-#include <GLFW/glfw3.h>
+#include <glad.h>
+#include <glfw3.h>
 #include <stdio.h>
 
 using namespace std::chrono;
@@ -21,7 +21,7 @@ namespace GamEncin
         vector<Scene*> scenes;
         Scene* currentScene = nullptr;
 
-        const int FPSlimit = 0; // 0 : no limit
+        const int FPSlimit = 0; // Set 0 for no limit
         int fixedFPS = 50;
         bool printFPS = false;
 
@@ -46,6 +46,6 @@ namespace GamEncin
         void InitialRender();
         static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
         void GameLoops();
-        void End(EndType et);
+        void Stop(EndType et);
     };
 }

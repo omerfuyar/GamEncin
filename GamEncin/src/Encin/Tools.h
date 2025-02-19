@@ -25,22 +25,10 @@ namespace GamEncin
     enum EndType
     {
         Safe, Warning, UnkErr, GLFWErr, GLADErr, ObjCouldNotFoundErr, TypeMismachErr
-    };;
+    };
 
-    namespace MathYaman
+    struct Vector2
     {
-        //Euler, PI, Earth's gravity, Gravitational constant
-        static const float E = 2.7182817F,
-            PI = 3.1415927F,
-            GRAVITY = 9.81F,
-            G = 6.67F / 1e11F;
-    }
-
-    class Vector2
-    {
-    private:
-        static const Vector2 zero, one, up, right, down, left;
-
     public:
 
         float x, y;
@@ -51,48 +39,48 @@ namespace GamEncin
 
 #pragma region Operators
 
-        Vector2 operator + (const Vector2& other)
+        inline Vector2 operator + (const Vector2& other)
         {
             return Vector2(x + other.x, y + other.y);
         }
 
-        Vector2 operator += (const Vector2& other)
+        inline Vector2 operator += (const Vector2& other)
         {
             x += other.x;
             y += other.y;
             return Vector2(x, y);
         }
 
-        Vector2 operator - (const Vector2& other)
+        inline Vector2 operator - (const Vector2& other)
         {
             return Vector2(x - other.x, y - other.y);
         }
 
-        Vector2 operator -= (const Vector2& other)
+        inline Vector2 operator -= (const Vector2& other)
         {
             x -= other.x;
             y -= other.y;
             return Vector2(x, y);
         }
 
-        Vector2 operator * (const float other)
+        inline Vector2 operator * (const float other)
         {
             return Vector2(x * other, y * other);
         }
 
-        Vector2 operator *= (const float other)
+        inline Vector2 operator *= (const float other)
         {
             x *= other;
             y *= other;
             return Vector2(x, y);
         }
 
-        Vector2 operator / (const float other)
+        inline Vector2 operator / (const float other)
         {
             return Vector2(x / other, y / other);
         }
 
-        Vector2 operator /= (const float other)
+        inline Vector2 operator /= (const float other)
         {
             x /= other;
             y /= other;
@@ -101,13 +89,15 @@ namespace GamEncin
 
 #pragma endregion
 
-        float GetMagnitude()
+#pragma region Functions
+
+        inline float GetMagnitude()
         {
             return sqrt(x * x + y * y);
         }
 
         //Scales and returns the Vector2 magnitude of 1
-        Vector2 Normalize()
+        inline Vector2 Normalize()
         {
             float magnitude = GetMagnitude();
             x /= magnitude;
@@ -116,38 +106,37 @@ namespace GamEncin
         }
 
         //Returns the normalized version of the Vector2
-        Vector2 Normalized()
+        inline Vector2 Normalized()
         {
             Vector2 result = Vector2(x, y);
             result.Normalize();
             return result;
         }
 
-        float Set(float newX, float newY)
+        inline float Set(float newX, float newY)
         {
             x = newX;
             y = newY;
         }
 
         //Returns a Vector2(0, 0)
-        static const Vector2 Zero() { return zero; }
-        //Returns a Vector2(1, 1)
-        static const Vector2 One() { return one; }
-        //Returns a Vector2(0, 1)
-        static const Vector2 Up() { return up; }
-        //Returns a Vector2(1, 0)
-        static const Vector2 Right() { return right; }
+        static const inline Vector2 Zero() { return Vector2(0, 0); }
+        //Returns a Vector2(1, 1)                            
+        static const inline Vector2 One() { return Vector2(1, 1); }
+        //Returns a Vector2(0, 1)                           
+        static const inline Vector2 Up() { return Vector2(0, 1); }
+        //Returns a Vector2(1, 0)                          
+        static const inline Vector2 Right() { return Vector2(1, 0); }
         //Returns a Vector2(0, -1)
-        static const Vector2 Down() { return down; }
+        static const inline Vector2 Down() { return Vector2(0, -1); }
         //Returns a Vector2(-1, 0)
-        static const Vector2 Left() { return left; }
+        static const inline Vector2 Left() { return Vector2(-1, 0); }
+
+#pragma endregion
     };
 
-    class Vector3
+    struct Vector3
     {
-    private:
-        static const Vector3 zero, one, up, right, down, left, forward, backward;
-
     public:
         float x, y, z;
 
@@ -157,12 +146,12 @@ namespace GamEncin
 
 #pragma region Operators
 
-        Vector3 operator + (const Vector3& other)
+        inline Vector3 operator + (const Vector3& other)
         {
             return Vector3(x + other.x, y + other.y, z + other.z);
         }
 
-        Vector3 operator += (const Vector3& other)
+        inline Vector3 operator += (const Vector3& other)
         {
             x += other.x;
             y += other.y;
@@ -170,12 +159,12 @@ namespace GamEncin
             return Vector3(x, y, z);
         }
 
-        Vector3 operator - (const Vector3& other)
+        inline Vector3 operator - (const Vector3& other)
         {
             return Vector3(x - other.x, y - other.y, z - other.z);
         }
 
-        Vector3 operator -= (const Vector3& other)
+        inline Vector3 operator -= (const Vector3& other)
         {
             x -= other.x;
             y -= other.y;
@@ -183,12 +172,12 @@ namespace GamEncin
             return Vector3(x, y, z);
         }
 
-        Vector3 operator * (const float other)
+        inline Vector3 operator * (const float other)
         {
             return Vector3(x * other, y * other, z * other);
         }
 
-        Vector3 operator *= (const float other)
+        inline Vector3 operator *= (const float other)
         {
             x *= other;
             y *= other;
@@ -196,12 +185,12 @@ namespace GamEncin
             return Vector3(x, y, z);
         }
 
-        Vector3 operator / (const float other)
+        inline Vector3 operator / (const float other)
         {
             return Vector3(x / other, y / other, z / other);
         }
 
-        Vector3 operator /= (const float other)
+        inline Vector3 operator /= (const float other)
         {
             x /= other;
             y /= other;
@@ -211,13 +200,15 @@ namespace GamEncin
 
 #pragma endregion
 
-        float GetMagnitude()
+#pragma region Functions
+
+        inline float GetMagnitude()
         {
             return sqrt(x * x + y * y + z * z);
         }
 
         //Scales and returns the Vector3 magnitude of 1
-        Vector3 Normalize()
+        inline Vector3 Normalize()
         {
             float magnitude = GetMagnitude();
             x /= magnitude;
@@ -227,14 +218,14 @@ namespace GamEncin
         }
 
         //Returns the normalized version of the Vector2
-        Vector3 Normalized()
+        inline Vector3 Normalized()
         {
             Vector3 result = Vector3(x, y, z);
             result.Normalize();
             return result;
         }
 
-        float Set(float newX, float newY, float newZ)
+        inline float Set(float newX, float newY, float newZ)
         {
             x = newX;
             y = newY;
@@ -244,30 +235,28 @@ namespace GamEncin
         static float* VerticesVectorToFloatArr(vector<Vector3> vertices);
 
         //Returns a Vector3(0, 0, 0)
-        static const Vector3 Zero() { return zero; }
-        //Returns a Vector3(1, 1, 1)
-        static const Vector3 One() { return one; }
-        //Returns a Vector3(0, 1, 0)
-        static const Vector3 Up() { return up; }
-        //Returns a Vector3(1, 0, 0)
-        static const Vector3 Right() { return right; }
-        //Returns a Vector3(0, -1, 0)
-        static const Vector3 Down() { return down; }
+        static const inline Vector3 Zero() { return Vector3(0, 0, 0); }
+        //Returns a Vector3(1, 1, 1)              
+        static const inline Vector3 One() { return Vector3(1, 1, 1); }
+        //Returns a Vector3(0, 1, 0)                
+        static const inline Vector3 Up() { return Vector3(0, 1, 0); }
+        //Returns a Vector3(1, 0, 0)                
+        static const inline Vector3 Right() { return Vector3(1, 0, 0); }
+        //Returns a Vector3(0, -1, 0)              
+        static const inline Vector3 Down() { return Vector3(0, -1, 0); }
         //Returns a Vector3(-1, 0, 0)
-        static const Vector3 Left() { return left; }
+        static const inline Vector3 Left() { return Vector3(-1, 0, 0); }
         //Returns a Vector3(0, 0, 1)
-        static const Vector3 Forward() { return forward; }
+        static const inline Vector3 Forward() { return Vector3(0, 0, 1); }
         //Returns a Vector3(0, 0, -1)
-        static const Vector3 Backward() { return backward; }
+        static const inline Vector3 Backward() { return Vector3(0, 0, -1); }
+
+#pragma endregion
     };
 
-    class Vector4
+    struct Vector4
     {
-    private:
-        static const Vector4 zero, one;
-
     public:
-
         float x, y, z, w;
 
         Vector4(float x = 0, float y = 0, float z = 0, float w = 0) : x(x), y(y), z(z), w(w) {}
@@ -283,8 +272,106 @@ namespace GamEncin
         }
 
         //Returns a Vector4(0, 0, 0, 0)
-        static const Vector4 Zero() { return zero; }
+        static const inline Vector4 Zero() { return Vector4(0, 0, 0, 0); }
         //Returns a Vector4(1, 1, 1, 1)
-        static const Vector4 One() { return one; }
+        static const inline Vector4 One() { return Vector4(1, 1, 1, 1); }
     };
+
+    namespace MathYaman
+    {
+        //Euler, PI, Earth's gravity, Gravitational constant
+        static const float E = 2.7182817F,
+            PI = 3.1415927F,
+            GRAVITY = 9.81F,
+            G = 6.67F / 1e11F;
+
+#pragma region Functions
+
+        inline float Abs(float value)
+        {
+            return value < 0 ? -value : value;
+        }
+
+        inline float Sqrt(float value)
+        {
+            return sqrt(value);
+        }
+
+        inline float Power(float base, float exponent)
+        {
+            return pow(base, exponent);
+        }
+
+        inline float Log(float value, float base)
+        {
+            return log(value) / log(base);
+        }
+
+        inline float Sin(float angle)
+        {
+            return sin(angle);
+        }
+
+        inline float Cos(float angle)
+        {
+            return cos(angle);
+        }
+
+        inline float Tan(float angle)
+        {
+            return tan(angle);
+        }
+
+        inline float Rad2Deg(float radian)
+        {
+            return radian * 180 / PI;
+        }
+
+        inline float Deg2Rad(float degree)
+        {
+            return degree * PI / 180;
+        }
+
+        inline float Min(float a, float b)
+        {
+            return a < b ? a : b;
+        }
+
+        inline float Max(float a, float b)
+        {
+            return a > b ? a : b;
+        }
+
+        inline float Clamp(float value, float min, float max)
+        {
+            return value < min ? min : value > max ? max : value;
+        }
+
+        inline float Lerp(float a, float b, float t)
+        {
+            return a + (b - a) * t;
+        }
+
+        inline float RandomRangeF(float min, float max)
+        {
+            return min + (float) rand() / (float) (RAND_MAX / (max - min));
+        }
+
+        inline int RandomRangeI(int min, int max)
+        {
+            return min + (int) (rand() % (max - min + 1));
+        }
+
+#pragma endregion
+
+#pragma region Matrices
+
+        struct Matrix4x4
+        {
+            float matrix[4][4];
+        };
+
+#pragma endregion
+
+    }
 }
