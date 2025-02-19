@@ -21,9 +21,12 @@ namespace GamEncin
         vector<Scene*> scenes;
         Scene* currentScene = nullptr;
 
-        const int FPSlimit = 0; // Set 0 for no limit
-        int fixedFPS = 50;
-        bool printFPS = false;
+        double deltaTime = 0; //the duration of the last frame in seconds
+        const int fixedFPS = 50;
+        const double fixedDeltaTime = 1 / fixedFPS; //interval between fixed updates in seconds
+        long long msPastFromStart = 0;
+        int FPS = 0;
+        bool printFPS = true;
 
         static Application& GetInstance()
         {

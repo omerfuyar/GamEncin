@@ -140,47 +140,39 @@ namespace GamEncin
 
     void Application::GameLoops()
     {
-        // Fixed Game loop
-        const auto fixedDelay = 1000 / fixedFPS;
-
-        // Others
-        auto lastFixedUpdate = high_resolution_clock::now();
-        int frameCount = 0;
-        int fps = 0;
-        long long msPastFromStart = 0;
-
         Awake();
 
         Start();
 
+        auto lastFixedUpdate = high_resolution_clock::now();
+        auto lastUpdate = high_resolution_clock::now();
+
         while(!glfwWindowShouldClose(window))
         {
-            Update();
-
             auto now = high_resolution_clock::now();
-            auto fixElapsed = duration_cast<milliseconds>(now - lastFixedUpdate);
 
-            if(fixElapsed.count() >= fixedDelay)
+            Update();
+            lastUpdate = high_resolution_clock::now();
+
+
+            long elapsedForFixUpdate = duration_cast<milliseconds>(now - lastFixedUpdate).count();
+            if(elapsedForFixUpdate >= fixedDeltaTime)
             {
                 FixUpdate();
-                lastFixedUpdate = now;
-                msPastFromStart += fixedDelay;
+                lastFixedUpdate = high_resolution_clock::now();
+                msPastFromStart += fixedDeltaTime * 1000;
 
                 if(printFPS && msPastFromStart % 1000 == 0)
                 {
-                    fps = frameCount;
-                    printf("FPS: %d\n", fps);
-                    frameCount = 0;
+                    printf("FPS: %d\n", FPS);
+                    printf("deltatime: %f\n", deltaTime);
+                    printf("fixeddeltatime: %d\n", elapsedForFixUpdate);
+                    FPS = 0;
                 }
             }
 
-            if(FPSlimit != 0) // frame delay
-            {
-                const auto frameDelay = 1000 / FPSlimit;
-                std::this_thread::sleep_for(milliseconds(frameDelay));
-            }
-
-            frameCount++;
+            deltaTime = duration_cast<duration<double>>(lastUpdate - now).count();
+            FPS++;
         }
 
         Stop(Safe);

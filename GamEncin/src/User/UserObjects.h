@@ -9,11 +9,9 @@ public:
 
     void Start() override
     {
-        printf("TestObject Start\n");
     }
 
     void FixUpdate() override
     {
-        printf("TestObject Fixupdate\n");
     }
 };
