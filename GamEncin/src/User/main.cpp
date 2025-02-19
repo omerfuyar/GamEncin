@@ -1,5 +1,4 @@
 #include "GamEncin.h"
-#include "UserObjects.h"
 
 void SceneBuilding(Application& app)
 {

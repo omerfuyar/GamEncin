@@ -1,7 +1,4 @@
-// User Library
 #pragma once
+// User Library
 #include "Encin/Encin.h"
-#include <stdio.h>
-
-using namespace GamEncin;
-using namespace GamEncin::MathYaman;
+#include "UserObjects.h"

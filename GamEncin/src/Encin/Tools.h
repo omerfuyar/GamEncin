@@ -1,17 +1,11 @@
 #pragma once
-#include <array>
 #include <cmath>
-#include <map>
 #include <string>
 #include <thread>
-#include <unordered_map>
 #include <vector>
 
-using std::array;
 using std::vector;
 using std::string;
-using std::unordered_map;
-using std::map;
 using std::shared_ptr;
 using std::unique_ptr;
 
