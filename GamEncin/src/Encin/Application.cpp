@@ -1,5 +1,4 @@
 #include "Encin.h"
-#include <iostream>
 
 namespace GamEncin
 {
@@ -170,7 +169,7 @@ namespace GamEncin
                 if(printFPS && msPastFromStart % 1000 == 0)
                 {
                     fps = frameCount;
-                    std::cout << fps << std::endl;
+                    printf("FPS: %d\n", fps);
                     frameCount = 0;
                 }
             }

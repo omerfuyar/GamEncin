@@ -1,7 +1,5 @@
 #pragma once
 #include "Tools.h"
-#include <glad.h>
-#include <glfw3.h>
 
 namespace GamEncin
 {
@@ -28,10 +26,10 @@ namespace GamEncin
         vector<Vector3> vertices;
 
         void SendVerticesDataToBuffer(vector<Vector3> vertices);
-        virtual void Awake();
-        virtual void Start();
-        virtual void Update();
-        virtual void FixUpdate();
+        virtual void Awake() {};
+        virtual void Start() {};
+        virtual void Update() {};
+        virtual void FixUpdate() {};
     };
 
     class Scene

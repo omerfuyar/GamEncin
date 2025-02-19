@@ -1,5 +1,6 @@
 #pragma once 
 #include "GamEncin.h"
+#include <stdio.h>
 
 class TestObject : public Object
 {
@@ -8,11 +9,11 @@ public:
 
     void Start() override
     {
-        cout << "Derived Function";
+        printf("TestObject Start\n");
     }
 
-    void FixUpdate()override
+    void FixUpdate() override
     {
-        cout << "Derived Function" << "\n";
+        printf("TestObject Fixupdate\n");
     }
 };

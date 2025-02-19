@@ -1,7 +1,4 @@
 #include "Encin.h"
-#include <algorithm>
-#include <chrono>
-#include <iostream>
 
 namespace GamEncin
 {
@@ -22,26 +19,6 @@ namespace GamEncin
         glEnableVertexAttribArray(0); // enable the attribute at location 0
     }
 
-    void Object::Awake()
-    {
-        std::cout << "Object awake\n";
-    }
-
-    void Object::Start()
-    {
-        std::cout << "Object start\n";
-    }
-
-    void Object::Update()
-    {
-        //std::cout << "Object update\n";
-    }
-
-    void Object::FixUpdate()
-    {
-        std::cout << "Object fix update\n";
-    }
-
 #pragma endregion
 
 #pragma region Scene
@@ -49,7 +26,6 @@ namespace GamEncin
     Scene::Scene()
     {
         Application::GetInstance().scenes.push_back(this);
-        std::cout << "Scene added\n";
     }
 
     void Scene::AddObject(Object& object)
