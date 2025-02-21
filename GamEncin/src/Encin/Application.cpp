@@ -1,4 +1,5 @@
 #include "Encin.h"
+#include <stdio.h>
 
 namespace GamEncin
 {
@@ -144,35 +145,36 @@ namespace GamEncin
 
         Start();
 
-        auto lastFixedUpdate = high_resolution_clock::now();
-        auto lastUpdate = high_resolution_clock::now();
+        steady_clock::time_point lastUpdate = high_resolution_clock::now();
+        double fpsTimer = 0.0;
 
         while(!glfwWindowShouldClose(window))
         {
-            auto now = high_resolution_clock::now();
+            steady_clock::time_point now = high_resolution_clock::now();
+            deltaTime = duration<double>(now - lastUpdate).count();
+            lastUpdate = now;
+
+            accumulatedTime += deltaTime;
+            secondsPastFromStart += deltaTime;
 
             Update();
-            lastUpdate = high_resolution_clock::now();
+            FPS++;
 
-
-            long elapsedForFixUpdate = duration_cast<milliseconds>(now - lastFixedUpdate).count();
-            if(elapsedForFixUpdate >= fixedDeltaTime)
+            while(accumulatedTime >= fixedDeltaTime)
             {
                 FixUpdate();
-                lastFixedUpdate = high_resolution_clock::now();
-                msPastFromStart += fixedDeltaTime * 1000;
-
-                if(printFPS && msPastFromStart % 1000 == 0)
-                {
-                    printf("FPS: %d\n", FPS);
-                    printf("deltatime: %f\n", deltaTime);
-                    printf("fixeddeltatime: %d\n", elapsedForFixUpdate);
-                    FPS = 0;
-                }
+                accumulatedTime -= fixedDeltaTime;
+                //in that way, fixed update will be able to run multiple times in a frame if the frame rate is too low
+                fpsTimer += fixedDeltaTime;
             }
 
-            deltaTime = duration_cast<duration<double>>(lastUpdate - now).count();
-            FPS++;
+            if(fpsTimer >= 1.0)
+            {
+                if(printFPS)
+                    printf("FPS: %d\n", FPS);
+                fpsTimer = 0;
+                FPS = 0;
+            }
         }
 
         Stop(Safe);
@@ -183,7 +185,7 @@ namespace GamEncin
         switch(et)
         {
             case Safe:
-                fprintf(stderr, "Program ended safely\n");
+                fprintf(stderr, "Program ended safely\n" + et);
                 break;
             case Warning:
                 fprintf(stderr, "Program ended with warning(s)\n");

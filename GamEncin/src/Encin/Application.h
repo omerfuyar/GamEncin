@@ -3,7 +3,6 @@
 #include <chrono>
 #include <glad.h>
 #include <glfw3.h>
-#include <stdio.h>
 
 using namespace std::chrono;
 
@@ -21,11 +20,12 @@ namespace GamEncin
         vector<Scene*> scenes;
         Scene* currentScene = nullptr;
 
-        double deltaTime = 0; //the duration of the last frame in seconds
-        const int fixedFPS = 50;
-        const double fixedDeltaTime = 1 / fixedFPS; //interval between fixed updates in seconds
-        long long msPastFromStart = 0;
         int FPS = 0;
+        int fixedFPS = 50;
+        double fixedDeltaTime = 1.0 / (double) fixedFPS; //interval between fixed updates in seconds
+        double deltaTime = 0.0; //the duration of the last frame in seconds
+        double accumulatedTime = 0.0;
+        double secondsPastFromStart = 0.0;
         bool printFPS = true;
 
         static Application& GetInstance()
