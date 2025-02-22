@@ -146,12 +146,12 @@ namespace GamEncin
         Start();
 
         steady_clock::time_point lastUpdate = high_resolution_clock::now();
-        double fpsTimer = 0.0;
+        float fpsTimer = 0.0;
 
         while(!glfwWindowShouldClose(window))
         {
             steady_clock::time_point now = high_resolution_clock::now();
-            deltaTime = duration<double>(now - lastUpdate).count();
+            deltaTime = duration<float>(now - lastUpdate).count();
             lastUpdate = now;
 
             accumulatedTime += deltaTime;

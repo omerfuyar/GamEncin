@@ -22,10 +22,10 @@ namespace GamEncin
 
         int FPS = 0;
         int fixedFPS = 50;
-        double fixedDeltaTime = 1.0 / (double) fixedFPS; //interval between fixed updates in seconds
-        double deltaTime = 0.0; //the duration of the last frame in seconds
-        double accumulatedTime = 0.0;
-        double secondsPastFromStart = 0.0;
+        float fixedDeltaTime = 1.0 / (float) fixedFPS; //interval between fixed updates in seconds
+        float deltaTime = 0.0; //the duration of the last frame in seconds
+        float accumulatedTime = 0.0;
+        float secondsPastFromStart = 0.0;
         bool printFPS = true;
 
         static Application& GetInstance()

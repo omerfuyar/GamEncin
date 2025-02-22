@@ -13,6 +13,8 @@ void SceneBuilding(Application& app)
 
 int main(void)
 {
+    printf("%f", MathYaman::Abs(-1));
+
     Application& app = Application::GetInstance();
 
     SceneBuilding(app);

@@ -276,7 +276,7 @@ namespace GamEncin
         //Euler, PI, Earth's gravity, Gravitational constant
         static const float E = 2.7182817F,
             PI = 3.1415927F,
-            GRAVITY = 9.81F,
+            GRAVITY = 9.80665F,
             G = 6.67F / 1e11F;
 
 #pragma region Functions
