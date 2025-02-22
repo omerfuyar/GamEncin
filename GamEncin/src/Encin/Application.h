@@ -9,6 +9,7 @@ using namespace std::chrono;
 namespace GamEncin
 {
     class Scene;
+    class Renderer;
 
     class Application //singleton
     {
@@ -22,10 +23,10 @@ namespace GamEncin
 
         int FPS = 0;
         int fixedFPS = 50;
-        float fixedDeltaTime = 1.0 / (float) fixedFPS; //interval between fixed updates in seconds
-        float deltaTime = 0.0; //the duration of the last frame in seconds
-        float accumulatedTime = 0.0;
-        float secondsPastFromStart = 0.0;
+        float fixedDeltaTime = 1.0f / (float) fixedFPS; //interval between fixed updates in seconds
+        float deltaTime = 0.0f; //the duration of the last frame in seconds
+        float accumulatedTime = 0.0f;
+        float secondsPastFromStart = 0.0f;
         bool printFPS = true;
 
         static Application& GetInstance()
@@ -44,10 +45,7 @@ namespace GamEncin
         void Start();
         void Update();
         void FixUpdate();
-        void RenderFrame();
         void Run();
-        void InitialRender();
-        static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
         void GameLoops();
         void Stop(EndType et);
     };

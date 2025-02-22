@@ -1,6 +1,5 @@
 #pragma once 
 #include "GamEncin.h"
-#include <stdio.h>
 
 class TestObject : public Object
 {
@@ -9,9 +8,11 @@ public:
 
     void Start() override
     {
+        //printf("asd\n"); works fine
     }
 
     void FixUpdate() override
     {
+        //printf("qwe\n"); works fine
     }
 };
