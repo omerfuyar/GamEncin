@@ -26,19 +26,19 @@ namespace GamEncin
     void Application::Awake()
     {
         currentScene->Awake();
-        renderer->InitialRender();
+        renderer->InitialRender(currentScene->objects);
     }
 
     void Application::Start()
     {
         currentScene->Start();
-        renderer->RenderFrame();
+        renderer->RenderFrame(currentScene->objects);
     }
 
     void Application::Update()
     {
         currentScene->Update();
-        renderer->RenderFrame();
+        renderer->RenderFrame(currentScene->objects);
     }
 
     void Application::FixUpdate()

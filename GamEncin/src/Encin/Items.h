@@ -16,6 +16,7 @@
 
 namespace GamEncin
 {
+    class VAO;
     class VBO;
     class EBO;
 
@@ -39,15 +40,20 @@ namespace GamEncin
             rotation,
             scale = Vector3::One();
 
+        VAO* vao = nullptr;
+
         vector<Vector3> vertices;
-        GLfloat verticeArr[9];
-        VBO* positionVBO = nullptr;
+        GLfloat* verticeArr = new GLfloat[9];
+        VBO* vbo = nullptr;
 
-        GLuint indicesArr[3] = {0, 1, 2};
-        EBO* positionEBO = nullptr;
+        vector<GLuint> indices;
+        GLuint* indicesArr = new GLuint[3];
+        EBO* ebo = nullptr;
 
-        void SetVerticeArr(vector<Vector3> vertices, GLfloat(&targetArr)[9]);
-        void SendDataToBuffer();
+        void SetVerticeArr(vector<Vector3> vertices, GLfloat* targetArr);
+        void SetIndicesArr(vector<GLuint> indices, GLuint* targetArr);
+        void Draw();
+        void Initialize();
         virtual void Awake() {};
         virtual void Start() {};
         virtual void Update() {};
@@ -95,7 +101,7 @@ namespace GamEncin
         GLuint ID;
 
         void Bind();
-        void Unbind();
+        void Update(GLfloat* vertices, GLsizeiptr size);
         void Delete();
     };
 
@@ -106,7 +112,6 @@ namespace GamEncin
         GLuint ID;
 
         void Bind();
-        void Unbind();
         void Delete();
     };
 
@@ -116,9 +121,8 @@ namespace GamEncin
         VAO();
         GLuint ID;
 
-        void LinkAttirbutes(VBO VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset);
+        void LinkAttirbutes(GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset);
         void Bind();
-        void Unbind();
         void Delete();
     };
 
@@ -126,12 +130,11 @@ namespace GamEncin
     {
     public:
         Shader* shaderProgram = nullptr;
-        VAO* mainVAO = nullptr;
         GLFWwindow* window = nullptr;
         bool windowCloseInput = false;
 
-        void RenderFrame();
-        void InitialRender();
+        void RenderFrame(vector<Object*> objects);
+        void InitialRender(vector<Object*> objects);
         static void frameBufferSizeCallback(GLFWwindow* window, int width, int height);
         void EndRenderer();
     };
