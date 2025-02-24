@@ -1,10 +1,11 @@
-#include "Tools.h"
+#include "Encin.h"
 
 namespace GamEncin
 {
     string getFileContents(const char* fileName)
     {
         std::ifstream in(fileName, std::ios::binary);
+
         if(in)
         {
             string contents;
@@ -15,6 +16,6 @@ namespace GamEncin
             in.close();
             return(contents);
         }
-        throw(errno);
+        Application::GetInstance().Stop(IOErr);
     }
 }

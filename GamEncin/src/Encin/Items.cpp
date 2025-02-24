@@ -4,37 +4,32 @@ namespace GamEncin
 {
 #pragma region Object
 
-    float* Object::VerticesVectorToFloatArr(vector<Vector3> vertices)
+    Object::~Object()
     {
-        size_t size = vertices.size() * 3; // coordinate count
-        float* result = new float[size];
-
-        int j = 0;
-        for(int i = 0; i < size; i += 3)
-        {
-            Vector3 currV3 = vertices.at(j);
-            result[i] = currV3.x;
-            result[i + 1] = currV3.y;
-            result[i + 2] = currV3.z;
-            j++;
-        }
-
-        return result;
+        if(positionVBO)
+            positionVBO->Delete();
+        if(positionEBO)
+            positionEBO->Delete();
     }
 
-    void Object::SendVerticesDataToBuffer(vector<Vector3> vertices)
+    void Object::SetVerticeArr(vector<Vector3> vertices, GLfloat(&targetArr)[9])
+    { //only for triangle
+        int j = 0;
+        for(int i = 0; i < 9; i += 3)
+        {
+            Vector3 currV3 = vertices.at(j);
+            targetArr[i] = (GLfloat) currV3.x;
+            targetArr[i + 1] = (GLfloat) currV3.y;
+            targetArr[i + 2] = (GLfloat) currV3.z;
+            j++;
+        }
+    }
+
+    void Object::SendDataToBuffer()
     {
-        float* verticesFloatArr = VerticesVectorToFloatArr(vertices);
-
-        size_t arrLength = vertices.size() * 3; // float count
-
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * arrLength, verticesFloatArr, GL_DYNAMIC_DRAW);
-        // copy the vertex data into the buffer's memory
-
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*) 0);
-        // attribute start pos, arrLength floats of data, not normalized, stride: 3 floats (for triangles), offset: 0
-
-        glEnableVertexAttribArray(0); // enable the attribute at location 0
+        SetVerticeArr(vertices, verticeArr);
+        positionVBO = new VBO(verticeArr, sizeof(verticeArr));
+        positionEBO = new EBO(indicesArr, sizeof(indicesArr));
     }
 #pragma endregion
 
@@ -43,7 +38,6 @@ namespace GamEncin
     Scene::Scene()
     {
         Application::GetInstance().scenes.push_back(this);
-        renderer = new Renderer;
     }
 
     void Scene::AddObject(Object& object)
@@ -76,7 +70,6 @@ namespace GamEncin
         {
             object->Awake();
         }
-        renderer->InitialRender();
     }
 
     void Scene::Start()
@@ -84,8 +77,8 @@ namespace GamEncin
         for(Object* object : objects)
         {
             object->Start();
+
         }
-        renderer->RenderFrame();
     }
 
     void Scene::Update()
@@ -94,7 +87,6 @@ namespace GamEncin
         {
             object->Update();
         }
-        renderer->RenderFrame();
     }
 
     void Scene::FixUpdate()
@@ -148,11 +140,98 @@ namespace GamEncin
 
 #pragma endregion
 
+#pragma region VBO
+
+    VBO::VBO(GLfloat* vertices, GLsizeiptr size)
+    {
+        glGenBuffers(1, &ID);
+        glBindBuffer(GL_ARRAY_BUFFER, ID);
+        glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+    }
+
+    void VBO::Bind()
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, ID);
+    }
+
+    void VBO::Unbind()
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
+    void VBO::Delete()
+    {
+        glDeleteBuffers(1, &ID);
+    }
+
+#pragma endregion
+
+#pragma region EBO
+
+    EBO::EBO(GLuint* indices, GLsizeiptr size)
+    {
+        glGenBuffers(1, &ID);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID); // set the VBO as the current buffer object
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, GL_STATIC_DRAW);
+    }
+
+    void EBO::Bind()
+    {
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
+    }
+
+    void EBO::Unbind()
+    {
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    }
+
+    void EBO::Delete()
+    {
+        glDeleteBuffers(1, &ID);
+    }
+
+#pragma endregion
+
+#pragma region VAO
+
+    VAO::VAO()
+    {
+        glGenVertexArrays(1, &ID);
+        glBindVertexArray(ID);
+    }
+
+    void VAO::LinkAttirbutes(VBO vbo, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset)
+    {
+        vbo.Bind();
+        glVertexAttribPointer(layout, numComponents, type, GL_FALSE, stride, offset);
+        // layout: location of the vertex attribute in the shader
+        //in shader, layout(location = 0) in vec3 position;
+        glEnableVertexAttribArray(layout);
+        vbo.Unbind();
+    }
+
+    void VAO::Bind()
+    {
+        glBindVertexArray(ID);
+    }
+
+    void VAO::Unbind()
+    {
+        glBindVertexArray(0);
+    }
+
+    void VAO::Delete()
+    {
+        glDeleteVertexArrays(1, &ID);
+    }
+
+#pragma endregion
+
 #pragma region Renderer
 
     void Renderer::InitialRender()
     {
-        if(!glfwInit())
+        if(glfwInit() == GLFW_FALSE)
             Application::GetInstance().Stop(GLFWErr); // Exit the function if GLFW initialization fails
 
         // Configure the OpenGL version
@@ -168,36 +247,51 @@ namespace GamEncin
         glfwMakeContextCurrent(window);
 
         //Registers a callback function that is called when the window is resized
-        glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-
-        gladLoadGL();
+        glfwSetFramebufferSizeCallback(window, frameBufferSizeCallback);
 
         if(!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
             Application::GetInstance().Stop(GLADErr); // Exit the function if GLAD initialization fails
 
+        if(!gladLoadGL())
+            Application::GetInstance().Stop(GLADErr);
+
+
         // In OpenGL, objects like VAOs, VBOs, shaders, and textures are handles or IDs that reference data stored in the GPU. So we use GLuint to store them.
         // lifecycle / pipeline of each object: creation -> binding -> configuration -> usage -> unbinding / deletion.
 
-
-        glGenVertexArrays(1, &VAO);
-        glGenBuffers(1, &VBO);
-        //generating vertice array and buffer objects
-
         // Binding makes an object the active one in the context (window). When we call a function, what it does depends on the internal state of opengl - on the context/object. There can be only one active object of each type at a time. fe: only one active VAO, VBO, texture, etc.
-        glBindVertexArray(VAO); // set the VAO as the current Vertex Array Object
-        glBindBuffer(GL_ARRAY_BUFFER, VBO); // set the VBO as the current buffer object
 
-        GLfloat vertices[9] = {
-            -0.5f, -0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            0.0f, 0.5f, 0.0f
+        GLfloat vertices[] =
+        {
+            -0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // Lower left corner
+            0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // Lower right corner
+            0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.0f, // Upper corner
+            -0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f, // Inner left
+            0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f, // Inner right
+            0.0f, -0.5f * float(sqrt(3)) / 3, 0.0f // Inner down
         };
 
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+        // Indices for vertices order
+        GLuint indices[] =
+        {
+            0, 3, 5, // Lower left triangle
+            3, 2, 4, // Lower right triangle
+            5, 4, 1 // Upper triangle
+        };
 
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*) 0);
+        shaderProgram = new Shader("GamEncin/src/Shaders/default.vert", "GamEncin/src/Shaders/default.frag");
 
-        glEnableVertexAttribArray(0); // enable the attribute at location 0
+        mainVAO = new VAO();
+
+        Object* obj = new Object;
+        //Application::GetInstance().currentScene->AddObject(*obj);
+        obj->vertices = {
+            Vector3(0.5f, 0.5f, 0.0f),
+            Vector3(0.5f, -0.5f, 0.0f),
+            Vector3(-0.5f, -0.5f, 0.0f)
+        };
+        obj->SendDataToBuffer();
+        mainVAO->LinkAttirbutes(*obj->positionVBO, POSITION_VBO_LAYOUT, 3, GL_FLOAT, 3 * sizeof(float), (void*) 0);
     }
 
     void Renderer::RenderFrame()
@@ -206,9 +300,8 @@ namespace GamEncin
         glClear(GL_COLOR_BUFFER_BIT);
 
         shaderProgram->Use();
-        glBindVertexArray(VAO);
 
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(window);
 
@@ -217,14 +310,17 @@ namespace GamEncin
         glfwPollEvents();
     }
 
-    void Renderer::framebuffer_size_callback(GLFWwindow* window, int width, int height)
+    void Renderer::frameBufferSizeCallback(GLFWwindow* window, int width, int height)
     {
         glViewport(0, 0, width, height);
     }
 
     void Renderer::EndRenderer()
     {
-        shaderProgram->Delete();
+        if(mainVAO)
+            mainVAO->Delete();
+        if(shaderProgram)
+            shaderProgram->Delete();
         glfwDestroyWindow(window);
         glfwTerminate();
     }

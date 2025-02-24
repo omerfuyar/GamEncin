@@ -4,13 +4,26 @@
 #include <glfw3.h>
 #include <glm.hpp>
 
+#ifndef POSITION_VBO_LAYOUT
+#define POSITION_VBO_LAYOUT 0
+#endif // !POSITION_VBO_LAYOUT
+
+#ifndef COLOR_VBO_LAYOUT
+#define COLOR_VBO_LAYOUT 1
+#endif // !COLOR_VBO_LAYOUT
+
+//BE CAREFUL WITH THESE IN VERTEX SHADER
+
 namespace GamEncin
 {
+    class VBO;
+    class EBO;
+
     class Object
     {
     public:
-        Object() {}
-        virtual ~Object() {}
+        Object() {};
+        ~Object();
 
         string name = "Object",
             tag = "Default Tag";
@@ -27,9 +40,14 @@ namespace GamEncin
             scale = Vector3::One();
 
         vector<Vector3> vertices;
+        GLfloat verticeArr[9];
+        VBO* positionVBO = nullptr;
 
-        float* VerticesVectorToFloatArr(vector<Vector3> vertices);
-        void SendVerticesDataToBuffer(vector<Vector3> vertices);
+        GLuint indicesArr[3] = {0, 1, 2};
+        EBO* positionEBO = nullptr;
+
+        void SetVerticeArr(vector<Vector3> vertices, GLfloat(&targetArr)[9]);
+        void SendDataToBuffer();
         virtual void Awake() {};
         virtual void Start() {};
         virtual void Update() {};
@@ -42,7 +60,6 @@ namespace GamEncin
         Scene();
 
         vector<Object*> objects;
-        Renderer* renderer = nullptr;
 
         template <typename T>
         T& CreateObject()
@@ -71,17 +88,51 @@ namespace GamEncin
         void Delete();
     };
 
+    class VBO
+    {
+    public:
+        VBO(GLfloat* vertices, GLsizeiptr size);
+        GLuint ID;
+
+        void Bind();
+        void Unbind();
+        void Delete();
+    };
+
+    class EBO
+    {
+    public:
+        EBO(GLuint* indices, GLsizeiptr size);
+        GLuint ID;
+
+        void Bind();
+        void Unbind();
+        void Delete();
+    };
+
+    class VAO
+    {
+    public:
+        VAO();
+        GLuint ID;
+
+        void LinkAttirbutes(VBO VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset);
+        void Bind();
+        void Unbind();
+        void Delete();
+    };
+
     class Renderer
     {
     public:
         Shader* shaderProgram = nullptr;
-        GLFWwindow* window;
-        GLuint VBO, VAO; // Vertex Buffer Object, Vertex Array Object
-        bool windowCloseInput;
+        VAO* mainVAO = nullptr;
+        GLFWwindow* window = nullptr;
+        bool windowCloseInput = false;
 
         void RenderFrame();
         void InitialRender();
-        static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+        static void frameBufferSizeCallback(GLFWwindow* window, int width, int height);
         void EndRenderer();
     };
 }

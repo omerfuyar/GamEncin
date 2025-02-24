@@ -26,16 +26,19 @@ namespace GamEncin
     void Application::Awake()
     {
         currentScene->Awake();
+        renderer->InitialRender();
     }
 
     void Application::Start()
     {
         currentScene->Start();
+        renderer->RenderFrame();
     }
 
     void Application::Update()
     {
         currentScene->Update();
+        renderer->RenderFrame();
     }
 
     void Application::FixUpdate()
@@ -45,6 +48,7 @@ namespace GamEncin
 
     void Application::Run()
     {
+        renderer = new Renderer;
         GameLoops();
     }
 
@@ -57,7 +61,7 @@ namespace GamEncin
         steady_clock::time_point lastUpdate = high_resolution_clock::now();
         float fpsTimer = 0.0;
 
-        while(!currentScene->renderer->windowCloseInput)
+        while(!renderer->windowCloseInput)
         {
             steady_clock::time_point now = high_resolution_clock::now();
             deltaTime = duration<float>(now - lastUpdate).count();
@@ -119,7 +123,7 @@ namespace GamEncin
                 break;
         }
 
-        currentScene->renderer->EndRenderer();
+        renderer->EndRenderer();
         exit(et);
     }
 }

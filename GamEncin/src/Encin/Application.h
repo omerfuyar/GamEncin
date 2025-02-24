@@ -18,6 +18,7 @@ namespace GamEncin
     public:
         vector<Scene*> scenes;
         Scene* currentScene = nullptr;
+        Renderer* renderer = nullptr;
 
         int FPS = 0;
         int fixedFPS = 50;
