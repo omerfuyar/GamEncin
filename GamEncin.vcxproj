@@ -86,7 +86,7 @@
     <ClCompile Include="GamEncin\src\Encin\Tools.cpp" />
     <ClCompile Include="GamEncin\src\User\main.cpp" />
     <ClCompile Include="GLAD\glad.c" />
-    <ClCompile Include="GamEncin\src\Encin\Objects.cpp" />
+    <ClCompile Include="GamEncin\src\Encin\Items.cpp" />
     <ClCompile Include="GLM\include\detail\glm.cpp" />
     <ClCompile Include="GLM\include\glm.cppm" />
   </ItemGroup>
@@ -100,7 +100,7 @@
     <ClInclude Include="GLAD\include\khrplatform.h" />
     <ClInclude Include="GLFW\include\glfw3.h" />
     <ClInclude Include="GLFW\include\glfw3native.h" />
-    <ClInclude Include="GamEncin\src\Encin\Objects.h" />
+    <ClInclude Include="GamEncin\src\Encin\Items.h" />
     <ClInclude Include="GLM\include\common.hpp" />
     <ClInclude Include="GLM\include\detail\compute_common.hpp" />
     <ClInclude Include="GLM\include\detail\compute_vector_decl.hpp" />
@@ -398,6 +398,8 @@
     <None Include=".editorconfig" />
     <None Include=".gitattributes" />
     <None Include=".gitignore" />
+    <None Include="GamEncin\src\Shaders\default.frag" />
+    <None Include="GamEncin\src\Shaders\default.vert" />
     <None Include="GLM\include\detail\func_common.inl" />
     <None Include="GLM\include\detail\func_common_simd.inl" />
     <None Include="GLM\include\detail\func_exponential.inl" />

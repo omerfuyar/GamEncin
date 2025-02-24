@@ -1,5 +1,8 @@
 #pragma once
 #include <cmath>
+#include <fstream>
+#include <iostream>
+#include <sstream>
 #include <string>
 #include <thread>
 #include <vector>
@@ -18,8 +21,10 @@ namespace GamEncin
 
     enum EndType
     {
-        Safe, Warning, UnkErr, GLFWErr, GLADErr, ObjCouldNotFoundErr, TypeMismachErr
+        Safe, Warning, UnkErr, GLFWErr, GLADErr, ObjCouldNotFoundErr, TypeMismachErr, IOErr
     };
+
+    string getFileContents(const char* fileName);
 
     struct Vector2
     {
@@ -225,8 +230,6 @@ namespace GamEncin
             y = newY;
             z = newZ;
         }
-
-        static float* VerticesVectorToFloatArr(vector<Vector3> vertices);
 
         //Returns a Vector3(0, 0, 0)
         static const inline Vector3 Zero() { return Vector3(0, 0, 0); }

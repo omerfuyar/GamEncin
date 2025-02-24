@@ -1,5 +1,8 @@
 #pragma once
 #include "Tools.h"
+#include <glad.h>
+#include <glfw3.h>
+#include <glm.hpp>
 
 namespace GamEncin
 {
@@ -25,6 +28,7 @@ namespace GamEncin
 
         vector<Vector3> vertices;
 
+        float* VerticesVectorToFloatArr(vector<Vector3> vertices);
         void SendVerticesDataToBuffer(vector<Vector3> vertices);
         virtual void Awake() {};
         virtual void Start() {};
@@ -57,26 +61,27 @@ namespace GamEncin
         void FixUpdate();
     };
 
+    class Shader //Shader Program Object
+    {
+    public:
+        Shader(const char* vertexFile, const char* fragmentFile);
+        GLuint ID;
+
+        void Use();
+        void Delete();
+    };
+
     class Renderer
     {
     public:
+        Shader* shaderProgram = nullptr;
         GLFWwindow* window;
-        GLuint shaderProgram, VBO, VAO; // Vertex Buffer Object, Vertex Array Object
-
-        const char* vertexShaderSourceCode =
-            "#version 330 core\n"
-            "layout (location = 0) in vec3 aPos;\n"
-            "void main()\n"
-            "{ gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0); }";
-
-        const char* fragmentShaderSourceCode =
-            "#version 330 core\n"
-            "out vec4 FragColor;\n"
-            "void main()\n"
-            "{ FragColor = vec4(0.8f, 0.3f, 0.02f, 1.0f); }";
+        GLuint VBO, VAO; // Vertex Buffer Object, Vertex Array Object
+        bool windowCloseInput;
 
         void RenderFrame();
         void InitialRender();
         static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+        void EndRenderer();
     };
 }

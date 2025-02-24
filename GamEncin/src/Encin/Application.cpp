@@ -57,7 +57,7 @@ namespace GamEncin
         steady_clock::time_point lastUpdate = high_resolution_clock::now();
         float fpsTimer = 0.0;
 
-        while(!glfwWindowShouldClose(currentScene->renderer->window))
+        while(!currentScene->renderer->windowCloseInput)
         {
             steady_clock::time_point now = high_resolution_clock::now();
             deltaTime = duration<float>(now - lastUpdate).count();
@@ -111,13 +111,15 @@ namespace GamEncin
             case TypeMismachErr:
                 fprintf(stderr, "ERROR: Type mismatch occurred\n");
                 break;
+            case IOErr:
+                fprintf(stderr, "ERROR: Error occured while Input / Output actions\n");
+                break;
             default:
                 fprintf(stderr, "ERROR: Unknown error occurred\n");
                 break;
         }
 
-        glfwDestroyWindow(currentScene->renderer->window);
-        glfwTerminate();
+        currentScene->renderer->EndRenderer();
         exit(et);
     }
 }

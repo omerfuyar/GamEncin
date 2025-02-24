@@ -1,8 +1,6 @@
 #pragma once
 #include "Tools.h"
 #include <chrono>
-#include <glad.h>
-#include <glfw3.h>
 
 using namespace std::chrono;
 

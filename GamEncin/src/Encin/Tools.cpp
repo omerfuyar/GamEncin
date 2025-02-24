@@ -1,23 +1,20 @@
-#pragma once
 #include "Tools.h"
 
 namespace GamEncin
 {
-    float* Vector3::VerticesVectorToFloatArr(vector<Vector3> vertices)
+    string getFileContents(const char* fileName)
     {
-        size_t size = vertices.size() * 3; // coordinate count
-        float* result = new float[size];
-
-        int j = 0;
-        for(int i = 0; i < size; i += 3)
+        std::ifstream in(fileName, std::ios::binary);
+        if(in)
         {
-            Vector3 currV3 = vertices.at(j);
-            result[i] = currV3.x;
-            result[i + 1] = currV3.y;
-            result[i + 2] = currV3.z;
-            j++;
+            string contents;
+            in.seekg(0, std::ios::end);
+            contents.resize(in.tellg());
+            in.seekg(0, std::ios::beg);
+            in.read(&contents[0], contents.size());
+            in.close();
+            return(contents);
         }
-
-        return result;
+        throw(errno);
     }
 }

@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GamEncin\src\Encin\Tools.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GamEncin\src\User\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -27,13 +24,16 @@
     <ClCompile Include="GamEncin\src\Encin\Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GamEncin\src\Encin\Objects.cpp">
+    <ClCompile Include="GamEncin\src\Encin\Items.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GLM\include\detail\glm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GLM\include\glm.cppm">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GamEncin\src\Encin\Tools.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -65,7 +65,7 @@
     <ClInclude Include="GamEncin\src\Encin\Encin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GamEncin\src\Encin\Objects.h">
+    <ClInclude Include="GamEncin\src\Encin\Items.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GLM\include\detail\_features.hpp">
@@ -1366,6 +1366,8 @@
     <None Include="GLM\include\gtx\wrap.inl">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="GamEncin\src\Shaders\default.frag" />
+    <None Include="GamEncin\src\Shaders\default.vert" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="GLFW\glfw3.lib" />
