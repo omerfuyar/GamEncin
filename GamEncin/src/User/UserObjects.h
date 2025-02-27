@@ -4,7 +4,10 @@
 class TestObject : public Object
 {
 public:
-    TestObject() {}
+    TestObject()
+    {
+
+    }
 
     void Start() override
     {

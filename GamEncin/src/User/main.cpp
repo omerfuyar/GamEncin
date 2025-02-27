@@ -28,13 +28,11 @@ void SceneBuilding(Application& app)
     };
 }
 
-int main(void)
+void main()
 {
     Application& app = Application::GetInstance();
 
     SceneBuilding(app);
 
     app.Run();
-
-    return 0;
 }
