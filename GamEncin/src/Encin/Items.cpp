@@ -16,7 +16,13 @@ namespace GamEncin
 
     void Object::Draw()
     {
+        for(int i = 0; i < modelVertices.size(); i++)
+        {
+            vertices[i] = position + modelVertices[i];
+        }
+
         vbo->Update(vertices);
+        //in case of vertices position / color change
 
         vao->Bind();
         vbo->Bind();
@@ -32,6 +38,11 @@ namespace GamEncin
         vao = new VAO();
         vbo = new VBO(vertices);
         ebo = new EBO(indices);
+
+        for(int i = 0; i < modelVertices.size(); i++)
+        {
+            vertices.push_back(position + modelVertices[i]);
+        }
         //size is coming from vectors, so it is the size of the vector in bytes
     }
 

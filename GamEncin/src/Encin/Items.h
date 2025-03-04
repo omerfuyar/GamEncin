@@ -19,6 +19,8 @@ namespace GamEncin
     class VAO;
     class VBO;
     class EBO;
+    class Shader;
+    class Renderer;
 
     class Object
     {
@@ -42,7 +44,7 @@ namespace GamEncin
 
         VAO* vao = nullptr;
 
-        vector<Vector3> vertices; //Position
+        vector<Vector3> vertices, modelVertices;
         VBO* vbo = nullptr;
 
         vector<GLuint> indices;
