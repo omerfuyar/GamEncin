@@ -42,16 +42,12 @@ namespace GamEncin
 
         VAO* vao = nullptr;
 
-        vector<Vector3> vertices;
-        GLfloat* verticeArr = new GLfloat[9];
+        vector<Vector3> vertices; //Position
         VBO* vbo = nullptr;
 
         vector<GLuint> indices;
-        GLuint* indicesArr = new GLuint[3];
         EBO* ebo = nullptr;
 
-        void SetVerticeArr(vector<Vector3> vertices, GLfloat* targetArr);
-        void SetIndicesArr(vector<GLuint> indices, GLuint* targetArr);
         void Draw();
         void Initialize();
         virtual void Awake() {};
@@ -97,18 +93,18 @@ namespace GamEncin
     class VBO
     {
     public:
-        VBO(GLfloat* vertices, GLsizeiptr size);
+        VBO(vector<Vector3> vertices);
         GLuint ID;
 
         void Bind();
-        void Update(GLfloat* vertices, GLsizeiptr size);
+        void Update(vector<Vector3> vertices);
         void Delete();
     };
 
     class EBO
     {
     public:
-        EBO(GLuint* indices, GLsizeiptr size);
+        EBO(vector<GLuint> indices);
         GLuint ID;
 
         void Bind();

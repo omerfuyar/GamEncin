@@ -17,6 +17,8 @@ void SceneBuilding(Application& app)
         0, 1, 2
     };
 
+    std::cout << object1.vertices.size();
+
     object2.vertices = {
         Vector3(0.5f, 0.5f, 0.0f),
         Vector3(-0.5f, 0.5f, 0.0f),

@@ -14,31 +14,9 @@ namespace GamEncin
             ebo->Delete();
     }
 
-    void Object::SetVerticeArr(vector<Vector3> vertices, GLfloat* targetArr)
-    { //only for triangles
-        int j = 0;
-        for(int i = 0; i < 9; i += 3)
-        {
-            Vector3 currV3 = vertices.at(j);
-            *(targetArr + i) = currV3.x;
-            *(targetArr + i + 1) = currV3.y;
-            *(targetArr + i + 2) = currV3.z;
-            j++;
-        }
-    }
-
-    void Object::SetIndicesArr(vector<GLuint> indices, GLuint* targetArr)
-    { //only for triangles
-        for(int i = 0; i < 3; i++)
-        {
-            *(targetArr + i) = indices.at(i);
-        }
-    }
-
     void Object::Draw()
     {
-        SetVerticeArr(vertices, verticeArr);
-        vbo->Update(verticeArr, sizeof(vertices));
+        vbo->Update(vertices);
 
         vao->Bind();
         vbo->Bind();
@@ -46,15 +24,14 @@ namespace GamEncin
 
         vao->LinkAttirbutes(POSITION_VBO_LAYOUT, 3, GL_FLOAT, sizeof(Vector3), (void*) 0);
 
-        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
     }
 
     void Object::Initialize()
     {
-        SetIndicesArr(indices, indicesArr);
         vao = new VAO();
-        vbo = new VBO(verticeArr, sizeof(vertices));
-        ebo = new EBO(indicesArr, sizeof(indices));
+        vbo = new VBO(vertices);
+        ebo = new EBO(indices);
         //size is coming from vectors, so it is the size of the vector in bytes
     }
 
@@ -169,11 +146,11 @@ namespace GamEncin
 
 #pragma region VBO
 
-    VBO::VBO(GLfloat* bufferArr, GLsizeiptr bufferSize)
+    VBO::VBO(vector<Vector3> vertices)
     {
         glGenBuffers(1, &ID);
         glBindBuffer(GL_ARRAY_BUFFER, ID);
-        glBufferData(GL_ARRAY_BUFFER, bufferSize, bufferArr, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vector3), vertices.data(), GL_STATIC_DRAW);
     }
 
     void VBO::Bind()
@@ -181,10 +158,10 @@ namespace GamEncin
         glBindBuffer(GL_ARRAY_BUFFER, ID);
     }
 
-    void VBO::Update(GLfloat* bufferArr, GLsizeiptr bufferSize)
+    void VBO::Update(vector<Vector3> vertices)
     {
         glBindBuffer(GL_ARRAY_BUFFER, ID);
-        glBufferData(GL_ARRAY_BUFFER, bufferSize, bufferArr, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vector3), vertices.data(), GL_STATIC_DRAW);
     }
 
     void VBO::Delete()
@@ -196,11 +173,11 @@ namespace GamEncin
 
 #pragma region EBO
 
-    EBO::EBO(GLuint* elementArr, GLsizeiptr elementSize)
+    EBO::EBO(vector<GLuint> indices)
     {
         glGenBuffers(1, &ID);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, elementSize, elementArr, GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
     }
 
     void EBO::Bind()
