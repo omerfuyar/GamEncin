@@ -47,10 +47,11 @@ namespace GamEncin
         vector<Vector3> vertices, modelVertices;
         VBO* vbo = nullptr;
 
-        vector<GLuint> indices;
+        vector<GLuint> modelIndices;
         EBO* ebo = nullptr;
 
         void Draw();
+        void UpdateVertices();
         void Initialize();
         virtual void Awake() {};
         virtual void Start() {};
@@ -86,7 +87,7 @@ namespace GamEncin
     {
     public:
         Shader(const char* vertexFile, const char* fragmentFile);
-        GLuint ID;
+        GLuint ID, scaleVarID;
 
         void Use();
         void Delete();
@@ -119,7 +120,7 @@ namespace GamEncin
         VAO();
         GLuint ID;
 
-        void LinkAttirbutes(GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset);
+        void LinkAttributes(GLuint layout, GLuint numComponents, GLenum type, GLuint offsetInBytes);
         void Bind();
         void Delete();
     };

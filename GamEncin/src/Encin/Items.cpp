@@ -16,34 +16,45 @@ namespace GamEncin
 
     void Object::Draw()
     {
-        for(int i = 0; i < modelVertices.size(); i++)
-        {
-            vertices[i] = position + modelVertices[i];
-        }
+        UpdateVertices(); //in case of data change
 
         vbo->Update(vertices);
-        //in case of vertices position / color change
 
         vao->Bind();
         vbo->Bind();
         ebo->Bind();
 
-        vao->LinkAttirbutes(POSITION_VBO_LAYOUT, 3, GL_FLOAT, sizeof(Vector3), (void*) 0);
+        vao->LinkAttributes(POSITION_VBO_LAYOUT, 3, GL_FLOAT, 0);
+        vao->LinkAttributes(COLOR_VBO_LAYOUT, 3, GL_FLOAT, sizeof(Vector3));
 
-        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, modelIndices.size(), GL_UNSIGNED_INT, 0);
+    }
+
+    void Object::UpdateVertices()
+    {
+
+        for(int i = 0; i < modelVertices.size(); i += 2) //for position, model to world position
+            vertices[i] = position + modelVertices[i];
+
+        for(int i = 1; i < modelVertices.size(); i += 2) //for color, 8bit to 0-1 float
+            vertices[i] = modelVertices[i] / 255;
+
+        //for(Vector3 vec : vertices)
+        //{
+        //    printf("%f, %f, %f\n", vec.x, vec.y, vec.z);
+        //
+        //}
     }
 
     void Object::Initialize()
     {
+        for(int i = 0; i < modelVertices.size(); i++)
+            vertices.push_back(modelVertices[i]); //change when color added
+
         vao = new VAO();
         vbo = new VBO(vertices);
-        ebo = new EBO(indices);
-
-        for(int i = 0; i < modelVertices.size(); i++)
-        {
-            vertices.push_back(position + modelVertices[i]);
-        }
-        //size is coming from vectors, so it is the size of the vector in bytes
+        ebo = new EBO(modelIndices);
+        //size is coming from vectors, so it is the size of the type times vector size
     }
 
 #pragma endregion
@@ -141,6 +152,8 @@ namespace GamEncin
         glDeleteShader(vertexShader);
         glDeleteShader(fragmentShader);
         //shaders already compiled and linked to the program, so we can delete them
+
+        scaleVarID = glGetUniformLocation(ID, "scale");
     }
 
     void Shader::Use()
@@ -211,12 +224,20 @@ namespace GamEncin
         glGenVertexArrays(1, &ID);
     }
 
-    void VAO::LinkAttirbutes(GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset)
+    //one attribute is one piece of data that is passed to the vertex shader for one vertex, like position, color, normal, etc.
+    void VAO::LinkAttributes(GLuint layout, GLuint numComponents, GLenum type, GLuint offsetInBytes)
     {
-        glVertexAttribPointer(layout, numComponents, type, GL_FALSE, stride, offset);
-        // layout: location of the vertex attribute in the shader
+        GLsizeiptr stride = sizeof(Vector3) * 2;
+        void* offsetVar = (void*) (offsetInBytes);
+
+        glVertexAttribPointer(layout, numComponents, type, GL_FALSE, stride, offsetVar);
+        // layout: location of the vertex attribute in the shader, like 0 for position, 1 for color
         //in shader, layout(location = 0) in vec3 position;
-        glEnableVertexAttribArray(layout);
+        //numComponents: how many components does the attribute have, like 3 for position, 4 for color
+        //type: type of the data, like GL_FLOAT for position, GL_UNSIGNED_INT for color
+        //stride: size of the vertex data structure, like sizeof(Vertex)
+        //offset: where the attribute starts in the vertex data structure, like color comes after position, so offset is the size of position
+        glEnableVertexAttribArray(layout); //like binding the format we want to read buffer data
     }
 
     void VAO::Bind()
@@ -266,6 +287,7 @@ namespace GamEncin
 
         shaderProgram = new Shader("GamEncin/src/Shaders/default.vert", "GamEncin/src/Shaders/default.frag");
 
+
         for(Object* object : objects)
         {
             object->Initialize();
@@ -281,6 +303,7 @@ namespace GamEncin
 
         for(Object* object : objects)
         {
+            glUniform3f(shaderProgram->scaleVarID, object->scale.x, object->scale.y, object->scale.z);
             object->Draw();
         }
 
