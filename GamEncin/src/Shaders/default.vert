@@ -13,5 +13,5 @@ void main()
 
     gl_Position = vec4(finalPosition, 1.0);
 
-    color = aColor / 255;
+    color = aColor / 255.0;
 }

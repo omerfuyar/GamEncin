@@ -87,7 +87,7 @@ extern "C" {
 
     GLAPI int gladLoadGLLoader(GLADloadproc);
 
-#include <khrplatform.h>
+#include <GLAD/khrplatform.h>
     typedef unsigned int GLenum;
     typedef unsigned char GLboolean;
     typedef unsigned int GLbitfield;

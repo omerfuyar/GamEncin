@@ -1,8 +1,8 @@
 #pragma once
 #include "Tools.h"
-#include <glad.h>
-#include <glfw3.h>
-#include <glm.hpp>
+#include <GLAD/glad.h>
+#include <GLFW/glfw3.h>
+#include <GLM/glm.hpp>
 
 #ifndef POSITION_VBO_LAYOUT
 #define POSITION_VBO_LAYOUT 0
@@ -12,7 +12,7 @@
 #define COLOR_VBO_LAYOUT 1
 #endif // !COLOR_VBO_LAYOUT
 
-//BE CAREFUL WITH THESE IN VERTEX SHADER
+//TODO BE CAREFUL WITH THESE IN VERTEX SHADER
 
 namespace GamEncin
 {
