@@ -25,7 +25,6 @@ namespace GamEncin
     class Object
     {
     public:
-        Object() {};
         ~Object();
 
         string name = "Object",
@@ -128,12 +127,10 @@ namespace GamEncin
     class Renderer
     {
     public:
-        Renderer() {};
-
         Shader* shaderProgram = nullptr;
         GLFWwindow* window = nullptr;
-        Vector4 clearColor;
-        GLfloat positionDivider;
+        Vector4 clearColor = Vector4(0, 0, 0, 0);
+        GLfloat positionDivider = 0.0;
         bool windowCloseInput = false;
 
         void RenderFrame(vector<Object*> objects);

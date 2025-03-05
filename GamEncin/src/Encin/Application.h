@@ -11,9 +11,6 @@ namespace GamEncin
 
     class Application //singleton
     {
-    private:
-        ~Application() = default;
-
     public:
         Application();
 
@@ -23,13 +20,13 @@ namespace GamEncin
         Renderer* renderer = nullptr;
         Vector2 windowSize;
 
-        int FPS;
-        int fixedFPS; //the frame rate of the fixed update
-        float fixedDeltaTime; //interval between fixed updates in seconds
-        float deltaTime; //the duration of the last frame in seconds
-        float accumulatedTime; //the time that has passed since the last fixed update in seconds
-        float secondsPastFromStart;
-        bool printFPS = true;
+        int FPS = 0;
+        int fixedFPS = 0; //the frame rate of the fixed update
+        float fixedDeltaTime = 0.0; //interval between fixed updates in seconds
+        float deltaTime = 0.0; //the duration of the last frame in seconds
+        float accumulatedTime = 0.0; //the time that has passed since the last fixed update in seconds
+        float secondsPastFromStart = 0.0;
+        bool printFPS = false;
 
         Application(const Application&) = delete;
         void operator=(const Application&) = delete;
