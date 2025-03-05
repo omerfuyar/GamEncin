@@ -12,27 +12,24 @@ namespace GamEncin
     class Application //singleton
     {
     private:
-        Application() {};
         ~Application() = default;
 
     public:
+        Application();
+
+        static Application* instance;
         vector<Scene*> scenes;
         Scene* currentScene = nullptr;
         Renderer* renderer = nullptr;
+        Vector2 windowSize;
 
-        int FPS = 0;
-        int fixedFPS = 50;
-        float fixedDeltaTime = 1.0f / (float) fixedFPS; //interval between fixed updates in seconds
-        float deltaTime = 0.0f; //the duration of the last frame in seconds
-        float accumulatedTime = 0.0f;
-        float secondsPastFromStart = 0.0f;
+        int FPS;
+        int fixedFPS; //the frame rate of the fixed update
+        float fixedDeltaTime; //interval between fixed updates in seconds
+        float deltaTime; //the duration of the last frame in seconds
+        float accumulatedTime; //the time that has passed since the last fixed update in seconds
+        float secondsPastFromStart;
         bool printFPS = true;
-
-        static Application& GetInstance()
-        {
-            static Application instance;
-            return instance;
-        }
 
         Application(const Application&) = delete;
         void operator=(const Application&) = delete;

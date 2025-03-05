@@ -44,14 +44,13 @@ namespace GamEncin
 
         VAO* vao = nullptr;
 
-        vector<Vector3> vertices, modelVertices;
+        vector<Vector3> vertices;
         VBO* vbo = nullptr;
 
-        vector<GLuint> modelIndices;
+        vector<GLuint> indices;
         EBO* ebo = nullptr;
 
         void Draw();
-        void UpdateVertices();
         void Initialize();
         virtual void Awake() {};
         virtual void Start() {};
@@ -87,8 +86,9 @@ namespace GamEncin
     {
     public:
         Shader(const char* vertexFile, const char* fragmentFile);
-        GLuint ID, scaleVarID;
+        GLuint ID, positionDividerVarID, positionVarID, rotationVarID, scaleVarID;
 
+        void CheckShaderErrors(GLuint shader, const char* type);
         void Use();
         void Delete();
     };
@@ -128,13 +128,19 @@ namespace GamEncin
     class Renderer
     {
     public:
+        Renderer() {};
+
         Shader* shaderProgram = nullptr;
         GLFWwindow* window = nullptr;
+        Vector4 clearColor;
+        GLfloat positionDivider;
         bool windowCloseInput = false;
 
         void RenderFrame(vector<Object*> objects);
         void InitialRender(vector<Object*> objects);
-        static void frameBufferSizeCallback(GLFWwindow* window, int width, int height);
+        void ClearColor(Vector4 clearColor);
+        void GLSendUniformVector3(GLuint location, Vector3 vector);
+        static void FrameBufferSizeCallback(GLFWwindow* window, int width, int height);
         void EndRenderer();
     };
 }

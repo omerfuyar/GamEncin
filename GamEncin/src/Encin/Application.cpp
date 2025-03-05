@@ -3,6 +3,18 @@
 
 namespace GamEncin
 {
+    Application* Application::instance = nullptr;
+
+    Application::Application()
+    {
+        if(instance)
+            Application::instance->Stop(AppDuplicationErr);
+        else
+            instance = this;
+
+        renderer = new Renderer();
+    }
+
     Scene& Application::CreateScene()
     {
         Scene* scene = new Scene();
@@ -48,7 +60,6 @@ namespace GamEncin
 
     void Application::Run()
     {
-        renderer = new Renderer;
         GameLoops();
     }
 
@@ -58,6 +69,7 @@ namespace GamEncin
 
         Start();
 
+        fixedDeltaTime = 1.0 / (float) fixedFPS;
         steady_clock::time_point lastUpdate = high_resolution_clock::now();
         float fpsTimer = 0.0;
 
@@ -109,6 +121,12 @@ namespace GamEncin
             case GLADErr:
                 fprintf(stderr, "ERROR: Error occurred in GLAD\n");
                 break;
+            case ShaderCompilationErr:
+                fprintf(stderr, "ERROR: Error occurred while compiling shaders\n");
+                break;
+            case ShaderLinkingErr:
+                fprintf(stderr, "ERROR: Error occurred while linking shaders\n");
+                break;
             case ObjCouldNotFoundErr:
                 fprintf(stderr, "ERROR: Object could not be found\n");
                 break;
@@ -117,6 +135,9 @@ namespace GamEncin
                 break;
             case IOErr:
                 fprintf(stderr, "ERROR: Error occured while Input / Output actions\n");
+                break;
+            case AppDuplicationErr:
+                fprintf(stderr, "ERROR: Application duplicated\n");
                 break;
             default:
                 fprintf(stderr, "ERROR: Unknown error occurred\n");

@@ -16,9 +16,7 @@ namespace GamEncin
 
     void Object::Draw()
     {
-        UpdateVertices(); //in case of data change
-
-        vbo->Update(vertices);
+        //vbo->Update(vertices);
 
         vao->Bind();
         vbo->Bind();
@@ -27,33 +25,14 @@ namespace GamEncin
         vao->LinkAttributes(POSITION_VBO_LAYOUT, 3, GL_FLOAT, 0);
         vao->LinkAttributes(COLOR_VBO_LAYOUT, 3, GL_FLOAT, sizeof(Vector3));
 
-        glDrawElements(GL_TRIANGLES, modelIndices.size(), GL_UNSIGNED_INT, 0);
-    }
-
-    void Object::UpdateVertices()
-    {
-
-        for(int i = 0; i < modelVertices.size(); i += 2) //for position, model to world position
-            vertices[i] = position + modelVertices[i];
-
-        for(int i = 1; i < modelVertices.size(); i += 2) //for color, 8bit to 0-1 float
-            vertices[i] = modelVertices[i] / 255;
-
-        //for(Vector3 vec : vertices)
-        //{
-        //    printf("%f, %f, %f\n", vec.x, vec.y, vec.z);
-        //
-        //}
+        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
     }
 
     void Object::Initialize()
     {
-        for(int i = 0; i < modelVertices.size(); i++)
-            vertices.push_back(modelVertices[i]); //change when color added
-
         vao = new VAO();
         vbo = new VBO(vertices);
-        ebo = new EBO(modelIndices);
+        ebo = new EBO(indices);
         //size is coming from vectors, so it is the size of the type times vector size
     }
 
@@ -63,7 +42,7 @@ namespace GamEncin
 
     Scene::Scene()
     {
-        Application::GetInstance().scenes.push_back(this);
+        Application::instance->scenes.push_back(this);
     }
 
     void Scene::AddObject(Object& object)
@@ -81,7 +60,7 @@ namespace GamEncin
         }
         else
         {
-            Application::GetInstance().Stop(ObjCouldNotFoundErr);
+            Application::instance->Stop(ObjCouldNotFoundErr);
         }
     }
 
@@ -139,26 +118,60 @@ namespace GamEncin
         GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER); //create the shader object
         glShaderSource(vertexShader, 1, &vertexSource, NULL); //assign code to shader object
         glCompileShader(vertexShader); //compile the shader to machine code
+        CheckShaderErrors(vertexShader, "VERTEX");
 
         GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
         glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
         glCompileShader(fragmentShader);
+        CheckShaderErrors(fragmentShader, "FRAGMENT");
 
         ID = glCreateProgram();
         glAttachShader(ID, vertexShader);
         glAttachShader(ID, fragmentShader);
         glLinkProgram(ID);
+        CheckShaderErrors(ID, "PROGRAM");
 
         glDeleteShader(vertexShader);
         glDeleteShader(fragmentShader);
         //shaders already compiled and linked to the program, so we can delete them
 
+        positionDividerVarID = glGetUniformLocation(ID, "positionDivider");
+        positionVarID = glGetUniformLocation(ID, "position");
+        rotationVarID = glGetUniformLocation(ID, "rotation");
         scaleVarID = glGetUniformLocation(ID, "scale");
+    }
+
+    void Shader::CheckShaderErrors(GLuint shader, const char* type)
+    {
+        GLint hasCompiled;
+        char infoLog[1024];
+
+        if(type != "PROGRAM")
+        {
+            glGetShaderiv(shader, GL_COMPILE_STATUS, &hasCompiled);
+            if(hasCompiled == GL_FALSE)
+            {
+                glGetShaderInfoLog(shader, 1024, NULL, infoLog);
+                fprintf(stderr, "\nERROR: Error occurred while compiling shaders\nCause: %s\nDetails: %s\n", type, infoLog);
+                Application::instance->Stop(ShaderCompilationErr);
+            }
+        }
+        else
+        {
+            glGetProgramiv(shader, GL_LINK_STATUS, &hasCompiled);
+            if(hasCompiled == GL_FALSE)
+            {
+                glGetProgramInfoLog(shader, 1024, NULL, infoLog);
+                fprintf(stderr, "\nERROR: Error occurred while linking shaders\nCause: %s\nDetails: %s\n", type, infoLog);
+                Application::instance->Stop(ShaderLinkingErr);
+            }
+        }
     }
 
     void Shader::Use()
     {
         glUseProgram(ID);
+        glUniform1f(positionDividerVarID, Application::instance->renderer->positionDivider); //send fov data TODO bruh
     }
 
     void Shader::Delete()
@@ -227,8 +240,8 @@ namespace GamEncin
     //one attribute is one piece of data that is passed to the vertex shader for one vertex, like position, color, normal, etc.
     void VAO::LinkAttributes(GLuint layout, GLuint numComponents, GLenum type, GLuint offsetInBytes)
     {
-        GLsizeiptr stride = sizeof(Vector3) * 2;
-        void* offsetVar = (void*) (offsetInBytes);
+        GLsizei stride = 2 * sizeof(Vector3); //TODO position + color
+        GLvoid* offsetVar = (GLvoid*) (offsetInBytes);
 
         glVertexAttribPointer(layout, numComponents, type, GL_FALSE, stride, offsetVar);
         // layout: location of the vertex attribute in the shader, like 0 for position, 1 for color
@@ -257,28 +270,28 @@ namespace GamEncin
     void Renderer::InitialRender(vector<Object*> objects)
     {
         if(glfwInit() == GLFW_FALSE)
-            Application::GetInstance().Stop(GLFWErr); // Exit the function if GLFW initialization fails
+            Application::instance->Stop(GLFWErr); // Exit the function if GLFW initialization fails
 
-        // Configure the OpenGL version
+        // Configure the OpenGL version, 460 core
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        window = glfwCreateWindow(640, 480, "GamEncin", NULL, NULL);
+        window = glfwCreateWindow(Application::instance->windowSize.x, Application::instance->windowSize.y, "GamEncin", NULL, NULL);
 
         if(!window)
-            Application::GetInstance().Stop(GLFWErr); // Exit the function if window creation fails
+            Application::instance->Stop(GLFWErr); // Exit the function if window creation fails
 
         glfwMakeContextCurrent(window);
 
         //Registers a callback function that is called when the window is resized
-        glfwSetFramebufferSizeCallback(window, frameBufferSizeCallback);
+        glfwSetFramebufferSizeCallback(window, FrameBufferSizeCallback);
 
         if(!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
-            Application::GetInstance().Stop(GLADErr); // Exit the function if GLAD initialization fails
+            Application::instance->Stop(GLADErr); // Exit the function if GLAD initialization fails
 
         if(!gladLoadGL())
-            Application::GetInstance().Stop(GLADErr);
+            Application::instance->Stop(GLADErr);
 
         // In OpenGL, objects like VAOs, VBOs, shaders, and textures are handles or IDs that reference data stored in the GPU. So we use GLuint to store them.
         // lifecycle / pipeline of each object: creation -> binding -> configuration -> usage -> unbinding / deletion.
@@ -286,7 +299,6 @@ namespace GamEncin
         // Binding makes an object the active one in the context (window). When we call a function, what it does depends on the internal state of opengl - on the context/object. There can be only one active object of each type at a time. fe: only one active VAO, VBO, texture, etc.
 
         shaderProgram = new Shader("GamEncin/src/Shaders/default.vert", "GamEncin/src/Shaders/default.frag");
-
 
         for(Object* object : objects)
         {
@@ -296,18 +308,17 @@ namespace GamEncin
 
     void Renderer::RenderFrame(vector<Object*> objects)
     {
-        glClearColor(0.5f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        ClearColor(clearColor);
 
         shaderProgram->Use();
 
         for(Object* object : objects)
         {
-            glUniform3f(shaderProgram->scaleVarID, object->scale.x, object->scale.y, object->scale.z);
+            GLSendUniformVector3(shaderProgram->positionVarID, object->position);
+            GLSendUniformVector3(shaderProgram->scaleVarID, object->scale);
+            GLSendUniformVector3(shaderProgram->rotationVarID, object->rotation);
             object->Draw();
         }
-
-        //glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(window);
 
@@ -316,7 +327,18 @@ namespace GamEncin
         glfwPollEvents();
     }
 
-    void Renderer::frameBufferSizeCallback(GLFWwindow* window, int width, int height)
+    void Renderer::ClearColor(Vector4 clearColor)
+    {
+        glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
+        glClear(GL_COLOR_BUFFER_BIT);
+    }
+
+    void Renderer::GLSendUniformVector3(GLuint location, Vector3 vec3)
+    {
+        glUniform3f(location, vec3.x, vec3.y, vec3.z);
+    }
+
+    void Renderer::FrameBufferSizeCallback(GLFWwindow* window, int width, int height)
     {
         glViewport(0, 0, width, height);
     }

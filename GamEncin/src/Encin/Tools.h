@@ -21,7 +21,7 @@ namespace GamEncin
 
     enum EndType
     {
-        Safe, Warning, UnkErr, GLFWErr, GLADErr, ObjCouldNotFoundErr, TypeMismachErr, IOErr
+        Safe, Warning, UnkErr, GLFWErr, GLADErr, ShaderCompilationErr, ShaderLinkingErr, ObjCouldNotFoundErr, TypeMismachErr, IOErr, AppDuplicationErr
     };
 
     string getFileContents(const char* fileName);

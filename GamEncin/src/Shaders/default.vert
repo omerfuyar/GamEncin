@@ -4,10 +4,14 @@ layout (location = 1) in vec3 aColor;
 
 out vec3 color;
 
-uniform vec3 scale;
+uniform float positionDivider;
+uniform vec3 scale, position, rotation;
 
 void main()
 {
-    gl_Position = vec4(aPos.x * scale.x, aPos.y * scale.y, aPos.z * scale.z, 1.0);
-    color = aColor;
+    vec3 finalPosition = vec3(aPos.x * scale.x, aPos.y * scale.y, aPos.z * scale.z) + position / positionDivider;
+
+    gl_Position = vec4(finalPosition, 1.0);
+
+    color = aColor / 255;
 }

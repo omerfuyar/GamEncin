@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/denem/Documents/Programming/C++/GamEncin/GamEncin/src/Encin",
-      "program": "c:/Users/denem/Documents/Programming/C++/GamEncin/GamEncin/src/Encin/build/Debug/outDebug",
+      "cwd": "c:/Users/denem/Documents/Programming/C++/GamEncin/GamEncin/src/User",
+      "program": "c:/Users/denem/Documents/Programming/C++/GamEncin/GamEncin/src/User/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

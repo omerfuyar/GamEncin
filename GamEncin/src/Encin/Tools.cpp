@@ -16,6 +16,7 @@ namespace GamEncin
             in.close();
             return(contents);
         }
-        Application::GetInstance().Stop(IOErr);
+        Application::instance->Stop(IOErr);
+        return "";
     }
 }
