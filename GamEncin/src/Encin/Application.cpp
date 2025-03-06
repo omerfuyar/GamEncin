@@ -144,7 +144,7 @@ namespace GamEncin
                 break;
         }
 
-        printf(" :   %d\n", et);
+        printf(" : %d\n", et);
         renderer->EndRenderer();
         exit(et);
     }

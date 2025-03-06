@@ -349,12 +349,12 @@ namespace GamEncin
             return a + (b - a) * t;
         }
 
-        inline float RandomRangeF(float min, float max)
+        inline float RandomRangeFloat(float min, float max)
         {
             return min + (float) rand() / (float) (RAND_MAX / (max - min));
         }
 
-        inline int RandomRangeI(int min, int max)
+        inline int RandomRangeInteger(int min, int max)
         {
             return min + (int) (rand() % (max - min + 1));
         }

@@ -4,30 +4,18 @@ void SceneBuilding(Application& app)
 {
     Scene& scene = app.CreateAndUseScene();
 
-    TestObject& object1 = scene.CreateObject<TestObject>();
-
-    object1.vertices =
+    float row = 11;
+    float col = 11;
+    for(int i = 0; i < col; i++)
     {
-        // Position                // Color
-        Vector3(-0.5, -0.5, -0.5), Vector3(255, 0, 0),
-        Vector3(0.5, -0.5, -0.5), Vector3(0, 255, 0),
-        Vector3(0.5, -0.5, 0.5), Vector3(0, 0, 255),
-        Vector3(-0.5, -0.5, 0.5), Vector3(255, 255, 0),
-        Vector3(-0.5, 0.5, 0.5), Vector3(255, 0, 255),
-        Vector3(0.5, 0.5, 0.5), Vector3(0, 255, 255),
-        Vector3(0.5, 0.5, -0.5), Vector3(255, 255, 255),
-        Vector3(-0.5, 0.5, -0.5), Vector3(0, 0, 0)
-
-    };
-
-    object1.indices = {
-        0, 1, 2, 2, 3, 0,
-        4, 5, 6, 6, 7, 4,
-        1, 2, 5, 5, 6, 1,
-        0, 1, 6, 6, 7, 0,
-        2, 3, 4, 4, 5, 2,
-        3, 0, 7, 7, 4, 3
-    };
+        for(int j = 0; j < row; j++)
+        {
+            Cube& cube = scene.CreateObject<Cube>();
+            float gap = 200;
+            cube.position = Vector3((i - row / 2) * gap, (j - col / 2) * gap, 0);
+            cube.rotation = Vector3((i + j) * gap / 10, (i + j) * gap / 10, (i + j) * gap / 10);
+        }
+    }
 }
 
 void SetVariables(Application& app)
