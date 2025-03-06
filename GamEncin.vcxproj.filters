@@ -2676,5 +2676,6 @@
   </ItemGroup>
   <ItemGroup>
     <Library Include="GLFW\glfw3.lib" />
+    <Library Include="Dependencies\GLFW\glfw3.lib" />
   </ItemGroup>
 </Project>

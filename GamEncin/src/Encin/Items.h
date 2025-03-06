@@ -2,7 +2,7 @@
 #include "Tools.h"
 #include <GLAD/glad.h>
 #include <GLFW/glfw3.h>
-#include <GLM/include/glm.hpp>
+#include <GLM/glm.hpp>
 
 #ifndef POSITION_VBO_LAYOUT
 #define POSITION_VBO_LAYOUT 0
