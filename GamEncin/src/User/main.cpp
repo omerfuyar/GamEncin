@@ -26,11 +26,8 @@ void SceneBuilding(Application& app)
         1, 2, 5, 5, 6, 1,
         0, 1, 6, 6, 7, 0,
         2, 3, 4, 4, 5, 2,
-        3, 0, 7, 7, 4, 3};
-
-    object1.scale = Vector3(0.5, 1.6, 1);
-
-    object1.position = Vector3(-0.5, 0, 1);
+        3, 0, 7, 7, 4, 3
+    };
 }
 
 void SetVariables(Application& app)

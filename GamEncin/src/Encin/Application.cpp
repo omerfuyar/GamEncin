@@ -110,40 +110,41 @@ namespace GamEncin
         switch(et)
         {
             case Safe:
-                fprintf(stderr, "Program ended safely\n" + et);
+                fprintf(stderr, "Program ended safely");
                 break;
             case Warning:
-                fprintf(stderr, "Program ended with warning(s)\n");
+                fprintf(stderr, "Program ended with warning(s)");
                 break;
             case GLFWErr:
-                fprintf(stderr, "ERROR: Error occurred in GLFW3\n");
+                fprintf(stderr, "ERROR: Error occurred in GLFW3");
                 break;
             case GLADErr:
-                fprintf(stderr, "ERROR: Error occurred in GLAD\n");
+                fprintf(stderr, "ERROR: Error occurred in GLAD");
                 break;
             case ShaderCompilationErr:
-                fprintf(stderr, "ERROR: Error occurred while compiling shaders\n");
+                fprintf(stderr, "ERROR: Error occurred while compiling shaders");
                 break;
             case ShaderLinkingErr:
-                fprintf(stderr, "ERROR: Error occurred while linking shaders\n");
+                fprintf(stderr, "ERROR: Error occurred while linking shaders");
                 break;
             case ObjCouldNotFoundErr:
-                fprintf(stderr, "ERROR: Object could not be found\n");
+                fprintf(stderr, "ERROR: Object could not be found");
                 break;
             case TypeMismachErr:
-                fprintf(stderr, "ERROR: Type mismatch occurred\n");
+                fprintf(stderr, "ERROR: Type mismatch occurred");
                 break;
             case IOErr:
-                fprintf(stderr, "ERROR: Error occured while Input / Output actions\n");
+                fprintf(stderr, "ERROR: Error occured while Input / Output actions");
                 break;
             case AppDuplicationErr:
-                fprintf(stderr, "ERROR: Application duplicated\n");
+                fprintf(stderr, "ERROR: Application duplicated");
                 break;
             default:
-                fprintf(stderr, "ERROR: Unknown error occurred\n");
+                fprintf(stderr, "ERROR: Unknown error occurred");
                 break;
         }
 
+        printf(" :   %d\n", et);
         renderer->EndRenderer();
         exit(et);
     }
