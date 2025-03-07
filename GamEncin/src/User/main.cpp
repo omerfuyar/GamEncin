@@ -8,14 +8,15 @@ void SceneBuilding(Application& app)
     int col = 101;
     float gap = 3.0;
 
-    Pyramid* shape = scene.CreateObject<Pyramid>();
+    Sphere* shape = scene.CreateObject<Sphere>();
 
     //for(int i = 0; i < col; i++)
     //{
     //    for(int j = 0; j < row; j++)
     //    {
-    //        //Cube& shape1 = scene.CreateObject<Cube>();
-    //        Pyramid* shape = scene.CreateObject<Pyramid>();
+    //        //Sphere* shape = scene.CreateObject<Sphere>();
+    //        //Cube* shape = scene.CreateObject<Cube>();
+    //        //Pyramid* shape = scene.CreateObject<Pyramid>();
     //        shape->position = Vector3((i - row / 2) * gap, (j - col / 2) * gap, 0);
     //        shape->rotation = Vector3((i + j) * gap / 10, (i + j) * gap / 10, (i + j) * gap / 10);
     //    }
