@@ -65,15 +65,24 @@ namespace GamEncin
         vector<Object*> objects;
 
         template <typename T>
-        T& CreateObject()
+        T* CreateObject()
         {
             T* object = new T();
-            objects.push_back(dynamic_cast<Object*>(object));
-            return *object;
+
+            Object* castedObject = dynamic_cast<Object*>(object);
+
+            if(!castedObject)
+            {
+                Application::instance->Stop(TypeMismachErr);
+            }
+
+            objects.push_back(castedObject);
+
+            return object;
         }
 
-        void AddObject(Object& object);
-        void RemoveObject(Object& object);
+        void AddObject(Object* object);
+        void RemoveObject(Object* object);
         void Clear();
         void Awake();
         void Start();

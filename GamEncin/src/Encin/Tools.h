@@ -233,13 +233,13 @@ namespace GamEncin
 
         //Returns a Vector3(0, 0, 0)
         static const inline Vector3 Zero() { return Vector3(0, 0, 0); }
-        //Returns a Vector3(1, 1, 1)              
+        //Returns a Vector3(1, 1, 1)
         static const inline Vector3 One() { return Vector3(1, 1, 1); }
-        //Returns a Vector3(0, 1, 0)                
+        //Returns a Vector3(0, 1, 0)
         static const inline Vector3 Up() { return Vector3(0, 1, 0); }
-        //Returns a Vector3(1, 0, 0)                
+        //Returns a Vector3(1, 0, 0)
         static const inline Vector3 Right() { return Vector3(1, 0, 0); }
-        //Returns a Vector3(0, -1, 0)              
+        //Returns a Vector3(0, -1, 0)
         static const inline Vector3 Down() { return Vector3(0, -1, 0); }
         //Returns a Vector3(-1, 0, 0)
         static const inline Vector3 Left() { return Vector3(-1, 0, 0); }

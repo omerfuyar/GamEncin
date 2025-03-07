@@ -45,14 +45,14 @@ namespace GamEncin
         Application::instance->scenes.push_back(this);
     }
 
-    void Scene::AddObject(Object& object)
+    void Scene::AddObject(Object* object)
     {
-        objects.push_back(&object);
+        objects.push_back(object);
     }
 
-    void Scene::RemoveObject(Object& object)
+    void Scene::RemoveObject(Object* object)
     {
-        auto obj = std::find(objects.begin(), objects.end(), &object);
+        auto obj = std::find(objects.begin(), objects.end(), object);
 
         if(obj != objects.end())
         {
@@ -281,7 +281,7 @@ namespace GamEncin
 
         if(!window)
             Application::instance->Stop(GLFWErr); // Exit the function if window creation fails
-
+        //TODO edit here
         glfwMakeContextCurrent(window);
 
         //Registers a callback function that is called when the window is resized
@@ -299,6 +299,8 @@ namespace GamEncin
         // Binding makes an object the active one in the context (window). When we call a function, what it does depends on the internal state of opengl - on the context/object. There can be only one active object of each type at a time. fe: only one active VAO, VBO, texture, etc.
 
         shaderProgram = new Shader("GamEncin/src/Shaders/default.vert", "GamEncin/src/Shaders/default.frag");
+
+        glEnable(GL_DEPTH_TEST);
 
         for(Object* object : objects)
         {
@@ -330,7 +332,7 @@ namespace GamEncin
     void Renderer::ClearColor(Vector4 clearColor)
     {
         glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
     void Renderer::GLSendUniformVector3(GLuint location, Vector3 vec3)
