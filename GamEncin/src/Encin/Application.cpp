@@ -81,6 +81,7 @@ namespace GamEncin
 
             accumulatedTime += deltaTime;
             secondsPastFromStart += deltaTime;
+            fpsTimer += deltaTime;
 
             Update();
             FPS++;
@@ -90,7 +91,6 @@ namespace GamEncin
                 FixUpdate();
                 accumulatedTime -= fixedDeltaTime;
                 //in that way, fixed update will be able to run multiple times in a frame if the frame rate is too low
-                fpsTimer += fixedDeltaTime;
             }
 
             if(fpsTimer >= 1.0f)

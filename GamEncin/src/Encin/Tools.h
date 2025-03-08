@@ -304,19 +304,14 @@ namespace GamEncin
             return log(value) / log(base);
         }
 
-        inline float Sin(float angle)
+        inline float Log10(float value)
         {
-            return sin(angle);
+            return log10(value);
         }
 
-        inline float Cos(float angle)
+        inline float LogE(float value)
         {
-            return cos(angle);
-        }
-
-        inline float Tan(float angle)
-        {
-            return tan(angle);
+            return log(value);
         }
 
         inline float Rad2Deg(float radian)
@@ -327,6 +322,31 @@ namespace GamEncin
         inline float Deg2Rad(float degree)
         {
             return degree * PI / 180;
+        }
+
+        inline float SinRad(float radian)
+        {
+            return sin(radian);
+        }
+
+        inline float SinDeg(float degree)
+        {
+            return sin(Deg2Rad(degree));
+        }
+
+        inline float CosRad(float radian)
+        {
+            return cos(radian);
+        }
+
+        inline float CosDeg(float degree)
+        {
+            return cos(Deg2Rad(degree));
+        }
+
+        inline float TanRad(float radian)
+        {
+            return tan(radian);
         }
 
         inline float Min(float a, float b)

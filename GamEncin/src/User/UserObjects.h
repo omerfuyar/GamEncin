@@ -98,47 +98,33 @@ public:
 class Sphere : public Object
 {
 public:
-    Sphere()
+    Sphere(float radius = 1.0, int sectorCount = 20, int stackCount = 20)
     {
-        GenerateSphere(1.0f, 20, 20);
-    }
+        //TODO this is not compatible with shaders and normals
+        //this sphere is rendering from top to bottom, 
+        float x, y, z, xz;
 
-    void GenerateSphere(float radius, int sectorCount, int stackCount)
-    {
-        float x, y, z, xy;                              // vertex position
-        float nx, ny, nz, lengthInv = 1.0f / radius;    // normal
-        float s, t;                                     // texCoord
-
-        float sectorStep = 2 * MathYaman::PI / sectorCount;
-        float stackStep = MathYaman::PI / stackCount;
-        float sectorAngle, stackAngle;
+        float stackStep = MathYaman::PI / stackCount; //radian
+        float sectorStep = 2 * MathYaman::PI / sectorCount; //radian
+        float currStackAngle, currSectorAngle;
 
         for(int i = 0; i <= stackCount; ++i)
         {
-            stackAngle = MathYaman::PI / 2 - i * stackStep;        // starting from pi/2 to -pi/2
-            xy = radius * cosf(stackAngle);             // r * cos(u)
-            z = radius * sinf(stackAngle);              // r * sin(u)
+            currStackAngle = MathYaman::PI / 2 - i * stackStep; //from pi/2 to -pi/2 inclusive
+
+            xz = radius * MathYaman::CosRad(currStackAngle);
+            y = radius * MathYaman::SinRad(currStackAngle);
 
             for(int j = 0; j <= sectorCount; ++j)
             {
-                sectorAngle = j * sectorStep;           // starting from 0 to 2pi
+                currSectorAngle = j * sectorStep; //from 0 to 2pi inclusive
 
-                // vertex position (x, y, z)
-                x = xy * cosf(sectorAngle);             // r * cos(u) * cos(v)
-                y = xy * sinf(sectorAngle);             // r * cos(u) * sin(v)
-                vertices.push_back(Vector3(x, y, z));
-                vertices.push_back(Vector3(x, y, z) * 255);
+                x = xz * MathYaman::CosRad(currSectorAngle);
+                z = xz * MathYaman::SinRad(currSectorAngle);
 
-                // normalized vertex normal (nx, ny, nz)
-                nx = x * lengthInv;
-                ny = y * lengthInv;
-                nz = z * lengthInv;
-                //normals.push_back(Vector3(nx, ny, nz));
-
-                // vertex tex coord (s, t) range between [0, 1]
-                s = (float) j / sectorCount;
-                t = (float) i / stackCount;
-                //texCoords.push_back(Vector2(s, t));
+                vertices.push_back(Vector3(x, y, z)); //for position
+                //vertices.push_back(Vector3(x, y, z) * 255); //for color
+                vertices.push_back(Vector3(255, 16, 240) * (j % 2)); //for color
             }
         }
 
@@ -188,6 +174,7 @@ public:
 
     void Update() override
     {
-        rotation += Vector3(MathYaman::RandomRangeInteger(1, 10), MathYaman::RandomRangeInteger(1, 10), MathYaman::RandomRangeInteger(1, 10)) * Application::instance->deltaTime * MathYaman::RandomRangeFloat(0, 100);
+        //rotation += Vector3(MathYaman::RandomRangeFloat(1, 10), MathYaman::RandomRangeFloat(1, 10), MathYaman::RandomRangeFloat(1, 10)) * Application::instance->deltaTime * MathYaman::RandomRangeFloat(0, 100);
+        rotation += Vector3(1, 1, 1) * Application::instance->deltaTime * 10;
     }
 };
