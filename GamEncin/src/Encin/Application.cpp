@@ -50,6 +50,11 @@ namespace GamEncin
     void Application::Update()
     {
         currentScene->Update();
+    }
+
+    void Application::LateUpdate()
+    {
+        currentScene->LateUpdate();
         renderer->RenderFrame(currentScene->objects);
     }
 
@@ -83,20 +88,23 @@ namespace GamEncin
             secondsPastFromStart += deltaTime;
             fpsTimer += deltaTime;
 
-            Update();
-            FPS++;
-
             while(accumulatedTime >= fixedDeltaTime)
             {
                 FixUpdate();
                 accumulatedTime -= fixedDeltaTime;
-                //in that way, fixed update will be able to run multiple times in a frame if the frame rate is too low
             }
+
+            Update();
+            LateUpdate();
+            FPS++;
 
             if(fpsTimer >= 1.0f)
             {
                 if(printFPS)
+                {
                     printf("FPS: %d\n", FPS);
+                }
+
                 fpsTimer = 0;
                 FPS = 0;
             }
@@ -105,15 +113,17 @@ namespace GamEncin
         Stop(Safe);
     }
 
-    void Application::Stop(EndType et)
+    void Application::PrintLog(EndType endType)
     {
-        switch(et)
+        printf("\nExit Code : %d\n", endType);
+
+        switch(endType)
         {
             case Safe:
-                fprintf(stderr, "Program ended safely");
+                fprintf(stdout, "Program ended safely");
                 break;
             case Warning:
-                fprintf(stderr, "Program ended with warning(s)");
+                fprintf(stdout, "Program ended with warning(s)");
                 break;
             case GLFWErr:
                 fprintf(stderr, "ERROR: Error occurred in GLFW3");
@@ -144,8 +154,21 @@ namespace GamEncin
                 break;
         }
 
-        printf(" : %d\n", et);
+        printf("\n");
+    }
+
+    void Application::Stop(EndType endType)
+    {
+        PrintLog(endType);
         renderer->EndRenderer();
-        exit(et);
+        exit(endType);
+    }
+
+    void Application::Stop(EndType endType, char* addMessage)
+    {
+        PrintLog(endType);
+        printf("Additional Message : %s\n", addMessage);
+        renderer->EndRenderer();
+        exit(endType);
     }
 }

@@ -6,29 +6,33 @@ void SceneBuilding(Application& app)
 
     int totalVerticeCount = 0, totalIndiceCount = 0, totalTriangleCount = 0;
 
-    //Sphere* shape = new Sphere(1.0, 20, 20);
-    //scene.AddObject(shape);
-    //shape->scale = Vector3(0.1, 0.5, 0.1);
+    Sphere* shape = new Sphere(1.0, 20, 20);
+    scene.AddObject(shape);
+    shape->scale = Vector3(0.2, 1.0, 0.2);
+
+    totalIndiceCount += shape->indices.size();
+    totalVerticeCount += shape->vertices.size();
+    totalTriangleCount += shape->indices.size() / 3;
 
     int row = 101;
     int col = 101;
     float gap = 15.0;
-    for(int i = 0; i < col; i++)
-    {
-        for(int j = 0; j < row; j++)
-        {
-            Sphere* shape = new Sphere(1.0, 20, 20);
-            scene.AddObject(shape);
-            shape->scale /= 100;
-            totalIndiceCount += shape->indices.size();
-            totalVerticeCount += shape->vertices.size();
-            totalTriangleCount += shape->indices.size() / 3;
-            //Cube* shape = scene.CreateObject<Cube>();
-            //Pyramid* shape = scene.CreateObject<Pyramid>();
-            shape->position = Vector3((i - row / 2), (j - col / 2), 0) * gap;
-            shape->rotation = Vector3((i + j), (i + j), (i + j)) * gap / 10;
-        }
-    }
+    //for(int i = 0; i < col; i++)
+    //{
+    //    for(int j = 0; j < row; j++)
+    //    {
+    //        Sphere* shape = new Sphere(1.0, 20, 20);
+    //        scene.AddObject(shape);
+    //        shape->scale /= 100;
+    //        totalIndiceCount += shape->indices.size();
+    //        totalVerticeCount += shape->vertices.size();
+    //        totalTriangleCount += shape->indices.size() / 3;
+    //        //Cube* shape = scene.CreateObject<Cube>();
+    //        //Pyramid* shape = scene.CreateObject<Pyramid>();
+    //        shape->position = Vector3((i - row / 2), (j - col / 2), 0) * gap;
+    //        shape->rotation = Vector3((i + j), (i + j), (i + j)) * gap / 10;
+    //    }
+    //}
 
     printf("Sphere vertice count: %d\n", totalVerticeCount);
     printf("Sphere indice count: %d\n", totalIndiceCount);

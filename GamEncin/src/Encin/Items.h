@@ -54,6 +54,7 @@ namespace GamEncin
         virtual void Awake() {};
         virtual void Start() {};
         virtual void Update() {};
+        virtual void LateUpdate();
         virtual void FixUpdate() {};
     };
 
@@ -87,6 +88,7 @@ namespace GamEncin
         void Awake();
         void Start();
         void Update();
+        void LateUpdate();
         void FixUpdate();
     };
 

@@ -94,6 +94,14 @@ namespace GamEncin
         }
     }
 
+    void Scene::LateUpdate()
+    {
+        for(Object* object : objects)
+        {
+            object->LateUpdate();
+        }
+    }
+
     void Scene::FixUpdate()
     {
         for(Object* object : objects)
@@ -136,9 +144,9 @@ namespace GamEncin
         //shaders already compiled and linked to the program, so we can delete them
 
         positionDividerVarID = glGetUniformLocation(ID, "positionDivider");
-        positionVarID = glGetUniformLocation(ID, "position");
-        rotationVarID = glGetUniformLocation(ID, "rotation");
-        scaleVarID = glGetUniformLocation(ID, "scale");
+        positionVarID = glGetUniformLocation(ID, "objPosition");
+        rotationVarID = glGetUniformLocation(ID, "objRotation");
+        scaleVarID = glGetUniformLocation(ID, "objScale");
     }
 
     void Shader::CheckShaderErrors(GLuint shader, const char* type)
@@ -152,8 +160,7 @@ namespace GamEncin
             if(hasCompiled == GL_FALSE)
             {
                 glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-                fprintf(stderr, "\nERROR: Error occurred while compiling shaders\nCause: %s\nDetails: %s\n", type, infoLog);
-                Application::instance->Stop(ShaderCompilationErr);
+                Application::instance->Stop(ShaderCompilationErr, infoLog);
             }
         }
         else
@@ -162,8 +169,7 @@ namespace GamEncin
             if(hasCompiled == GL_FALSE)
             {
                 glGetProgramInfoLog(shader, 1024, NULL, infoLog);
-                fprintf(stderr, "\nERROR: Error occurred while linking shaders\nCause: %s\nDetails: %s\n", type, infoLog);
-                Application::instance->Stop(ShaderLinkingErr);
+                Application::instance->Stop(ShaderLinkingErr, infoLog);
             }
         }
     }
@@ -270,9 +276,9 @@ namespace GamEncin
     void Renderer::InitialRender(vector<Object*> objects)
     {
         if(glfwInit() == GLFW_FALSE)
-            Application::instance->Stop(GLFWErr); // Exit the function if GLFW initialization fails
+            Application::instance->Stop(GLFWErr);
 
-        // Configure the OpenGL version, 460 core
+        // OpenGL Version : 460 core
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -280,23 +286,17 @@ namespace GamEncin
         window = glfwCreateWindow(Application::instance->windowSize.x, Application::instance->windowSize.y, "GamEncin", NULL, NULL);
 
         if(!window)
-            Application::instance->Stop(GLFWErr); // Exit the function if window creation fails
-        //TODO edit here
+            Application::instance->Stop(GLFWErr);
+
         glfwMakeContextCurrent(window);
 
-        //Registers a callback function that is called when the window is resized
         glfwSetFramebufferSizeCallback(window, FrameBufferSizeCallback);
 
         if(!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
-            Application::instance->Stop(GLADErr); // Exit the function if GLAD initialization fails
+            Application::instance->Stop(GLADErr);
 
         if(!gladLoadGL())
             Application::instance->Stop(GLADErr);
-
-        // In OpenGL, objects like VAOs, VBOs, shaders, and textures are handles or IDs that reference data stored in the GPU. So we use GLuint to store them.
-        // lifecycle / pipeline of each object: creation -> binding -> configuration -> usage -> unbinding / deletion.
-
-        // Binding makes an object the active one in the context (window). When we call a function, what it does depends on the internal state of opengl - on the context/object. There can be only one active object of each type at a time. fe: only one active VAO, VBO, texture, etc.
 
         shaderProgram = new Shader("GamEncin/src/Shaders/default.vert", "GamEncin/src/Shaders/default.frag");
 

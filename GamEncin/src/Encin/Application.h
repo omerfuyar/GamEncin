@@ -34,12 +34,16 @@ namespace GamEncin
         Scene& CreateScene();
         Scene& CreateAndUseScene();
         void SetCurrentScene(Scene& scene);
+        void Run();
+        void Stop(EndType endType);
+        void Stop(EndType endType, char* addMessage);
+    private:
         void Awake();
         void Start();
         void Update();
+        void LateUpdate();
         void FixUpdate();
-        void Run();
+        void PrintLog(EndType endType);
         void GameLoops();
-        void Stop(EndType et);
     };
 }
