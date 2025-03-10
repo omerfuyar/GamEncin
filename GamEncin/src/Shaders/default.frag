@@ -1,7 +1,7 @@
 #version 460 core
 out vec4 fragColor;
 
-flat in vec3 color;
+ in vec3 color;
 //TODO flat for disable color interpolation
 
 void main()

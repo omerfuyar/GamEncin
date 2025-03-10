@@ -216,7 +216,7 @@ namespace GamEncin
 
                 for(int j = 0; j < resolution; ++j)
                 {
-                    currSectorAngle = j * sectorStep; //from 0 to 2pi inclusive
+                    currSectorAngle = j * sectorStep;
 
                     x = radius * MathYaman::CosRad(currSectorAngle);
                     z = radius * MathYaman::SinRad(currSectorAngle);
@@ -234,7 +234,7 @@ namespace GamEncin
                 indices.push_back(0); //center1
                 indices.push_back(i + 1);
                 indices.push_back((i + 1) % resolution + 1);
-                indices.push_back(center2);
+                indices.push_back(center2); //center2
                 indices.push_back(center2 + i + 1);
                 indices.push_back(center2 + (i + 1) % resolution + 1);
 
@@ -295,7 +295,7 @@ namespace GamEncin
 
             for(int i = 0; i < resolution; ++i)
             {
-                currSectorAngle = i * sectorStep; //from 0 to 2pi inclusive
+                currSectorAngle = i * sectorStep;
 
                 x = radius * MathYaman::CosRad(currSectorAngle);
                 z = radius * MathYaman::SinRad(currSectorAngle);
@@ -307,7 +307,7 @@ namespace GamEncin
 
             for(int i = 0; i < resolution; i++)
             {
-                indices.push_back(0); //center1
+                indices.push_back(0); //center
                 indices.push_back(i + 1);
                 indices.push_back((i + 1) % resolution + 1);
             }
@@ -336,7 +336,7 @@ namespace GamEncin
 
             for(int i = 0; i < resolution; ++i)
             {
-                currSectorAngle = i * sectorStep; //from 0 to 2pi inclusive
+                currSectorAngle = i * sectorStep;
 
                 x = radius * MathYaman::CosRad(currSectorAngle);
                 z = radius * MathYaman::SinRad(currSectorAngle);
@@ -370,31 +370,47 @@ namespace GamEncin
         float radius, thickness;
         int resolution;
 
-        Simit(float radius = 1.0, float thickness = 0.2, int resolution = 20)
+        Simit(float radius = 0.5, float thickness = 0.25, int resolution = 20)
         {
             this->radius = radius;
             this->thickness = thickness;
             this->resolution = resolution;
 
             float x, y, z;
-            float sectorStep = 2 * MathYaman::PI / resolution; //radian
-            float currSectorAngle;
+            float sectorSteps = 2 * MathYaman::PI / resolution; //radian
+            float currMajorAngle, currMinorAngle;
 
             for(int i = 0; i < resolution; ++i)
             {
-                currSectorAngle = i * sectorStep; //from 0 to 2pi inclusive
+                currMajorAngle = i * sectorSteps;
 
-                x = radius * MathYaman::CosRad(currSectorAngle);
-                z = radius * MathYaman::SinRad(currSectorAngle);
+                for(int j = 0; j < resolution; j++)
+                {
+                    currMinorAngle = j * sectorSteps;
+                    x = (radius + thickness * MathYaman::CosRad(currMinorAngle)) * MathYaman::CosRad(currMajorAngle);
+                    y = thickness * MathYaman::SinRad(currMinorAngle);
+                    z = (radius + thickness * MathYaman::CosRad(currMinorAngle)) * MathYaman::SinRad(currMajorAngle);
 
-                vertices.push_back(Vector3(x, y, z));
-                //vertices.push_back(Vector3(255, 16, 240) * (j % 2));
-                vertices.push_back(Vector3(x, y, z) * 255);
+                    vertices.push_back(Vector3(x, y, z));
+                    //vertices.push_back(Vector3(255, 16, 240) * (j % 2));
+                    vertices.push_back(Vector3(x, y, z) * 255);
+                }
             }
 
-            for(int i = 0; i < resolution; i++)
+            for(int i = 0; i < resolution; i++) //major
             {
+                int currMajorIndex = (i % resolution) * resolution;
+                int nextMajorIndex = ((i + 1) % resolution) * resolution;
 
+                for(int j = 0; j < resolution; j++) //minor
+                {
+                    indices.push_back(currMajorIndex + j);
+                    indices.push_back(nextMajorIndex + j);
+                    indices.push_back(currMajorIndex + (j + 1) % resolution);
+                    indices.push_back(nextMajorIndex + j);
+                    indices.push_back(nextMajorIndex + (j + 1) % resolution);
+                    indices.push_back(currMajorIndex + (j + 1) % resolution);
+                }
             }
 
         }
