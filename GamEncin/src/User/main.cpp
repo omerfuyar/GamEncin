@@ -6,11 +6,11 @@ void SceneBuilding(Application& app)
 
     int totalVerticeCount = 0, totalIndiceCount = 0, totalTriangleCount = 0;
 
-    Sphere* shape = new Sphere(1.0, 20, 20);
+    myObject* shape = new myObject;
     scene.AddObject(shape);
-    shape->scale = Vector3(0.2, 1.0, 0.2);
+    //shape->scale = Vector3(0.2, 0.8, 0.2);
 
-    totalIndiceCount += shape->indices.size();
+    totalIndiceCount += shape->indices.size() / 2;
     totalVerticeCount += shape->vertices.size();
     totalTriangleCount += shape->indices.size() / 3;
 

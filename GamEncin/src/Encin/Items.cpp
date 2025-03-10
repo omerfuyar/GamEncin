@@ -16,8 +16,6 @@ namespace GamEncin
 
     void Object::Draw()
     {
-        //vbo->Update(vertices);
-
         vao->Bind();
         vbo->Bind();
         ebo->Bind();
@@ -33,7 +31,6 @@ namespace GamEncin
         vao = new VAO();
         vbo = new VBO(vertices);
         ebo = new EBO(indices);
-        //size is coming from vectors, so it is the size of the type times vector size
     }
 
 #pragma endregion

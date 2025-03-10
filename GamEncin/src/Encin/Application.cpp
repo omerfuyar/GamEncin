@@ -96,17 +96,19 @@ namespace GamEncin
 
             Update();
             LateUpdate();
-            FPS++;
+            frameCount++;
 
             if(fpsTimer >= 1.0f)
             {
+                FPS = frameCount;
+
                 if(printFPS)
                 {
                     printf("FPS: %d\n", FPS);
                 }
 
                 fpsTimer = 0;
-                FPS = 0;
+                frameCount = 0;
             }
         }
 

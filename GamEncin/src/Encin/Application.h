@@ -21,6 +21,7 @@ namespace GamEncin
         Vector2 windowSize;
 
         int FPS = 0;
+        int frameCount = 0;
         int fixedFPS = 0; //the frame rate of the fixed update
         float fixedDeltaTime = 0.0; //interval between fixed updates in seconds
         float deltaTime = 0.0; //the duration of the last frame in seconds
