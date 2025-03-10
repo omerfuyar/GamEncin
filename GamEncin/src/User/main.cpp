@@ -6,17 +6,39 @@ void SceneBuilding(Application& app)
 
     int totalVerticeCount = 0, totalIndiceCount = 0, totalTriangleCount = 0;
 
-    myObject* shape = new myObject;
-    scene.AddObject(shape);
+    //myObject* shape = new myObject;
+    //scene.AddObject(shape);
     //shape->scale = Vector3(0.2, 0.8, 0.2);
 
-    totalIndiceCount += shape->indices.size() / 2;
-    totalVerticeCount += shape->vertices.size();
-    totalTriangleCount += shape->indices.size() / 3;
+    vector<Object*> shapes =
+    {
+        new Cube(),
+        new Sphere(),
+        new Circle(),
+        new Plane(),
+        new Simit(),
+        new Cone(),
+        new Cylinder(),
+        new Pyramid(),
+    };
 
-    int row = 101;
-    int col = 101;
-    float gap = 15.0;
+    int gridRows = 3;
+    int gridCols = 3;
+    float gap = 500.0;
+    for(int i = 0; i < shapes.size(); i++)
+    {
+        scene.AddObject(shapes[i]);
+        shapes[i]->scale = Vector3(0.25, 0.25, 0.25);
+
+        int row = i / gridCols;
+        int col = i % gridCols;
+        shapes[i]->position = Vector3((col - gridCols / 2), (row - gridRows / 2), 0) * gap;
+
+        totalIndiceCount += shapes[i]->indices.size() / 2;
+        totalVerticeCount += shapes[i]->vertices.size();
+        totalTriangleCount += shapes[i]->indices.size() / 3;
+    }
+
     //for(int i = 0; i < col; i++)
     //{
     //    for(int j = 0; j < row; j++)

@@ -75,14 +75,14 @@ namespace GamEncin
         Start();
 
         fixedDeltaTime = 1.0 / (float) fixedFPS;
-        steady_clock::time_point lastUpdate = high_resolution_clock::now();
+        steady_clock::time_point lastFrame = high_resolution_clock::now();
         float fpsTimer = 0.0;
 
         while(!renderer->windowCloseInput)
         {
             steady_clock::time_point now = high_resolution_clock::now();
-            deltaTime = duration<float>(now - lastUpdate).count();
-            lastUpdate = now;
+            deltaTime = duration<float>(now - lastFrame).count();
+            lastFrame = now;
 
             accumulatedTime += deltaTime;
             secondsPastFromStart += deltaTime;

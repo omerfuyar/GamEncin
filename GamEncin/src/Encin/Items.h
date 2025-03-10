@@ -53,7 +53,10 @@ namespace GamEncin
         void Initialize();
         virtual void Awake() {}
         virtual void Start() {}
-        virtual void Update() {}
+        void Update()
+        {
+            rotation += Vector3(1, 2, 1) * Application::instance->deltaTime * 10;
+        }
         virtual void LateUpdate() {}
         virtual void FixUpdate() {}
     };
@@ -136,7 +139,7 @@ namespace GamEncin
             //TODO this is not compatible with shaders and normals
             //this sphere is rendering from top to bottom, 
             float x, y, z, xz;
-
+            float halfRadius = radius / 2;
             float stackStep = MathYaman::PI / resolution; //radian
             float sectorStep = 2 * MathYaman::PI / resolution; //radian
             float currStackAngle, currSectorAngle;
@@ -145,8 +148,8 @@ namespace GamEncin
             {
                 currStackAngle = MathYaman::PI / 2 - i * stackStep; //from pi/2 to -pi/2 inclusive
 
-                xz = radius * MathYaman::CosRad(currStackAngle);
-                y = radius * MathYaman::SinRad(currStackAngle);
+                xz = halfRadius * MathYaman::CosRad(currStackAngle);
+                y = halfRadius * MathYaman::SinRad(currStackAngle);
 
                 for(int j = 0; j <= resolution; ++j)
                 {
