@@ -174,7 +174,7 @@ namespace GamEncin
     void Shader::Use()
     {
         glUseProgram(ID);
-        glUniform1f(positionDividerVarID, Application::instance->renderer->positionDivider); //send fov data TODO bruh
+        persvectiveMatrix = glm::perspective(glm::radians(Application::instance->renderer->cameraFOV), (float) Application::instance->windowSize.x / Application::instance->windowSize.y, 0.1f, 100.0f);
     }
 
     void Shader::Delete()
