@@ -17,8 +17,6 @@ namespace GamEncin
         static Application* instance;
         vector<Scene*> scenes;
         Scene* currentScene = nullptr;
-        Renderer* renderer = nullptr;
-        Vector2 windowSize;
 
         int FPS = 0;
         int frameCount = 0;
@@ -37,8 +35,11 @@ namespace GamEncin
         void SetCurrentScene(Scene& scene);
         void Run();
         void Stop(EndType endType);
-        void Stop(EndType endType, char* addMessage);
+        void Stop(EndType endType, const char* addMessage);
+
     private:
+        bool isRunning = false;
+
         void Awake();
         void Start();
         void Update();

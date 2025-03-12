@@ -2,9 +2,9 @@
 
 namespace GamEncin
 {
-#pragma region Object
+#pragma region Shape
 
-    Object::~Object()
+    Shape::~Shape()
     {
         if(vao)
             vao->Delete();
@@ -14,7 +14,7 @@ namespace GamEncin
             ebo->Delete();
     }
 
-    void Object::Draw()
+    void Shape::Draw()
     {
         vao->Bind();
         vbo->Bind();
@@ -26,7 +26,7 @@ namespace GamEncin
         glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
     }
 
-    void Object::Initialize()
+    void Shape::Initialize()
     {
         vao = new VAO();
         vbo = new VBO(vertices);
@@ -39,7 +39,7 @@ namespace GamEncin
 
     Scene::Scene()
     {
-        Application::instance->scenes.push_back(this);
+        renderer = new Renderer();
     }
 
     void Scene::AddObject(Object* object)
@@ -68,6 +68,8 @@ namespace GamEncin
 
     void Scene::Awake()
     {
+        renderer->InitialRender();
+
         for(Object* object : objects)
         {
             object->Awake();
@@ -79,8 +81,9 @@ namespace GamEncin
         for(Object* object : objects)
         {
             object->Start();
-
         }
+
+        renderer->RenderFrame();
     }
 
     void Scene::Update()
@@ -97,6 +100,8 @@ namespace GamEncin
         {
             object->LateUpdate();
         }
+
+        renderer->RenderFrame();
     }
 
     void Scene::FixUpdate()
@@ -140,10 +145,10 @@ namespace GamEncin
         glDeleteShader(fragmentShader);
         //shaders already compiled and linked to the program, so we can delete them
 
-        positionDividerVarID = glGetUniformLocation(ID, "positionDivider");
-        positionVarID = glGetUniformLocation(ID, "objPosition");
-        rotationVarID = glGetUniformLocation(ID, "objRotation");
-        scaleVarID = glGetUniformLocation(ID, "objScale");
+        transformMatrixVarID = glGetUniformLocation(ID, "transformMatrix");
+        objPositionVarID = glGetUniformLocation(ID, "objPosition");
+        objRotationVarID = glGetUniformLocation(ID, "objRotation");
+        objScaleVarID = glGetUniformLocation(ID, "objScale");
     }
 
     void Shader::CheckShaderErrors(GLuint shader, const char* type)
@@ -174,7 +179,9 @@ namespace GamEncin
     void Shader::Use()
     {
         glUseProgram(ID);
-        persvectiveMatrix = glm::perspective(glm::radians(Application::instance->renderer->cameraFOV), (float) Application::instance->windowSize.x / Application::instance->windowSize.y, 0.1f, 100.0f);
+
+        //TODO bruh
+
     }
 
     void Shader::Delete()
@@ -268,9 +275,23 @@ namespace GamEncin
 
 #pragma endregion
 
+    void Camera::UseCamera(GLuint& transformMatrixLocation)
+    {
+        viewMatrix = glm::lookAt(position.ToGLMVec3(), (position + rotation).ToGLMVec3(), Vector3::Up().ToGLMVec3());
+        perspectiveMatrix = glm::perspective(glm::radians(cameraFOV), size.x / size.y, 0.1f, 100.0f);
+
+        //glUniformMatrix4fv(transformMatrixLocation, 1, GL_FALSE, glm::value_ptr(perspectiveMatrix * viewMatrix));
+        glUniformMatrix4fv(transformMatrixLocation, 1, GL_FALSE, glm::value_ptr(perspectiveMatrix));
+    }
+
 #pragma region Renderer
 
-    void Renderer::InitialRender(vector<Object*> objects)
+    Renderer::Renderer()
+    {
+        camera = new Camera();
+    }
+
+    void Renderer::InitialRender()
     {
         if(glfwInit() == GLFW_FALSE)
             Application::instance->Stop(GLFWErr);
@@ -280,7 +301,7 @@ namespace GamEncin
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        window = glfwCreateWindow(Application::instance->windowSize.x, Application::instance->windowSize.y, "GamEncin", NULL, NULL);
+        window = glfwCreateWindow(windowSize.x, windowSize.y, "GamEncin", NULL, NULL);
 
         if(!window)
             Application::instance->Stop(GLFWErr);
@@ -299,24 +320,25 @@ namespace GamEncin
 
         glEnable(GL_DEPTH_TEST);
 
-        for(Object* object : objects)
+        for(Shape* shape : shapes)
         {
-            object->Initialize();
+            shape->Initialize();
         }
     }
 
-    void Renderer::RenderFrame(vector<Object*> objects)
+    void Renderer::RenderFrame()
     {
         ClearColor(clearColor);
 
-        shaderProgram->Use();
+        UseShader();
 
-        for(Object* object : objects)
+        for(Shape* shape : shapes)
         {
-            GLSendUniformVector3(shaderProgram->positionVarID, object->position);
-            GLSendUniformVector3(shaderProgram->scaleVarID, object->scale);
-            GLSendUniformVector3(shaderProgram->rotationVarID, object->rotation);
-            object->Draw();
+            GLSendUniformVector3(shaderProgram->objPositionVarID, shape->position);
+            GLSendUniformVector3(shaderProgram->objScaleVarID, shape->scale);
+            GLSendUniformVector3(shaderProgram->objRotationVarID, shape->rotation);
+
+            shape->Draw();
         }
 
         glfwSwapBuffers(window);
@@ -326,20 +348,27 @@ namespace GamEncin
         glfwPollEvents();
     }
 
+    void Renderer::UseShader()
+    {
+        shaderProgram->Use();
+        camera->UseCamera(shaderProgram->transformMatrixVarID);
+    }
+
     void Renderer::ClearColor(Vector4 clearColor)
     {
         glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    void Renderer::GLSendUniformVector3(GLuint location, Vector3 vec3)
-    {
-        glUniform3f(location, vec3.x, vec3.y, vec3.z);
-    }
-
+    //called when the window is resized
     void Renderer::FrameBufferSizeCallback(GLFWwindow* window, int width, int height)
     {
         glViewport(0, 0, width, height);
+    }
+
+    void Renderer::GLSendUniformVector3(GLuint& location, Vector3 vector3)
+    {
+        glUniform3f(location, vector3.x, vector3.y, vector3.z);
     }
 
     void Renderer::EndRenderer()

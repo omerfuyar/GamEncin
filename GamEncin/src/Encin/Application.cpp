@@ -11,8 +11,6 @@ namespace GamEncin
             Application::instance->Stop(AppDuplicationErr);
         else
             instance = this;
-
-        renderer = new Renderer();
     }
 
     Scene& Application::CreateScene()
@@ -38,13 +36,11 @@ namespace GamEncin
     void Application::Awake()
     {
         currentScene->Awake();
-        renderer->InitialRender(currentScene->objects);
     }
 
     void Application::Start()
     {
         currentScene->Start();
-        renderer->RenderFrame(currentScene->objects);
     }
 
     void Application::Update()
@@ -55,7 +51,6 @@ namespace GamEncin
     void Application::LateUpdate()
     {
         currentScene->LateUpdate();
-        renderer->RenderFrame(currentScene->objects);
     }
 
     void Application::FixUpdate()
@@ -65,7 +60,10 @@ namespace GamEncin
 
     void Application::Run()
     {
-        GameLoops();
+        if(!isRunning)
+            GameLoops();
+        else
+            Stop(ProgramRunningErr);
     }
 
     void Application::GameLoops()
@@ -78,7 +76,7 @@ namespace GamEncin
         steady_clock::time_point lastFrame = high_resolution_clock::now();
         float fpsTimer = 0.0;
 
-        while(!renderer->windowCloseInput)
+        while(!currentScene->renderer->windowCloseInput)
         {
             steady_clock::time_point now = high_resolution_clock::now();
             deltaTime = duration<float>(now - lastFrame).count();
@@ -151,6 +149,9 @@ namespace GamEncin
             case AppDuplicationErr:
                 fprintf(stderr, "ERROR: Application duplicated");
                 break;
+            case ProgramRunningErr:
+                fprintf(stderr, "ERROR: Program is already running");
+                break;
             default:
                 fprintf(stderr, "ERROR: Unknown error occurred");
                 break;
@@ -162,15 +163,15 @@ namespace GamEncin
     void Application::Stop(EndType endType)
     {
         PrintLog(endType);
-        renderer->EndRenderer();
+        currentScene->renderer->EndRenderer();
         exit(endType);
     }
 
-    void Application::Stop(EndType endType, char* addMessage)
+    void Application::Stop(EndType endType, const char* addMessage)
     {
         PrintLog(endType);
         printf("Additional Message : %s\n", addMessage);
-        renderer->EndRenderer();
+        currentScene->renderer->EndRenderer();
         exit(endType);
     }
 }

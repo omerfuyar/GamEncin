@@ -5,14 +5,13 @@ layout (location = 1) in vec3 vertColor;
  out vec3 color;
 //TODO flat for disable color interpolation
 
-uniform float positionDivider;
 uniform vec3  objScale, objPosition, objRotation;
+uniform mat4 transformMatrix;
 //TODO hard code to Shader constructor 
 
 void main()
 {
     //scale -> rotate -> translate
-
     vec3 scaledTransform = vertPos;
 
     scaledTransform.x *= objScale.x;
@@ -25,11 +24,15 @@ void main()
     mat3x3 zRotation = mat3x3(cos(rotationRad.z), -sin(rotationRad.z), 0, sin(rotationRad.z), cos(rotationRad.z), 0, 0, 0, 1);
 
     vec3 rotatedTransform = scaledTransform;
-    rotatedTransform *= xRotation * yRotation * zRotation;
+    rotatedTransform = xRotation * rotatedTransform;
+    rotatedTransform = yRotation * rotatedTransform;
+    rotatedTransform = zRotation * rotatedTransform;
 
-    vec3 finalPosition = rotatedTransform + objPosition / positionDivider;
+    vec4 finalPosition = vec4(rotatedTransform + objPosition, 1.0);
 
-    gl_Position = vec4(finalPosition, 1.0);
+    finalPosition = transformMatrix * finalPosition;
+
+    gl_Position = finalPosition;
 
     color = vertColor / 255.0;
 }

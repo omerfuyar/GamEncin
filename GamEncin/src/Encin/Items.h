@@ -3,6 +3,11 @@
 #include <GLAD/glad.h>
 #include <GLFW/glfw3.h>
 #include <GLM/glm.hpp>
+#include <GLM/gtc/matrix_transform.hpp>
+#include <GLM/gtc/type_ptr.hpp>
+
+using glm::vec3;
+using glm::mat4;
 
 #ifndef POSITION_VBO_LAYOUT
 #define POSITION_VBO_LAYOUT 0
@@ -16,17 +21,65 @@
 
 namespace GamEncin
 {
-    class VAO;
-    class VBO;
-    class EBO;
-    class Shader;
-    class Renderer;
+
+#pragma region OpenGL Objects
+
+    class VBO
+    {
+    public:
+        VBO(vector<Vector3> vertices);
+        GLuint ID;
+
+        void Bind();
+        void Update(vector<Vector3> vertices);
+        void Delete();
+    };
+
+    class EBO
+    {
+    public:
+        EBO(vector<GLuint> indices);
+        GLuint ID;
+
+        void Bind();
+        void Delete();
+    };
+
+    class VAO
+    {
+    public:
+        VAO();
+        GLuint ID;
+
+        void LinkAttributes(GLuint layout, GLuint numComponents, GLenum type, GLuint offsetInBytes);
+        void Bind();
+        void Delete();
+    };
+
+    class Shader //Shader Program Object
+    {
+    public:
+        Shader(const char* vertexFile, const char* fragmentFile);
+        GLuint ID,
+            transformMatrixVarID,
+            objPositionVarID,
+            objRotationVarID,
+            objScaleVarID;
+
+        void Use();
+        void Delete();
+
+    private:
+        void CheckShaderErrors(GLuint shader, const char* type);
+    };
+
+#pragma endregion
+
+#pragma region Object And Shapes
 
     class Object
     {
     public:
-        ~Object();
-
         string name = "Object",
             tag = "Default Tag";
 
@@ -41,6 +94,18 @@ namespace GamEncin
             rotation,
             scale = Vector3::One();
 
+        virtual void Awake() {}
+        virtual void Start() {}
+        virtual void Update() {}
+        virtual void LateUpdate() {}
+        virtual void FixUpdate() {}
+    };
+
+    class Shape : public Object
+    {
+    public:
+        ~Shape();
+
         VAO* vao = nullptr;
 
         vector<Vector3> vertices;
@@ -51,19 +116,9 @@ namespace GamEncin
 
         void Draw();
         void Initialize();
-        virtual void Awake() {}
-        virtual void Start() {}
-        void Update()
-        {
-            rotation += Vector3(1, 2, 1) * Application::instance->deltaTime * 10;
-        }
-        virtual void LateUpdate() {}
-        virtual void FixUpdate() {}
     };
 
-#pragma region Shapes
-
-    class Cube : public Object
+    class Cube : public Shape
     {
     public:
         float sideLength;
@@ -95,7 +150,7 @@ namespace GamEncin
         }
     };
 
-    class Pyramid : public Object
+    class Pyramid : public Shape
     {
     public:
         float height, baseLength;
@@ -125,21 +180,20 @@ namespace GamEncin
         }
     };
 
-    class Sphere : public Object
+    class Sphere : public Shape
     {
     public:
-        float radius;
+        float halfRadius;
         int resolution;
 
-        Sphere(float radius = 1.0, int resolution = 20)
+        Sphere(float halfRadius = 0.5, int resolution = 20)
         {
-            this->radius = radius;
+            this->halfRadius = halfRadius;
             this->resolution = resolution;
 
             //TODO this is not compatible with shaders and normals
             //this sphere is rendering from top to bottom, 
             float x, y, z, xz;
-            float halfRadius = radius / 2;
             float stackStep = MathYaman::PI / resolution; //radian
             float sectorStep = 2 * MathYaman::PI / resolution; //radian
             float currStackAngle, currSectorAngle;
@@ -194,16 +248,16 @@ namespace GamEncin
         }
     };
 
-    class Cylinder : public Object
+    class Cylinder : public Shape
     {
     public:
-        float height, radius;
+        float height, halfRadius;
         int resolution;
 
-        Cylinder(float height = 1.0, float radius = 0.5, int resolution = 20)
+        Cylinder(float height = 1.0, float halfRadius = 0.5, int resolution = 20)
         {
             this->height = height;
-            this->radius = radius;
+            this->halfRadius = halfRadius;
             this->resolution = resolution;
 
             float x, y, z;
@@ -221,8 +275,8 @@ namespace GamEncin
                 {
                     currSectorAngle = j * sectorStep;
 
-                    x = radius * MathYaman::CosRad(currSectorAngle);
-                    z = radius * MathYaman::SinRad(currSectorAngle);
+                    x = halfRadius * MathYaman::CosRad(currSectorAngle);
+                    z = halfRadius * MathYaman::SinRad(currSectorAngle);
 
                     vertices.push_back(Vector3(x, y, z));
                     //vertices.push_back(Vector3(255, 16, 240) * (j % 2));
@@ -252,7 +306,7 @@ namespace GamEncin
         }
     };
 
-    class Plane : public Object
+    class Plane : public Shape
     {
     public:
         float sideLength;
@@ -277,15 +331,15 @@ namespace GamEncin
         }
     };
 
-    class Circle : public Object
+    class Circle : public Shape
     {
     public:
-        float radius;
+        float halfRadius;
         int resolution;
 
-        Circle(float radius = 1.0, int resolution = 20)
+        Circle(float halfRadius = 0.5, int resolution = 20)
         {
-            this->radius = radius;
+            this->halfRadius = halfRadius;
             this->resolution = resolution;
 
             float x, z;
@@ -300,8 +354,8 @@ namespace GamEncin
             {
                 currSectorAngle = i * sectorStep;
 
-                x = radius * MathYaman::CosRad(currSectorAngle);
-                z = radius * MathYaman::SinRad(currSectorAngle);
+                x = halfRadius * MathYaman::CosRad(currSectorAngle);
+                z = halfRadius * MathYaman::SinRad(currSectorAngle);
 
                 vertices.push_back(Vector3(x, 0, z));
                 //vertices.push_back(Vector3(255, 16, 240) * (j % 2));
@@ -317,16 +371,16 @@ namespace GamEncin
         }
     };
 
-    class Cone : public Object
+    class Cone : public Shape
     {
     public:
-        float height, radius;
+        float height, halfRadius;
         int resolution;
 
-        Cone(float height = 1.0, float radius = 1.0, int resolution = 20)
+        Cone(float height = 1.0, float halfRadius = 0.5, int resolution = 20)
         {
             this->height = height;
-            this->radius = radius;
+            this->halfRadius = halfRadius;
             this->resolution = resolution;
 
             float x, z;
@@ -341,8 +395,8 @@ namespace GamEncin
             {
                 currSectorAngle = i * sectorStep;
 
-                x = radius * MathYaman::CosRad(currSectorAngle);
-                z = radius * MathYaman::SinRad(currSectorAngle);
+                x = halfRadius * MathYaman::CosRad(currSectorAngle);
+                z = halfRadius * MathYaman::SinRad(currSectorAngle);
 
                 vertices.push_back(Vector3(x, -yQuarter, z));
                 //vertices.push_back(Vector3(255, 16, 240) * (j % 2));
@@ -367,16 +421,16 @@ namespace GamEncin
         }
     };
 
-    class Simit : public Object
+    class Simit : public Shape
     {
     public:
-        float radius, thickness;
+        float halfRadius, halfThickness;
         int resolution;
 
-        Simit(float radius = 0.5, float thickness = 0.25, int resolution = 20)
+        Simit(float halfRadius = 0.5, float halfThickness = 0.25, int resolution = 20)
         {
-            this->radius = radius;
-            this->thickness = thickness;
+            this->halfRadius = halfRadius;
+            this->halfThickness = halfThickness;
             this->resolution = resolution;
 
             float x, y, z;
@@ -390,9 +444,9 @@ namespace GamEncin
                 for(int j = 0; j < resolution; j++)
                 {
                     currMinorAngle = j * sectorSteps;
-                    x = (radius + thickness * MathYaman::CosRad(currMinorAngle)) * MathYaman::CosRad(currMajorAngle);
-                    y = thickness * MathYaman::SinRad(currMinorAngle);
-                    z = (radius + thickness * MathYaman::CosRad(currMinorAngle)) * MathYaman::SinRad(currMajorAngle);
+                    x = (halfRadius + halfThickness * MathYaman::CosRad(currMinorAngle)) * MathYaman::CosRad(currMajorAngle);
+                    y = halfThickness * MathYaman::SinRad(currMinorAngle);
+                    z = (halfRadius + halfThickness * MathYaman::CosRad(currMinorAngle)) * MathYaman::SinRad(currMajorAngle);
 
                     vertices.push_back(Vector3(x, y, z));
                     //vertices.push_back(Vector3(255, 16, 240) * (j % 2));
@@ -421,11 +475,50 @@ namespace GamEncin
 
 #pragma endregion
 
+    class Camera : public Object
+    {
+    public:
+        GLfloat cameraFOV = 0.0;
+        Vector2 size = Vector2(720, 720);
+
+        void UseCamera(GLuint& transformMatrixLocation);
+
+    private:
+        mat4 perspectiveMatrix = mat4(1.0),
+            viewMatrix = mat4(1.0);
+    };
+
+    class Renderer
+    {
+    public:
+        Renderer();
+
+        vector<Shape*> shapes;
+        Shader* shaderProgram = nullptr;
+        Camera* camera = nullptr;
+        GLFWwindow* window = nullptr;
+
+        Vector2 windowSize = Vector2(720, 720);
+        Vector4 clearColor = Vector4(0, 0, 0, 0);
+        bool windowCloseInput = false;
+
+        void RenderFrame();
+        void InitialRender();
+        static void FrameBufferSizeCallback(GLFWwindow* window, int width, int height);
+        void EndRenderer();
+
+    private:
+        void GLSendUniformVector3(GLuint& location, Vector3 vector3);
+        void UseShader();
+        void ClearColor(Vector4 clearColor);
+    };
+
     class Scene
     {
     public:
         Scene();
 
+        Renderer* renderer = nullptr;
         vector<Object*> objects;
 
         template <typename T>
@@ -434,15 +527,42 @@ namespace GamEncin
             T* object = new T();
 
             Object* castedObject = dynamic_cast<Object*>(object);
-
-            if(!castedObject)
+            if(castedObject)
             {
-                Application::instance->Stop(TypeMismachErr);
+                objects.push_back(castedObject);
+            }
+            else
+            {
+                Application::instance->Stop(TypeMismachErr, "Argument is not an Object");
             }
 
-            objects.push_back(castedObject);
+            Shape* castedShape = dynamic_cast<Shape*>(object);
+            if(castedShape)
+            {
+                renderer->shapes.push_back(castedShape);
+            }
 
             return object;
+        }
+
+        template <typename T>
+        void AddObject(T* object)
+        {
+            Object* castedObject = dynamic_cast<Object*>(object);
+            if(castedObject)
+            {
+                objects.push_back(castedObject);
+            }
+            else
+            {
+                Application::instance->Stop(TypeMismachErr, "Argument is not an Object");
+            }
+
+            Shape* castedShape = dynamic_cast<Shape*>(object);
+            if(castedShape)
+            {
+                renderer->shapes.push_back(castedShape);
+            }
         }
 
         void AddObject(Object* object);
@@ -453,65 +573,5 @@ namespace GamEncin
         void Update();
         void LateUpdate();
         void FixUpdate();
-    };
-
-    class Shader //Shader Program Object
-    {
-    public:
-        Shader(const char* vertexFile, const char* fragmentFile);
-        GLuint ID, positionDividerVarID, positionVarID, rotationVarID, scaleVarID;
-
-        void CheckShaderErrors(GLuint shader, const char* type);
-        void Use();
-        void Delete();
-    };
-
-    class VBO
-    {
-    public:
-        VBO(vector<Vector3> vertices);
-        GLuint ID;
-
-        void Bind();
-        void Update(vector<Vector3> vertices);
-        void Delete();
-    };
-
-    class EBO
-    {
-    public:
-        EBO(vector<GLuint> indices);
-        GLuint ID;
-
-        void Bind();
-        void Delete();
-    };
-
-    class VAO
-    {
-    public:
-        VAO();
-        GLuint ID;
-
-        void LinkAttributes(GLuint layout, GLuint numComponents, GLenum type, GLuint offsetInBytes);
-        void Bind();
-        void Delete();
-    };
-
-    class Renderer
-    {
-    public:
-        Shader* shaderProgram = nullptr;
-        GLFWwindow* window = nullptr;
-        Vector4 clearColor = Vector4(0, 0, 0, 0);
-        GLfloat positionDivider = 0.0;
-        bool windowCloseInput = false;
-
-        void RenderFrame(vector<Object*> objects);
-        void InitialRender(vector<Object*> objects);
-        void ClearColor(Vector4 clearColor);
-        void GLSendUniformVector3(GLuint location, Vector3 vector);
-        static void FrameBufferSizeCallback(GLFWwindow* window, int width, int height);
-        void EndRenderer();
     };
 }

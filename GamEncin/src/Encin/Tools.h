@@ -1,6 +1,7 @@
 #pragma once
 #include <cmath>
 #include <fstream>
+#include <GLM/glm.hpp>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -21,7 +22,7 @@ namespace GamEncin
 
     enum EndType
     {
-        Safe, Warning, UnkErr, GLFWErr, GLADErr, ShaderCompilationErr, ShaderLinkingErr, ObjCouldNotFoundErr, TypeMismachErr, IOErr, AppDuplicationErr
+        Safe, Warning, UnkErr, GLFWErr, GLADErr, ShaderCompilationErr, ShaderLinkingErr, ObjCouldNotFoundErr, TypeMismachErr, IOErr, AppDuplicationErr, ProgramRunningErr
     };
 
     string getFileContents(const char* fileName);
@@ -224,6 +225,11 @@ namespace GamEncin
             return result;
         }
 
+        inline glm::vec3 ToGLMVec3()
+        {
+            return glm::vec3(x, y, z);
+        }
+
         inline float Set(float newX, float newY, float newZ)
         {
             x = newX;
@@ -232,21 +238,21 @@ namespace GamEncin
         }
 
         //Returns a Vector3(0, 0, 0)
-        static const inline Vector3 Zero() { return Vector3(0, 0, 0); }
+        static inline Vector3 Zero() { return Vector3(0, 0, 0); }
         //Returns a Vector3(1, 1, 1)
-        static const inline Vector3 One() { return Vector3(1, 1, 1); }
+        static inline Vector3 One() { return Vector3(1, 1, 1); }
         //Returns a Vector3(0, 1, 0)
-        static const inline Vector3 Up() { return Vector3(0, 1, 0); }
+        static inline Vector3 Up() { return Vector3(0, 1, 0); }
         //Returns a Vector3(1, 0, 0)
-        static const inline Vector3 Right() { return Vector3(1, 0, 0); }
+        static inline Vector3 Right() { return Vector3(1, 0, 0); }
         //Returns a Vector3(0, -1, 0)
-        static const inline Vector3 Down() { return Vector3(0, -1, 0); }
+        static inline Vector3 Down() { return Vector3(0, -1, 0); }
         //Returns a Vector3(-1, 0, 0)
-        static const inline Vector3 Left() { return Vector3(-1, 0, 0); }
+        static inline Vector3 Left() { return Vector3(-1, 0, 0); }
         //Returns a Vector3(0, 0, 1)
-        static const inline Vector3 Forward() { return Vector3(0, 0, 1); }
+        static inline Vector3 Forward() { return Vector3(0, 0, 1); }
         //Returns a Vector3(0, 0, -1)
-        static const inline Vector3 Backward() { return Vector3(0, 0, -1); }
+        static inline Vector3 Backward() { return Vector3(0, 0, -1); }
 
 #pragma endregion
     };
