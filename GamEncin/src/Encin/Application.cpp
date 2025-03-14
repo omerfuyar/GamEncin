@@ -3,15 +3,26 @@
 
 namespace GamEncin
 {
-    Application* Application::instance = nullptr;
 
-    Application::Application()
-    {
-        if(instance)
-            Application::instance->Stop(AppDuplicationErr);
-        else
-            instance = this;
-    }
+#pragma region Variable Definitions
+
+    Scene* Application::currentScene = nullptr;
+    Input* Application::input = nullptr;
+    vector<Scene*> Application::scenes;
+
+    int Application::FPS = 0,
+        Application::frameCount = 0,
+        Application::fixedFPS = 0;
+
+    float Application::deltaTime = 0.0,
+        Application::fixedDeltaTime = 0.0,
+        Application::accumulatedTime = 0.0,
+        Application::secondsPastFromStart = 0.0;
+
+    bool Application::printFPS = false,
+        Application::isRunning = false;
+
+#pragma endregion
 
     Scene& Application::CreateScene()
     {
@@ -36,6 +47,7 @@ namespace GamEncin
     void Application::Awake()
     {
         currentScene->Awake();
+        Input::Initialize(currentScene->renderer->window); //after the window is created
     }
 
     void Application::Start()
@@ -45,6 +57,7 @@ namespace GamEncin
 
     void Application::Update()
     {
+        Input::UpdateInputs();
         currentScene->Update();
     }
 
@@ -61,9 +74,14 @@ namespace GamEncin
     void Application::Run()
     {
         if(!isRunning)
+        {
             GameLoops();
+            isRunning = true;
+        }
         else
+        {
             Stop(ProgramRunningErr);
+        }
     }
 
     void Application::GameLoops()
@@ -113,8 +131,16 @@ namespace GamEncin
         Stop(Safe);
     }
 
+    void Application::Restart()
+    {
+        //Stop(Safe);
+        //Run();
+    }
+
     void Application::PrintLog(EndType endType)
     {
+        isRunning = false;
+
         printf("\nExit Code : %d\n", endType);
 
         switch(endType)
@@ -145,9 +171,6 @@ namespace GamEncin
                 break;
             case IOErr:
                 fprintf(stderr, "ERROR: Error occured while Input / Output actions");
-                break;
-            case AppDuplicationErr:
-                fprintf(stderr, "ERROR: Application duplicated");
                 break;
             case ProgramRunningErr:
                 fprintf(stderr, "ERROR: Program is already running");

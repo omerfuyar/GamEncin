@@ -386,6 +386,7 @@
     <ClInclude Include="Dependencies\GLM\vector_relational.hpp" />
     <ClInclude Include="GamEncin\src\Encin\Encin.h" />
     <ClInclude Include="GamEncin\src\Encin\Application.h" />
+    <ClInclude Include="GamEncin\src\Encin\GraphicLibraries.h" />
     <ClInclude Include="GamEncin\src\Encin\Tools.h" />
     <ClInclude Include="GamEncin\src\User\GamEncin.h" />
     <ClInclude Include="GamEncin\src\User\UserObjects.h" />

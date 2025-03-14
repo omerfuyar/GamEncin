@@ -57,7 +57,7 @@ namespace GamEncin
         }
         else
         {
-            Application::instance->Stop(ObjCouldNotFoundErr);
+            Application::Stop(ObjCouldNotFoundErr);
         }
     }
 
@@ -162,7 +162,7 @@ namespace GamEncin
             if(hasCompiled == GL_FALSE)
             {
                 glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-                Application::instance->Stop(ShaderCompilationErr, infoLog);
+                Application::Stop(ShaderCompilationErr, infoLog);
             }
         }
         else
@@ -171,7 +171,7 @@ namespace GamEncin
             if(hasCompiled == GL_FALSE)
             {
                 glGetProgramInfoLog(shader, 1024, NULL, infoLog);
-                Application::instance->Stop(ShaderLinkingErr, infoLog);
+                Application::Stop(ShaderLinkingErr, infoLog);
             }
         }
     }
@@ -275,14 +275,18 @@ namespace GamEncin
 
 #pragma endregion
 
+#pragma region Camera
+
     void Camera::UseCamera(GLuint& transformMatrixLocation)
     {
-        viewMatrix = glm::lookAt(position.ToGLMVec3(), (position + rotation).ToGLMVec3(), Vector3::Up().ToGLMVec3());
+        viewMatrix = glm::lookAt(position.ToGLMVec3(), (position + rotation).ToGLMVec3(), Vector3::Up().ToGLMVec3());;
         perspectiveMatrix = glm::perspective(glm::radians(cameraFOV), size.x / size.y, 0.1f, 100.0f);
 
         //glUniformMatrix4fv(transformMatrixLocation, 1, GL_FALSE, glm::value_ptr(perspectiveMatrix * viewMatrix));
         glUniformMatrix4fv(transformMatrixLocation, 1, GL_FALSE, glm::value_ptr(perspectiveMatrix));
     }
+
+#pragma endregion
 
 #pragma region Renderer
 
@@ -294,27 +298,27 @@ namespace GamEncin
     void Renderer::InitialRender()
     {
         if(glfwInit() == GLFW_FALSE)
-            Application::instance->Stop(GLFWErr);
+            Application::Stop(GLFWErr);
 
         // OpenGL Version : 460 core
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        window = glfwCreateWindow(windowSize.x, windowSize.y, "GamEncin", NULL, NULL);
+        window = glfwCreateWindow(initWindowSize.x, initWindowSize.y, "GamEncin", NULL, NULL);
 
         if(!window)
-            Application::instance->Stop(GLFWErr);
+            Application::Stop(GLFWErr);
 
         glfwMakeContextCurrent(window);
 
         glfwSetFramebufferSizeCallback(window, FrameBufferSizeCallback);
 
         if(!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
-            Application::instance->Stop(GLADErr);
+            Application::Stop(GLADErr);
 
         if(!gladLoadGL())
-            Application::instance->Stop(GLADErr);
+            Application::Stop(GLADErr);
 
         shaderProgram = new Shader("GamEncin/src/Shaders/default.vert", "GamEncin/src/Shaders/default.frag");
 
@@ -363,6 +367,7 @@ namespace GamEncin
     //called when the window is resized
     void Renderer::FrameBufferSizeCallback(GLFWwindow* window, int width, int height)
     {
+        Application::currentScene->renderer->camera->size = Vector2(width, height);
         glViewport(0, 0, width, height);
     }
 

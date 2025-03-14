@@ -935,6 +935,9 @@
     <ClInclude Include="Dependencies\GLM\vector_relational.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GamEncin\src\Encin\GraphicLibraries.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="LICENSE.txt" />

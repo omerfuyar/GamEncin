@@ -6,3 +6,4 @@
 
 using namespace GamEncin;
 using namespace GamEncin::MathYaman;
+using namespace GamEncin::InputSystem;

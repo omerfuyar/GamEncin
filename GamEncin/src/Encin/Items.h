@@ -1,10 +1,5 @@
 #pragma once
 #include "Tools.h"
-#include <GLAD/glad.h>
-#include <GLFW/glfw3.h>
-#include <GLM/glm.hpp>
-#include <GLM/gtc/matrix_transform.hpp>
-#include <GLM/gtc/type_ptr.hpp>
 
 using glm::vec3;
 using glm::mat4;
@@ -116,6 +111,11 @@ namespace GamEncin
 
         void Draw();
         void Initialize();
+
+        void Update() override
+        {
+            rotation += Vector3::One() * Application::deltaTime * 100;
+        }
     };
 
     class Cube : public Shape
@@ -498,7 +498,7 @@ namespace GamEncin
         Camera* camera = nullptr;
         GLFWwindow* window = nullptr;
 
-        Vector2 windowSize = Vector2(720, 720);
+        Vector2 initWindowSize = Vector2(720, 720);
         Vector4 clearColor = Vector4(0, 0, 0, 0);
         bool windowCloseInput = false;
 
@@ -555,7 +555,7 @@ namespace GamEncin
             }
             else
             {
-                Application::instance->Stop(TypeMismachErr, "Argument is not an Object");
+                Application::Stop(TypeMismachErr, "Argument is not an Object");
             }
 
             Shape* castedShape = dynamic_cast<Shape*>(object);

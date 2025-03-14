@@ -3,6 +3,7 @@
 #include <chrono>
 
 using namespace std::chrono;
+using namespace GamEncin::InputSystem;
 
 namespace GamEncin
 {
@@ -12,40 +13,42 @@ namespace GamEncin
     class Application //singleton
     {
     public:
-        Application();
+        static vector<Scene*> scenes;
+        static Scene* currentScene;
+        static Input* input;
 
-        static Application* instance;
-        vector<Scene*> scenes;
-        Scene* currentScene = nullptr;
+        static int FPS, //the number of frames that have passed in the last second
+            frameCount, //the number of frames that have passed since the last second
+            fixedFPS; //the frame rate of the fixed update
 
-        int FPS = 0;
-        int frameCount = 0;
-        int fixedFPS = 0; //the frame rate of the fixed update
-        float fixedDeltaTime = 0.0; //interval between fixed updates in seconds
-        float deltaTime = 0.0; //the duration of the last frame in seconds
-        float accumulatedTime = 0.0; //the time that has passed since the last fixed update in seconds
-        float secondsPastFromStart = 0.0;
-        bool printFPS = false;
+        static float fixedDeltaTime, //interval between fixed updates in seconds
+            deltaTime, //the duration of the last frame in seconds
+            accumulatedTime, //the time that has passed since the last fixed update in seconds
+            secondsPastFromStart; //the time that has passed since the start of the program in seconds
+
+        static bool printFPS, //whether to print the FPS to the console
+            isRunning; //whether the program is running
+
+        static Scene& CreateScene();
+        static Scene& CreateAndUseScene();
+        static void SetCurrentScene(Scene& scene);
+        static void Run();
+        static void Restart();
+        static void Stop(EndType endType);
+        static void Stop(EndType endType, const char* addMessage);
+
+    private:
+        Application() = delete;
 
         Application(const Application&) = delete;
         void operator=(const Application&) = delete;
 
-        Scene& CreateScene();
-        Scene& CreateAndUseScene();
-        void SetCurrentScene(Scene& scene);
-        void Run();
-        void Stop(EndType endType);
-        void Stop(EndType endType, const char* addMessage);
-
-    private:
-        bool isRunning = false;
-
-        void Awake();
-        void Start();
-        void Update();
-        void LateUpdate();
-        void FixUpdate();
-        void PrintLog(EndType endType);
-        void GameLoops();
+        static void Awake();
+        static void Start();
+        static void Update();
+        static void LateUpdate();
+        static void FixUpdate();
+        static void PrintLog(EndType endType);
+        static void GameLoops();
     };
 }
