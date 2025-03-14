@@ -348,8 +348,6 @@ namespace GamEncin
         glfwSwapBuffers(window);
 
         windowCloseInput = glfwWindowShouldClose(window);
-
-        glfwPollEvents();
     }
 
     void Renderer::UseShader()

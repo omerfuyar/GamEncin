@@ -4,6 +4,7 @@
 
 using namespace std::chrono;
 using namespace GamEncin::InputSystem;
+using namespace GamEncin::ToolKit;
 
 namespace GamEncin
 {
@@ -39,7 +40,6 @@ namespace GamEncin
 
     private:
         Application() = delete;
-
         Application(const Application&) = delete;
         void operator=(const Application&) = delete;
 

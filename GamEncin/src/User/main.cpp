@@ -8,33 +8,36 @@ void SceneBuilding()
         totalIndiceCount = 0,
         totalTriangleCount = 0;
 
-    vector<Shape*> shapes =
-    {
-        new Cube(),
-        new Sphere(),
-        new Circle(),
-        new Plane(),
-        new Simit(),
-        new Cone(),
-        new Cylinder(),
-        new Pyramid(),
-    };
+    myObject* obj = new myObject();
+    scene.AddObject(obj);
 
-    int gridRows = 3;
-    int gridCols = 3;
-    float gap = 3.0;
-    for(int i = 0; i < shapes.size(); i++)
-    {
-        scene.AddObject(shapes[i]);
-
-        int row = i / gridCols;
-        int col = i % gridCols;
-        shapes[i]->position = Vector3((col - gridCols / 2), (row - gridRows / 2), -5) * gap;
-
-        totalIndiceCount += shapes[i]->indices.size();
-        totalVerticeCount += shapes[i]->vertices.size();
-        totalTriangleCount += shapes[i]->indices.size() / 3;
-    }
+    //vector<Shape*> shapes =
+    //{
+    //    new Cube(),
+    //    new Sphere(),
+    //    new Circle(),
+    //    new Plane(),
+    //    new Simit(),
+    //    new Cone(),
+    //    new Cylinder(),
+    //    new Pyramid(),
+    //};
+    //
+    //int gridRows = 3;
+    //int gridCols = 3;
+    //float gap = 3.0;
+    //for(int i = 0; i < shapes.size(); i++)
+    //{
+    //    scene.AddObject(shapes[i]);
+    //
+    //    int row = i / gridCols;
+    //    int col = i % gridCols;
+    //    shapes[i]->position = Vector3((col - gridCols / 2), (row - gridRows / 2), -5) * gap;
+    //
+    //    totalIndiceCount += shapes[i]->indices.size();
+    //    totalVerticeCount += shapes[i]->vertices.size();
+    //    totalTriangleCount += shapes[i]->indices.size() / 3;
+    //}
 
     //for(int i = 0; i < gridCols; i++)
     //{

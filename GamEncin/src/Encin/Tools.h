@@ -3,6 +3,7 @@
 #include <cmath>
 #include <fstream>
 #include <iostream>
+#include <map>
 #include <sstream>
 #include <string>
 #include <thread>
@@ -12,20 +13,24 @@ using std::vector;
 using std::string;
 using std::shared_ptr;
 using std::unique_ptr;
+using std::map;
 
 namespace GamEncin
 {
-    enum Layer
+    namespace ToolKit
     {
-        Default, IgnoreRay, UI, Player, Layer1, Layer2, Layer3
-    };
+        enum Layer
+        {
+            Default, IgnoreRay, UI, Player, Layer1, Layer2, Layer3
+        };
 
-    enum EndType
-    {
-        Safe, Warning, UnkErr, GLFWErr, GLADErr, ShaderCompilationErr, ShaderLinkingErr, ObjCouldNotFoundErr, TypeMismachErr, IOErr, ProgramRunningErr
-    };
+        enum EndType
+        {
+            Safe, Warning, UnkErr, GLFWErr, GLADErr, ShaderCompilationErr, ShaderLinkingErr, ObjCouldNotFoundErr, TypeMismachErr, IOErr, ProgramRunningErr
+        };
 
-    string getFileContents(const char* fileName);
+        string getFileContents(const char* fileName);
+    }
 
     struct Vector2
     {
@@ -91,9 +96,9 @@ namespace GamEncin
 
 #pragma region Functions
 
-        inline glm::vec2 ToGLMVec2()
+        inline static Vector2 Lerp(Vector2 startVec, Vector2 endVec, float t)
         {
-            return glm::vec2(x, y);
+            return startVec + (endVec - startVec) * t;
         }
 
         inline float GetMagnitude()
@@ -116,6 +121,11 @@ namespace GamEncin
             Vector2 result = Vector2(x, y);
             result.Normalize();
             return result;
+        }
+
+        inline glm::vec2 ToGLMVec2()
+        {
+            return glm::vec2(x, y);
         }
 
         inline float Set(float newX, float newY)
@@ -206,6 +216,11 @@ namespace GamEncin
 #pragma endregion
 
 #pragma region Functions
+
+        inline static Vector3 Lerp(Vector3 startVec, Vector3 endVec, float t)
+        {
+            return startVec + (endVec - startVec) * t;
+        }
 
         inline float GetMagnitude()
         {
@@ -396,7 +411,7 @@ namespace GamEncin
 
     namespace InputSystem
     {
-        enum Key
+        enum KeyCode
         {
             A = GLFW_KEY_A,
             B = GLFW_KEY_B,
@@ -467,11 +482,25 @@ namespace GamEncin
             F12 = GLFW_KEY_F12,
         };
 
-        enum MouseButton
+        enum MouseButtonCode
         {
             MouseLeft = GLFW_MOUSE_BUTTON_LEFT,
             MouseRight = GLFW_MOUSE_BUTTON_RIGHT,
             MouseMiddle = GLFW_MOUSE_BUTTON_MIDDLE
+        };
+
+        struct Key
+        {
+            bool isPressed;
+            bool isDown;
+            bool isUp;
+        };
+
+        struct MouseButton
+        {
+            bool isPressed;
+            bool isDown;
+            bool isUp;
         };
 
         class Mouse
@@ -479,9 +508,12 @@ namespace GamEncin
         public:
             static Vector2 position,
                 positionDelta;
+
             static int scrollDelta;
 
-            void Update(GLFWwindow* window);
+            static map<int, MouseButton> buttons;
+
+            static void Update(GLFWwindow* window);
             static void ScrollCallBack(GLFWwindow* window, double xoffset, double yoffset);
         };
 
@@ -490,21 +522,21 @@ namespace GamEncin
         public:
             static GLFWwindow* window;
             static Mouse mouse;
+            static map<int, Key> keys;
             //TODO make it compatible with multiple mouse / input devices
 
             static void Initialize(GLFWwindow* window);
             static void UpdateInputs();
             static void KeyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods);
-            static bool GetKey(Key key);
-            static bool GetKeyDown(Key key);
-            static bool GetKeyUp(Key key);
-            static bool GetMouseButton(MouseButton mouseButton);
-            static bool GetMouseButtonDown(MouseButton mouseButton);
-            static bool GetMouseButtonUp(MouseButton mouseButton);
+            static bool GetKey(KeyCode key);
+            static bool GetKeyDown(KeyCode key);
+            static bool GetKeyUp(KeyCode key);
+            static bool GetMouseButton(MouseButtonCode mouseButton);
+            static bool GetMouseButtonDown(MouseButtonCode mouseButton);
+            static bool GetMouseButtonUp(MouseButtonCode mouseButton);
 
         private:
             Input() = delete;
-
             Input(const Input&) = delete;
             void operator=(const Input&) = delete;
         };
