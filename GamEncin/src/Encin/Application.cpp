@@ -121,7 +121,6 @@ namespace GamEncin
                 if(printFPS)
                 {
                     printf("FPS: %d\n", FPS);
-                    printf("Mouse scroll s : %d\n", Input::mouse.scrollDelta);
                 }
 
                 fpsTimer = 0;

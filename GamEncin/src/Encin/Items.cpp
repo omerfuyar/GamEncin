@@ -2,7 +2,15 @@
 
 namespace GamEncin
 {
-#pragma region Shape
+#pragma region Object And Shape
+
+    void Object::UpdateProperties()
+    {
+        direction.x = CosDeg(rotation.x) * CosDeg(rotation.y);
+        direction.y = SinDeg(rotation.x);
+        direction.z = CosDeg(rotation.x) * SinDeg(rotation.y);
+        direction.Normalize();
+    }
 
     Shape::~Shape()
     {
@@ -39,7 +47,7 @@ namespace GamEncin
 
     Scene::Scene()
     {
-        renderer = new Renderer();
+        renderer = new Renderer(this);
     }
 
     void Scene::AddObject(Object* object)
@@ -99,6 +107,7 @@ namespace GamEncin
         for(Object* object : objects)
         {
             object->LateUpdate();
+            object->UpdateProperties();
         }
 
         renderer->RenderFrame();
@@ -277,22 +286,36 @@ namespace GamEncin
 
 #pragma region Camera
 
+    Camera::Camera(Vector2 initSize)
+    {
+        size = initSize;
+        position = Vector3(0, 0, 0);
+        rotation = Vector3(0, -90, 0);
+        name = "Camera";
+        tag = "Camera";
+    }
+
     void Camera::UseCamera(GLuint& transformMatrixLocation)
     {
-        viewMatrix = glm::lookAt(position.ToGLMVec3(), (position + rotation).ToGLMVec3(), Vector3::Up().ToGLMVec3());;
-        perspectiveMatrix = glm::perspective(glm::radians(cameraFOV), size.x / size.y, 0.1f, 100.0f);
 
-        //glUniformMatrix4fv(transformMatrixLocation, 1, GL_FALSE, glm::value_ptr(perspectiveMatrix * viewMatrix));
-        glUniformMatrix4fv(transformMatrixLocation, 1, GL_FALSE, glm::value_ptr(perspectiveMatrix));
+        viewMatrix = glm::lookAt(position.ToGLMvec3(),
+                                 (position + direction).ToGLMvec3(),
+                                 Vector3::Up().ToGLMvec3());
+
+        perspectiveMatrix = glm::perspective(Deg2Rad(cameraFOV), size.x / size.y, 0.1f, 100.0f);
+
+        glUniformMatrix4fv(transformMatrixLocation, 1, GL_FALSE, glm::value_ptr(perspectiveMatrix * viewMatrix));
+        //value_ptr : &mat4[0][0] address of first element of the matrix
     }
 
 #pragma endregion
 
 #pragma region Renderer
 
-    Renderer::Renderer()
+    Renderer::Renderer(Scene* scene)
     {
-        camera = new Camera();
+        camera = new Camera(initWindowSize);
+        scene->AddObject(camera);
     }
 
     void Renderer::InitialRender()
@@ -334,7 +357,7 @@ namespace GamEncin
     {
         ClearColor(clearColor);
 
-        UseShader();
+        shaderProgram->Use();
 
         for(Shape* shape : shapes)
         {
@@ -347,13 +370,9 @@ namespace GamEncin
 
         glfwSwapBuffers(window);
 
-        windowCloseInput = glfwWindowShouldClose(window);
-    }
-
-    void Renderer::UseShader()
-    {
-        shaderProgram->Use();
         camera->UseCamera(shaderProgram->transformMatrixVarID);
+
+        windowCloseInput = glfwWindowShouldClose(window);
     }
 
     void Renderer::ClearColor(Vector4 clearColor)

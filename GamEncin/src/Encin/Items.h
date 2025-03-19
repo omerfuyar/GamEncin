@@ -4,6 +4,8 @@
 using glm::vec3;
 using glm::mat4;
 
+using namespace GamEncin::MathYaman;
+
 #ifndef POSITION_VBO_LAYOUT
 #define POSITION_VBO_LAYOUT 0
 #endif // !POSITION_VBO_LAYOUT
@@ -12,7 +14,7 @@ using glm::mat4;
 #define COLOR_VBO_LAYOUT 1
 #endif // !COLOR_VBO_LAYOUT
 
-//TODO BE CAREFUL WITH THESE IN VERTEX SHADER
+//TODO BE CAREFUL WITH THESE IN THE VERTEX SHADER
 
 namespace GamEncin
 {
@@ -87,8 +89,10 @@ namespace GamEncin
 
         Vector3 position,
             rotation,
-            scale = Vector3::One();
+            scale = Vector3::One(),
+            direction;
 
+        void UpdateProperties();
         virtual void Awake() {}
         virtual void Start() {}
         virtual void Update() {}
@@ -109,13 +113,8 @@ namespace GamEncin
         vector<GLuint> indices;
         EBO* ebo = nullptr;
 
-        void Draw();
         void Initialize();
-
-        void Update() override
-        {
-            rotation += Vector3::One() * Application::deltaTime * 100;
-        }
+        void Draw();
     };
 
     class Cube : public Shape
@@ -194,23 +193,23 @@ namespace GamEncin
             //TODO this is not compatible with shaders and normals
             //this sphere is rendering from top to bottom, 
             float x, y, z, xz;
-            float stackStep = MathYaman::PI / resolution; //radian
-            float sectorStep = 2 * MathYaman::PI / resolution; //radian
+            float stackStep = PI / resolution; //radian
+            float sectorStep = 2 * PI / resolution; //radian
             float currStackAngle, currSectorAngle;
 
             for(int i = 0; i <= resolution; ++i)
             {
-                currStackAngle = MathYaman::PI / 2 - i * stackStep; //from pi/2 to -pi/2 inclusive
+                currStackAngle = PI / 2 - i * stackStep; //from pi/2 to -pi/2 inclusive
 
-                xz = halfRadius * MathYaman::CosRad(currStackAngle);
-                y = halfRadius * MathYaman::SinRad(currStackAngle);
+                xz = halfRadius * CosRad(currStackAngle);
+                y = halfRadius * SinRad(currStackAngle);
 
                 for(int j = 0; j <= resolution; ++j)
                 {
                     currSectorAngle = j * sectorStep; //from 0 to 2pi inclusive
 
-                    x = xz * MathYaman::CosRad(currSectorAngle);
-                    z = xz * MathYaman::SinRad(currSectorAngle);
+                    x = xz * CosRad(currSectorAngle);
+                    z = xz * SinRad(currSectorAngle);
 
                     vertices.push_back(Vector3(x, y, z)); //for position
                     //vertices.push_back(Vector3(255, 16, 240) * (j % 2)); //for color
@@ -261,7 +260,7 @@ namespace GamEncin
             this->resolution = resolution;
 
             float x, y, z;
-            float sectorStep = 2 * MathYaman::PI / resolution; //radian
+            float sectorStep = 2 * PI / resolution; //radian
             float currSectorAngle;
 
             for(int i = -1; i < 2; i += 2)
@@ -275,8 +274,8 @@ namespace GamEncin
                 {
                     currSectorAngle = j * sectorStep;
 
-                    x = halfRadius * MathYaman::CosRad(currSectorAngle);
-                    z = halfRadius * MathYaman::SinRad(currSectorAngle);
+                    x = halfRadius * CosRad(currSectorAngle);
+                    z = halfRadius * SinRad(currSectorAngle);
 
                     vertices.push_back(Vector3(x, y, z));
                     //vertices.push_back(Vector3(255, 16, 240) * (j % 2));
@@ -343,7 +342,7 @@ namespace GamEncin
             this->resolution = resolution;
 
             float x, z;
-            float sectorStep = 2 * MathYaman::PI / resolution; //radian
+            float sectorStep = 2 * PI / resolution; //radian
             float currSectorAngle;
 
             vertices.push_back(Vector3(0, 0, 0));
@@ -354,8 +353,8 @@ namespace GamEncin
             {
                 currSectorAngle = i * sectorStep;
 
-                x = halfRadius * MathYaman::CosRad(currSectorAngle);
-                z = halfRadius * MathYaman::SinRad(currSectorAngle);
+                x = halfRadius * CosRad(currSectorAngle);
+                z = halfRadius * SinRad(currSectorAngle);
 
                 vertices.push_back(Vector3(x, 0, z));
                 //vertices.push_back(Vector3(255, 16, 240) * (j % 2));
@@ -385,7 +384,7 @@ namespace GamEncin
 
             float x, z;
             float yQuarter = height / 4;
-            float sectorStep = 2 * MathYaman::PI / resolution; //radian
+            float sectorStep = 2 * PI / resolution; //radian
             float currSectorAngle;
 
             vertices.push_back(Vector3(0, -yQuarter, 0));
@@ -395,8 +394,8 @@ namespace GamEncin
             {
                 currSectorAngle = i * sectorStep;
 
-                x = halfRadius * MathYaman::CosRad(currSectorAngle);
-                z = halfRadius * MathYaman::SinRad(currSectorAngle);
+                x = halfRadius * CosRad(currSectorAngle);
+                z = halfRadius * SinRad(currSectorAngle);
 
                 vertices.push_back(Vector3(x, -yQuarter, z));
                 //vertices.push_back(Vector3(255, 16, 240) * (j % 2));
@@ -434,7 +433,7 @@ namespace GamEncin
             this->resolution = resolution;
 
             float x, y, z;
-            float sectorSteps = 2 * MathYaman::PI / resolution; //radian
+            float sectorSteps = 2 * PI / resolution; //radian
             float currMajorAngle, currMinorAngle;
 
             for(int i = 0; i < resolution; ++i)
@@ -444,9 +443,9 @@ namespace GamEncin
                 for(int j = 0; j < resolution; j++)
                 {
                     currMinorAngle = j * sectorSteps;
-                    x = (halfRadius + halfThickness * MathYaman::CosRad(currMinorAngle)) * MathYaman::CosRad(currMajorAngle);
-                    y = halfThickness * MathYaman::SinRad(currMinorAngle);
-                    z = (halfRadius + halfThickness * MathYaman::CosRad(currMinorAngle)) * MathYaman::SinRad(currMajorAngle);
+                    x = (halfRadius + halfThickness * CosRad(currMinorAngle)) * CosRad(currMajorAngle);
+                    y = halfThickness * SinRad(currMinorAngle);
+                    z = (halfRadius + halfThickness * CosRad(currMinorAngle)) * SinRad(currMajorAngle);
 
                     vertices.push_back(Vector3(x, y, z));
                     //vertices.push_back(Vector3(255, 16, 240) * (j % 2));
@@ -478,20 +477,21 @@ namespace GamEncin
     class Camera : public Object
     {
     public:
-        GLfloat cameraFOV = 0.0;
-        Vector2 size = Vector2(720, 720);
+        GLfloat cameraFOV = 0.0f;
+        Vector2 size;
 
+        Camera(Vector2 initSize);
         void UseCamera(GLuint& transformMatrixLocation);
 
     private:
-        mat4 perspectiveMatrix = mat4(1.0),
-            viewMatrix = mat4(1.0);
+        mat4 perspectiveMatrix = mat4(1.0f),
+            viewMatrix = mat4(1.0f);
     };
 
     class Renderer
     {
     public:
-        Renderer();
+        Renderer(Scene* scene);
 
         vector<Shape*> shapes;
         Shader* shaderProgram = nullptr;
@@ -509,7 +509,6 @@ namespace GamEncin
 
     private:
         void GLSendUniformVector3(GLuint& location, Vector3 vector3);
-        void UseShader();
         void ClearColor(Vector4 clearColor);
     };
 

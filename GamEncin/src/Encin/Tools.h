@@ -21,7 +21,7 @@ namespace GamEncin
     {
         enum Layer
         {
-            Default, IgnoreRay, UI, Player, Layer1, Layer2, Layer3
+            Default, IgnoreRay, UI, Player, Layer0, Layer1, Layer2, Layer3, Layer4, Layer5, Layer6, Layer7, Layer8, Layer9
         };
 
         enum EndType
@@ -32,274 +32,6 @@ namespace GamEncin
         string getFileContents(const char* fileName);
     }
 
-    struct Vector2
-    {
-    public:
-
-        float x, y;
-
-        Vector2(float x = 0, float y = 0) : x(x), y(y) {};
-
-        ~Vector2() = default;
-
-#pragma region Operators
-
-        inline Vector2 operator + (const Vector2& other)
-        {
-            return Vector2(x + other.x, y + other.y);
-        }
-
-        inline Vector2 operator += (const Vector2& other)
-        {
-            x += other.x;
-            y += other.y;
-            return Vector2(x, y);
-        }
-
-        inline Vector2 operator - (const Vector2& other)
-        {
-            return Vector2(x - other.x, y - other.y);
-        }
-
-        inline Vector2 operator -= (const Vector2& other)
-        {
-            x -= other.x;
-            y -= other.y;
-            return Vector2(x, y);
-        }
-
-        inline Vector2 operator * (const float other)
-        {
-            return Vector2(x * other, y * other);
-        }
-
-        inline Vector2 operator *= (const float other)
-        {
-            x *= other;
-            y *= other;
-            return Vector2(x, y);
-        }
-
-        inline Vector2 operator / (const float other)
-        {
-            return Vector2(x / other, y / other);
-        }
-
-        inline Vector2 operator /= (const float other)
-        {
-            x /= other;
-            y /= other;
-            return Vector2(x, y);
-        }
-
-#pragma endregion
-
-#pragma region Functions
-
-        inline static Vector2 Lerp(Vector2 startVec, Vector2 endVec, float t)
-        {
-            return startVec + (endVec - startVec) * t;
-        }
-
-        inline float GetMagnitude()
-        {
-            return sqrt(x * x + y * y);
-        }
-
-        //Scales and returns the Vector2 magnitude of 1
-        inline Vector2 Normalize()
-        {
-            float magnitude = GetMagnitude();
-            x /= magnitude;
-            y /= magnitude;
-            return Vector2(x, y);
-        }
-
-        //Returns the normalized version of the Vector2
-        inline Vector2 Normalized()
-        {
-            Vector2 result = Vector2(x, y);
-            result.Normalize();
-            return result;
-        }
-
-        inline glm::vec2 ToGLMVec2()
-        {
-            return glm::vec2(x, y);
-        }
-
-        inline float Set(float newX, float newY)
-        {
-            x = newX;
-            y = newY;
-        }
-
-        //Returns a Vector2(0, 0)
-        static const inline Vector2 Zero() { return Vector2(0, 0); }
-        //Returns a Vector2(1, 1)                            
-        static const inline Vector2 One() { return Vector2(1, 1); }
-        //Returns a Vector2(0, 1)                           
-        static const inline Vector2 Up() { return Vector2(0, 1); }
-        //Returns a Vector2(1, 0)                          
-        static const inline Vector2 Right() { return Vector2(1, 0); }
-        //Returns a Vector2(0, -1)
-        static const inline Vector2 Down() { return Vector2(0, -1); }
-        //Returns a Vector2(-1, 0)
-        static const inline Vector2 Left() { return Vector2(-1, 0); }
-
-#pragma endregion
-    };
-
-    struct Vector3
-    {
-    public:
-        float x, y, z;
-
-        Vector3(float x = 0, float y = 0, float z = 0) : x(x), y(y), z(z) {}
-
-        ~Vector3() = default;
-
-#pragma region Operators
-
-        inline Vector3 operator + (const Vector3& other)
-        {
-            return Vector3(x + other.x, y + other.y, z + other.z);
-        }
-
-        inline Vector3 operator += (const Vector3& other)
-        {
-            x += other.x;
-            y += other.y;
-            z += other.z;
-            return Vector3(x, y, z);
-        }
-
-        inline Vector3 operator - (const Vector3& other)
-        {
-            return Vector3(x - other.x, y - other.y, z - other.z);
-        }
-
-        inline Vector3 operator -= (const Vector3& other)
-        {
-            x -= other.x;
-            y -= other.y;
-            z -= other.z;
-            return Vector3(x, y, z);
-        }
-
-        inline Vector3 operator * (const float other)
-        {
-            return Vector3(x * other, y * other, z * other);
-        }
-
-        inline Vector3 operator *= (const float other)
-        {
-            x *= other;
-            y *= other;
-            z *= other;
-            return Vector3(x, y, z);
-        }
-
-        inline Vector3 operator / (const float other)
-        {
-            return Vector3(x / other, y / other, z / other);
-        }
-
-        inline Vector3 operator /= (const float other)
-        {
-            x /= other;
-            y /= other;
-            z /= other;
-            return Vector3(x, y, z);
-        }
-
-#pragma endregion
-
-#pragma region Functions
-
-        inline static Vector3 Lerp(Vector3 startVec, Vector3 endVec, float t)
-        {
-            return startVec + (endVec - startVec) * t;
-        }
-
-        inline float GetMagnitude()
-        {
-            return sqrt(x * x + y * y + z * z);
-        }
-
-        //Scales and returns the Vector3 magnitude of 1
-        inline Vector3 Normalize()
-        {
-            float magnitude = GetMagnitude();
-            x /= magnitude;
-            y /= magnitude;
-            z /= magnitude;
-            return Vector3(x, y, z);
-        }
-
-        //Returns the normalized version of the Vector2
-        inline Vector3 Normalized()
-        {
-            Vector3 result = Vector3(x, y, z);
-            result.Normalize();
-            return result;
-        }
-
-        inline glm::vec3 ToGLMVec3()
-        {
-            return glm::vec3(x, y, z);
-        }
-
-        inline float Set(float newX, float newY, float newZ)
-        {
-            x = newX;
-            y = newY;
-            z = newZ;
-        }
-
-        //Returns a Vector3(0, 0, 0)
-        static inline Vector3 Zero() { return Vector3(0, 0, 0); }
-        //Returns a Vector3(1, 1, 1)
-        static inline Vector3 One() { return Vector3(1, 1, 1); }
-        //Returns a Vector3(0, 1, 0)
-        static inline Vector3 Up() { return Vector3(0, 1, 0); }
-        //Returns a Vector3(1, 0, 0)
-        static inline Vector3 Right() { return Vector3(1, 0, 0); }
-        //Returns a Vector3(0, -1, 0)
-        static inline Vector3 Down() { return Vector3(0, -1, 0); }
-        //Returns a Vector3(-1, 0, 0)
-        static inline Vector3 Left() { return Vector3(-1, 0, 0); }
-        //Returns a Vector3(0, 0, 1)
-        static inline Vector3 Forward() { return Vector3(0, 0, 1); }
-        //Returns a Vector3(0, 0, -1)
-        static inline Vector3 Backward() { return Vector3(0, 0, -1); }
-
-#pragma endregion
-    };
-
-    struct Vector4
-    {
-    public:
-        float x, y, z, w;
-
-        Vector4(float x = 0, float y = 0, float z = 0, float w = 0) : x(x), y(y), z(z), w(w) {}
-
-        ~Vector4() = default;
-
-        float Set(float newX, float newY, float newZ, float newW)
-        {
-            x = newX;
-            y = newY;
-            z = newZ;
-            w = newW;
-        }
-
-        //Returns a Vector4(0, 0, 0, 0)
-        static const inline Vector4 Zero() { return Vector4(0, 0, 0, 0); }
-        //Returns a Vector4(1, 1, 1, 1)
-        static const inline Vector4 One() { return Vector4(1, 1, 1, 1); }
-    };
-
     namespace MathYaman
     {
         //Euler, PI, Earth's gravity, Gravitational constant
@@ -307,6 +39,7 @@ namespace GamEncin
             PI = 3.1415927F,
             GRAVITY = 9.80665F,
             G = 6.67F / 1e11F;
+
 
 #pragma region Functions
 
@@ -375,6 +108,11 @@ namespace GamEncin
             return tan(radian);
         }
 
+        inline float TanDeg(float degree)
+        {
+            return tan(Deg2Rad(degree));
+        }
+
         inline float Min(float a, float b)
         {
             return a < b ? a : b;
@@ -407,10 +145,320 @@ namespace GamEncin
 
 #pragma endregion
 
+#pragma region Vectors
+
+        struct Vector2
+        {
+        public:
+
+            float x, y;
+
+            Vector2(float x = 0, float y = 0) : x(x), y(y) {};
+
+            ~Vector2() = default;
+
+#pragma region Operators
+
+            inline Vector2 operator + (const Vector2& other)
+            {
+                return Vector2(x + other.x, y + other.y);
+            }
+
+            inline Vector2 operator += (const Vector2& other)
+            {
+                x += other.x;
+                y += other.y;
+                return Vector2(x, y);
+            }
+
+            inline Vector2 operator - (const Vector2& other)
+            {
+                return Vector2(x - other.x, y - other.y);
+            }
+
+            inline Vector2 operator -= (const Vector2& other)
+            {
+                x -= other.x;
+                y -= other.y;
+                return Vector2(x, y);
+            }
+
+            inline Vector2 operator * (const Vector2& other)
+            {
+                return Vector2(x * other.x, y * other.y);
+            }
+
+            inline Vector2 operator *= (const Vector2& other)
+            {
+                x *= other.x;
+                y *= other.y;
+                return Vector2(x, y);
+            }
+
+            inline Vector2 operator * (const float other)
+            {
+                return Vector2(x * other, y * other);
+            }
+
+            inline Vector2 operator *= (const float other)
+            {
+                x *= other;
+                y *= other;
+                return Vector2(x, y);
+            }
+
+            inline Vector2 operator / (const float other)
+            {
+                return Vector2(x / other, y / other);
+            }
+
+            inline Vector2 operator /= (const float other)
+            {
+                x /= other;
+                y /= other;
+                return Vector2(x, y);
+            }
+
+#pragma endregion
+
+#pragma region Functions
+
+            inline static Vector2 Lerp(Vector2 startVec, Vector2 endVec, float t)
+            {
+                return startVec + (endVec - startVec) * t;
+            }
+
+            inline float GetMagnitude()
+            {
+                return sqrt(x * x + y * y);
+            }
+
+            //Scales and returns the Vector2 magnitude of 1
+            inline Vector2 Normalize()
+            {
+                float magnitude = GetMagnitude();
+                x /= magnitude;
+                y /= magnitude;
+                return Vector2(x, y);
+            }
+
+            //Returns the normalized version of the Vector2
+            inline Vector2 Normalized()
+            {
+                Vector2 result = Vector2(x, y);
+                result.Normalize();
+                return result;
+            }
+
+            inline glm::vec2 ToGLMVec2()
+            {
+                return glm::vec2(x, y);
+            }
+
+            inline float Set(float newX, float newY)
+            {
+                x = newX;
+                y = newY;
+            }
+
+            //Returns a Vector2(0, 0)
+            static const inline Vector2 Zero() { return Vector2(0, 0); }
+            //Returns a Vector2(1, 1)                            
+            static const inline Vector2 One() { return Vector2(1, 1); }
+            //Returns a Vector2(0, 1)                           
+            static const inline Vector2 Up() { return Vector2(0, 1); }
+            //Returns a Vector2(1, 0)                          
+            static const inline Vector2 Right() { return Vector2(1, 0); }
+            //Returns a Vector2(0, -1)
+            static const inline Vector2 Down() { return Vector2(0, -1); }
+            //Returns a Vector2(-1, 0)
+            static const inline Vector2 Left() { return Vector2(-1, 0); }
+
+#pragma endregion
+        };
+
+        struct Vector3
+        {
+        public:
+            float x, y, z;
+
+            Vector3(float x = 0, float y = 0, float z = 0) : x(x), y(y), z(z) {}
+
+            ~Vector3() = default;
+
+#pragma region Operators
+
+            inline Vector3 operator + (const Vector3& other)
+            {
+                return Vector3(x + other.x, y + other.y, z + other.z);
+            }
+
+            inline Vector3 operator += (const Vector3& other)
+            {
+                x += other.x;
+                y += other.y;
+                z += other.z;
+                return Vector3(x, y, z);
+            }
+
+            inline Vector3 operator - (const Vector3& other)
+            {
+                return Vector3(x - other.x, y - other.y, z - other.z);
+            }
+
+            inline Vector3 operator -= (const Vector3& other)
+            {
+                x -= other.x;
+                y -= other.y;
+                z -= other.z;
+                return Vector3(x, y, z);
+            }
+
+            inline Vector3 operator * (const Vector3& other)
+            {
+                return Vector3(x * other.x, y * other.y, z * other.z);
+            }
+
+            inline Vector3 operator *= (const Vector3& other)
+            {
+                x *= other.x;
+                y *= other.y;
+                z *= other.z;
+                return Vector3(x, y, z);
+            }
+
+            inline Vector3 operator * (const float other)
+            {
+                return Vector3(x * other, y * other, z * other);
+            }
+
+            inline Vector3 operator *= (const float other)
+            {
+                x *= other;
+                y *= other;
+                z *= other;
+                return Vector3(x, y, z);
+            }
+
+            inline Vector3 operator / (const float other)
+            {
+                return Vector3(x / other, y / other, z / other);
+            }
+
+            inline Vector3 operator /= (const float other)
+            {
+                x /= other;
+                y /= other;
+                z /= other;
+                return Vector3(x, y, z);
+            }
+
+#pragma endregion
+
+#pragma region Functions
+
+            inline static Vector3 Lerp(Vector3 startVec, Vector3 endVec, float t)
+            {
+                return startVec + (endVec - startVec) * t;
+            }
+
+            inline float GetMagnitude()
+            {
+                return sqrt(x * x + y * y + z * z);
+            }
+
+            //Scales and returns the Vector3 magnitude of 1
+            inline Vector3 Normalize()
+            {
+                float magnitude = GetMagnitude();
+                x /= magnitude;
+                y /= magnitude;
+                z /= magnitude;
+                return Vector3(x, y, z);
+            }
+
+            //Returns the normalized version of the Vector2
+            inline Vector3 Normalized()
+            {
+                Vector3 result = Vector3(x, y, z);
+                result.Normalize();
+                return result;
+            }
+
+            inline Vector3 Cross(const Vector3& other) const
+            {
+                return Vector3(
+                    y * other.z - z * other.y,
+                    z * other.x - x * other.z,
+                    x * other.y - y * other.x
+                );
+            }
+
+            inline glm::vec3 ToGLMvec3()
+            {
+                return glm::vec3(x, y, z);
+            }
+
+            inline float Set(float newX, float newY, float newZ)
+            {
+                x = newX;
+                y = newY;
+                z = newZ;
+            }
+
+            //Returns a Vector3(0, 0, 0)
+            static inline Vector3 Zero() { return Vector3(0, 0, 0); }
+            //Returns a Vector3(1, 1, 1)
+            static inline Vector3 One() { return Vector3(1, 1, 1); }
+            //Returns a Vector3(0, 1, 0)
+            static inline Vector3 Up() { return Vector3(0, 1, 0); }
+            //Returns a Vector3(1, 0, 0)
+            static inline Vector3 Right() { return Vector3(1, 0, 0); }
+            //Returns a Vector3(0, -1, 0)
+            static inline Vector3 Down() { return Vector3(0, -1, 0); }
+            //Returns a Vector3(-1, 0, 0)
+            static inline Vector3 Left() { return Vector3(-1, 0, 0); }
+            //Returns a Vector3(0, 0, 1)
+            static inline Vector3 Forward() { return Vector3(0, 0, 1); }
+            //Returns a Vector3(0, 0, -1)
+            static inline Vector3 Backward() { return Vector3(0, 0, -1); }
+
+#pragma endregion
+        };
+
+        struct Vector4
+        {
+        public:
+            float x, y, z, w;
+
+            Vector4(float x = 0, float y = 0, float z = 0, float w = 0) : x(x), y(y), z(z), w(w) {}
+
+            ~Vector4() = default;
+
+            float Set(float newX, float newY, float newZ, float newW)
+            {
+                x = newX;
+                y = newY;
+                z = newZ;
+                w = newW;
+            }
+
+            //Returns a Vector4(0, 0, 0, 0)
+            static const inline Vector4 Zero() { return Vector4(0, 0, 0, 0); }
+            //Returns a Vector4(1, 1, 1, 1)
+            static const inline Vector4 One() { return Vector4(1, 1, 1, 1); }
+        };
+
+#pragma endregion
+
     }
+
+    using namespace MathYaman;
 
     namespace InputSystem
     {
+        //TODO be careful while adding new inputs, add them also in Tools.cpp arrays they should be identical
+
         enum KeyCode
         {
             A = GLFW_KEY_A,
@@ -463,10 +511,10 @@ namespace GamEncin
             LeftAlt = GLFW_KEY_LEFT_ALT,
             RightAlt = GLFW_KEY_RIGHT_ALT,
             CapsLock = GLFW_KEY_CAPS_LOCK,
-            Up = GLFW_KEY_UP,
-            Down = GLFW_KEY_DOWN,
-            Left = GLFW_KEY_LEFT,
-            Right = GLFW_KEY_RIGHT,
+            UpArrow = GLFW_KEY_UP,
+            DownArrow = GLFW_KEY_DOWN,
+            LeftArrow = GLFW_KEY_LEFT,
+            RightArrow = GLFW_KEY_RIGHT,
 
             F1 = GLFW_KEY_F1,
             F2 = GLFW_KEY_F2,
@@ -506,36 +554,61 @@ namespace GamEncin
         class Mouse
         {
         public:
-            static Vector2 position,
-                positionDelta;
-
+            static Vector2 position, positionDelta;
             static int scrollDelta;
-
             static map<int, MouseButton> buttons;
 
+            static void Initialize(GLFWwindow* window);
             static void Update(GLFWwindow* window);
-            static void ScrollCallBack(GLFWwindow* window, double xoffset, double yoffset);
+            static void MouseScrollCallBack(GLFWwindow* window, double xoffset, double yoffset);
+            static void MouseButtonCallBack(GLFWwindow* window, int button, int action, int mods);
         };
 
         class Input
         {
         public:
+            //shouldn't be used by the user
+            static void Initialize(GLFWwindow* window);
+            //shouldn't be used by the user
+            static void UpdateInputs();
+            //shouldn't be used by the user
+            static void KeyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods);
+
+            //Returns true if the key is pressed in this frame
+            static bool GetKey(KeyCode key);
+
+            //Returns true if the key is pressed down in this frame
+            static bool GetKeyDown(KeyCode key);
+
+            //Returns true if the key is released in this frame
+            static bool GetKeyUp(KeyCode key);
+
+            //Returns true if the mouse button is pressed in this frame
+            static bool GetMouseButton(MouseButtonCode mouseButton);
+
+            //Returns true if the mouse button is pressed down in this frame
+            static bool GetMouseButtonDown(MouseButtonCode mouseButton);
+
+            //Returns true if the mouse button is released in this frame
+            static bool GetMouseButtonUp(MouseButtonCode mouseButton);
+
+            //Returns the scroll delta of the mouse. Either 0, 1 or -1
+            static int GetMouseScrollDelta();
+
+            //Returns the position of the mouse in pixels. Top left corner is the origin
+            static Vector2 GetMousePosition();
+
+            //Returns the difference between the current and the last frame's mouse position
+            static Vector2 GetMousePositionDelta();
+
+            //Returns the movement input of the user, shortcut for WASD and arrow + Control and Shift keys. 
+            static Vector3 GetMovementVector();
+
+        private:
             static GLFWwindow* window;
             static Mouse mouse;
             static map<int, Key> keys;
-            //TODO make it compatible with multiple mouse / input devices
 
-            static void Initialize(GLFWwindow* window);
-            static void UpdateInputs();
-            static void KeyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods);
-            static bool GetKey(KeyCode key);
-            static bool GetKeyDown(KeyCode key);
-            static bool GetKeyUp(KeyCode key);
-            static bool GetMouseButton(MouseButtonCode mouseButton);
-            static bool GetMouseButtonDown(MouseButtonCode mouseButton);
-            static bool GetMouseButtonUp(MouseButtonCode mouseButton);
-
-        private:
             Input() = delete;
             Input(const Input&) = delete;
             void operator=(const Input&) = delete;
