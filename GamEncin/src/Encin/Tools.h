@@ -14,6 +14,8 @@ using std::string;
 using std::shared_ptr;
 using std::unique_ptr;
 using std::map;
+using glm::vec3;
+using glm::mat4;
 
 namespace GamEncin
 {
@@ -575,6 +577,15 @@ namespace GamEncin
 
         class Input
         {
+        private:
+            static GLFWwindow* window;
+            static Mouse mouse;
+            static map<int, Key> keys;
+
+            Input() = delete;
+            Input(const Input&) = delete;
+            void operator=(const Input&) = delete;
+
         public:
             //shouldn't be used by the user
             static void Initialize(GLFWwindow* window);
@@ -585,42 +596,26 @@ namespace GamEncin
 
             //Returns true if the key is pressed in this frame
             static bool GetKey(KeyCode key);
-
             //Returns true if the key is pressed down in this frame
             static bool GetKeyDown(KeyCode key);
-
             //Returns true if the key is released in this frame
             static bool GetKeyUp(KeyCode key);
 
             //Returns true if the mouse button is pressed in this frame
             static bool GetMouseButton(MouseButtonCode mouseButton);
-
             //Returns true if the mouse button is pressed down in this frame
             static bool GetMouseButtonDown(MouseButtonCode mouseButton);
-
             //Returns true if the mouse button is released in this frame
             static bool GetMouseButtonUp(MouseButtonCode mouseButton);
-
             //Returns the scroll delta of the mouse. Either 0, 1 or -1
             static int GetMouseScrollDelta();
-
             //Returns the position of the mouse in pixels. Top left corner is the origin
             static Vector2 GetMousePosition();
-
             //Returns the difference between the current and the last frame's mouse position
             static Vector2 GetMousePositionDelta();
 
             //Returns the movement input of the user, shortcut for WASD and arrow + Control and Shift keys. 
             static Vector3 GetMovementVector();
-
-        private:
-            static GLFWwindow* window;
-            static Mouse mouse;
-            static map<int, Key> keys;
-
-            Input() = delete;
-            Input(const Input&) = delete;
-            void operator=(const Input&) = delete;
         };
     }
 }

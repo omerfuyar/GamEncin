@@ -1,9 +1,6 @@
 #pragma once
 #include "Tools.h"
 
-using glm::vec3;
-using glm::mat4;
-
 using namespace GamEncin::MathYaman;
 
 #ifndef POSITION_VBO_LAYOUT

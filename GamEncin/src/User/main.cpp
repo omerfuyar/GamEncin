@@ -6,9 +6,6 @@ void SceneBuilding()
 
     myObject* obj = new myObject();
     scene.AddObject(obj);
-
-    Vector2 asd(glm::vec2(1, 2));
-    printf("asd: %f, %f\n", asd.x, asd.y);
 }
 
 void SetVariables()

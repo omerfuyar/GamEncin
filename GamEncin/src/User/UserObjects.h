@@ -1,13 +1,15 @@
 #pragma once 
 #include "GamEncin.h"
 
-class myObject : public Pyramid
+class myObject : public Simit
 {
 public:
-    float speed = 7.5;
+    float camSpeed = 7.5,
+        rotSpeed = 75;
     Camera* camera = nullptr;
+    GLFWwindow* window = nullptr;
 
-    myObject() : Pyramid()
+    myObject() : Simit()
     {
         name = "myObject";
         position = Vector3(0, 0, -10);
@@ -16,23 +18,32 @@ public:
     void Start() override
     {
         camera = Application::currentScene->renderer->camera;
+        window = Application::currentScene->renderer->window;
     }
 
     void Update() override
     {
+        rotation += Vector3::One() * rotSpeed * Application::deltaTime;
+
         if(!Input::GetMouseButton(MouseLeft))
+        {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             return;
+        }
+
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
 
         Vector3 movement = Input::GetMovementVector();
         Vector2 mouseDelta = Input::GetMousePositionDelta();
 
         camera->cameraFOV += Input::GetMouseScrollDelta();
 
-        camera->position += camera->direction * speed * movement.y * Application::deltaTime;
-        camera->position += camera->direction.Cross(Vector3::Up()) * speed * movement.x * Application::deltaTime;
-        camera->position += Vector3::Up() * speed * movement.z * Application::deltaTime;
+        camera->position += camera->direction * camSpeed * movement.y * Application::deltaTime;
+        camera->position += camera->direction.Cross(Vector3::Up()) * camSpeed * movement.x * Application::deltaTime;
+        camera->position += Vector3::Up() * camSpeed * movement.z * Application::deltaTime;
 
         camera->rotation += Vector3(-mouseDelta.y, mouseDelta.x, 0) * 75 * Application::deltaTime;
-        printf("Camera Rotation: %f, %f, %f\n", camera->rotation.x, camera->rotation.y, camera->rotation.z);
+        camera->rotation.x = Clamp(camera->rotation.x, -89.0f, 89.0f);
     }
 };
