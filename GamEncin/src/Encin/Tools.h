@@ -35,7 +35,7 @@ namespace GamEncin
     namespace MathYaman
     {
         //Euler, PI, Earth's gravity, Gravitational constant
-        static const float E = 2.7182817F,
+        const float E = 2.7182817F,
             PI = 3.1415927F,
             GRAVITY = 9.80665F,
             G = 6.67F / 1e11F;
@@ -154,7 +154,7 @@ namespace GamEncin
             float x, y;
 
             Vector2(float x = 0, float y = 0) : x(x), y(y) {};
-
+            Vector2(const glm::vec2& vec) : x(vec.x), y(vec.y) {};
             ~Vector2() = default;
 
 #pragma region Operators
@@ -219,21 +219,33 @@ namespace GamEncin
                 return Vector2(x, y);
             }
 
+            inline bool operator == (const Vector2& other)
+            {
+                return x == other.x && y == other.y;
+            }
+
+            inline bool operator != (const Vector2& other)
+            {
+                return x != other.x || y != other.y;
+            }
+
 #pragma endregion
 
 #pragma region Functions
 
+            //Linear Interpolation between two Vector2, t is between 0 and 1
             inline static Vector2 Lerp(Vector2 startVec, Vector2 endVec, float t)
             {
                 return startVec + (endVec - startVec) * t;
             }
 
+            //Returns the magnitude of the Vector2
             inline float GetMagnitude()
             {
                 return sqrt(x * x + y * y);
             }
 
-            //Scales and returns the Vector2 magnitude of 1
+            //Scales the Vector2 to magnitude of 1 and returns it
             inline Vector2 Normalize()
             {
                 float magnitude = GetMagnitude();
@@ -250,15 +262,10 @@ namespace GamEncin
                 return result;
             }
 
+            //Returns the glm vec2 versiob of the Vector2
             inline glm::vec2 ToGLMVec2()
             {
                 return glm::vec2(x, y);
-            }
-
-            inline float Set(float newX, float newY)
-            {
-                x = newX;
-                y = newY;
             }
 
             //Returns a Vector2(0, 0)
@@ -283,7 +290,8 @@ namespace GamEncin
             float x, y, z;
 
             Vector3(float x = 0, float y = 0, float z = 0) : x(x), y(y), z(z) {}
-
+            Vector3(const glm::vec3& vec) : x(vec.x), y(vec.y), z(vec.z) {}
+            Vector3(const Vector2& vec) : x(vec.x), y(vec.y), z(0) {}
             ~Vector3() = default;
 
 #pragma region Operators
@@ -353,15 +361,27 @@ namespace GamEncin
                 return Vector3(x, y, z);
             }
 
+            inline bool operator == (const Vector3& other)
+            {
+                return x == other.x && y == other.y && z == other.z;
+            }
+
+            inline bool operator != (const Vector3& other)
+            {
+                return x != other.x || y != other.y || z != other.z;
+            }
+
 #pragma endregion
 
 #pragma region Functions
 
+            //Linear Interpolation between two Vector3, t is between 0 and 1
             inline static Vector3 Lerp(Vector3 startVec, Vector3 endVec, float t)
             {
                 return startVec + (endVec - startVec) * t;
             }
 
+            //Returns the magnitude of the Vector3
             inline float GetMagnitude()
             {
                 return sqrt(x * x + y * y + z * z);
@@ -385,6 +405,7 @@ namespace GamEncin
                 return result;
             }
 
+            //Returns the cross product of two Vector3
             inline Vector3 Cross(const Vector3& other) const
             {
                 return Vector3(
@@ -394,16 +415,10 @@ namespace GamEncin
                 );
             }
 
+            //Returns the glm vec3 version of the Vector3
             inline glm::vec3 ToGLMvec3()
             {
                 return glm::vec3(x, y, z);
-            }
-
-            inline float Set(float newX, float newY, float newZ)
-            {
-                x = newX;
-                y = newY;
-                z = newZ;
             }
 
             //Returns a Vector3(0, 0, 0)
@@ -432,16 +447,10 @@ namespace GamEncin
             float x, y, z, w;
 
             Vector4(float x = 0, float y = 0, float z = 0, float w = 0) : x(x), y(y), z(z), w(w) {}
-
+            Vector4(const glm::vec4& vec) : x(vec.x), y(vec.y), z(vec.z), w(vec.w) {}
+            Vector4(const Vector2& vec) : x(vec.x), y(vec.y), z(0), w(0) {}
+            Vector4(const Vector3& vec) : x(vec.x), y(vec.y), z(vec.z), w(0) {}
             ~Vector4() = default;
-
-            float Set(float newX, float newY, float newZ, float newW)
-            {
-                x = newX;
-                y = newY;
-                z = newZ;
-                w = newW;
-            }
 
             //Returns a Vector4(0, 0, 0, 0)
             static const inline Vector4 Zero() { return Vector4(0, 0, 0, 0); }
