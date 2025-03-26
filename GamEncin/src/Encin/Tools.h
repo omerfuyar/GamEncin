@@ -21,20 +21,16 @@ namespace GamEncin
 {
     namespace ToolKit
     {
-        /// <summary>
-        /// all the layers that can be used in the game
-        /// </summary>
+        // all the layers that can be used in the game
         enum Layer
         {
             Default, IgnoreRay, UI, Player, Layer0, Layer1, Layer2, Layer3, Layer4, Layer5, Layer6, Layer7, Layer8, Layer9
         };
 
-        /// <summary>
-        /// all end types, exit codes that can be used in the game
-        /// </summary>
+        // all end types, exit codes that can be used in the game
         enum EndType
         {
-            Safe, Warning, UnkErr, GLFWErr, GLADErr, ShaderCompilationErr, ShaderLinkingErr, ObjCouldNotFoundErr, TypeMismachErr, IOErr, ProgramRunningErr
+            Safe, Warning, UnkErr, GLFWErr, GLADErr, ShaderCompilationErr, ShaderLinkingErr, ObjCouldNotFoundErr, TypeMismachErr, IOErr, IODeviceErr, ProgramDuplicationErr,
         };
 
         /// <summary>
@@ -55,153 +51,115 @@ namespace GamEncin
 
 #pragma region Basic Functions
 
-        /// <summary>
-        /// Returns the absolute value of the float
-        /// </summary>
+        // Returns the absolute value of the float
         inline float Abs(float value)
         {
             return value < 0 ? -value : value;
         }
 
-        /// <summary>
-        /// Returns the rounded value of the float
-        /// </summary>
+        // Returns the rounded value of the float
         inline int Round(float value)
         {
             return (int) (value + 0.5);
         }
 
-        /// <summary>
-        /// Returns the root of the float value
-        /// </summary>
+        // Returns the root of the float value
         inline float Root(float value, float root)
         {
             return pow(value, 1 / root);
         }
 
-        /// <summary>
-        /// Return square root of the float value
-        /// </summary>
+        // Return square root of the float value
         inline float Sqrt(float value)
         {
             return sqrt(value);
         }
 
-        /// <summary>
-        /// Returns the cube root of the float value
-        /// </summary>
+        // Returns the cube root of the float value
         inline float Cbrt(float value)
         {
             return cbrt(value);
         }
 
-        /// <summary>
-        /// Returns the power of the base to the exponent
-        /// </summary>
+        // Returns the power of the base to the exponent
         inline float Power(float base, float exponent)
         {
             return pow(base, exponent);
         }
 
-        /// <summary>
-        /// Returns the logarithm of the value to the base
-        /// </summary>
+        // Returns the logarithm of the value to the base
         inline float Log(float value, float base)
         {
             return log(value) / log(base);
         }
 
-        /// <summary>
-        /// Returns the logarithm of the value to the base 10
-        /// </summary>
+        // Returns the logarithm of the value to the base 10
         inline float Log10(float value)
         {
             return log10(value);
         }
 
-        /// <summary>
-        /// Returns the natural logarithm of the value
-        /// </summary>
+        // Returns the natural logarithm of the value
         inline float LogE(float value)
         {
             return log(value);
         }
 
-        /// <summary>
-        /// Converts the radian value to degree
-        /// </summary>
+        // Converts the radian value to degree
         inline float Rad2Deg(float radian)
         {
             return radian * 180 / PI;
         }
 
-        /// <summary>
-        /// Converts the degree value to radians
-        /// </summary>
+        // Converts the degree value to radians
         inline float Deg2Rad(float degree)
         {
             return degree * PI / 180;
         }
 
-        /// <summary>
-        /// Returns the sine of the radian value
-        /// </summary>
+        // Returns the sine of the radian value
         inline float SinRad(float radian)
         {
             return sin(radian);
         }
 
-        /// <summary>
-        /// Returns the sine of the degree value
-        /// </summary>
+        // Returns the sine of the degree value
         inline float SinDeg(float degree)
         {
             return sin(Deg2Rad(degree));
         }
 
-        /// <summary>
-        /// Returns the cosine of the radian value
-        /// </summary>
+        // Returns the cosine of the radian value
         inline float CosRad(float radian)
         {
             return cos(radian);
         }
 
-        /// <summary>
-        /// Returns the cosine of the degree value
-        /// </summary>
+        // Returns the cosine of the degree value
         inline float CosDeg(float degree)
         {
             return cos(Deg2Rad(degree));
         }
 
-        /// <summary>
-        /// Returns the tangent of the radian value
-        /// </summary>
+        // Returns the tangent of the radian value
         inline float TanRad(float radian)
         {
             return tan(radian);
         }
 
-        /// <summary>
-        /// Returns the tangent of the degree value
-        /// </summary>
+        // Returns the tangent of the degree value
         inline float TanDeg(float degree)
         {
             return tan(Deg2Rad(degree));
         }
 
-        /// <summary>
-        /// Returns the cotangent of the radian value
-        /// </summary>
+        // Returns the cotangent of the radian value
         inline float CotRad(float radian)
         {
             return 1 / TanRad(radian);
         }
 
-        /// <summary>
-        /// Returns the cotangent of the degree value
-        /// </summary>
+        // Returns the cotangent of the degree value
         inline float CotDeg(float degree)
         {
             return 1 / TanDeg(degree);
@@ -292,17 +250,13 @@ namespace GamEncin
 
 #pragma region Functions
 
-            /// <summary>
-            /// Returns the magnitude of the Vector2
-            /// </summary>
+            // Returns the magnitude of the Vector2
             inline float GetMagnitude()
             {
                 return Sqrt(x * x + y * y);
             }
 
-            /// <summary>
-            /// Scales the Vector2 to magnitude of 1 and returns it
-            /// </summary>
+            // Scales the Vector2 to magnitude of 1 and returns it
             inline Vector2 Normalize()
             {
                 float magnitude = GetMagnitude();
@@ -311,9 +265,7 @@ namespace GamEncin
                 return Vector2(x, y);
             }
 
-            /// <summary>
-            /// Returns the normalized version of the Vector2
-            /// </summary>
+            // Returns the normalized version of the Vector2
             inline Vector2 Normalized()
             {
                 Vector2 result = Vector2(x, y);
@@ -321,9 +273,7 @@ namespace GamEncin
                 return result;
             }
 
-            /// <summary>
-            /// Returns the glm vec2 version of the Vector2
-            /// </summary>
+            // Returns the glm vec2 version of the Vector2
             inline glm::vec2 ToGLMVec2()
             {
                 return glm::vec2(x, y);
@@ -436,17 +386,13 @@ namespace GamEncin
 
 #pragma region Functions
 
-            /// <summary>
-            /// Returns the magnitude of the Vector3
-            /// </summary>
+            // Returns the magnitude of the Vector3
             inline float GetMagnitude()
             {
                 return Sqrt(x * x + y * y + z * z);
             }
 
-            /// <summary>
-            /// Scales and returns the Vector3 magnitude of 1
-            /// </summary>
+            // Scales and returns the Vector3 magnitude of 1
             inline Vector3 Normalize()
             {
                 float magnitude = GetMagnitude();
@@ -456,9 +402,7 @@ namespace GamEncin
                 return Vector3(x, y, z);
             }
 
-            /// <summary>
-            /// Returns the normalized version of the Vector2
-            /// </summary>
+            // Returns the normalized version of the Vector2
             inline Vector3 Normalized()
             {
                 Vector3 result = Vector3(x, y, z);
@@ -479,9 +423,7 @@ namespace GamEncin
                 );
             }
 
-            /// <summary>
-            /// Returns the glm vec3 version of the Vector3
-            /// </summary>
+            // Returns the glm vec3 version of the Vector3
             inline glm::vec3 ToGLMvec3()
             {
                 return glm::vec3(x, y, z);
@@ -528,7 +470,6 @@ namespace GamEncin
 
 #pragma region Improved Functions
 
-
         /// <summary>
         /// Generates a random float
         /// </summary>
@@ -569,54 +510,46 @@ namespace GamEncin
             return(Vector3(RandomRangeFloat(-1, 1), RandomRangeFloat(-1, 1), RandomRangeFloat(-1, 1)));
         }
 
+        /// <summary>
+        /// Generates a random Vector3 direction with magnitude of 1
+        /// </summary>
+        /// <returns>A normalized random Vector3</returns>
         inline Vector3 RandomDirection()
         {
             return RandomVector3().Normalize();
         }
 
-        /// <summary>
-        /// Returns the smaller value between two float values
-        /// </summary>
+        // Returns the smaller value between two float values
         inline float Min(float a, float b)
         {
             return a < b ? a : b;
         }
 
-        /// <summary>
-        /// Returns the vector with smaller magnitude between two Vector2
-        /// </summary>
+        // Returns the vector with smaller magnitude between two Vector2
         inline Vector2 Min(Vector2 a, Vector2 b)
         {
             return a.GetMagnitude() < b.GetMagnitude() ? a : b;
         }
 
-        /// <summary>
-        /// Returns the vector with smaller magnitude between two Vector3
-        /// </summary>
+        // Returns the vector with smaller magnitude between two Vector3
         inline Vector3 Min(Vector3 a, Vector3 b)
         {
             return a.GetMagnitude() < b.GetMagnitude() ? a : b;
         }
 
-        /// <summary>
-        /// Returns the greater value between two float values
-        /// </summary>
+        // Returns the greater value between two float values
         inline float Max(float a, float b)
         {
             return a > b ? a : b;
         }
 
-        /// <summary>
-        /// Returns the vector with greater magnitude between two Vector2
-        /// </summary>
+        // Returns the vector with greater magnitude between two Vector2
         inline Vector2 Max(Vector2 a, Vector2 b)
         {
             return a.GetMagnitude() > b.GetMagnitude() ? a : b;
         }
 
-        /// <summary>
-        /// Returns the vector with greater magnitude between two Vector3
-        /// </summary>
+        // Returns the vector with greater magnitude between two Vector3
         inline Vector3 Max(Vector3 a, Vector3 b)
         {
             return a.GetMagnitude() > b.GetMagnitude() ? a : b;
@@ -640,7 +573,7 @@ namespace GamEncin
         /// <param name="value:">Vector to restrict</param>
         /// <param name="max:">Max magnitude</param>
         /// <returns>Original vector or a Vector2 with max magnitude</returns>
-        inline Vector2 ClampMagnitude(Vector2 vector, float max)
+        inline Vector2 ClampVectorMagnitude(Vector2 vector, float max)
         {
             float magnitude = vector.GetMagnitude();
             return magnitude > max ? vector * (max / magnitude) : vector;
@@ -652,7 +585,7 @@ namespace GamEncin
         /// <param name="value:">Vector to restrict</param>
         /// <param name="max:">Max magnitude</param>
         /// <returns>Original vector or a Vector3 with max magnitude</returns>
-        inline Vector3 ClampMagnitude(Vector3 vector, float max)
+        inline Vector3 ClampVectorMagnitude(Vector3 vector, float max)
         {
             float magnitude = vector.GetMagnitude();
             return magnitude > max ? vector * (max / magnitude) : vector;
@@ -717,13 +650,14 @@ namespace GamEncin
         }
 
 #pragma endregion
-
     }
 
     using namespace MathYaman;
 
     namespace InputSystem
     {
+#pragma region Enums
+
         //TODO be careful while adding new inputs, add them also in Tools.cpp arrays they should be identical
 
         enum KeyCode
@@ -795,10 +729,41 @@ namespace GamEncin
             F10 = GLFW_KEY_F10,
             F11 = GLFW_KEY_F11,
             F12 = GLFW_KEY_F12,
+        };
 
-            MouseLeft = GLFW_MOUSE_BUTTON_LEFT,
-            MouseRight = GLFW_MOUSE_BUTTON_RIGHT,
-            MouseMiddle = GLFW_MOUSE_BUTTON_MIDDLE
+        enum MouseButtonCode
+        {
+            Left = GLFW_MOUSE_BUTTON_LEFT,
+            Right = GLFW_MOUSE_BUTTON_RIGHT,
+            Middle = GLFW_MOUSE_BUTTON_MIDDLE,
+
+            Fn1 = GLFW_MOUSE_BUTTON_4,
+            Fn2 = GLFW_MOUSE_BUTTON_5,
+            Fn3 = GLFW_MOUSE_BUTTON_6,
+            Fn4 = GLFW_MOUSE_BUTTON_7,
+            Fn5 = GLFW_MOUSE_BUTTON_8
+        };
+
+        enum GamePadButtonCode
+        {
+            A_Cross = GLFW_GAMEPAD_BUTTON_A,
+            B_Circle = GLFW_GAMEPAD_BUTTON_B,
+            X_Square = GLFW_GAMEPAD_BUTTON_X,
+            Y_Triangle = GLFW_GAMEPAD_BUTTON_Y,
+
+            L1 = GLFW_GAMEPAD_BUTTON_LEFT_BUMPER,
+            R1 = GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER,
+            L3 = GLFW_GAMEPAD_BUTTON_LEFT_THUMB,
+            R3 = GLFW_GAMEPAD_BUTTON_RIGHT_THUMB,
+
+            Back = GLFW_GAMEPAD_BUTTON_BACK,
+            Start = GLFW_GAMEPAD_BUTTON_START,
+            Guide = GLFW_GAMEPAD_BUTTON_GUIDE,
+
+            DPadUp = GLFW_GAMEPAD_BUTTON_DPAD_UP,
+            DPadRight = GLFW_GAMEPAD_BUTTON_DPAD_RIGHT,
+            DPadDown = GLFW_GAMEPAD_BUTTON_DPAD_DOWN,
+            DPadLeft = GLFW_GAMEPAD_BUTTON_DPAD_LEFT,
         };
 
         enum KeyButtonStatus
@@ -806,15 +771,60 @@ namespace GamEncin
             Released, Pressed, Down, Up
         };
 
+#pragma endregion
+
         class Mouse
         {
         public:
+            //Should use MouseButtonCode enum as key
+            static map<int, KeyButtonStatus> buttons;
             static Vector2 position, positionDelta;
             static int scrollDelta;
 
+            //shouldn't be used by the user
             static void Initialize(GLFWwindow* window);
+            //shouldn't be used by the user
             static void Update(GLFWwindow* window);
-            static void MouseScrollCallBack(GLFWwindow* window, double xoffset, double yoffset);
+            //shouldn't be used by the user
+            static void MouseScrollCallBack(GLFWwindow* window, double offsetX, double offsetY);
+            //shouldn't be used by the user
+            static void MouseButtonCallBack(GLFWwindow* window, int button, int action, int mods);
+        };
+
+        class KeyBoard
+        {
+        public:
+            //Should use KeyCode enum as key
+            static map<int, KeyButtonStatus> keys;
+
+            //shouldn't be used by the user
+            static void Initialize(GLFWwindow* window);
+            //shouldn't be used by the user
+            static void Update(GLFWwindow* window);
+            //shouldn't be used by the user
+            static void KeyCallBack(GLFWwindow* window, int key, int scanCode, int action, int mods);
+        };
+
+        class GamePad
+        {
+        public:
+            GLFWgamepadstate state = GLFWgamepadstate();
+            string name;
+            int ID;
+
+            //Should use GamePadButtonCode enum as key
+            map<int, KeyButtonStatus> buttons;
+            float leftTrigger = 0.0,
+                rightTrigger = 0.0;
+            Vector2 leftStick = Vector2::Zero(),
+                rightStick = Vector2::Zero();
+
+            //shouldn't be used by the user
+            GamePad(int ID) : ID(ID) {}
+            //shouldn't be used by the user
+            void Initialize(GLFWwindow* window);
+            //shouldn't be used by the user
+            void Update(GLFWwindow* window);
         };
 
         class Input
@@ -822,24 +832,23 @@ namespace GamEncin
         private:
             static GLFWwindow* window;
             static Mouse mouse;
-            static map<int, KeyButtonStatus> keys;
+            static KeyBoard keyboard;
+            static map<int, GamePad*> gamePads;
 
             Input() = delete;
             Input(const Input&) = delete;
             void operator=(const Input&) = delete;
+
+            static void GamePadCallBack(int joyStickID, int event);
 
         public:
             //shouldn't be used by the user
             static void Initialize(GLFWwindow* window);
             //shouldn't be used by the user
             static void UpdateInputs();
-            //shouldn't be used by the user
-            static void KeyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods);
-            //shouldn't be used by the user
-            static void MouseButtonCallBack(GLFWwindow* window, int button, int action, int mods);
 
             /// <summary>
-            /// Gets key inputs from user
+            /// Gets keyboard key inputs from user
             /// </summary>
             /// <param name="status:">Status to get from key</param>
             /// <param name="key:">Key ID with KeyCode enum</param>
@@ -847,20 +856,34 @@ namespace GamEncin
             static bool GetKey(KeyButtonStatus status, KeyCode key);
 
             /// <summary>
-            /// Gets the scroll delta of the mouse
+            /// Gets mouse button inputs from user
             /// </summary>
-            /// <returns>The change of the mouse scroll in last frame. Either 0, 1 or -1</returns>
+            /// <param name="status:">Status to get from key</param>
+            /// <param name="button:">Button ID with MouseButtonCode enum</param>
+            /// <returns>True if the button is in that status</returns>
+            static bool GetMouseButton(KeyButtonStatus status, MouseButtonCode button);
+            // Gets the scroll delta, change of scroll in last frame, of the mouse. Can be either 0, 1 or -1
             static int GetMouseScrollDelta();
-            /// <summary>
-            /// Gets the position of the mouse
-            /// </summary>
-            /// <returns>The Vector2 represents mouse position in pixels. Top left corner is the origin</returns>
+            // Returns the Vector2 which represents mouse position in pixels. Top left corner of the window is the origin
             static Vector2 GetMousePosition();
-            /// <summary>
-            /// Gets the position delta of the mouse
-            /// </summary>
-            /// <returns>The change of mouse position in last frame</returns>
+            // Returns the position delta, change of position in last frame, of the mouse.
             static Vector2 GetMousePositionDelta();
+
+            /// <summary>
+            /// Gets gamepad button inputs from user
+            /// </summary>
+            /// <param name="status:">Status to get from key</param>
+            /// <param name="button:">Button ID with GamePadButtonCode enum</param>
+            /// <returns>True if the button is in that status</returns>
+            static bool GetGamePadButton(int gamePadID, KeyButtonStatus status, GamePadButtonCode button);
+            //Returns the float value of the left trigger of given gamepad. 0 is not pressed, 1 is fully pressed
+            static float GetGamePadLeftTrigger(int gamePadID);
+            //Returns the float value of the right trigger of given gamepad. 0 is not pressed, 1 is fully pressed
+            static float GetGamePadRightTrigger(int gamePadID);
+            //Returns the Vector2 value of the left stick of given gamepad.
+            static Vector2 GetGamePadLeftStick(int gamePadID);
+            //Returns the Vector2 of the right stick of given gamepad.
+            static Vector2 GetGamePadRightStick(int gamePadID);
 
             /// <summary>
             /// Gets the shortcut inputs for WASD and arrow + Control and Shift / Ctrl keys in Vector3.

@@ -80,7 +80,7 @@ namespace GamEncin
         }
         else
         {
-            Stop(ProgramRunningErr);
+            Stop(ProgramDuplicationErr);
         }
     }
 
@@ -172,7 +172,10 @@ namespace GamEncin
             case IOErr:
                 fprintf(stderr, "ERROR: Error occured while Input / Output actions");
                 break;
-            case ProgramRunningErr:
+            case IODeviceErr:
+                fprintf(stderr, "ERROR: Error occurred in Input / Output device");
+                break;
+            case ProgramDuplicationErr:
                 fprintf(stderr, "ERROR: Program is already running");
                 break;
             default:
