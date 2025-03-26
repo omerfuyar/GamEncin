@@ -8,6 +8,7 @@ public:
         rotSpeed = 75;
     Camera* camera = nullptr;
     GLFWwindow* window = nullptr;
+    bool a;
 
     myObject() : Simit(1, 0.5, 200)
     {
@@ -25,7 +26,7 @@ public:
     {
         rotation += Vector3::One() * rotSpeed * Application::deltaTime;
 
-        if(!Input::GetMouseButton(MouseLeft))
+        if(!Input::GetKey(Pressed, MouseLeft))
         {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             return;
@@ -33,11 +34,10 @@ public:
 
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-
         Vector3 movement = Input::GetMovementVector();
         Vector2 mouseDelta = Input::GetMousePositionDelta();
 
-        camera->cameraFOV += Input::GetMouseScrollDelta();
+        camera->cameraFOV += -Input::GetMouseScrollDelta();
 
         camera->position += camera->direction * camSpeed * movement.y * Application::deltaTime;
         camera->position += camera->direction.Cross(Vector3::Up()) * camSpeed * movement.x * Application::deltaTime;

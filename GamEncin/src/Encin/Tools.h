@@ -21,16 +21,27 @@ namespace GamEncin
 {
     namespace ToolKit
     {
+        /// <summary>
+        /// all the layers that can be used in the game
+        /// </summary>
         enum Layer
         {
             Default, IgnoreRay, UI, Player, Layer0, Layer1, Layer2, Layer3, Layer4, Layer5, Layer6, Layer7, Layer8, Layer9
         };
 
+        /// <summary>
+        /// all end types, exit codes that can be used in the game
+        /// </summary>
         enum EndType
         {
             Safe, Warning, UnkErr, GLFWErr, GLADErr, ShaderCompilationErr, ShaderLinkingErr, ObjCouldNotFoundErr, TypeMismachErr, IOErr, ProgramRunningErr
         };
 
+        /// <summary>
+        /// Gets the file contents of the file
+        /// </summary>
+        /// <param name="fileName:">Direction and name of the intended file</param>
+        /// <returns>A string that contains all file data</returns>
         string getFileContents(const char* fileName);
     }
 
@@ -42,150 +53,158 @@ namespace GamEncin
             GRAVITY = 9.80665F,
             G = 6.67F / 1e11F;
 
-#pragma region Functions
+#pragma region Basic Functions
 
-        //Returns the absolute value of the float value
+        /// <summary>
+        /// Returns the absolute value of the float
+        /// </summary>
         inline float Abs(float value)
         {
             return value < 0 ? -value : value;
         }
 
-        //Returns the root of the float value
+        /// <summary>
+        /// Returns the rounded value of the float
+        /// </summary>
+        inline int Round(float value)
+        {
+            return (int) (value + 0.5);
+        }
+
+        /// <summary>
+        /// Returns the root of the float value
+        /// </summary>
         inline float Root(float value, float root)
         {
             return pow(value, 1 / root);
         }
 
-        //Return square root of the float value
+        /// <summary>
+        /// Return square root of the float value
+        /// </summary>
         inline float Sqrt(float value)
         {
             return sqrt(value);
         }
 
-        //Returns the cube root of the float value
+        /// <summary>
+        /// Returns the cube root of the float value
+        /// </summary>
         inline float Cbrt(float value)
         {
             return cbrt(value);
         }
 
-        //Returns the power of the base to the exponent
+        /// <summary>
+        /// Returns the power of the base to the exponent
+        /// </summary>
         inline float Power(float base, float exponent)
         {
             return pow(base, exponent);
         }
 
-        //Returns the logarithm of the value to the base
+        /// <summary>
+        /// Returns the logarithm of the value to the base
+        /// </summary>
         inline float Log(float value, float base)
         {
             return log(value) / log(base);
         }
 
-        //Returns the logarithm of the value to the base 10
+        /// <summary>
+        /// Returns the logarithm of the value to the base 10
+        /// </summary>
         inline float Log10(float value)
         {
             return log10(value);
         }
 
-        //Returns the natural logarithm of the value
+        /// <summary>
+        /// Returns the natural logarithm of the value
+        /// </summary>
         inline float LogE(float value)
         {
             return log(value);
         }
 
-        //Converts the radian value to degree
+        /// <summary>
+        /// Converts the radian value to degree
+        /// </summary>
         inline float Rad2Deg(float radian)
         {
             return radian * 180 / PI;
         }
 
-        //Converts the degree value to radians
+        /// <summary>
+        /// Converts the degree value to radians
+        /// </summary>
         inline float Deg2Rad(float degree)
         {
             return degree * PI / 180;
         }
 
-        //Returns the sine of the radian value
+        /// <summary>
+        /// Returns the sine of the radian value
+        /// </summary>
         inline float SinRad(float radian)
         {
             return sin(radian);
         }
 
-        //Returns the sine of the degree value
+        /// <summary>
+        /// Returns the sine of the degree value
+        /// </summary>
         inline float SinDeg(float degree)
         {
             return sin(Deg2Rad(degree));
         }
 
-        //Returns the cosine of the radian value
+        /// <summary>
+        /// Returns the cosine of the radian value
+        /// </summary>
         inline float CosRad(float radian)
         {
             return cos(radian);
         }
 
-        //Returns the cosine of the degree value
+        /// <summary>
+        /// Returns the cosine of the degree value
+        /// </summary>
         inline float CosDeg(float degree)
         {
             return cos(Deg2Rad(degree));
         }
 
-        //Returns the tangent of the radian value
+        /// <summary>
+        /// Returns the tangent of the radian value
+        /// </summary>
         inline float TanRad(float radian)
         {
             return tan(radian);
         }
 
-        //Returns the tangent of the degree value
+        /// <summary>
+        /// Returns the tangent of the degree value
+        /// </summary>
         inline float TanDeg(float degree)
         {
             return tan(Deg2Rad(degree));
         }
 
-        //Returns the cotangent of the radian value
+        /// <summary>
+        /// Returns the cotangent of the radian value
+        /// </summary>
         inline float CotRad(float radian)
         {
             return 1 / TanRad(radian);
         }
 
-        //Returns the cotangent of the degree value
+        /// <summary>
+        /// Returns the cotangent of the degree value
+        /// </summary>
         inline float CotDeg(float degree)
         {
             return 1 / TanDeg(degree);
-        }
-
-        //Returns the smaller value between two float values
-        inline float Min(float a, float b)
-        {
-            return a < b ? a : b;
-        }
-
-        //Returns the bigger value between two float values
-        inline float Max(float a, float b)
-        {
-            return a > b ? a : b;
-        }
-
-        //Clamps the value between min and max values
-        inline float Clamp(float value, float min, float max)
-        {
-            return value < min ? min : value > max ? max : value;
-        }
-
-        //Linear Interpolation between two float values, t is between 0 and 1
-        inline float Lerp(float a, float b, float t)
-        {
-            return a + (b - a) * t;
-        }
-
-        // Returns a random float value between inclusive min and max values
-        inline float RandomRangeFloat(float min, float max)
-        {
-            return min + (float) rand() / (float) (RAND_MAX / (max - min));
-        }
-
-        // Returns a random integer value between inclusive min and max values
-        inline int RandomRangeInteger(int min, int max)
-        {
-            return min + (int) (rand() % (max - min + 1));
         }
 
 #pragma endregion
@@ -273,13 +292,17 @@ namespace GamEncin
 
 #pragma region Functions
 
-            //Returns the magnitude of the Vector2
+            /// <summary>
+            /// Returns the magnitude of the Vector2
+            /// </summary>
             inline float GetMagnitude()
             {
                 return Sqrt(x * x + y * y);
             }
 
-            //Scales the Vector2 to magnitude of 1 and returns it
+            /// <summary>
+            /// Scales the Vector2 to magnitude of 1 and returns it
+            /// </summary>
             inline Vector2 Normalize()
             {
                 float magnitude = GetMagnitude();
@@ -288,7 +311,9 @@ namespace GamEncin
                 return Vector2(x, y);
             }
 
-            //Returns the normalized version of the Vector2
+            /// <summary>
+            /// Returns the normalized version of the Vector2
+            /// </summary>
             inline Vector2 Normalized()
             {
                 Vector2 result = Vector2(x, y);
@@ -296,24 +321,12 @@ namespace GamEncin
                 return result;
             }
 
-            //Returns the glm vec2 versiob of the Vector2
+            /// <summary>
+            /// Returns the glm vec2 version of the Vector2
+            /// </summary>
             inline glm::vec2 ToGLMVec2()
             {
                 return glm::vec2(x, y);
-            }
-
-            //Returns the distance between two Vector2 point
-            inline static float Distance(const Vector2 startVec, const Vector2 endVec)
-            {
-                float num1 = startVec.x - endVec.x;
-                float num2 = startVec.y - endVec.y;
-                return Sqrt(num1 * num1 + num2 * num2);
-            }
-
-            //Linear Interpolation between two Vector2, t is between 0 and 1
-            inline static Vector2 Lerp(Vector2 startVec, Vector2 endVec, float t)
-            {
-                return startVec + (endVec - startVec) * t;
             }
 
             //Returns a Vector2(0, 0)
@@ -423,13 +436,17 @@ namespace GamEncin
 
 #pragma region Functions
 
-            //Returns the magnitude of the Vector3
+            /// <summary>
+            /// Returns the magnitude of the Vector3
+            /// </summary>
             inline float GetMagnitude()
             {
                 return Sqrt(x * x + y * y + z * z);
             }
 
-            //Scales and returns the Vector3 magnitude of 1
+            /// <summary>
+            /// Scales and returns the Vector3 magnitude of 1
+            /// </summary>
             inline Vector3 Normalize()
             {
                 float magnitude = GetMagnitude();
@@ -439,7 +456,9 @@ namespace GamEncin
                 return Vector3(x, y, z);
             }
 
-            //Returns the normalized version of the Vector2
+            /// <summary>
+            /// Returns the normalized version of the Vector2
+            /// </summary>
             inline Vector3 Normalized()
             {
                 Vector3 result = Vector3(x, y, z);
@@ -447,7 +466,10 @@ namespace GamEncin
                 return result;
             }
 
-            //Returns the cross product of two Vector3
+            /// <summary>
+            /// Returns the cross product of two Vector3
+            /// </summary>
+            /// <param name="otherVec: ">Vector to take cross</param>
             inline Vector3 Cross(const Vector3& otherVec) const
             {
                 return Vector3(
@@ -457,25 +479,12 @@ namespace GamEncin
                 );
             }
 
-            //Returns the glm vec3 version of the Vector3
+            /// <summary>
+            /// Returns the glm vec3 version of the Vector3
+            /// </summary>
             inline glm::vec3 ToGLMvec3()
             {
                 return glm::vec3(x, y, z);
-            }
-
-            //Returns the distance between two Vector3 point
-            inline static float Distance(const Vector3 startVec, const Vector3 endVec)
-            {
-                float num1 = startVec.x - endVec.x;
-                float num2 = startVec.y - endVec.y;
-                float num3 = startVec.z - endVec.z;
-                return (float) Sqrt(num1 * num1 + num2 * num2 + num3 * num3);
-            }
-
-            //Linear Interpolation between two Vector3, t is between 0 and 1
-            inline static Vector3 Lerp(Vector3 startVec, Vector3 endVec, float t)
-            {
-                return startVec + (endVec - startVec) * t;
             }
 
             //Returns a Vector3(0, 0, 0)
@@ -514,6 +523,198 @@ namespace GamEncin
             //Returns a Vector4(1, 1, 1, 1)
             static inline Vector4 One() { return Vector4(1, 1, 1, 1); }
         };
+
+#pragma endregion
+
+#pragma region Improved Functions
+
+
+        /// <summary>
+        /// Generates a random float
+        /// </summary>
+        /// <param name="min:">Minimum border, inclusive</param>
+        /// <param name="max:">Maximum border, inclusive</param>
+        /// <returns>A random float value between min and max values</returns>
+        inline float RandomRangeFloat(float min, float max)
+        {
+            return min + (float) rand() / (float) (RAND_MAX / (max - min));
+        }
+
+        /// <summary>
+        /// Generates a random integer
+        /// </summary>
+        /// <param name="min:">Minimum border, inclusive</param>
+        /// <param name="max:">Maximum border, inclusive</param>
+        /// <returns>A random integer value between min and max values</returns>
+        inline int RandomRangeInteger(int min, int max)
+        {
+            return min + (int) (rand() % (max - min + 1));
+        }
+
+        /// <summary>
+        /// Generates a random Vector2
+        /// </summary>
+        /// <returns>A random point in unit circle</returns>
+        inline Vector2 RandomVector2()
+        {
+            return(Vector2(RandomRangeFloat(-1, 1), RandomRangeFloat(-1, 1)));
+        }
+
+        /// <summary>
+        /// Generates a random Vector3
+        /// </summary>
+        /// <returns>A random point in unit sphere</returns>
+        inline Vector3 RandomVector3()
+        {
+            return(Vector3(RandomRangeFloat(-1, 1), RandomRangeFloat(-1, 1), RandomRangeFloat(-1, 1)));
+        }
+
+        inline Vector3 RandomDirection()
+        {
+            return RandomVector3().Normalize();
+        }
+
+        /// <summary>
+        /// Returns the smaller value between two float values
+        /// </summary>
+        inline float Min(float a, float b)
+        {
+            return a < b ? a : b;
+        }
+
+        /// <summary>
+        /// Returns the vector with smaller magnitude between two Vector2
+        /// </summary>
+        inline Vector2 Min(Vector2 a, Vector2 b)
+        {
+            return a.GetMagnitude() < b.GetMagnitude() ? a : b;
+        }
+
+        /// <summary>
+        /// Returns the vector with smaller magnitude between two Vector3
+        /// </summary>
+        inline Vector3 Min(Vector3 a, Vector3 b)
+        {
+            return a.GetMagnitude() < b.GetMagnitude() ? a : b;
+        }
+
+        /// <summary>
+        /// Returns the greater value between two float values
+        /// </summary>
+        inline float Max(float a, float b)
+        {
+            return a > b ? a : b;
+        }
+
+        /// <summary>
+        /// Returns the vector with greater magnitude between two Vector2
+        /// </summary>
+        inline Vector2 Max(Vector2 a, Vector2 b)
+        {
+            return a.GetMagnitude() > b.GetMagnitude() ? a : b;
+        }
+
+        /// <summary>
+        /// Returns the vector with greater magnitude between two Vector3
+        /// </summary>
+        inline Vector3 Max(Vector3 a, Vector3 b)
+        {
+            return a.GetMagnitude() > b.GetMagnitude() ? a : b;
+        }
+
+        /// <summary>
+        /// Clamps the value between min and max values
+        /// </summary>
+        /// <param name="value:">Value to restrict</param>
+        /// <param name="min:">Min value</param>
+        /// <param name="max:">Max value</param>
+        /// <returns>Min, max or inbetween float</returns>
+        inline float Clamp(float value, float min, float max)
+        {
+            return value < min ? min : value > max ? max : value;
+        }
+
+        /// <summary>
+        /// Clamps the Vector2 magnitude between 0 and max value
+        /// </summary>
+        /// <param name="value:">Vector to restrict</param>
+        /// <param name="max:">Max magnitude</param>
+        /// <returns>Original vector or a Vector2 with max magnitude</returns>
+        inline Vector2 ClampMagnitude(Vector2 vector, float max)
+        {
+            float magnitude = vector.GetMagnitude();
+            return magnitude > max ? vector * (max / magnitude) : vector;
+        }
+
+        /// <summary>
+        /// Clamps the Vector3 magnitude between 0 and max value
+        /// </summary>
+        /// <param name="value:">Vector to restrict</param>
+        /// <param name="max:">Max magnitude</param>
+        /// <returns>Original vector or a Vector3 with max magnitude</returns>
+        inline Vector3 ClampMagnitude(Vector3 vector, float max)
+        {
+            float magnitude = vector.GetMagnitude();
+            return magnitude > max ? vector * (max / magnitude) : vector;
+        }
+
+        /// <summary>
+        /// Linear Interpolation between two float values
+        /// </summary>
+        /// <param name="startVal:">Start value</param>
+        /// <param name="endVal:">End value</param>
+        /// <param name="t:">Between 0 and 1. 0 is startVal, 1 is endVal</param>
+        /// <returns>The float value between start and end values depending on t</returns>
+        inline float Lerp(float startVal, float endVal, float t)
+        {
+            return startVal + (endVal - startVal) * Clamp(t, 0, 1);
+        }
+
+        /// <summary>
+        /// Linear Interpolation between two Vector2
+        /// </summary>
+        /// <param name="startVal:">Start vector</param>
+        /// <param name="endVal:">End vector</param>
+        /// <param name="t:">Between 0 and 1. 0 is startVec, 1 is endVec</param>
+        /// <returns>The Vector2 between start and end vectors depending on t</returns>
+        inline Vector2 Lerp(Vector2 startVec, Vector2 endVec, float t)
+        {
+            return startVec + (endVec - startVec) * Clamp(t, 0, 1);
+        }
+
+        /// <summary>
+        /// Linear Interpolation between two Vector3
+        /// </summary>
+        /// <param name="startVal:">Start vector</param>
+        /// <param name="endVal:">End vector</param>
+        /// <param name="t:">Between 0 and 1. 0 is startVec, 1 is endVec</param>
+        /// <returns>The Vector3 between start and end vectors depending on t</returns>
+        inline static Vector3 Lerp(Vector3 startVec, Vector3 endVec, float t)
+        {
+            return startVec + (endVec - startVec) * Clamp(t, 0, 1);
+        }
+
+        /// <summary>
+        /// Returns the distance between two Vector2 point
+        /// </summary>
+        /// <param name="startVec:">Start vector</param>
+        /// <param name="endVec:">End vector</param>
+        /// <returns> </returns>
+        inline static float Distance(Vector2 a, Vector2 b)
+        {
+            return (b - a).GetMagnitude();
+        }
+
+        /// <summary>
+        /// Returns the distance between two Vector3 point
+        /// </summary>
+        /// <param name="startVec:">Start vector</param>
+        /// <param name="endVec:">End vector</param>
+        /// <returns> </returns>
+        inline static float Distance(Vector3 a, Vector3 b)
+        {
+            return (b - a).GetMagnitude();
+        }
 
 #pragma endregion
 
@@ -594,27 +795,15 @@ namespace GamEncin
             F10 = GLFW_KEY_F10,
             F11 = GLFW_KEY_F11,
             F12 = GLFW_KEY_F12,
-        };
 
-        enum MouseButtonCode
-        {
             MouseLeft = GLFW_MOUSE_BUTTON_LEFT,
             MouseRight = GLFW_MOUSE_BUTTON_RIGHT,
             MouseMiddle = GLFW_MOUSE_BUTTON_MIDDLE
         };
 
-        struct Key
+        enum KeyButtonStatus
         {
-            bool isPressed;
-            bool isDown;
-            bool isUp;
-        };
-
-        struct MouseButton
-        {
-            bool isPressed;
-            bool isDown;
-            bool isUp;
+            Released, Pressed, Down, Up
         };
 
         class Mouse
@@ -622,12 +811,10 @@ namespace GamEncin
         public:
             static Vector2 position, positionDelta;
             static int scrollDelta;
-            static map<int, MouseButton> buttons;
 
             static void Initialize(GLFWwindow* window);
             static void Update(GLFWwindow* window);
             static void MouseScrollCallBack(GLFWwindow* window, double xoffset, double yoffset);
-            static void MouseButtonCallBack(GLFWwindow* window, int button, int action, int mods);
         };
 
         class Input
@@ -635,7 +822,7 @@ namespace GamEncin
         private:
             static GLFWwindow* window;
             static Mouse mouse;
-            static map<int, Key> keys;
+            static map<int, KeyButtonStatus> keys;
 
             Input() = delete;
             Input(const Input&) = delete;
@@ -648,28 +835,37 @@ namespace GamEncin
             static void UpdateInputs();
             //shouldn't be used by the user
             static void KeyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods);
+            //shouldn't be used by the user
+            static void MouseButtonCallBack(GLFWwindow* window, int button, int action, int mods);
 
-            //Returns true if the key is pressed in this frame
-            static bool GetKey(KeyCode key);
-            //Returns true if the key is pressed down in this frame
-            static bool GetKeyDown(KeyCode key);
-            //Returns true if the key is released in this frame
-            static bool GetKeyUp(KeyCode key);
+            /// <summary>
+            /// Gets key inputs from user
+            /// </summary>
+            /// <param name="status:">Status to get from key</param>
+            /// <param name="key:">Key ID with KeyCode enum</param>
+            /// <returns>True if the key is in that status</returns>
+            static bool GetKey(KeyButtonStatus status, KeyCode key);
 
-            //Returns true if the mouse button is pressed in this frame
-            static bool GetMouseButton(MouseButtonCode mouseButton);
-            //Returns true if the mouse button is pressed down in this frame
-            static bool GetMouseButtonDown(MouseButtonCode mouseButton);
-            //Returns true if the mouse button is released in this frame
-            static bool GetMouseButtonUp(MouseButtonCode mouseButton);
-            //Returns the scroll delta of the mouse. Either 0, 1 or -1
+            /// <summary>
+            /// Gets the scroll delta of the mouse
+            /// </summary>
+            /// <returns>The change of the mouse scroll in last frame. Either 0, 1 or -1</returns>
             static int GetMouseScrollDelta();
-            //Returns the position of the mouse in pixels. Top left corner is the origin
+            /// <summary>
+            /// Gets the position of the mouse
+            /// </summary>
+            /// <returns>The Vector2 represents mouse position in pixels. Top left corner is the origin</returns>
             static Vector2 GetMousePosition();
-            //Returns the difference between the current and the last frame's mouse position
+            /// <summary>
+            /// Gets the position delta of the mouse
+            /// </summary>
+            /// <returns>The change of mouse position in last frame</returns>
             static Vector2 GetMousePositionDelta();
 
-            //Returns the movement input of the user, shortcut for WASD and arrow + Control and Shift keys. 
+            /// <summary>
+            /// Gets the shortcut inputs for WASD and arrow + Control and Shift / Ctrl keys in Vector3.
+            /// </summary>
+            /// <returns>The movement input of the user</returns>
             static Vector3 GetMovementVector();
         };
     }

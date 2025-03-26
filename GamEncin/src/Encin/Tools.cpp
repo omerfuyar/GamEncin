@@ -18,23 +18,29 @@ namespace GamEncin
                 in.close();
                 return(contents);
             }
+
             Application::Stop(IOErr);
             return "";
         }
     }
 
+    namespace MathYaman
+    {
+
+    }
+
     namespace InputSystem
     {
         //TODO Be careful with the order of the keys and adding new keys, these arrays should be identical with the enum type in Tools.h
-
         KeyCode keyCodeArr[] = {
             A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
-            Num0, Num1, Num2, Num3, Num4, Num5, Num6, Num7, Num8, Num9,
-            Space, Enter, BackSpace, Escape, Tab, LeftShift, RightShift, LeftControl, RightControl, LeftAlt, RightAlt, CapsLock, UpArrow, DownArrow, LeftArrow, RightArrow,
-            F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12
-        };
 
-        MouseButtonCode mouseButtonArr[] = {
+            Num0, Num1, Num2, Num3, Num4, Num5, Num6, Num7, Num8, Num9,
+
+            Space, Enter, BackSpace, Escape, Tab, LeftShift, RightShift, LeftControl, RightControl, LeftAlt, RightAlt, CapsLock, UpArrow, DownArrow, LeftArrow, RightArrow,
+
+            F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12,
+
             MouseLeft, MouseRight, MouseMiddle
         };
 
@@ -43,17 +49,10 @@ namespace GamEncin
         Vector2 Mouse::position = Vector2(0, 0),
             Mouse::positionDelta = Vector2(0, 0);
         int Mouse::scrollDelta = 0;
-        map<int, MouseButton> Mouse::buttons;
 
         void Mouse::Initialize(GLFWwindow* window)
         {
             glfwSetScrollCallback(window, MouseScrollCallBack);
-            glfwSetMouseButtonCallback(window, MouseButtonCallBack);
-
-            for(MouseButtonCode code : mouseButtonArr)
-            {
-                buttons[code] = {false, false, false};
-            }
         }
 
         void Mouse::Update(GLFWwindow* window)
@@ -65,43 +64,13 @@ namespace GamEncin
             position = Vector2(x, y);
             positionDelta = position - temp;
 
-            //resetting the values
+            //resetting the value
             scrollDelta = 0;
-            for(auto& button : buttons)
-            {
-                button.second.isDown = false;
-                button.second.isUp = false;
-            }
-
         }
 
         void Mouse::MouseScrollCallBack(GLFWwindow* window, double xoffset, double yoffset)
         {
             scrollDelta = yoffset;
-        }
-
-        void Mouse::MouseButtonCallBack(GLFWwindow* window, int button, int action, int mods)
-        {
-            switch(action)
-            {
-                case GLFW_PRESS:
-                    buttons[button].isPressed = true;
-                    buttons[button].isDown = true;
-                    buttons[button].isUp = false;
-                    break;
-
-                case GLFW_RELEASE:
-                    buttons[button].isPressed = false;
-                    buttons[button].isDown = false;
-                    buttons[button].isUp = true;
-                    break;
-
-                case GLFW_REPEAT:
-                    buttons[button].isPressed = true;
-                    buttons[button].isDown = false;
-                    buttons[button].isUp = false;
-                    break;
-            }
         }
 
 #pragma endregion
@@ -110,7 +79,7 @@ namespace GamEncin
 
         GLFWwindow* Input::window = nullptr;
         Mouse Input::mouse;
-        map<int, Key> Input::keys;
+        map<int, KeyButtonStatus> Input::keys;
 
         void Input::Initialize(GLFWwindow* _window)
         {
@@ -122,11 +91,12 @@ namespace GamEncin
             glfwSetInputMode(window, GLFW_LOCK_KEY_MODS, GLFW_TRUE);
             glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_FALSE);
 
+            glfwSetMouseButtonCallback(window, MouseButtonCallBack);
             glfwSetKeyCallback(window, KeyCallBack);
 
             for(KeyCode code : keyCodeArr)
             {
-                keys[code] = {false, false, false};
+                keys[code] = Released;
             }
 
             mouse.Initialize(window);
@@ -134,10 +104,20 @@ namespace GamEncin
 
         void Input::UpdateInputs()
         {
+            //resetting values
             for(auto& key : keys)
             {
-                key.second.isDown = false;
-                key.second.isUp = false;
+                switch(key.second)
+                {
+                    case Up:
+                        key.second = Released;
+                        break;
+                    case Down:
+                        key.second = Pressed;
+                        break;
+                    default:
+                        continue;
+                }
             }
 
             mouse.Update(window);
@@ -150,53 +130,30 @@ namespace GamEncin
             switch(action)
             {
                 case GLFW_PRESS:
-                    keys[key].isPressed = true;
-                    keys[key].isDown = true;
-                    keys[key].isUp = false;
+                    keys[key] = Down;
                     break;
-
                 case GLFW_RELEASE:
-                    keys[key].isPressed = false;
-                    keys[key].isDown = false;
-                    keys[key].isUp = true;
-                    break;
-
-                case GLFW_REPEAT:
-                    keys[key].isPressed = true;
-                    keys[key].isDown = false;
-                    keys[key].isUp = false;
+                    keys[key] = Up;
                     break;
             }
         }
 
-        bool Input::GetKey(KeyCode key)
+        void Input::MouseButtonCallBack(GLFWwindow* window, int button, int action, int mods)
         {
-            return keys[key].isPressed;
+            switch(action)
+            {
+                case GLFW_PRESS:
+                    keys[button] = Down;
+                    break;
+                case GLFW_RELEASE:
+                    keys[button] = Up;
+                    break;
+            }
         }
 
-        bool Input::GetKeyDown(KeyCode key)
+        bool Input::GetKey(KeyButtonStatus status, KeyCode key)
         {
-            return keys[key].isDown;
-        }
-
-        bool Input::GetKeyUp(KeyCode key)
-        {
-            return keys[key].isUp;
-        }
-
-        bool Input::GetMouseButton(MouseButtonCode mouseButton)
-        {
-            return mouse.buttons[mouseButton].isPressed;
-        }
-
-        bool Input::GetMouseButtonDown(MouseButtonCode mouseButton)
-        {
-            return mouse.buttons[mouseButton].isDown;
-        }
-
-        bool Input::GetMouseButtonUp(MouseButtonCode mouseButton)
-        {
-            return mouse.buttons[mouseButton].isUp;
+            return keys[key] == status;
         }
 
         int Input::GetMouseScrollDelta()
@@ -218,19 +175,19 @@ namespace GamEncin
         {
             Vector3 axis(0, 0, 0);
 
-            if(GetKey(KeyCode::W) || GetKey(KeyCode::UpArrow))
+            if(GetKey(Pressed, KeyCode::W) || GetKey(Pressed, KeyCode::UpArrow))
                 axis.y += 1;
-            if(GetKey(KeyCode::S) || GetKey(KeyCode::DownArrow))
+            if(GetKey(Pressed, KeyCode::S) || GetKey(Pressed, KeyCode::DownArrow))
                 axis.y -= 1;
 
-            if(GetKey(KeyCode::D) || GetKey(KeyCode::RightArrow))
+            if(GetKey(Pressed, KeyCode::D) || GetKey(Pressed, KeyCode::RightArrow))
                 axis.x += 1;
-            if(GetKey(KeyCode::A) || GetKey(KeyCode::LeftArrow))
+            if(GetKey(Pressed, KeyCode::A) || GetKey(Pressed, KeyCode::LeftArrow))
                 axis.x -= 1;
 
-            if(GetKey(KeyCode::LeftControl) || GetKey(KeyCode::RightControl))
+            if(GetKey(Pressed, KeyCode::LeftControl) || GetKey(Pressed, KeyCode::RightControl))
                 axis.z -= 1;
-            if(GetKey(KeyCode::LeftShift) || GetKey(KeyCode::RightShift))
+            if(GetKey(Pressed, KeyCode::LeftShift) || GetKey(Pressed, KeyCode::RightShift))
                 axis.z += 1;
 
             return axis;
