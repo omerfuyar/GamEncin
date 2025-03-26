@@ -9,7 +9,7 @@ public:
     Camera* camera = nullptr;
     GLFWwindow* window = nullptr;
 
-    myObject() : Simit()
+    myObject() : Simit(1, 0.5, 200)
     {
         name = "myObject";
         position = Vector3(0, 0, -10);

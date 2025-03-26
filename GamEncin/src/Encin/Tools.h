@@ -42,104 +42,147 @@ namespace GamEncin
             GRAVITY = 9.80665F,
             G = 6.67F / 1e11F;
 
-
 #pragma region Functions
 
+        //Returns the absolute value of the float value
         inline float Abs(float value)
         {
             return value < 0 ? -value : value;
         }
 
+        //Returns the root of the float value
+        inline float Root(float value, float root)
+        {
+            return pow(value, 1 / root);
+        }
+
+        //Return square root of the float value
         inline float Sqrt(float value)
         {
             return sqrt(value);
         }
 
+        //Returns the cube root of the float value
+        inline float Cbrt(float value)
+        {
+            return cbrt(value);
+        }
+
+        //Returns the power of the base to the exponent
         inline float Power(float base, float exponent)
         {
             return pow(base, exponent);
         }
 
+        //Returns the logarithm of the value to the base
         inline float Log(float value, float base)
         {
             return log(value) / log(base);
         }
 
+        //Returns the logarithm of the value to the base 10
         inline float Log10(float value)
         {
             return log10(value);
         }
 
+        //Returns the natural logarithm of the value
         inline float LogE(float value)
         {
             return log(value);
         }
 
+        //Converts the radian value to degree
         inline float Rad2Deg(float radian)
         {
             return radian * 180 / PI;
         }
 
+        //Converts the degree value to radians
         inline float Deg2Rad(float degree)
         {
             return degree * PI / 180;
         }
 
+        //Returns the sine of the radian value
         inline float SinRad(float radian)
         {
             return sin(radian);
         }
 
+        //Returns the sine of the degree value
         inline float SinDeg(float degree)
         {
             return sin(Deg2Rad(degree));
         }
 
+        //Returns the cosine of the radian value
         inline float CosRad(float radian)
         {
             return cos(radian);
         }
 
+        //Returns the cosine of the degree value
         inline float CosDeg(float degree)
         {
             return cos(Deg2Rad(degree));
         }
 
+        //Returns the tangent of the radian value
         inline float TanRad(float radian)
         {
             return tan(radian);
         }
 
+        //Returns the tangent of the degree value
         inline float TanDeg(float degree)
         {
             return tan(Deg2Rad(degree));
         }
 
+        //Returns the cotangent of the radian value
+        inline float CotRad(float radian)
+        {
+            return 1 / TanRad(radian);
+        }
+
+        //Returns the cotangent of the degree value
+        inline float CotDeg(float degree)
+        {
+            return 1 / TanDeg(degree);
+        }
+
+        //Returns the smaller value between two float values
         inline float Min(float a, float b)
         {
             return a < b ? a : b;
         }
 
+        //Returns the bigger value between two float values
         inline float Max(float a, float b)
         {
             return a > b ? a : b;
         }
 
+        //Clamps the value between min and max values
         inline float Clamp(float value, float min, float max)
         {
             return value < min ? min : value > max ? max : value;
         }
 
+        //Linear Interpolation between two float values, t is between 0 and 1
         inline float Lerp(float a, float b, float t)
         {
             return a + (b - a) * t;
         }
 
+        // Returns a random float value between inclusive min and max values
         inline float RandomRangeFloat(float min, float max)
         {
             return min + (float) rand() / (float) (RAND_MAX / (max - min));
         }
 
+        // Returns a random integer value between inclusive min and max values
         inline int RandomRangeInteger(int min, int max)
         {
             return min + (int) (rand() % (max - min + 1));
@@ -183,11 +226,6 @@ namespace GamEncin
                 x -= other.x;
                 y -= other.y;
                 return Vector2(x, y);
-            }
-
-            inline Vector2 operator * (const Vector2& other)
-            {
-                return Vector2(x * other.x, y * other.y);
             }
 
             inline Vector2 operator *= (const Vector2& other)
@@ -235,16 +273,10 @@ namespace GamEncin
 
 #pragma region Functions
 
-            //Linear Interpolation between two Vector2, t is between 0 and 1
-            inline static Vector2 Lerp(Vector2 startVec, Vector2 endVec, float t)
-            {
-                return startVec + (endVec - startVec) * t;
-            }
-
             //Returns the magnitude of the Vector2
             inline float GetMagnitude()
             {
-                return sqrt(x * x + y * y);
+                return Sqrt(x * x + y * y);
             }
 
             //Scales the Vector2 to magnitude of 1 and returns it
@@ -270,18 +302,32 @@ namespace GamEncin
                 return glm::vec2(x, y);
             }
 
+            //Returns the distance between two Vector2 point
+            inline static float Distance(const Vector2 startVec, const Vector2 endVec)
+            {
+                float num1 = startVec.x - endVec.x;
+                float num2 = startVec.y - endVec.y;
+                return Sqrt(num1 * num1 + num2 * num2);
+            }
+
+            //Linear Interpolation between two Vector2, t is between 0 and 1
+            inline static Vector2 Lerp(Vector2 startVec, Vector2 endVec, float t)
+            {
+                return startVec + (endVec - startVec) * t;
+            }
+
             //Returns a Vector2(0, 0)
-            static const inline Vector2 Zero() { return Vector2(0, 0); }
+            static inline Vector2 Zero() { return Vector2(0, 0); }
             //Returns a Vector2(1, 1)                            
-            static const inline Vector2 One() { return Vector2(1, 1); }
+            static inline Vector2 One() { return Vector2(1, 1); }
             //Returns a Vector2(0, 1)                           
-            static const inline Vector2 Up() { return Vector2(0, 1); }
+            static inline Vector2 Up() { return Vector2(0, 1); }
             //Returns a Vector2(1, 0)                          
-            static const inline Vector2 Right() { return Vector2(1, 0); }
+            static inline Vector2 Right() { return Vector2(1, 0); }
             //Returns a Vector2(0, -1)
-            static const inline Vector2 Down() { return Vector2(0, -1); }
+            static inline Vector2 Down() { return Vector2(0, -1); }
             //Returns a Vector2(-1, 0)
-            static const inline Vector2 Left() { return Vector2(-1, 0); }
+            static inline Vector2 Left() { return Vector2(-1, 0); }
 
 #pragma endregion
         };
@@ -377,16 +423,10 @@ namespace GamEncin
 
 #pragma region Functions
 
-            //Linear Interpolation between two Vector3, t is between 0 and 1
-            inline static Vector3 Lerp(Vector3 startVec, Vector3 endVec, float t)
-            {
-                return startVec + (endVec - startVec) * t;
-            }
-
             //Returns the magnitude of the Vector3
             inline float GetMagnitude()
             {
-                return sqrt(x * x + y * y + z * z);
+                return Sqrt(x * x + y * y + z * z);
             }
 
             //Scales and returns the Vector3 magnitude of 1
@@ -408,12 +448,12 @@ namespace GamEncin
             }
 
             //Returns the cross product of two Vector3
-            inline Vector3 Cross(const Vector3& other) const
+            inline Vector3 Cross(const Vector3& otherVec) const
             {
                 return Vector3(
-                    y * other.z - z * other.y,
-                    z * other.x - x * other.z,
-                    x * other.y - y * other.x
+                    y * otherVec.z - z * otherVec.y,
+                    z * otherVec.x - x * otherVec.z,
+                    x * otherVec.y - y * otherVec.x
                 );
             }
 
@@ -421,6 +461,21 @@ namespace GamEncin
             inline glm::vec3 ToGLMvec3()
             {
                 return glm::vec3(x, y, z);
+            }
+
+            //Returns the distance between two Vector3 point
+            inline static float Distance(const Vector3 startVec, const Vector3 endVec)
+            {
+                float num1 = startVec.x - endVec.x;
+                float num2 = startVec.y - endVec.y;
+                float num3 = startVec.z - endVec.z;
+                return (float) Sqrt(num1 * num1 + num2 * num2 + num3 * num3);
+            }
+
+            //Linear Interpolation between two Vector3, t is between 0 and 1
+            inline static Vector3 Lerp(Vector3 startVec, Vector3 endVec, float t)
+            {
+                return startVec + (endVec - startVec) * t;
             }
 
             //Returns a Vector3(0, 0, 0)
@@ -455,9 +510,9 @@ namespace GamEncin
             ~Vector4() = default;
 
             //Returns a Vector4(0, 0, 0, 0)
-            static const inline Vector4 Zero() { return Vector4(0, 0, 0, 0); }
+            static inline Vector4 Zero() { return Vector4(0, 0, 0, 0); }
             //Returns a Vector4(1, 1, 1, 1)
-            static const inline Vector4 One() { return Vector4(1, 1, 1, 1); }
+            static inline Vector4 One() { return Vector4(1, 1, 1, 1); }
         };
 
 #pragma endregion
