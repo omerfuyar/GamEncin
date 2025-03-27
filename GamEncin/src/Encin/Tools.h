@@ -30,7 +30,7 @@ namespace GamEncin
         // all end types, exit codes that can be used in the game
         enum EndType
         {
-            Safe, Warning, UnkErr, GLFWErr, GLADErr, ShaderCompilationErr, ShaderLinkingErr, ObjCouldNotFoundErr, TypeMismachErr, IOErr, IODeviceErr, ProgramDuplicationErr,
+            Safe, GLFWErr, GLADErr, ShaderCompilationErr, ShaderLinkingErr, ObjCouldNotFoundErr, TypeMismachErr, IOErr, IODeviceWarn, ProgramDuplicationErr,
         };
 
         /// <summary>
@@ -303,6 +303,7 @@ namespace GamEncin
             Vector3(float x = 0, float y = 0, float z = 0) : x(x), y(y), z(z) {}
             Vector3(const glm::vec3& vec) : x(vec.x), y(vec.y), z(vec.z) {}
             Vector3(const Vector2& vec) : x(vec.x), y(vec.y), z(0) {}
+            Vector3(const Vector2& vec, float z = 0) : x(vec.x), y(vec.y), z(z) {}
             ~Vector3() = default;
 
 #pragma region Operators
@@ -744,7 +745,7 @@ namespace GamEncin
             Fn5 = GLFW_MOUSE_BUTTON_8
         };
 
-        enum GamePadButtonCode
+        enum GamepadButtonCode
         {
             A_Cross = GLFW_GAMEPAD_BUTTON_A,
             B_Circle = GLFW_GAMEPAD_BUTTON_B,
@@ -772,6 +773,8 @@ namespace GamEncin
         };
 
 #pragma endregion
+
+#pragma region Input Devices
 
         class Mouse
         {
@@ -805,14 +808,14 @@ namespace GamEncin
             static void KeyCallBack(GLFWwindow* window, int key, int scanCode, int action, int mods);
         };
 
-        class GamePad
+        class Gamepad
         {
         public:
             GLFWgamepadstate state = GLFWgamepadstate();
             string name;
             int ID;
 
-            //Should use GamePadButtonCode enum as key
+            //Should use GamepadButtonCode enum as key
             map<int, KeyButtonStatus> buttons;
             float leftTrigger = 0.0,
                 rightTrigger = 0.0;
@@ -820,12 +823,14 @@ namespace GamEncin
                 rightStick = Vector2::Zero();
 
             //shouldn't be used by the user
-            GamePad(int ID) : ID(ID) {}
+            Gamepad(int ID) : ID(ID) {}
             //shouldn't be used by the user
             void Initialize(GLFWwindow* window);
             //shouldn't be used by the user
             void Update(GLFWwindow* window);
         };
+
+#pragma endregion
 
         class Input
         {
@@ -833,19 +838,23 @@ namespace GamEncin
             static GLFWwindow* window;
             static Mouse mouse;
             static KeyBoard keyboard;
-            static map<int, GamePad*> gamePads;
+            static map<int, Gamepad*> gamepads;
 
             Input() = delete;
             Input(const Input&) = delete;
             void operator=(const Input&) = delete;
 
-            static void GamePadCallBack(int joyStickID, int event);
+            static void GamepadCallBack(int gamepadID, int event);
 
         public:
             //shouldn't be used by the user
             static void Initialize(GLFWwindow* window);
             //shouldn't be used by the user
             static void UpdateInputs();
+            //shouldn't be used by the user
+            static void ConnectGamepad(int gamepadID);
+            //shouldn't be used by the user
+            static void DisconnectGamepad(int gamepadID);
 
             /// <summary>
             /// Gets keyboard key inputs from user
@@ -873,17 +882,19 @@ namespace GamEncin
             /// Gets gamepad button inputs from user
             /// </summary>
             /// <param name="status:">Status to get from key</param>
-            /// <param name="button:">Button ID with GamePadButtonCode enum</param>
+            /// <param name="button:">Button ID with GamepadButtonCode enum</param>
             /// <returns>True if the button is in that status</returns>
-            static bool GetGamePadButton(int gamePadID, KeyButtonStatus status, GamePadButtonCode button);
+            static bool GetGamepadButton(int gamepadID, KeyButtonStatus status, GamepadButtonCode button);
             //Returns the float value of the left trigger of given gamepad. 0 is not pressed, 1 is fully pressed
-            static float GetGamePadLeftTrigger(int gamePadID);
+            static float GetGamepadLeftTrigger(int gamepadID);
             //Returns the float value of the right trigger of given gamepad. 0 is not pressed, 1 is fully pressed
-            static float GetGamePadRightTrigger(int gamePadID);
+            static float GetGamepadRightTrigger(int gamepadID);
             //Returns the Vector2 value of the left stick of given gamepad.
-            static Vector2 GetGamePadLeftStick(int gamePadID);
+            static Vector2 GetGamepadLeftStick(int gamepadID);
             //Returns the Vector2 of the right stick of given gamepad.
-            static Vector2 GetGamePadRightStick(int gamePadID);
+            static Vector2 GetGamepadRightStick(int gamepadID);
+            //Returns true if the gamepad is connected
+            static bool IsGamepadConnected(int gamepadID);
 
             /// <summary>
             /// Gets the shortcut inputs for WASD and arrow + Control and Shift / Ctrl keys in Vector3.

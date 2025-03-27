@@ -9,7 +9,6 @@ using namespace GamEncin::ToolKit;
 namespace GamEncin
 {
     class Scene;
-    class Renderer;
 
     class Application //singleton
     {
@@ -34,7 +33,8 @@ namespace GamEncin
         static Scene& CreateAndUseScene();
         static void SetCurrentScene(Scene& scene);
         static void Run();
-        static void Restart();
+        static void PrintLog(EndType endType);
+        static void PrintLog(EndType endType, const char* addMessage);
         static void Stop(EndType endType);
         static void Stop(EndType endType, const char* addMessage);
 
@@ -48,7 +48,6 @@ namespace GamEncin
         static void Update();
         static void LateUpdate();
         static void FixUpdate();
-        static void PrintLog(EndType endType);
         static void GameLoops();
     };
 }

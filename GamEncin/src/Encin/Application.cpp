@@ -131,25 +131,17 @@ namespace GamEncin
         Stop(Safe);
     }
 
-    void Application::Restart()
-    {
-        //Stop(Safe);
-        //Run();
-    }
-
     void Application::PrintLog(EndType endType)
     {
-        isRunning = false;
-
         printf("\nExit Code : %d\n", endType);
 
         switch(endType)
         {
             case Safe:
-                fprintf(stdout, "Program ended safely");
+                fprintf(stdout, "INFO: Program ended safely");
                 break;
-            case Warning:
-                fprintf(stdout, "Program ended with warning(s)");
+            case IODeviceWarn:
+                fprintf(stdout, "WARNING: Warning occurred in Input / Output device(s)");
                 break;
             case GLFWErr:
                 fprintf(stderr, "ERROR: Error occurred in GLFW3");
@@ -172,32 +164,42 @@ namespace GamEncin
             case IOErr:
                 fprintf(stderr, "ERROR: Error occured while Input / Output actions");
                 break;
-            case IODeviceErr:
-                fprintf(stderr, "ERROR: Error occurred in Input / Output device");
-                break;
             case ProgramDuplicationErr:
                 fprintf(stderr, "ERROR: Program is already running");
                 break;
             default:
-                fprintf(stderr, "ERROR: Unknown error occurred");
+                fprintf(stdout, "UNKNOWN MESSAGE");
                 break;
         }
 
         printf("\n");
     }
 
-    void Application::Stop(EndType endType)
+    void Application::PrintLog(EndType endType, const char* addMessage)
     {
         PrintLog(endType);
+        printf("Additional Message : %s\n", addMessage);
+    }
+
+    void Application::Stop(EndType endType)
+    {
+        isRunning = false;
+        PrintLog(endType);
         currentScene->renderer->EndRenderer();
+        for(Scene* scene : scenes)
+            delete scene;
+        scenes.clear();
         exit(endType);
     }
 
     void Application::Stop(EndType endType, const char* addMessage)
     {
-        PrintLog(endType);
-        printf("Additional Message : %s\n", addMessage);
+        isRunning = false;
+        PrintLog(endType, addMessage);
         currentScene->renderer->EndRenderer();
+        for(Scene* scene : scenes)
+            delete scene;
+        scenes.clear();
         exit(endType);
     }
 }

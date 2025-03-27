@@ -31,7 +31,6 @@ namespace GamEncin
 
     namespace InputSystem
     {
-
 #pragma region Enum Arrays
 
         //TODO Be careful with the order of the keys and adding new keys, these arrays should be identical with the enum type in Tools.h
@@ -49,7 +48,7 @@ namespace GamEncin
             Left, Right, Middle, Fn1, Fn2, Fn3, Fn4, Fn5
         };
 
-        GamePadButtonCode gamePadButtonArr[] = {
+        GamepadButtonCode gamepadButtonArr[] = {
             A_Cross, B_Circle, X_Square, Y_Triangle,
 
             L1, R1, L3, R3,
@@ -168,23 +167,23 @@ namespace GamEncin
 
 #pragma endregion
 
-#pragma region GamePad
+#pragma region Gamepad
 
-        void GamePad::Initialize(GLFWwindow* window)
+        void Gamepad::Initialize(GLFWwindow* window)
         {
             name = glfwGetGamepadName(ID);
 
-            for(GamePadButtonCode code : gamePadButtonArr)
+            for(GamepadButtonCode code : gamepadButtonArr)
             {
                 buttons[code] = Released;
             }
         }
 
-        void GamePad::Update(GLFWwindow* window)
+        void Gamepad::Update(GLFWwindow* window)
         {
             if(!glfwGetGamepadState(ID, &state))
             {
-                Application::Stop(IODeviceErr);
+                Application::PrintLog(IODeviceWarn);
                 return;
             }
 
@@ -221,25 +220,24 @@ namespace GamEncin
         GLFWwindow* Input::window = nullptr;
         Mouse Input::mouse;
         KeyBoard Input::keyboard;
-        map<int, GamePad*> Input::gamePads;
+        map<int, Gamepad*> Input::gamepads;
 
-        void Input::GamePadCallBack(int joyStickID, int event)
+        void Input::GamepadCallBack(int gamepadID, int event)
         {
-            if(!glfwJoystickIsGamepad(joyStickID)) return; //TODO throw warning or info message, only supports gamepads
-
-            if(event == GLFW_CONNECTED)
+            if(!glfwJoystickIsGamepad(gamepadID))
             {
-                GamePad* gamePad = new GamePad(joyStickID);
-                gamePad->Initialize(window);
-                printf("Gamepad connected: %s\n", gamePad->name.c_str());
-                gamePads[joyStickID] = gamePad;
+                Application::PrintLog(IODeviceWarn, "Joystick couldn't connected. Application supports only gamepads, not joysticks.");
+                return;
+            }
+
+            else if(event == GLFW_CONNECTED)
+            {
+                ConnectGamepad(gamepadID);
             }
 
             else if(event == GLFW_DISCONNECTED)
             {
-                printf("Gamepad disconnected: %s\n", gamePads[joyStickID]->name.c_str());
-                delete gamePads[joyStickID];
-                gamePads.erase(joyStickID);
+                DisconnectGamepad(gamepadID);
             }
         }
 
@@ -253,20 +251,11 @@ namespace GamEncin
             glfwSetInputMode(window, GLFW_LOCK_KEY_MODS, GLFW_TRUE);
             glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_FALSE);
 
-            glfwSetJoystickCallback(GamePadCallBack);
+            glfwSetJoystickCallback(GamepadCallBack);
 
             for(int i = 0; i < 16; i++)
-            {
-                if(glfwJoystickIsGamepad(i)) //0-15
-                {
-                    GamePad* gamePad = new GamePad(i);
-                    gamePad->Initialize(window);
-                    printf("Gamepad detected: %s\n", glfwGetGamepadName(i));
-                    gamePads[i] = gamePad;
-                }
-                else
-                    if(!glfwJoystickIsGamepad(i)) continue; //TODO throw warning or info message, only supports gamepads
-            }
+                if(IsGamepadConnected(i)) //0-15
+                    ConnectGamepad(i);
 
             mouse.Initialize(window);
             keyboard.Initialize(window);
@@ -277,10 +266,34 @@ namespace GamEncin
             //resetting values
             mouse.Update(window);
             keyboard.Update(window);
-            for(auto& gamePad : gamePads)
-                gamePad.second->Update(window);
+            for(auto& gamepad : gamepads)
+                gamepad.second->Update(window);
 
             glfwPollEvents();
+        }
+
+        void Input::ConnectGamepad(int gamepadID)
+        {
+            Gamepad* gamepad = new Gamepad(gamepadID);
+            gamepad->Initialize(window);
+
+            char message[256];
+            sprintf_s(message, "Gamepad connected. ID: %d, Name: %s", gamepadID, gamepad->name.c_str());
+            Application::PrintLog(IODeviceWarn, message);
+
+            gamepads[gamepadID] = gamepad;
+        }
+
+        void Input::DisconnectGamepad(int gamepadID)
+        {
+            char message[256];
+            sprintf_s(message, "Gamepad disconnected. ID: %d, Name: %s", gamepadID, gamepads[gamepadID]->name.c_str());
+            Application::PrintLog(IODeviceWarn, message);
+
+            gamepads[gamepadID]->~Gamepad();
+            delete gamepads[gamepadID];
+            gamepads[gamepadID] = nullptr;
+            gamepads.erase(gamepadID);
         }
 
         bool Input::GetKey(KeyButtonStatus status, KeyCode key)
@@ -308,54 +321,59 @@ namespace GamEncin
             return mouse.positionDelta;
         }
 
-        bool Input::GetGamePadButton(int gamePadID, KeyButtonStatus status, GamePadButtonCode button)
+        bool Input::GetGamepadButton(int gamepadID, KeyButtonStatus status, GamepadButtonCode button)
         {
-            if(gamePads.find(gamePadID) == gamePads.end())
+            if(!IsGamepadConnected(0))
             {
-                //TODO throw warning or info message, gamepad not found
+                Application::PrintLog(IODeviceWarn, "gamepad couldn't find.");
                 return false;
             }
-            return gamePads[gamePadID]->buttons[button] == status;
+            return gamepads[gamepadID]->buttons[button] == status;
         }
 
-        float Input::GetGamePadLeftTrigger(int gamePadID)
+        float Input::GetGamepadLeftTrigger(int gamepadID)
         {
-            if(gamePads.find(gamePadID) == gamePads.end())
+            if(!IsGamepadConnected(0))
             {
-                //TODO throw warning or info message, gamepad not found
+                Application::PrintLog(IODeviceWarn, "gamepad couldn't find.");
                 return 0;
             }
-            return gamePads[gamePadID]->leftTrigger;
+            return gamepads[gamepadID]->leftTrigger;
         }
 
-        float Input::GetGamePadRightTrigger(int gamePadID)
+        float Input::GetGamepadRightTrigger(int gamepadID)
         {
-            if(gamePads.find(gamePadID) == gamePads.end())
+            if(!IsGamepadConnected(0))
             {
-                //TODO throw warning or info message, gamepad not found
+                Application::PrintLog(IODeviceWarn, "gamepad couldn't find.");
                 return 0;
             }
-            return gamePads[gamePadID]->rightTrigger;
+            return gamepads[gamepadID]->rightTrigger;
         }
 
-        Vector2 Input::GetGamePadLeftStick(int gamePadID)
+        Vector2 Input::GetGamepadLeftStick(int gamepadID)
         {
-            if(gamePads.find(gamePadID) == gamePads.end())
+            if(!IsGamepadConnected(0))
             {
-                //TODO throw warning or info message, gamepad not found
+                Application::PrintLog(IODeviceWarn, "gamepad couldn't find.");
                 return Vector2::Zero();
             }
-            return gamePads[gamePadID]->leftStick;
+            return gamepads[gamepadID]->leftStick;
         }
 
-        Vector2 Input::GetGamePadRightStick(int gamePadID)
+        Vector2 Input::GetGamepadRightStick(int gamepadID)
         {
-            if(gamePads.find(gamePadID) == gamePads.end())
+            if(!IsGamepadConnected(0))
             {
-                //TODO throw warning or info message, gamepad not found
+                Application::PrintLog(IODeviceWarn, "gamepad couldn't find.");
                 return Vector2::Zero();
             }
-            return gamePads[gamePadID]->rightStick;
+            return gamepads[gamepadID]->rightStick;
+        }
+
+        bool Input::IsGamepadConnected(int gamepadID)
+        {
+            return glfwJoystickIsGamepad(gamepadID);
         }
 
         Vector3 Input::GetMovementVector()
