@@ -19,6 +19,8 @@ This message is written by AI 🤠🤠.
 
 ## How to use
 -Project is probably not compatible with any other system than mine.
+-Update: Looks like it also runs in windows visual studio 2022 because
+I uploaded all project files to here. All project settings are maintained in project files.
 -I didn't use cmake for this because when I tried to use it, it went
 so bad just as like ECS for handling objects.
 -In the main loop, first create the Application singleton.
