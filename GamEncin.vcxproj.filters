@@ -952,8 +952,8 @@
     <None Include="Other\TriangleOpenGL.pdf" />
     <None Include="Other\WindowOpenGL.pdf" />
     <None Include=".editorconfig" />
-    <None Include="GamEncin\src\Shaders\default.frag" />
-    <None Include="GamEncin\src\Shaders\default.vert" />
+    <None Include="GamEncin\src\Shaders\frag.glsl" />
+    <None Include="GamEncin\src\Shaders\vert.glsl" />
     <None Include="Dependencies\GLM\detail\func_common.inl">
       <Filter>Header Files</Filter>
     </None>

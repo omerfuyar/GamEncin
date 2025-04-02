@@ -538,8 +538,8 @@
     <None Include="Dependencies\GLM\gtx\vector_angle.inl" />
     <None Include="Dependencies\GLM\gtx\vector_query.inl" />
     <None Include="Dependencies\GLM\gtx\wrap.inl" />
-    <None Include="GamEncin\src\Shaders\default.frag" />
-    <None Include="GamEncin\src\Shaders\default.vert" />
+    <None Include="GamEncin\src\Shaders\frag.glsl" />
+    <None Include="GamEncin\src\Shaders\vert.glsl" />
     <None Include="Notes.md" />
     <None Include="Other\IndexOpenGL.pdf" />
     <None Include="Other\ShadersOpenGL.pdf" />

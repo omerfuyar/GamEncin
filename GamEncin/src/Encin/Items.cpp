@@ -343,7 +343,7 @@ namespace GamEncin
         if(!gladLoadGL())
             Application::Stop(GLADErr);
 
-        shaderProgram = new Shader("GamEncin/src/Shaders/default.vert", "GamEncin/src/Shaders/default.frag");
+        shaderProgram = new Shader("GamEncin/src/Shaders/vert.glsl", "GamEncin/src/Shaders/frag.glsl");
 
         glEnable(GL_DEPTH_TEST);
 
