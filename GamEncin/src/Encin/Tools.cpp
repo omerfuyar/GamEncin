@@ -183,7 +183,7 @@ namespace GamEncin
         {
             if(!glfwGetGamepadState(ID, &state))
             {
-                Application::PrintLog(IODeviceWarn);
+                Application::PrintLog(IODeviceWarn, "Couldn't get gamepad input.");
                 return;
             }
 

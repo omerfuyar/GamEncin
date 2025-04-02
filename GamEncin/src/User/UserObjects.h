@@ -1,20 +1,13 @@
 #pragma once 
 #include "GamEncin.h"
 
-class myObject : public Simit
+class CameraController : public Object
 {
-public:
     float camSpeed = 7.5,
-        rotSpeed = 75,
+        camRotateSpeed = 75,
         cameraLookLimit = 30;
     Camera* camera = nullptr;
     GLFWwindow* window = nullptr;
-
-    myObject() : Simit(1, 0.5, 200)
-    {
-        name = "myObject";
-        position = Vector3(0, 0, -10);
-    }
 
     void Start() override
     {
@@ -24,7 +17,6 @@ public:
 
     void Update() override
     {
-        rotation += Vector3::One() * rotSpeed * Application::deltaTime;
 
         if(Input::IsGamepadConnected(0))
         {
@@ -49,7 +41,23 @@ public:
         camera->position += camera->direction.Cross(Vector3::Up()) * camSpeed * movement.x * Application::deltaTime;
         camera->position += Vector3::Up() * camSpeed * movement.z * Application::deltaTime;
 
-        camera->rotation += Vector3(-mouseDelta.y, mouseDelta.x, 0) * rotSpeed * Application::deltaTime;
+        camera->rotation += Vector3(-mouseDelta.y, mouseDelta.x, 0) * camRotateSpeed * Application::deltaTime;
         camera->rotation.x = Clamp(camera->rotation.x, -89.0f, 89.0f);
+    }
+};
+
+class myObject : public Cube
+{
+public:
+    float rotSpeed = 75;
+
+    myObject() : Cube(1)
+    {
+        name = "myObject";
+    }
+
+    void Update()override
+    {
+        rotation += Vector3::One() * rotSpeed * Application::deltaTime;
     }
 };

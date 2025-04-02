@@ -328,7 +328,7 @@ namespace GamEncin
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        window = glfwCreateWindow(initWindowSize.x, initWindowSize.y, "GamEncin", NULL, NULL);
+        window = glfwCreateWindow(initWindowSize.x, initWindowSize.y, Application::programName.c_str(), NULL, NULL);
 
         if(!window)
             Application::Stop(GLFWErr);

@@ -15,10 +15,10 @@ namespace GamEncin
     public:
         static vector<Scene*> scenes;
         static Scene* currentScene;
-        static Input* input;
+        static string programName;
 
         static int FPS, //the number of frames that have passed in the last second
-            frameCount, //the number of frames that have passed since the last second
+            frameCount, //the number of frames that have passed since the last second update
             fixedFPS; //the frame rate of the fixed update
 
         static float fixedDeltaTime, //interval between fixed updates in seconds
@@ -33,7 +33,6 @@ namespace GamEncin
         static Scene& CreateAndUseScene();
         static void SetCurrentScene(Scene& scene);
         static void Run();
-        static void PrintLog(EndType endType);
         static void PrintLog(EndType endType, const char* addMessage);
         static void Stop(EndType endType);
         static void Stop(EndType endType, const char* addMessage);
@@ -49,5 +48,6 @@ namespace GamEncin
         static void LateUpdate();
         static void FixUpdate();
         static void GameLoops();
+        static void PrintLog(EndType endType);
     };
 }

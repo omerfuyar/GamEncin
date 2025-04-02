@@ -1,5 +1,6 @@
 #include "Encin.h"
 #include <stdio.h>
+#include <time.h>
 
 namespace GamEncin
 {
@@ -7,7 +8,7 @@ namespace GamEncin
 #pragma region Variable Definitions
 
     Scene* Application::currentScene = nullptr;
-    Input* Application::input = nullptr;
+    string Application::programName = "GamEncin Default";
     vector<Scene*> Application::scenes;
 
     int Application::FPS = 0,
@@ -46,6 +47,7 @@ namespace GamEncin
 
     void Application::Awake()
     {
+        srand(time(NULL));
         currentScene->Awake();
         Input::Initialize(currentScene->renderer->window); //after the window is created
     }
@@ -120,7 +122,9 @@ namespace GamEncin
 
                 if(printFPS)
                 {
-                    printf("FPS: %d\n", FPS);
+                    char buff[100];
+                    snprintf(buff, sizeof(buff), "%s | FPS: %d", programName.c_str(), FPS);
+                    glfwSetWindowTitle(currentScene->renderer->window, buff);
                 }
 
                 fpsTimer = 0;

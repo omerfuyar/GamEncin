@@ -8,6 +8,9 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include <Windows.h>
+
+#define GE_SELECT_OPTIMUM_GPU extern "C" {_declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;_declspec(dllexport) DWORD AmdPowerXpressRequestHighPerformance = 0x00000001;}
 
 using std::vector;
 using std::string;
@@ -50,6 +53,12 @@ namespace GamEncin
             G = 6.67F / 1e11F;
 
 #pragma region Basic Functions
+
+        // Returns true if the value is between min and max values, inclusive
+        inline bool Between(float value, float min, float max)
+        {
+            return value >= min && value <= max;
+        }
 
         // Returns the absolute value of the float
         inline float Abs(float value)

@@ -529,7 +529,7 @@ namespace GamEncin
             }
             else
             {
-                Application::instance->Stop(TypeMismachErr, "Argument is not an Object");
+                Application::Stop(TypeMismachErr, "Argument is not an Object");
             }
 
             Shape* castedShape = dynamic_cast<Shape*>(object);
