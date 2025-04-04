@@ -103,8 +103,7 @@ namespace GamEncin
         ~Shape();
 
         VAO* vao = nullptr;
-
-        vector<Vector3> vertices;
+        vector<GLuint> indices;
         VBO* vbo = nullptr;
 
         vector<GLuint> indices;
