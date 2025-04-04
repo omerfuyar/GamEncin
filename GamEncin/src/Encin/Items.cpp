@@ -2,123 +2,87 @@
 
 namespace GamEncin
 {
-#pragma region Object And Shape
+#pragma region OpenGL Objects
 
-    void Object::UpdateProperties()
+#pragma region VBO
+
+    VBO::VBO(vector<Vector3> vertices)
     {
-        direction.x = CosDeg(rotation.x) * CosDeg(rotation.y);
-        direction.y = SinDeg(rotation.x);
-        direction.z = CosDeg(rotation.x) * SinDeg(rotation.y);
-        direction.Normalize();
+        glGenBuffers(1, &ID);
+        glBindBuffer(GL_ARRAY_BUFFER, ID);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vector3), vertices.data(), GL_STATIC_DRAW);
     }
 
-    Shape::~Shape()
+    void VBO::Bind()
     {
-        if(vao)
-            vao->Delete();
-        if(vbo)
-            vbo->Delete();
-        if(ebo)
-            ebo->Delete();
+        glBindBuffer(GL_ARRAY_BUFFER, ID);
     }
 
-    void Shape::Draw()
+    void VBO::Update(vector<Vector3> vertices)
     {
-        vao->Bind();
-        vbo->Bind();
-        ebo->Bind();
-
-        vao->LinkAttributes(POSITION_VBO_LAYOUT, 3, GL_FLOAT, 0);
-        vao->LinkAttributes(COLOR_VBO_LAYOUT, 3, GL_FLOAT, sizeof(Vector3));
-
-        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, ID);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vector3), vertices.data(), GL_STATIC_DRAW);
     }
 
-    void Shape::Initialize()
+    void VBO::Delete()
     {
-        vao = new VAO();
-        vbo = new VBO(vertices);
-        ebo = new EBO(indices);
+        glDeleteBuffers(1, &ID);
     }
 
 #pragma endregion
 
-#pragma region Scene
+#pragma region EBO
 
-    Scene::Scene()
+    EBO::EBO(vector<GLuint> indices)
     {
-        renderer = new Renderer(this);
+        glGenBuffers(1, &ID);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
     }
 
-    void Scene::AddObject(Object* object)
+    void EBO::Bind()
     {
-        objects.push_back(object);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
     }
 
-    void Scene::RemoveObject(Object* object)
+    void EBO::Delete()
     {
-        auto obj = std::find(objects.begin(), objects.end(), object);
-
-        if(obj != objects.end())
-        {
-            objects.erase(obj);
-        }
-        else
-        {
-            Application::Stop(ObjCouldNotFoundErr);
-        }
+        glDeleteBuffers(1, &ID);
     }
 
-    void Scene::Clear()
+#pragma endregion
+
+#pragma region VAO
+
+    VAO::VAO()
     {
-        objects.clear();
+        glGenVertexArrays(1, &ID);
     }
 
-    void Scene::Awake()
+    //one attribute is one piece of data that is passed to the vertex shader for one vertex, like position, color, normal, etc.
+    void VAO::LinkAttributes(GLuint layout, GLuint numComponents, GLenum type, GLuint offsetInBytes)
     {
-        renderer->InitialRender();
+        GLsizei stride = 2 * sizeof(Vector3); //TODO position + color
+        GLvoid* offsetVar = (GLvoid*) (offsetInBytes);
 
-        for(Object* object : objects)
-        {
-            object->Awake();
-        }
+        glVertexAttribPointer(layout, numComponents, type, GL_FALSE, stride, offsetVar);
+        // layout: location of the vertex attribute in the shader, like 0 for position, 1 for color
+        //in shader, layout(location = 0) in vec3 position;
+        //numComponents: how many components does the attribute have, like 3 for position, 4 for color
+        //type: type of the data, like GL_FLOAT for position, GL_UNSIGNED_INT for color
+        //stride: size of the vertex data structure, like sizeof(Vertex)
+        //offset: where the attribute starts in the vertex data structure, like color comes after position, so offset is the size of position
+        glEnableVertexAttribArray(layout); //like binding the format we want to read buffer data
     }
 
-    void Scene::Start()
+    void VAO::Bind()
     {
-        for(Object* object : objects)
-        {
-            object->Start();
-        }
-
-        renderer->RenderFrame();
+        glBindVertexArray(ID);
     }
 
-    void Scene::Update()
+    void VAO::Delete()
     {
-        for(Object* object : objects)
-        {
-            object->Update();
-        }
-    }
-
-    void Scene::LateUpdate()
-    {
-        for(Object* object : objects)
-        {
-            object->LateUpdate();
-            object->UpdateProperties();
-        }
-
-        renderer->RenderFrame();
-    }
-
-    void Scene::FixUpdate()
-    {
-        for(Object* object : objects)
-        {
-            object->FixUpdate();
-        }
+        glDeleteVertexArrays(1, &ID);
     }
 
 #pragma endregion
@@ -200,109 +164,229 @@ namespace GamEncin
 
 #pragma endregion
 
-#pragma region VBO
+#pragma endregion
 
-    VBO::VBO(vector<Vector3> vertices)
+#pragma region Objects
+
+    Object::Object(Scene* scene)
     {
-        glGenBuffers(1, &ID);
-        glBindBuffer(GL_ARRAY_BUFFER, ID);
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vector3), vertices.data(), GL_STATIC_DRAW);
+        this->scene = scene;
     }
 
-    void VBO::Bind()
+    Object::Object(Scene* scene, string name, string tag)
     {
-        glBindBuffer(GL_ARRAY_BUFFER, ID);
+        this->scene = scene;
+        this->name = name;
+        this->tag = tag;
     }
 
-    void VBO::Update(vector<Vector3> vertices)
+    Object::Object(Scene* scene, string name, string tag, Layer layer)
     {
-        glBindBuffer(GL_ARRAY_BUFFER, ID);
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vector3), vertices.data(), GL_STATIC_DRAW);
+        this->scene = scene;
+        this->name = name;
+        this->tag = tag;
+        this->layer = layer;
     }
 
-    void VBO::Delete()
+    Object::~Object()
     {
-        glDeleteBuffers(1, &ID);
+        for(Component* component : components)
+        {
+            delete component;
+        }
+
+        components.clear();
+
+        if(scene)
+        {
+            scene->RemoveObject(this);
+        }
+    }
+
+    void Object::RemoveComponent(Component* component)
+    {
+        if(!component)
+        {
+            Application::PrintLog(NullPointerErr, "Component trying to remove is null");
+            return;
+        }
+
+        auto obj = std::find(components.begin(), components.end(), component);
+
+        if(obj != components.end())
+        {
+            components.erase(obj);
+        }
+        else
+        {
+            Application::PrintLog(ElementCouldNotFoundErr, "Couldn't found component to remove");
+        }
+    }
+
+    void Object::Awake()
+    {
+        for(Component* component : components)
+        {
+            component->Awake();
+        }
+    }
+
+    void Object::Start()
+    {
+        for(Component* component : components)
+        {
+            component->Start();
+        }
+    }
+
+    void Object::Update()
+    {
+        for(Component* component : components)
+        {
+            component->Update();
+        }
+    }
+
+    void Object::LateUpdate()
+    {
+        for(Component* component : components)
+        {
+            component->LateUpdate();
+        }
+    }
+
+    void Object::FixUpdate()
+    {
+        for(Component* component : components)
+        {
+            component->FixUpdate();
+        }
+    }
+
+    void Object::StartOfSecond()
+    {
+        for(Component* component : components)
+        {
+            component->StartOfSecond();
+        }
+    }
+
+#pragma region
+
+#pragma region Components
+
+#pragma region Component
+
+    Component::Component(Object* object)
+    {
+        this->object = object;
+    }
+
+    Component::~Component()
+    {
+        if(object)
+        {
+            object->RemoveComponent(this);
+        }
     }
 
 #pragma endregion
 
-#pragma region EBO
+#pragma region Transform
 
-    EBO::EBO(vector<GLuint> indices)
+    void Transform::UpdateProperties()
     {
-        glGenBuffers(1, &ID);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
+        direction.x = CosDeg(rotation.x) * CosDeg(rotation.y);
+        direction.y = SinDeg(rotation.x);
+        direction.z = CosDeg(rotation.x) * SinDeg(rotation.y);
+        direction.Normalize();
     }
 
-    void EBO::Bind()
+    void Transform::Update()
     {
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
-    }
-
-    void EBO::Delete()
-    {
-        glDeleteBuffers(1, &ID);
-
+        UpdateProperties();
     }
 
 #pragma endregion
 
-#pragma region VAO
+#pragma region Mesh
 
-    VAO::VAO()
+    void Mesh::SetShape(Shape* newShape)
     {
-        glGenVertexArrays(1, &ID);
+        vertices = newShape->vertices;
+        indices = newShape->indices;
     }
 
-    //one attribute is one piece of data that is passed to the vertex shader for one vertex, like position, color, normal, etc.
-    void VAO::LinkAttributes(GLuint layout, GLuint numComponents, GLenum type, GLuint offsetInBytes)
+    Mesh::Mesh(Object* object) : Component(object)
     {
-        GLsizei stride = 2 * sizeof(Vector3); //TODO position + color
-        GLvoid* offsetVar = (GLvoid*) (offsetInBytes);
+        if(Application::isRunning)
+        {
+            Initialize();
+        }
 
-        glVertexAttribPointer(layout, numComponents, type, GL_FALSE, stride, offsetVar);
-        // layout: location of the vertex attribute in the shader, like 0 for position, 1 for color
-        //in shader, layout(location = 0) in vec3 position;
-        //numComponents: how many components does the attribute have, like 3 for position, 4 for color
-        //type: type of the data, like GL_FLOAT for position, GL_UNSIGNED_INT for color
-        //stride: size of the vertex data structure, like sizeof(Vertex)
-        //offset: where the attribute starts in the vertex data structure, like color comes after position, so offset is the size of position
-        glEnableVertexAttribArray(layout); //like binding the format we want to read buffer data
+        SetShape(new Cube());
+        object->scene->renderer->AddMesh(this);
     }
 
-    void VAO::Bind()
+    Mesh::~Mesh()
     {
-        glBindVertexArray(ID);
+        object->scene->renderer->RemoveMesh(this);
+
+        if(vao)
+        {
+            vao->Delete();
+            delete vao;
+        }
+        if(vbo)
+        {
+            vbo->Delete();
+            delete vbo;
+        }
+        if(ebo)
+        {
+            ebo->Delete();
+            delete ebo;
+        }
     }
 
-    void VAO::Delete()
+    void Mesh::Initialize()
     {
-        glDeleteVertexArrays(1, &ID);
+        vao = new VAO();
+        vbo = new VBO(vertices);
+        ebo = new EBO(indices);
+    }
+
+    void Mesh::Draw()
+    {
+        vao->Bind();
+        vbo->Bind();
+        ebo->Bind();
+
+        vao->LinkAttributes(POSITION_VBO_LAYOUT, 3, GL_FLOAT, 0);
+        vao->LinkAttributes(COLOR_VBO_LAYOUT, 3, GL_FLOAT, sizeof(Vector3));
+
+        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
     }
 
 #pragma endregion
 
 #pragma region Camera
 
-    Camera::Camera(Vector2 initSize)
+    Camera::Camera(Object* object, Vector2Int size, float FOV) : Component(object)
     {
-        size = initSize;
-        position = Vector3(0, 0, 0);
-        rotation = Vector3(0, -90, 0);
-        name = "Camera";
-        tag = "Camera";
+        this->size = size;
+        this->cameraFOV = FOV;
     }
 
     void Camera::UseCamera(GLuint& transformMatrixLocation)
     {
-
+        Vector3 position = object->transform->position;
+        Vector3 direction = object->transform->direction;
         viewMatrix = glm::lookAt(position.ToGLMvec3(),
                                  (position + direction).ToGLMvec3(),
                                  Vector3::Up().ToGLMvec3());
 
-        perspectiveMatrix = glm::perspective(Deg2Rad(cameraFOV), size.x / size.y, 0.1f, 100.0f);
+        perspectiveMatrix = glm::perspective(Deg2Rad(cameraFOV), (float) size.x / (float) size.y, 0.1f, 100.0f);
 
         glUniformMatrix4fv(transformMatrixLocation, 1, GL_FALSE, glm::value_ptr(perspectiveMatrix * viewMatrix));
         //value_ptr : &mat4[0][0] address of first element of the matrix
@@ -310,13 +394,152 @@ namespace GamEncin
 
 #pragma endregion
 
-#pragma region Renderer
+#pragma endregion
 
-    Renderer::Renderer(Scene* scene)
+#pragma region Scene
+
+    Scene::Scene()
     {
-        camera = new Camera(initWindowSize);
-        scene->AddObject(camera);
+        renderer = new Renderer();
     }
+
+    Object* Scene::CreateObject()
+    {
+        Object* object = new Object(this);
+        AddObject(object);
+        return object;
+    }
+
+    Object* Scene::CreateObject(string name, string tag)
+    {
+        Object* object = new Object(this, name, tag);
+        AddObject(object);
+        return object;
+    }
+
+    Object* Scene::CreateAndUseCameraObject(Vector2Int size)
+    {
+        Object* object = CreateObject("Camera", "Camera");
+        object->transform->position = Vector3(0, 0, 0);
+        object->transform->rotation = Vector3(0, -90, 0);
+        Camera* camera = object->AddComponent<Camera>();
+        SetMainCamera(camera);
+        camera->size = size;
+        return object;
+    }
+
+    void Scene::SetMainCamera(Camera* camera)
+    {
+        if(!camera)
+        {
+            Application::PrintLog(NullPointerErr, "Camera trying to set is null");
+            return;
+        }
+
+        renderer->mainCamera = camera;
+    }
+
+    void Scene::AddObject(Object* object)
+    {
+        if(!object)
+        {
+            Application::PrintLog(NullPointerErr, "Object trying to add is null");
+            return;
+        }
+
+        auto obj = std::find(objects.begin(), objects.end(), object);
+
+        if(obj != objects.end())
+        {
+            Application::PrintLog(NullPointerErr, "Object trying to add is already in the scene");
+            return;
+        }
+
+        objects.push_back(object);
+    }
+
+    void Scene::RemoveObject(Object* object)
+    {
+        if(!object)
+        {
+            Application::PrintLog(NullPointerErr, "Object trying to remove is null");
+            return;
+        }
+
+        auto obj = std::find(objects.begin(), objects.end(), object);
+
+        if(obj != objects.end())
+        {
+            objects.erase(obj);
+        }
+        else
+        {
+            Application::PrintLog(ElementCouldNotFoundErr, "Couldn't found object to remove");
+        }
+    }
+
+    void Scene::Clear()
+    {
+        objects.clear();
+    }
+
+    void Scene::Awake()
+    {
+        renderer->InitialRender();
+
+        for(Object* object : objects)
+        {
+            object->Awake();
+        }
+    }
+
+    void Scene::Start()
+    {
+        for(Object* object : objects)
+        {
+            object->Start();
+        }
+
+        renderer->RenderFrame();
+    }
+
+    void Scene::Update()
+    {
+        for(Object* object : objects)
+        {
+            object->Update();
+        }
+    }
+
+    void Scene::LateUpdate()
+    {
+        for(Object* object : objects)
+        {
+            object->LateUpdate();
+        }
+
+        renderer->RenderFrame();
+    }
+
+    void Scene::FixUpdate()
+    {
+        for(Object* object : objects)
+        {
+            object->FixUpdate();
+        }
+    }
+
+    void Scene::StartOfSecond()
+    {
+        for(Object* object : objects)
+        {
+            object->StartOfSecond();
+        }
+    }
+
+#pragma endregion
+
+#pragma region Renderer
 
     void Renderer::InitialRender()
     {
@@ -347,9 +570,33 @@ namespace GamEncin
 
         glEnable(GL_DEPTH_TEST);
 
-        for(Shape* shape : shapes)
+        for(Mesh* mesh : meshes)
         {
-            shape->Initialize();
+            mesh->Initialize();
+        }
+    }
+
+    void Renderer::AddMesh(Mesh* mesh)
+    {
+        meshes.push_back(mesh);
+    }
+
+    void Renderer::RemoveMesh(Mesh* mesh)
+    {
+        if(!mesh)
+        {
+            Application::Stop(NullPointerErr, "Mesh trying to remove is null");
+            return;
+        }
+
+        auto obj = std::find(meshes.begin(), meshes.end(), mesh);
+        if(obj != meshes.end())
+        {
+            meshes.erase(obj);
+        }
+        else
+        {
+            Application::Stop(ElementCouldNotFoundErr, "Couldn't found mesh to remove");
         }
     }
 
@@ -359,18 +606,19 @@ namespace GamEncin
 
         shaderProgram->Use();
 
-        for(Shape* shape : shapes)
+        for(Mesh* mesh : meshes)
         {
-            GLSendUniformVector3(shaderProgram->objPositionVarID, shape->position);
-            GLSendUniformVector3(shaderProgram->objScaleVarID, shape->scale);
-            GLSendUniformVector3(shaderProgram->objRotationVarID, shape->rotation);
+            Transform* transform = mesh->object->transform;
+            GLSendUniformVector3(shaderProgram->objPositionVarID, transform->position);
+            GLSendUniformVector3(shaderProgram->objScaleVarID, transform->scale);
+            GLSendUniformVector3(shaderProgram->objRotationVarID, transform->rotation);
 
-            shape->Draw();
+            mesh->Draw();
         }
 
         glfwSwapBuffers(window);
 
-        camera->UseCamera(shaderProgram->transformMatrixVarID);
+        mainCamera->UseCamera(shaderProgram->transformMatrixVarID);
 
         windowCloseInput = glfwWindowShouldClose(window);
     }
@@ -384,7 +632,7 @@ namespace GamEncin
     //called when the window is resized
     void Renderer::FrameBufferSizeCallback(GLFWwindow* window, int width, int height)
     {
-        Application::currentScene->renderer->camera->size = Vector2(width, height);
+        Application::currentScene->renderer->mainCamera->size = Vector2(width, height);
         glViewport(0, 0, width, height);
     }
 

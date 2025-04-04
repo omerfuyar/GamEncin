@@ -10,7 +10,7 @@
 #include <vector>
 #include <Windows.h>
 
-#define GE_SELECT_OPTIMUM_GPU extern "C" {_declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;_declspec(dllexport) DWORD AmdPowerXpressRequestHighPerformance = 0x00000001;}
+#define GE_SELECT_OPTIMUM_GPU extern"C"{_declspec(dllexport)DWORD NvOptimusEnablement=0x00000001;_declspec(dllexport)DWORD AmdPowerXpressRequestHighPerformance=0x00000001;}
 
 using std::vector;
 using std::string;
@@ -31,9 +31,9 @@ namespace GamEncin
         };
 
         // all end types, exit codes that can be used in the game
-        enum EndType
+        enum LogType
         {
-            Safe, GLFWErr, GLADErr, ShaderCompilationErr, ShaderLinkingErr, ObjCouldNotFoundErr, TypeMismachErr, IOErr, IODeviceWarn, ProgramDuplicationErr,
+            Safe, GLFWErr, GLADErr, ShaderCompilationErr, ShaderLinkingErr, ElementCouldNotFoundErr, TypeMismachErr, IOErr, IODeviceWarn, ProgramDuplicationErr, NullPointerErr, ElementDuplicationErr
         };
 
         /// <summary>
@@ -476,6 +476,125 @@ namespace GamEncin
             static inline Vector4 One() { return Vector4(1, 1, 1, 1); }
         };
 
+        struct Vector2Int
+        {
+            int x, y;
+
+            Vector2Int(int x = 0, int y = 0) : x(x), y(y) {};
+            Vector2Int(const glm::ivec2& vec) : x(vec.x), y(vec.y) {};
+            Vector2Int(const Vector2& vec) : x((int) vec.x), y((int) vec.y) {}
+            ~Vector2Int() = default;
+
+#pragma region Operators
+
+            inline Vector2Int operator + (const Vector2Int& other)
+            {
+                return Vector2Int(x + other.x, y + other.y);
+            }
+
+            inline Vector2Int operator += (const Vector2Int& other)
+            {
+                x += other.x;
+                y += other.y;
+                return Vector2Int(x, y);
+            }
+
+            inline Vector2Int operator - (const Vector2Int& other)
+            {
+                return Vector2Int(x - other.x, y - other.y);
+            }
+
+            inline Vector2Int operator -= (const Vector2Int& other)
+            {
+                x -= other.x;
+                y -= other.y;
+                return Vector2Int(x, y);
+            }
+
+            inline Vector2Int operator *= (const Vector2Int& other)
+            {
+                x *= other.x;
+                y *= other.y;
+                return Vector2Int(x, y);
+            }
+
+            inline Vector2Int operator * (const int other)
+            {
+                return Vector2Int(x * other, y * other);
+            }
+
+            inline Vector2Int operator *= (const int other)
+            {
+                x *= other;
+                y *= other;
+                return Vector2Int(x, y);
+            }
+
+            inline Vector2Int operator / (const int other)
+            {
+                return Vector2Int(x / other, y / other);
+            }
+
+            inline Vector2Int operator /= (const int other)
+            {
+                x /= other;
+                y /= other;
+                return Vector2Int(x, y);
+            }
+
+            inline bool operator == (const Vector2Int& other)
+            {
+                return x == other.x && y == other.y;
+            }
+
+            inline bool operator != (const Vector2Int& other)
+            {
+                return x != other.x || y != other.y;
+            }
+
+#pragma endregion
+
+#pragma region Functions
+
+            // Returns the magnitude of the Vector2Int
+            inline float GetMagnitude()
+            {
+                return Sqrt(x * x + y * y);
+            }
+
+            // Scales the Vector2Int to magnitude of 1 and returns it
+            inline Vector2 Normalize()
+            {
+                float magnitude = GetMagnitude();
+                x /= magnitude;
+                y /= magnitude;
+                return Vector2(x, y);
+            }
+
+            // Returns the normalized version of the Vector2Int
+            inline Vector2 Normalized()
+            {
+                Vector2 result = Vector2(x, y);
+                result.Normalize();
+                return result;
+            }
+
+            //Returns a Vector2Int(0, 0)
+            static inline Vector2Int Zero() { return Vector2Int(0, 0); }
+            //Returns a Vector2Int(1, 1)                            
+            static inline Vector2Int One() { return Vector2Int(1, 1); }
+            //Returns a Vector2Int(0, 1)                           
+            static inline Vector2Int Up() { return Vector2Int(0, 1); }
+            //Returns a Vector2Int(1, 0)                          
+            static inline Vector2Int Right() { return Vector2Int(1, 0); }
+            //Returns a Vector2Int(0, -1)
+            static inline Vector2Int Down() { return Vector2Int(0, -1); }
+            //Returns a Vector2Int(-1, 0)
+            static inline Vector2Int Left() { return Vector2Int(-1, 0); }
+
+#pragma endregion
+        };
+
 #pragma endregion
 
 #pragma region Improved Functions
@@ -791,7 +910,7 @@ namespace GamEncin
             //Should use MouseButtonCode enum as key
             static map<int, KeyButtonStatus> buttons;
             static Vector2 position, positionDelta;
-            static int scrollDelta;
+            static float scrollDelta;
 
             //shouldn't be used by the user
             static void Initialize(GLFWwindow* window);

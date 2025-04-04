@@ -11,9 +11,7 @@ namespace GamEncin
     string Application::programName = "GamEncin Default";
     vector<Scene*> Application::scenes;
 
-    int Application::FPS = 0,
-        Application::frameCount = 0,
-        Application::fixedFPS = 0;
+    int Application::fixedFPS = 0;
 
     float Application::deltaTime = 0.0,
         Application::fixedDeltaTime = 0.0,
@@ -73,6 +71,18 @@ namespace GamEncin
         currentScene->FixUpdate();
     }
 
+    void Application::StartOfSecond()
+    {
+        currentScene->StartOfSecond();
+
+        if(printFPS)
+        {
+            char buff[100];
+            snprintf(buff, sizeof(buff), "%s | FPS: %f | Delta Time: %f", programName.c_str(), 1 / deltaTime, deltaTime);
+            glfwSetWindowTitle(currentScene->renderer->window, buff);
+        }
+    }
+
     void Application::Run()
     {
         if(!isRunning)
@@ -114,32 +124,22 @@ namespace GamEncin
 
             Update();
             LateUpdate();
-            frameCount++;
 
             if(fpsTimer >= 1.0f)
             {
-                FPS = frameCount;
-
-                if(printFPS)
-                {
-                    char buff[100];
-                    snprintf(buff, sizeof(buff), "%s | FPS: %d", programName.c_str(), FPS);
-                    glfwSetWindowTitle(currentScene->renderer->window, buff);
-                }
-
+                StartOfSecond();
                 fpsTimer = 0;
-                frameCount = 0;
             }
         }
 
         Stop(Safe);
     }
 
-    void Application::PrintLog(EndType endType)
+    void Application::PrintLog(LogType logType)
     {
-        printf("\nExit Code : %d\n", endType);
+        printf("\n");
 
-        switch(endType)
+        switch(logType)
         {
             case Safe:
                 fprintf(stdout, "INFO: Program ended safely");
@@ -159,8 +159,8 @@ namespace GamEncin
             case ShaderLinkingErr:
                 fprintf(stderr, "ERROR: Error occurred while linking shaders");
                 break;
-            case ObjCouldNotFoundErr:
-                fprintf(stderr, "ERROR: Object could not be found");
+            case ElementCouldNotFoundErr:
+                fprintf(stderr, "ERROR: Element could not be found");
                 break;
             case TypeMismachErr:
                 fprintf(stderr, "ERROR: Type mismatch occurred");
@@ -171,6 +171,9 @@ namespace GamEncin
             case ProgramDuplicationErr:
                 fprintf(stderr, "ERROR: Program is already running");
                 break;
+            case NullPointerErr:
+                fprintf(stderr, "ERROR: Null pointer exception");
+                break;
             default:
                 fprintf(stdout, "UNKNOWN MESSAGE");
                 break;
@@ -179,31 +182,33 @@ namespace GamEncin
         printf("\n");
     }
 
-    void Application::PrintLog(EndType endType, const char* addMessage)
+    void Application::PrintLog(LogType logType, string addMessage)
     {
-        PrintLog(endType);
-        printf("Additional Message : %s\n", addMessage);
+        PrintLog(logType);
+        printf("Additional Message : %s\n", addMessage.c_str());
     }
 
-    void Application::Stop(EndType endType)
+    void Application::Stop(LogType logType)
     {
         isRunning = false;
-        PrintLog(endType);
+        printf("\nExit Code : %d\n", logType);
+        PrintLog(logType);
         currentScene->renderer->EndRenderer();
         for(Scene* scene : scenes)
             delete scene;
         scenes.clear();
-        exit(endType);
+        exit(logType);
     }
 
-    void Application::Stop(EndType endType, const char* addMessage)
+    void Application::Stop(LogType logType, string addMessage)
     {
         isRunning = false;
-        PrintLog(endType, addMessage);
+        printf("\nExit Code : %d\n", logType);
+        PrintLog(logType, addMessage);
         currentScene->renderer->EndRenderer();
         for(Scene* scene : scenes)
             delete scene;
         scenes.clear();
-        exit(endType);
+        exit(logType);
     }
 }

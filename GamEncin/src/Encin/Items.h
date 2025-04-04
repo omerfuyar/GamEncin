@@ -3,18 +3,40 @@
 
 using namespace GamEncin::MathYaman;
 
-#ifndef POSITION_VBO_LAYOUT
 #define POSITION_VBO_LAYOUT 0
-#endif // !POSITION_VBO_LAYOUT
-
-#ifndef COLOR_VBO_LAYOUT
 #define COLOR_VBO_LAYOUT 1
-#endif // !COLOR_VBO_LAYOUT
 
 //TODO BE CAREFUL WITH THESE IN THE VERTEX SHADER
 
 namespace GamEncin
 {
+#pragma region Forward Declarations
+
+    class VBO;
+    class EBO;
+    class VAO;
+    class Shader;
+    class Object;
+    class Shape;
+    class Cube;
+    class Pyramid;
+    class Sphere;
+    class Cylinder;
+    class Plane;
+    class Circle;
+    class Cone;
+    class Simit;
+    class Camera;
+    class Renderer;
+    class Scene;
+    class Component;
+    class Transform;
+    class Collider;
+    class RigidBody;
+    class Mesh;
+    class Camera;
+
+#pragma endregion
 
 #pragma region OpenGL Objects
 
@@ -50,7 +72,7 @@ namespace GamEncin
         void Delete();
     };
 
-    class Shader //Shader Program Object
+    class Shader
     {
     public:
         Shader(const char* vertexFile, const char* fragmentFile);
@@ -69,48 +91,186 @@ namespace GamEncin
 
 #pragma endregion
 
-#pragma region Object And Shapes
+#pragma region Object And Components
 
     class Object
     {
     public:
+        Object() = default;
+        Object(Scene* scene);
+        Object(Scene* scene, string name, string tag);
+        Object(Scene* scene, string name, string tag, Layer layer);
+        ~Object();
+
         string name = "Object",
             tag = "Default Tag";
 
         Layer layer = Default;
 
-        float mass = 1,
-            gravityScale = 1,
-            drag = 0,
-            angularDrag = 0;
+        Scene* scene = nullptr;
+        vector<Component*> components;
+        Transform* transform = AddComponent<Transform>();
 
-        Vector3 position,
-            rotation,
-            scale = Vector3::One(),
-            direction;
+        template <typename T>
+        T* GetComponent()
+        {
+            for(Component* component : components)
+            {
+                T* castedComponent = dynamic_cast<T*>(component);
 
-        void UpdateProperties();
+                if(castedComponent)
+                {
+                    return castedComponent;
+                }
+            }
+
+            Application::PrintLog(NullPointerErr, "Component couldn't found in the object");
+            return nullptr;
+        }
+
+        template <typename T>
+        T* AddComponent()
+        {
+            auto obj = std::find_if(components.begin(), components.end(), [](Component* component) { return dynamic_cast<T*>(component); });
+
+            if(obj != components.end())
+            {
+                Application::PrintLog(ElementDuplicationErr, "Component trying to add is already in the object");
+                return nullptr;
+            }
+
+            T* component = new T(this);
+            Component* castedComponent = dynamic_cast<Component*>(component);
+
+            if(castedComponent)
+            {
+                components.push_back(component);
+            }
+            else
+            {
+                Application::Stop(TypeMismachErr, "Argument is not a Component");
+            }
+
+            return component;
+        }
+
+        template <typename T>
+        void RemoveComponent()
+        {
+            auto obj = std::find_if(components.begin(), components.end(), [](Component* component) { return dynamic_cast<T*>(component); });
+
+            if(obj != components.end())
+            {
+                components.erase(obj);
+                delete* obj;
+            }
+            else
+            {
+                Application::PrintLog(ElementCouldNotFoundErr, "Couldn't found component to remove");
+            }
+        }
+
+        void RemoveComponent(Component* component);
+
+        void Awake();
+        void Start();
+        void Update();
+        void LateUpdate();
+        void FixUpdate();
+        void StartOfSecond();
+    };
+
+    class Component
+    {
+    public:
+        Component(Object* object);
+        ~Component();
+
+        Object* object = nullptr;
+
         virtual void Awake() {}
         virtual void Start() {}
         virtual void Update() {}
         virtual void LateUpdate() {}
         virtual void FixUpdate() {}
+        virtual void StartOfSecond() {}
     };
 
-    class Shape : public Object
+    class Transform : public Component
     {
     public:
-        ~Shape();
+        Transform(Object* object) : Component(object) {};
 
+        Transform* parent = nullptr;
+        vector<Transform*> children;
+
+        Vector3 position = Vector3::Zero(),
+            rotation = Vector3::Zero(),
+            scale = Vector3::One(),
+            localPosition = Vector3::Zero(),
+            localRotation = Vector3::Zero(),
+            localScale = Vector3::One(),
+            direction = Vector3::Forward();
+
+        void Update() override;
+
+    private:
+        void UpdateProperties();
+    };
+
+    class Collider : public Component
+    {
+        Collider(Object* object) : Component(object) {};
+    };
+
+    class RigidBody : public Component
+    {
+        RigidBody(Object* object) : Component(object) {};
+    };
+
+    class Mesh : public Component
+    {
+    public:
+        Mesh(Object* object);
+        ~Mesh();
+
+        vector<GLuint> indices;
+        vector<Vector3> vertices;
         VAO* vao = nullptr;
-        vector<GLuint> indices;
         VBO* vbo = nullptr;
-
-        vector<GLuint> indices;
         EBO* ebo = nullptr;
 
+        void SetShape(Shape* newShape);
         void Initialize();
         void Draw();
+    };
+
+    class Camera : public Component
+    {
+    public:
+        Camera(Object* object) : Component(object) {};
+        Camera(Object* object, Vector2Int size, float FOV);
+        ~Camera() = default;
+
+        GLfloat cameraFOV = 0.0f;
+        Vector2Int size = Vector2Int(1080, 1080);
+
+        void UseCamera(GLuint& transformMatrixLocation);
+
+    private:
+        mat4 perspectiveMatrix = mat4(1.0f),
+            viewMatrix = mat4(1.0f);
+    };
+
+#pragma endregion
+
+#pragma region Shapes
+
+    class Shape
+    {
+    public:
+        vector<GLuint> indices;
+        vector<Vector3> vertices;
     };
 
     class Cube : public Shape
@@ -470,44 +630,6 @@ namespace GamEncin
 
 #pragma endregion
 
-    class Camera : public Object
-    {
-    public:
-        GLfloat cameraFOV = 0.0f;
-        Vector2 size;
-
-        Camera(Vector2 initSize);
-        void UseCamera(GLuint& transformMatrixLocation);
-
-    private:
-        mat4 perspectiveMatrix = mat4(1.0f),
-            viewMatrix = mat4(1.0f);
-    };
-
-    class Renderer
-    {
-    public:
-        Renderer(Scene* scene);
-
-        vector<Shape*> shapes;
-        Shader* shaderProgram = nullptr;
-        Camera* camera = nullptr;
-        GLFWwindow* window = nullptr;
-
-        Vector2 initWindowSize = Vector2(720, 720);
-        Vector4 clearColor = Vector4(0, 0, 0, 0);
-        bool windowCloseInput = false;
-
-        void RenderFrame();
-        void InitialRender();
-        static void FrameBufferSizeCallback(GLFWwindow* window, int width, int height);
-        void EndRenderer();
-
-    private:
-        void GLSendUniformVector3(GLuint& location, Vector3 vector3);
-        void ClearColor(Vector4 clearColor);
-    };
-
     class Scene
     {
     public:
@@ -516,57 +638,52 @@ namespace GamEncin
         Renderer* renderer = nullptr;
         vector<Object*> objects;
 
-        template <typename T>
-        T* CreateObject()
+        template<typename T >
+        Object* CreateObject()
         {
-            T* object = new T();
-
-            Object* castedObject = dynamic_cast<Object*>(object);
-            if(castedObject)
-            {
-                objects.push_back(castedObject);
-            }
-            else
-            {
-                Application::Stop(TypeMismachErr, "Argument is not an Object");
-            }
-
-            Shape* castedShape = dynamic_cast<Shape*>(object);
-            if(castedShape)
-            {
-                renderer->shapes.push_back(castedShape);
-            }
-
+            Object* object = new Object(this);
+            object->AddComponent<T>();
+            AddObject(object);
             return object;
         }
 
-        template <typename T>
-        void AddObject(T* object)
-        {
-            Object* castedObject = dynamic_cast<Object*>(object);
-            if(castedObject)
-            {
-                objects.push_back(castedObject);
-            }
-            else
-            {
-                Application::Stop(TypeMismachErr, "Argument is not an Object");
-            }
-
-            Shape* castedShape = dynamic_cast<Shape*>(object);
-            if(castedShape)
-            {
-                renderer->shapes.push_back(castedShape);
-            }
-        }
-
+        Object* CreateObject();
+        Object* CreateObject(string name, string tag);
+        Object* CreateAndUseCameraObject(Vector2Int size);
+        void SetMainCamera(Camera* camera);
         void AddObject(Object* object);
         void RemoveObject(Object* object);
         void Clear();
+
         void Awake();
         void Start();
         void Update();
         void LateUpdate();
         void FixUpdate();
+        void StartOfSecond();
+    };
+
+    class Renderer
+    {
+    public:
+        vector<Mesh*> meshes;
+        Shader* shaderProgram = nullptr;
+        Camera* mainCamera = nullptr;
+        GLFWwindow* window = nullptr;
+
+        Vector2Int initWindowSize = Vector2Int(1080, 1080);
+        Vector4 clearColor = Vector4(0, 0, 0, 0);
+        bool windowCloseInput = false;
+
+        void AddMesh(Mesh* mesh);
+        void RemoveMesh(Mesh* mesh);
+        void RenderFrame();
+        void InitialRender();
+        static void FrameBufferSizeCallback(GLFWwindow* window, int width, int height);
+        void EndRenderer();
+
+    private:
+        void GLSendUniformVector3(GLuint& location, Vector3 vector3);
+        void ClearColor(Vector4 clearColor);
     };
 }

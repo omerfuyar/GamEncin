@@ -17,9 +17,7 @@ namespace GamEncin
         static Scene* currentScene;
         static string programName;
 
-        static int FPS, //the number of frames that have passed in the last second
-            frameCount, //the number of frames that have passed since the last second update
-            fixedFPS; //the frame rate of the fixed update
+        static int fixedFPS; //the frame rate of the fixed update
 
         static float fixedDeltaTime, //interval between fixed updates in seconds
             deltaTime, //the duration of the last frame in seconds
@@ -33,9 +31,9 @@ namespace GamEncin
         static Scene& CreateAndUseScene();
         static void SetCurrentScene(Scene& scene);
         static void Run();
-        static void PrintLog(EndType endType, const char* addMessage);
-        static void Stop(EndType endType);
-        static void Stop(EndType endType, const char* addMessage);
+        static void PrintLog(LogType endType, string addMessage);
+        static void Stop(LogType endType);
+        static void Stop(LogType endType, string addMessage);
 
     private:
         Application() = delete;
@@ -47,7 +45,8 @@ namespace GamEncin
         static void Update();
         static void LateUpdate();
         static void FixUpdate();
+        static void StartOfSecond();
         static void GameLoops();
-        static void PrintLog(EndType endType);
+        static void PrintLog(LogType endType);
     };
 }

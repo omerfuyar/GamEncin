@@ -65,7 +65,7 @@ namespace GamEncin
         map<int, KeyButtonStatus> Mouse::buttons;
         Vector2 Mouse::position = Vector2::Zero(),
             Mouse::positionDelta = Vector2::Zero();
-        int Mouse::scrollDelta = 0;
+        float Mouse::scrollDelta = 0;
 
         void Mouse::Initialize(GLFWwindow* window)
         {

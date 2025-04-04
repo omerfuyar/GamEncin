@@ -1,29 +1,28 @@
 #pragma once 
 #include "GamEncin.h"
 
-class CameraController : public Object
+class CameraController : public Component
 {
-    float camSpeed = 7.5,
-        camRotateSpeed = 75,
+public:
+    float camMoveSpeed = 5,
+        camRotateSpeed = 50,
         cameraLookLimit = 30;
+
+    Transform* cameraTR = nullptr;
     Camera* camera = nullptr;
     GLFWwindow* window = nullptr;
 
+    CameraController(Object* object) : Component(object) {}
+
     void Start() override
     {
-        camera = Application::currentScene->renderer->camera;
+        cameraTR = object->transform;
+        camera = object->GetComponent<Camera>();
         window = Application::currentScene->renderer->window;
     }
 
     void Update() override
     {
-
-        if(Input::IsGamepadConnected(0))
-        {
-            camera->direction = Vector3(Input::GetGamepadRightStick(0).Normalized(), -1);
-            camera->rotation = Vector3(-Input::GetGamepadRightStick(0).y * cameraLookLimit, Input::GetGamepadRightStick(0).x * cameraLookLimit - 90, 0);
-        }
-
         if(!Input::GetMouseButton(Pressed, Left))
         {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -37,27 +36,27 @@ class CameraController : public Object
 
         camera->cameraFOV += -Input::GetMouseScrollDelta();
 
-        camera->position += camera->direction * camSpeed * movement.y * Application::deltaTime;
-        camera->position += camera->direction.Cross(Vector3::Up()) * camSpeed * movement.x * Application::deltaTime;
-        camera->position += Vector3::Up() * camSpeed * movement.z * Application::deltaTime;
+        cameraTR->position += cameraTR->direction * camMoveSpeed * movement.y * Application::deltaTime;
+        cameraTR->position += cameraTR->direction.Cross(Vector3::Up()) * camMoveSpeed * movement.x * Application::deltaTime;
+        cameraTR->position += Vector3::Up() * camMoveSpeed * movement.z * Application::deltaTime;
 
-        camera->rotation += Vector3(-mouseDelta.y, mouseDelta.x, 0) * camRotateSpeed * Application::deltaTime;
-        camera->rotation.x = Clamp(camera->rotation.x, -89.0f, 89.0f);
+        cameraTR->rotation += Vector3(-mouseDelta.y, mouseDelta.x, 0) * camRotateSpeed * Application::deltaTime;
+        cameraTR->rotation.x = Clamp(cameraTR->rotation.x, -89.0f, 89.0f);
     }
 };
 
-class myObject : public Cube
-{
-public:
-    float rotSpeed = 75;
-
-    myObject() : Cube(1)
-    {
-        name = "myObject";
-    }
-
-    void Update()override
-    {
-        rotation += Vector3::One() * rotSpeed * Application::deltaTime;
-    }
-};
+//class myObject : public Cube
+//{
+//public:
+//    float rotSpeed = 75;
+//
+//    myObject() : Cube(1)
+//    {
+//        name = "myObject";
+//    }
+//
+//    void Update()override
+//    {
+//        rotation += Vector3::One() * rotSpeed * Application::deltaTime;
+//    }
+//};
