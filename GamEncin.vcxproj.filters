@@ -18,13 +18,7 @@
     <ClCompile Include="GamEncin\src\User\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GamEncin\src\Encin\Application.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GamEncin\src\Encin\Items.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GamEncin\src\Encin\Tools.cpp">
+    <ClCompile Include="GamEncin\src\Encin\Items\Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Dependencies\GLAD\glad.c">
@@ -36,24 +30,54 @@
     <ClCompile Include="Dependencies\GLM\glm.cppm">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GamEncin\src\Encin\Items\Scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GamEncin\src\Encin\Items\Renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GamEncin\src\Encin\Items\Object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GamEncin\src\Encin\Items\Components\Transform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GamEncin\src\Encin\Items\Components\Collider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GamEncin\src\Encin\Items\Components\RigidBody.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GamEncin\src\Encin\Items\Components\Mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GamEncin\src\Encin\Items\Components\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GamEncin\src\Encin\Items\Components\Component.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GamEncin\src\Encin\Tools\InputSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GamEncin\src\Encin\Tools\MathYaman.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GamEncin\src\Encin\Tools\Toolkit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GamEncin\src\Encin\Items\OpenGLObjects.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GamEncin\src\Encin\Tools.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GamEncin\src\User\GamEncin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GamEncin\src\User\UserObjects.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GamEncin\src\Encin\Application.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GamEncin\src\Encin\Encin.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GamEncin\src\Encin\Items.h">
+    <ClInclude Include="GamEncin\src\Encin\Items\Application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\GLAD\glad.h">
@@ -935,7 +959,46 @@
     <ClInclude Include="Dependencies\GLM\vector_relational.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GamEncin\src\Encin\GraphicLibraries.h">
+    <ClInclude Include="GamEncin\src\Encin\Tools\MathYaman.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GamEncin\src\Encin\Tools\Toolkit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GamEncin\src\Encin\Tools\InputSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GamEncin\src\Encin\Items\Scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GamEncin\src\Encin\Items\Renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GamEncin\src\Encin\Items\Object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GamEncin\src\Encin\Items\Components\Transform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GamEncin\src\Encin\Items\Components\Collider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GamEncin\src\Encin\Items\Components\RigidBody.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GamEncin\src\Encin\Items\Components\Mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GamEncin\src\Encin\Items\Components\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GamEncin\src\Encin\Items\Components\Component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GamEncin\src\Encin\Items\OpenGLObjects.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GamEncin\src\Encin\Encin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

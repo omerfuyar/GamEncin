@@ -1,10 +1,7 @@
-#include "Encin.h"
-#include <stdio.h>
-#include <time.h>
+#include "Encin/Encin.h"
 
 namespace GamEncin
 {
-
 #pragma region Variable Definitions
 
     Scene* Application::currentScene = nullptr;
@@ -78,7 +75,7 @@ namespace GamEncin
         if(printFPS)
         {
             char buff[100];
-            snprintf(buff, sizeof(buff), "%s | FPS: %f | Delta Time: %f", programName.c_str(), 1 / deltaTime, deltaTime);
+            snprintf(buff, sizeof(buff), "%s | FPS: %d | Delta Time: %f", programName.c_str(), (int) (1 / deltaTime), deltaTime);
             glfwSetWindowTitle(currentScene->renderer->window, buff);
         }
     }

@@ -1,34 +1,7 @@
-#include "Encin.h"
+#include "Encin/Encin.h"
 
 namespace GamEncin
 {
-    namespace ToolKit
-    {
-        string getFileContents(const char* fileName)
-        {
-            std::ifstream in(fileName, std::ios::binary);
-
-            if(in)
-            {
-                string contents;
-                in.seekg(0, std::ios::end);
-                contents.resize(in.tellg());
-                in.seekg(0, std::ios::beg);
-                in.read(&contents[0], contents.size());
-                in.close();
-                return(contents);
-            }
-
-            Application::Stop(IOErr);
-            return "";
-        }
-    }
-
-    namespace MathYaman
-    {
-
-    }
-
     namespace InputSystem
     {
 #pragma region Enum Arrays
@@ -398,7 +371,25 @@ namespace GamEncin
             return axis;
         }
 
-#pragma endregion
+        string Input::GetFileContents(const char* fileName)
+        {
+            std::ifstream in(fileName, std::ios::binary);
 
+            if(in)
+            {
+                string contents;
+                in.seekg(0, std::ios::end);
+                contents.resize(in.tellg());
+                in.seekg(0, std::ios::beg);
+                in.read(&contents[0], contents.size());
+                in.close();
+                return(contents);
+            }
+
+            Application::Stop(IOErr);
+            return "";
+        }
     }
+
+#pragma endregion
 }

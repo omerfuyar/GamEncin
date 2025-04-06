@@ -1,10 +1,10 @@
 #pragma once
-#include "Tools.h"
+#include "Encin/Tools/MathYaman.h"
+#include "Encin/Tools/Toolkit.h"
+
 #include <chrono>
 
 using namespace std::chrono;
-using namespace GamEncin::InputSystem;
-using namespace GamEncin::ToolKit;
 
 namespace GamEncin
 {

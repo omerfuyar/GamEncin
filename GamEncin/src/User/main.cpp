@@ -1,6 +1,6 @@
 #include "GamEncin.h"
 
-GE_SELECT_OPTIMUM_GPU
+//GE_SELECT_OPTIMUM_GPU
 
 void SceneBuilding()
 {
@@ -12,7 +12,6 @@ void SceneBuilding()
     //Object* myObject = scene.CreateObject<Mesh>();
     Mesh* mesh = myObject->AddComponent<Mesh>();
     Transform* transform = myObject->GetComponent<Transform>();
-
 
     //int totalVerticeCount = 0;
     //int totalIndiceCount = 0;

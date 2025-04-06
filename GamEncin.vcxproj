@@ -82,15 +82,30 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GamEncin\src\Encin\Items\Components\Camera.cpp" />
+    <ClCompile Include="GamEncin\src\Encin\Items\Components\Collider.cpp" />
+    <ClCompile Include="GamEncin\src\Encin\Items\Components\Component.cpp" />
     <ClCompile Include="Dependencies\GLAD\glad.c" />
     <ClCompile Include="Dependencies\GLM\detail\glm.cpp" />
     <ClCompile Include="Dependencies\GLM\glm.cppm" />
-    <ClCompile Include="GamEncin\src\Encin\Application.cpp" />
-    <ClCompile Include="GamEncin\src\Encin\Tools.cpp" />
+    <ClCompile Include="GamEncin\src\Encin\Items\Application.cpp" />
+    <ClCompile Include="GamEncin\src\Encin\Items\OpenGLObjects.cpp" />
+    <ClCompile Include="GamEncin\src\Encin\Tools\InputSystem.cpp" />
+    <ClCompile Include="GamEncin\src\Encin\Tools\MathYaman.cpp" />
+    <ClCompile Include="GamEncin\src\Encin\Tools\Toolkit.cpp" />
     <ClCompile Include="GamEncin\src\User\main.cpp" />
-    <ClCompile Include="GamEncin\src\Encin\Items.cpp" />
+    <ClCompile Include="GamEncin\src\Encin\Items\Scene.cpp" />
+    <ClCompile Include="GamEncin\src\Encin\Items\Renderer.cpp" />
+    <ClCompile Include="GamEncin\src\Encin\Items\Object.cpp" />
+    <ClCompile Include="GamEncin\src\Encin\Items\Components\Mesh.cpp" />
+    <ClCompile Include="GamEncin\src\Encin\Items\Components\RigidBody.cpp" />
+    <ClCompile Include="GamEncin\src\Encin\Items\Components\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GamEncin\src\Encin\Encin.h" />
+    <ClInclude Include="GamEncin\src\Encin\Items\Components\Camera.h" />
+    <ClInclude Include="GamEncin\src\Encin\Items\Components\Collider.h" />
+    <ClInclude Include="GamEncin\src\Encin\Items\Components\Component.h" />
     <ClInclude Include="Dependencies\GLAD\glad.h" />
     <ClInclude Include="Dependencies\GLAD\khrplatform.h" />
     <ClInclude Include="Dependencies\GLFW\glfw3.h" />
@@ -384,13 +399,19 @@
     <ClInclude Include="Dependencies\GLM\vec3.hpp" />
     <ClInclude Include="Dependencies\GLM\vec4.hpp" />
     <ClInclude Include="Dependencies\GLM\vector_relational.hpp" />
-    <ClInclude Include="GamEncin\src\Encin\Encin.h" />
-    <ClInclude Include="GamEncin\src\Encin\Application.h" />
-    <ClInclude Include="GamEncin\src\Encin\GraphicLibraries.h" />
-    <ClInclude Include="GamEncin\src\Encin\Tools.h" />
+    <ClInclude Include="GamEncin\src\Encin\Items\Application.h" />
+    <ClInclude Include="GamEncin\src\Encin\Items\OpenGLObjects.h" />
+    <ClInclude Include="GamEncin\src\Encin\Tools\InputSystem.h" />
+    <ClInclude Include="GamEncin\src\Encin\Tools\MathYaman.h" />
+    <ClInclude Include="GamEncin\src\Encin\Tools\Toolkit.h" />
     <ClInclude Include="GamEncin\src\User\GamEncin.h" />
     <ClInclude Include="GamEncin\src\User\UserObjects.h" />
-    <ClInclude Include="GamEncin\src\Encin\Items.h" />
+    <ClInclude Include="GamEncin\src\Encin\Items\Scene.h" />
+    <ClInclude Include="GamEncin\src\Encin\Items\Renderer.h" />
+    <ClInclude Include="GamEncin\src\Encin\Items\Object.h" />
+    <ClInclude Include="GamEncin\src\Encin\Items\Components\Mesh.h" />
+    <ClInclude Include="GamEncin\src\Encin\Items\Components\RigidBody.h" />
+    <ClInclude Include="GamEncin\src\Encin\Items\Components\Transform.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="LICENSE.txt" />

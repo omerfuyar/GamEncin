@@ -1,271 +1,13 @@
 #pragma once
-#include "Tools.h"
+#include "Encin/Items/Components/Component.h"
+#include "Encin/Items/OpenGLObjects.h"
+#include "Encin/Tools/MathYaman.h"
 
-using namespace GamEncin::MathYaman;
-
-#define POSITION_VBO_LAYOUT 0
-#define COLOR_VBO_LAYOUT 1
-
-//TODO BE CAREFUL WITH THESE IN THE VERTEX SHADER
+#include <GLAD/glad.h>
 
 namespace GamEncin
 {
-#pragma region Forward Declarations
-
-    class VBO;
-    class EBO;
-    class VAO;
-    class Shader;
-    class Object;
-    class Shape;
-    class Cube;
-    class Pyramid;
-    class Sphere;
-    class Cylinder;
-    class Plane;
-    class Circle;
-    class Cone;
-    class Simit;
-    class Camera;
-    class Renderer;
-    class Scene;
-    class Component;
-    class Transform;
-    class Collider;
-    class RigidBody;
-    class Mesh;
-    class Camera;
-
-#pragma endregion
-
-#pragma region OpenGL Objects
-
-    class VBO
-    {
-    public:
-        VBO(vector<Vector3> vertices);
-        GLuint ID;
-
-        void Bind();
-        void Update(vector<Vector3> vertices);
-        void Delete();
-    };
-
-    class EBO
-    {
-    public:
-        EBO(vector<GLuint> indices);
-        GLuint ID;
-
-        void Bind();
-        void Delete();
-    };
-
-    class VAO
-    {
-    public:
-        VAO();
-        GLuint ID;
-
-        void LinkAttributes(GLuint layout, GLuint numComponents, GLenum type, GLuint offsetInBytes);
-        void Bind();
-        void Delete();
-    };
-
-    class Shader
-    {
-    public:
-        Shader(const char* vertexFile, const char* fragmentFile);
-        GLuint ID,
-            transformMatrixVarID,
-            objPositionVarID,
-            objRotationVarID,
-            objScaleVarID;
-
-        void Use();
-        void Delete();
-
-    private:
-        void CheckShaderErrors(GLuint shader, const char* type);
-    };
-
-#pragma endregion
-
-#pragma region Object And Components
-
-    class Object
-    {
-    public:
-        Object() = default;
-        Object(Scene* scene);
-        Object(Scene* scene, string name, string tag);
-        Object(Scene* scene, string name, string tag, Layer layer);
-        ~Object();
-
-        string name = "Object",
-            tag = "Default Tag";
-
-        Layer layer = Default;
-
-        Scene* scene = nullptr;
-        vector<Component*> components;
-        Transform* transform = AddComponent<Transform>();
-
-        template <typename T>
-        T* GetComponent()
-        {
-            for(Component* component : components)
-            {
-                T* castedComponent = dynamic_cast<T*>(component);
-
-                if(castedComponent)
-                {
-                    return castedComponent;
-                }
-            }
-
-            Application::PrintLog(NullPointerErr, "Component couldn't found in the object");
-            return nullptr;
-        }
-
-        template <typename T>
-        T* AddComponent()
-        {
-            auto obj = std::find_if(components.begin(), components.end(), [](Component* component) { return dynamic_cast<T*>(component); });
-
-            if(obj != components.end())
-            {
-                Application::PrintLog(ElementDuplicationErr, "Component trying to add is already in the object");
-                return nullptr;
-            }
-
-            T* component = new T(this);
-            Component* castedComponent = dynamic_cast<Component*>(component);
-
-            if(castedComponent)
-            {
-                components.push_back(component);
-            }
-            else
-            {
-                Application::Stop(TypeMismachErr, "Argument is not a Component");
-            }
-
-            return component;
-        }
-
-        template <typename T>
-        void RemoveComponent()
-        {
-            auto obj = std::find_if(components.begin(), components.end(), [](Component* component) { return dynamic_cast<T*>(component); });
-
-            if(obj != components.end())
-            {
-                components.erase(obj);
-                delete* obj;
-            }
-            else
-            {
-                Application::PrintLog(ElementCouldNotFoundErr, "Couldn't found component to remove");
-            }
-        }
-
-        void RemoveComponent(Component* component);
-
-        void Awake();
-        void Start();
-        void Update();
-        void LateUpdate();
-        void FixUpdate();
-        void StartOfSecond();
-    };
-
-    class Component
-    {
-    public:
-        Component(Object* object);
-        ~Component();
-
-        Object* object = nullptr;
-
-        virtual void Awake() {}
-        virtual void Start() {}
-        virtual void Update() {}
-        virtual void LateUpdate() {}
-        virtual void FixUpdate() {}
-        virtual void StartOfSecond() {}
-    };
-
-    class Transform : public Component
-    {
-    public:
-        Transform(Object* object) : Component(object) {};
-
-        Transform* parent = nullptr;
-        vector<Transform*> children;
-
-        Vector3 position = Vector3::Zero(),
-            rotation = Vector3::Zero(),
-            scale = Vector3::One(),
-            localPosition = Vector3::Zero(),
-            localRotation = Vector3::Zero(),
-            localScale = Vector3::One(),
-            direction = Vector3::Forward();
-
-        void Update() override;
-
-    private:
-        void UpdateProperties();
-    };
-
-    class Collider : public Component
-    {
-        Collider(Object* object) : Component(object) {};
-    };
-
-    class RigidBody : public Component
-    {
-        RigidBody(Object* object) : Component(object) {};
-    };
-
-    class Mesh : public Component
-    {
-    public:
-        Mesh(Object* object);
-        ~Mesh();
-
-        vector<GLuint> indices;
-        vector<Vector3> vertices;
-        VAO* vao = nullptr;
-        VBO* vbo = nullptr;
-        EBO* ebo = nullptr;
-
-        void SetShape(Shape* newShape);
-        void Initialize();
-        void Draw();
-    };
-
-    class Camera : public Component
-    {
-    public:
-        Camera(Object* object) : Component(object) {};
-        Camera(Object* object, Vector2Int size, float FOV);
-        ~Camera() = default;
-
-        GLfloat cameraFOV = 0.0f;
-        Vector2Int size = Vector2Int(1080, 1080);
-
-        void UseCamera(GLuint& transformMatrixLocation);
-
-    private:
-        mat4 perspectiveMatrix = mat4(1.0f),
-            viewMatrix = mat4(1.0f);
-    };
-
-#pragma endregion
-
-#pragma region Shapes
-
+    //TODO fix this
     class Shape
     {
     public:
@@ -628,62 +370,115 @@ namespace GamEncin
         }
     };
 
-#pragma endregion
 
-    class Scene
+    struct Face;
+    struct Edge;
+
+    struct Vertex
     {
-    public:
-        Scene();
+        unsigned int id = 0;
 
-        Renderer* renderer = nullptr;
-        vector<Object*> objects;
+        Vector3 position = Vector3::Zero(),
+            normal = Vector3::Forward();
 
-        template<typename T >
-        Object* CreateObject()
+        Vector2 texture = Vector2::Zero();
+
+        Vector4 color = Vector4::One();
+
+        vector<Face*> faces;
+        vector<Edge*> edges;
+
+        void SetID(unsigned int id)
         {
-            Object* object = new Object(this);
-            object->AddComponent<T>();
-            AddObject(object);
-            return object;
+            this->id = id;
         }
 
-        Object* CreateObject();
-        Object* CreateObject(string name, string tag);
-        Object* CreateAndUseCameraObject(Vector2Int size);
-        void SetMainCamera(Camera* camera);
-        void AddObject(Object* object);
-        void RemoveObject(Object* object);
-        void Clear();
+        void SetPosition(Vector3 position)
+        {
+            this->position = position;
+        }
 
-        void Awake();
-        void Start();
-        void Update();
-        void LateUpdate();
-        void FixUpdate();
-        void StartOfSecond();
+        void SetNormal(Vector3 normal)
+        {
+            this->normal = normal;
+        }
+
+        void SetTexture(Vector2 texture)
+        {
+            this->texture = texture;
+        }
+
+        void SetColor(Vector4 color)
+        {
+            this->color = color;
+        }
+
+        void AddFace(Face* face)
+        {
+            faces.push_back(face);
+        }
+
+        void AddEdge(Edge* edge)
+        {
+            edges.push_back(edge);
+        }
     };
 
-    class Renderer
+    struct Edge
+    {
+        unsigned int id = 0;
+
+        Vertex* startVertex = nullptr;
+        Vertex* endVertex = nullptr;
+
+        Face* leftFace = nullptr;
+        Face* rightFace = nullptr;
+
+        Edge* nextLeftEdge = nullptr;
+        Edge* nextRightEdge = nullptr;
+        Edge* prevLeftEdge = nullptr;
+        Edge* prevRightEdge = nullptr;
+
+        void SetID(unsigned int id)
+        {
+            this->id = id;
+        }
+    };
+
+    struct Face
+    {
+        unsigned int id = 0;
+
+        array<Vertex*, 3> vertices;
+        array<Edge*, 3> edges;
+
+        void SetID(unsigned int id)
+        {
+            this->id = id;
+        }
+    };
+
+    struct MeshData
+    {
+        vector<Vertex*> vertices;
+        vector<Edge*> edges;
+        vector<Face*> faces;
+    };
+
+    class Mesh : public Component
     {
     public:
-        vector<Mesh*> meshes;
-        Shader* shaderProgram = nullptr;
-        Camera* mainCamera = nullptr;
-        GLFWwindow* window = nullptr;
+        Mesh(Object* object);
+        ~Mesh();
 
-        Vector2Int initWindowSize = Vector2Int(1080, 1080);
-        Vector4 clearColor = Vector4(0, 0, 0, 0);
-        bool windowCloseInput = false;
+        vector<GLuint> indices;
+        vector<Vector3> vertices;
+        VAO* vao = nullptr;
+        VBO* vbo = nullptr;
+        IBO* ebo = nullptr;
 
-        void AddMesh(Mesh* mesh);
-        void RemoveMesh(Mesh* mesh);
-        void RenderFrame();
-        void InitialRender();
-        static void FrameBufferSizeCallback(GLFWwindow* window, int width, int height);
-        void EndRenderer();
-
-    private:
-        void GLSendUniformVector3(GLuint& location, Vector3 vector3);
-        void ClearColor(Vector4 clearColor);
+        void SetShape(Shape* newShape);
+        void Initialize();
+        void Draw();
     };
 }
