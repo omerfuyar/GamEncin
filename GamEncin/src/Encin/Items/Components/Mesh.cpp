@@ -3,6 +3,55 @@
 namespace GamEncin
 {
 
+#pragma region Primitives 
+
+    void Vertex::SetID(unsigned int id)
+    {
+        this->id = id;
+    }
+
+    void Vertex::SetPosition(Vector3 position)
+    {
+        this->position = position;
+    }
+
+    void Vertex::SetNormal(Vector3 normal)
+    {
+        this->normal = normal;
+    }
+
+    void Vertex::SetTexture(Vector2 texture)
+    {
+        this->texture = texture;
+    }
+
+    void Vertex::SetColor(Vector4 color)
+    {
+        this->color = color;
+    }
+
+    void Vertex::AddFace(Face* face)
+    {
+        faces.push_back(face);
+    }
+
+    void Vertex::AddEdge(Edge* edge)
+    {
+        edges.push_back(edge);
+    }
+
+    void Edge::SetID(unsigned int id)
+    {
+        this->id = id;
+    }
+
+    void Face::SetID(unsigned int id)
+    {
+        this->id = id;
+    }
+
+#pragma endregion
+
     void Mesh::SetShape(Shape* newShape)
     {
         vertices = newShape->vertices;

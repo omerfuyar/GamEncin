@@ -26,6 +26,9 @@ public:
         if(!Input::GetMouseButton(Pressed, Left))
         {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            Vector2 vec;
+            vec.Normalized() += 5;
+            vec.Normalized() + 5;
             return;
         }
 

@@ -21,135 +21,96 @@ namespace GamEncin
     {
 #pragma region Constants
 
-        //Euler, PI, Earth's gravity, Gravitational constant
-        const float E = 2.7182817F,
-            PI = 3.1415927F,
-            GRAVITY = 9.80665F,
-            G = 6.67F / 1e11F;
+        // Pi
+        extern const float PI;
+        // Euler's number
+        extern const float E;
+        // Earth's gravity
+        extern const float GRAVITY;
+        // Gravitational constant
+        extern const float G;
 
 #pragma endregion
 
 #pragma region Basic Functions
 
         // Returns true if the value is between min and max values, inclusive
-        inline bool Between(float value, float min, float max)
-        {
-            return value >= min && value <= max;
-        }
+        bool Between(float value, float min, float max);
 
         // Returns the absolute value of the float
-        inline float Abs(float value)
-        {
-            return value < 0 ? -value : value;
-        }
+        float Abs(float value);
 
         // Returns the rounded value of the float
-        inline int Round(float value)
-        {
-            return (int) (value + 0.5);
-        }
+        int Round(float value);
 
         // Returns the root of the float value
-        inline float Root(float value, float root)
-        {
-            return pow(value, 1 / root);
-        }
+        float Root(float value, float root);
 
         // Return square root of the float value
-        inline float Sqrt(float value)
-        {
-            return sqrt(value);
-        }
+        float SquareRoot(float value);
 
         // Returns the cube root of the float value
-        inline float Cbrt(float value)
-        {
-            return cbrt(value);
-        }
+        float CubeRoot(float value);
 
         // Returns the power of the base to the exponent
-        inline float Power(float base, float exponent)
-        {
-            return pow(base, exponent);
-        }
+        float Power(float base, float exponent);
 
         // Returns the logarithm of the value to the base
-        inline float Log(float value, float base)
-        {
-            return log(value) / log(base);
-        }
+        float Log(float value, float base);
 
         // Returns the logarithm of the value to the base 10
-        inline float Log10(float value)
-        {
-            return log10(value);
-        }
+        float Log10(float value);
 
         // Returns the natural logarithm of the value
-        inline float LogE(float value)
-        {
-            return log(value);
-        }
+        float LogE(float value);
 
         // Converts the radian value to degree
-        inline float Rad2Deg(float radian)
-        {
-            return radian * 180 / PI;
-        }
+        float Rad2Deg(float radian);
 
         // Converts the degree value to radians
-        inline float Deg2Rad(float degree)
-        {
-            return degree * PI / 180;
-        }
+        float Deg2Rad(float degree);
+
+        // Returns the angle between two angles in degrees
+        float DegBetweenAngles(float a, float b);
+
+        // Returns the angle between two angles in radians
+        float RadBetweenAngles(float a, float b);
 
         // Returns the sine of the radian value
-        inline float SinRad(float radian)
-        {
-            return sin(radian);
-        }
+        float SinRad(float radian);
 
         // Returns the sine of the degree value
-        inline float SinDeg(float degree)
-        {
-            return sin(Deg2Rad(degree));
-        }
+        float SinDeg(float degree);
 
         // Returns the cosine of the radian value
-        inline float CosRad(float radian)
-        {
-            return cos(radian);
-        }
+        float CosRad(float radian);
 
         // Returns the cosine of the degree value
-        inline float CosDeg(float degree)
-        {
-            return cos(Deg2Rad(degree));
-        }
+        float CosDeg(float degree);
 
         // Returns the tangent of the radian value
-        inline float TanRad(float radian)
-        {
-            return tan(radian);
-        }
+        float TanRad(float radian);
 
         // Returns the tangent of the degree value
-        inline float TanDeg(float degree)
-        {
-            return tan(Deg2Rad(degree));
-        }
+        float TanDeg(float degree);
+
+        // Returns the arc tangent in degrees
+        float ArcTanDeg(float x);
+
+        // Returns the arc tangent in radians
+        float ArcTanRad(float x);
+
+        // Returns the angle that points to the given x and y coordinates in degrees
+        float ArcTan2Deg(float y, float x);
+
+        // Returns the angle that points to the given x and y coordinates in radians
+        float ArcTan2Rad(float y, float x);
 
         // Returns the cotangent of the radian value
-        inline float CotRad(float radian)
-        {
-            return 1 / TanRad(radian);
-        }
+        float CotRad(float radian);
 
         // Returns the cotangent of the degree value
-        inline float CotDeg(float degree)
-        {
-            return 1 / TanDeg(degree);
-        }
+        float CotDeg(float degree);
 
 #pragma endregion
 
@@ -161,124 +122,43 @@ namespace GamEncin
 
             float x, y;
 
-            Vector2(float x = 0, float y = 0) : x(x), y(y) {};
-            Vector2(const glm::vec2& vec) : x(vec.x), y(vec.y) {};
-            ~Vector2() = default;
+            Vector2(float x = 0, float y = 0);
+            Vector2(const glm::vec2& vec);
 
-#pragma region Operators
-
-            inline Vector2 operator + (const Vector2& other)
-            {
-                return Vector2(x + other.x, y + other.y);
-            }
-
-            inline Vector2 operator += (const Vector2& other)
-            {
-                x += other.x;
-                y += other.y;
-                return Vector2(x, y);
-            }
-
-            inline Vector2 operator - (const Vector2& other)
-            {
-                return Vector2(x - other.x, y - other.y);
-            }
-
-            inline Vector2 operator -= (const Vector2& other)
-            {
-                x -= other.x;
-                y -= other.y;
-                return Vector2(x, y);
-            }
-
-            inline Vector2 operator *= (const Vector2& other)
-            {
-                x *= other.x;
-                y *= other.y;
-                return Vector2(x, y);
-            }
-
-            inline Vector2 operator * (const float other)
-            {
-                return Vector2(x * other, y * other);
-            }
-
-            inline Vector2 operator *= (const float other)
-            {
-                x *= other;
-                y *= other;
-                return Vector2(x, y);
-            }
-
-            inline Vector2 operator / (const float other)
-            {
-                return Vector2(x / other, y / other);
-            }
-
-            inline Vector2 operator /= (const float other)
-            {
-                x /= other;
-                y /= other;
-                return Vector2(x, y);
-            }
-
-            inline bool operator == (const Vector2& other)
-            {
-                return x == other.x && y == other.y;
-            }
-
-            inline bool operator != (const Vector2& other)
-            {
-                return x != other.x || y != other.y;
-            }
-
-#pragma endregion
-
-#pragma region Functions
+            Vector2 operator + (const Vector2& other) const;
+            Vector2& operator += (const Vector2& other);
+            Vector2 operator - (const Vector2& other) const;
+            Vector2& operator -= (const Vector2& other);
+            Vector2 operator * (const float other) const;
+            Vector2& operator *= (const float other);
+            Vector2 operator * (const Vector2& other) const;
+            Vector2& operator *= (const Vector2& other);
+            Vector2 operator / (const float other) const;
+            Vector2& operator /= (const float other);
+            bool operator == (const Vector2& other);
+            bool operator != (const Vector2& other);
 
             // Returns the magnitude of the Vector2
-            inline float GetMagnitude()
-            {
-                return Sqrt(x * x + y * y);
-            }
-
+            float GetMagnitude() const;
             // Scales the Vector2 to magnitude of 1 and returns it
-            inline Vector2 Normalize()
-            {
-                float magnitude = GetMagnitude();
-                x /= magnitude;
-                y /= magnitude;
-                return Vector2(x, y);
-            }
-
+            Vector2& Normalize();
             // Returns the normalized version of the Vector2
-            inline Vector2 Normalized()
-            {
-                Vector2 result = Vector2(x, y);
-                result.Normalize();
-                return result;
-            }
-
+            Vector2 Normalized() const;
             // Returns the glm vec2 version of the Vector2
-            inline glm::vec2 ToGLMVec2()
-            {
-                return glm::vec2(x, y);
-            }
+            glm::vec2 ToGLMVec2();
 
             //Returns a Vector2(0, 0)
-            static inline Vector2 Zero() { return Vector2(0, 0); }
+            static Vector2 Zero();
             //Returns a Vector2(1, 1)                            
-            static inline Vector2 One() { return Vector2(1, 1); }
+            static Vector2 One();
             //Returns a Vector2(0, 1)                           
-            static inline Vector2 Up() { return Vector2(0, 1); }
+            static Vector2 Up();
             //Returns a Vector2(1, 0)                          
-            static inline Vector2 Right() { return Vector2(1, 0); }
+            static Vector2 Right();
             //Returns a Vector2(0, -1)
-            static inline Vector2 Down() { return Vector2(0, -1); }
+            static Vector2 Down();
             //Returns a Vector2(-1, 0)
-            static inline Vector2 Left() { return Vector2(-1, 0); }
-
-#pragma endregion
+            static Vector2 Left();
         };
 
         struct Vector3
@@ -286,154 +166,54 @@ namespace GamEncin
         public:
             float x, y, z;
 
-            Vector3(float x = 0, float y = 0, float z = 0) : x(x), y(y), z(z) {}
-            Vector3(const glm::vec3& vec) : x(vec.x), y(vec.y), z(vec.z) {}
-            Vector3(const Vector2& vec) : x(vec.x), y(vec.y), z(0) {}
-            Vector3(const Vector2& vec, float z = 0) : x(vec.x), y(vec.y), z(z) {}
-            ~Vector3() = default;
+            Vector3(float x = 0, float y = 0, float z = 0);
+            Vector3(const glm::vec3& vec);
+            Vector3(const Vector2& vec);
+            Vector3(const Vector2& vec, float z);
 
-#pragma region Operators
-
-            inline Vector3 operator + (const Vector3& other)
-            {
-                return Vector3(x + other.x, y + other.y, z + other.z);
-            }
-
-            inline Vector3 operator += (const Vector3& other)
-            {
-                x += other.x;
-                y += other.y;
-                z += other.z;
-                return Vector3(x, y, z);
-            }
-
-            inline Vector3 operator - (const Vector3& other)
-            {
-                return Vector3(x - other.x, y - other.y, z - other.z);
-            }
-
-            inline Vector3 operator -= (const Vector3& other)
-            {
-                x -= other.x;
-                y -= other.y;
-                z -= other.z;
-                return Vector3(x, y, z);
-            }
-
-            inline Vector3 operator * (const Vector3& other)
-            {
-                return Vector3(x * other.x, y * other.y, z * other.z);
-            }
-
-            inline Vector3 operator *= (const Vector3& other)
-            {
-                x *= other.x;
-                y *= other.y;
-                z *= other.z;
-                return Vector3(x, y, z);
-            }
-
-            inline Vector3 operator * (const float other)
-            {
-                return Vector3(x * other, y * other, z * other);
-            }
-
-            inline Vector3 operator *= (const float other)
-            {
-                x *= other;
-                y *= other;
-                z *= other;
-                return Vector3(x, y, z);
-            }
-
-            inline Vector3 operator / (const float other)
-            {
-                return Vector3(x / other, y / other, z / other);
-            }
-
-            inline Vector3 operator /= (const float other)
-            {
-                x /= other;
-                y /= other;
-                z /= other;
-                return Vector3(x, y, z);
-            }
-
-            inline bool operator == (const Vector3& other)
-            {
-                return x == other.x && y == other.y && z == other.z;
-            }
-
-            inline bool operator != (const Vector3& other)
-            {
-                return x != other.x || y != other.y || z != other.z;
-            }
-
-#pragma endregion
-
-#pragma region Functions
+            Vector3 operator + (const Vector3& other) const;
+            Vector3& operator += (const Vector3& other);
+            Vector3 operator - (const Vector3& other) const;
+            Vector3& operator -= (const Vector3& other);
+            Vector3 operator * (const float other) const;
+            Vector3& operator *= (const float other);
+            Vector3 operator * (const Vector3& other) const;
+            Vector3& operator *= (const Vector3& other);
+            Vector3 operator / (const float other) const;
+            Vector3& operator /= (const float other);
+            bool operator==(const Vector3& other);
+            bool operator!=(const Vector3& other);
 
             // Returns the magnitude of the Vector3
-            inline float GetMagnitude()
-            {
-                return Sqrt(x * x + y * y + z * z);
-            }
-
+            float GetMagnitude() const;
             // Scales and returns the Vector3 magnitude of 1
-            inline Vector3 Normalize()
-            {
-                float magnitude = GetMagnitude();
-                x /= magnitude;
-                y /= magnitude;
-                z /= magnitude;
-                return Vector3(x, y, z);
-            }
-
-            // Returns the normalized version of the Vector2
-            inline Vector3 Normalized()
-            {
-                Vector3 result = Vector3(x, y, z);
-                result.Normalize();
-                return result;
-            }
-
+            Vector3& Normalize();
+            // Returns the normalized version of the Vector3
+            Vector3 Normalized() const;
             /// <summary>
             /// Returns the cross product of two Vector3
             /// </summary>
             /// <param name="otherVec: ">Vector to take cross</param>
-            inline Vector3 Cross(const Vector3& otherVec) const
-            {
-                return Vector3(
-                    y * otherVec.z - z * otherVec.y,
-                    z * otherVec.x - x * otherVec.z,
-                    x * otherVec.y - y * otherVec.x
-                );
-            }
-
+            Vector3 Cross(const Vector3& otherVec) const;
             // Returns the glm vec3 version of the Vector3
-            inline glm::vec3 ToGLMvec3()
-            {
-                return glm::vec3(x, y, z);
-            }
+            glm::vec3 ToGLMvec3();
 
-            //Returns a Vector3(0, 0, 0)
-            static inline Vector3 Zero() { return Vector3(0, 0, 0); }
-            //Returns a Vector3(1, 1, 1)
-            static inline Vector3 One() { return Vector3(1, 1, 1); }
-            //Returns a Vector3(0, 1, 0)
-            static inline Vector3 Up() { return Vector3(0, 1, 0); }
-            //Returns a Vector3(1, 0, 0)
-            static inline Vector3 Right() { return Vector3(1, 0, 0); }
-            //Returns a Vector3(0, -1, 0)
-            static inline Vector3 Down() { return Vector3(0, -1, 0); }
-            //Returns a Vector3(-1, 0, 0)
-            static inline Vector3 Left() { return Vector3(-1, 0, 0); }
-            //Returns a Vector3(0, 0, 1)
-            static inline Vector3 Forward() { return Vector3(0, 0, 1); }
-            //Returns a Vector3(0, 0, -1)
-            static inline Vector3 Backward() { return Vector3(0, 0, -1); }
-
-#pragma endregion
+            // Returns a Vector3(0, 0, 0)
+            static Vector3 Zero();
+            // Returns a Vector3(1, 1, 1)
+            static Vector3 One();
+            // Returns a Vector3(0, 1, 0)
+            static Vector3 Up();
+            // Returns a Vector3(1, 0, 0)
+            static Vector3 Right();
+            // Returns a Vector3(0, -1, 0)
+            static Vector3 Down();
+            // Returns a Vector3(-1, 0, 0)
+            static Vector3 Left();
+            // Returns a Vector3(0, 0, 1)
+            static Vector3 Forward();
+            // Returns a Vector3(0, 0, -1)
+            static Vector3 Backward();
         };
 
         struct Vector4
@@ -441,135 +221,60 @@ namespace GamEncin
         public:
             float x, y, z, w;
 
-            Vector4(float x = 0, float y = 0, float z = 0, float w = 0) : x(x), y(y), z(z), w(w) {}
-            Vector4(const glm::vec4& vec) : x(vec.x), y(vec.y), z(vec.z), w(vec.w) {}
-            Vector4(const Vector2& vec) : x(vec.x), y(vec.y), z(0), w(0) {}
-            Vector4(const Vector3& vec) : x(vec.x), y(vec.y), z(vec.z), w(0) {}
-            ~Vector4() = default;
+            Vector4(float x = 0, float y = 0, float z = 0, float w = 0);
+            Vector4(const glm::vec4& vec);
+            Vector4(const Vector2& vec);
+            Vector4(const Vector3& vec);
 
-            //Returns a Vector4(0, 0, 0, 0)
-            static inline Vector4 Zero() { return Vector4(0, 0, 0, 0); }
-            //Returns a Vector4(1, 1, 1, 1)
-            static inline Vector4 One() { return Vector4(1, 1, 1, 1); }
+            // Returns a Vector4(0, 0, 0, 0)
+            static Vector4 Zero();
+            // Returns a Vector4(1, 1, 1, 1)
+            static Vector4 One();
         };
 
         struct Vector2Int
         {
             int x, y;
 
-            Vector2Int(int x = 0, int y = 0) : x(x), y(y) {};
-            Vector2Int(const glm::ivec2& vec) : x(vec.x), y(vec.y) {};
-            Vector2Int(const Vector2& vec) : x((int) vec.x), y((int) vec.y) {}
-            ~Vector2Int() = default;
+            Vector2Int(int x = 0, int y = 0);
+            Vector2Int(const glm::ivec2& vec);
+            Vector2Int(const Vector2& vec);
 
-#pragma region Operators
-
-            inline Vector2Int operator + (const Vector2Int& other)
-            {
-                return Vector2Int(x + other.x, y + other.y);
-            }
-
-            inline Vector2Int operator += (const Vector2Int& other)
-            {
-                x += other.x;
-                y += other.y;
-                return Vector2Int(x, y);
-            }
-
-            inline Vector2Int operator - (const Vector2Int& other)
-            {
-                return Vector2Int(x - other.x, y - other.y);
-            }
-
-            inline Vector2Int operator -= (const Vector2Int& other)
-            {
-                x -= other.x;
-                y -= other.y;
-                return Vector2Int(x, y);
-            }
-
-            inline Vector2Int operator *= (const Vector2Int& other)
-            {
-                x *= other.x;
-                y *= other.y;
-                return Vector2Int(x, y);
-            }
-
-            inline Vector2Int operator * (const int other)
-            {
-                return Vector2Int(x * other, y * other);
-            }
-
-            inline Vector2Int operator *= (const int other)
-            {
-                x *= other;
-                y *= other;
-                return Vector2Int(x, y);
-            }
-
-            inline Vector2Int operator / (const int other)
-            {
-                return Vector2Int(x / other, y / other);
-            }
-
-            inline Vector2Int operator /= (const int other)
-            {
-                x /= other;
-                y /= other;
-                return Vector2Int(x, y);
-            }
-
-            inline bool operator == (const Vector2Int& other)
-            {
-                return x == other.x && y == other.y;
-            }
-
-            inline bool operator != (const Vector2Int& other)
-            {
-                return x != other.x || y != other.y;
-            }
-
-#pragma endregion
-
-#pragma region Functions
+            // Operators
+            Vector2Int operator + (const Vector2Int& other) const;
+            Vector2Int& operator += (const Vector2Int& other);
+            Vector2Int operator - (const Vector2Int& other) const;
+            Vector2Int& operator -= (const Vector2Int& other);
+            Vector2Int operator * (int other) const;
+            Vector2Int& operator *= (int other);
+            Vector2Int operator * (const Vector2Int& other) const;
+            Vector2Int& operator *= (const Vector2Int& other);
+            Vector2Int operator / (int other) const;
+            Vector2Int& operator /= (int other);
+            bool operator == (const Vector2Int& other);
+            bool operator != (const Vector2Int& other);
 
             // Returns the magnitude of the Vector2Int
-            inline float GetMagnitude()
-            {
-                return Sqrt(x * x + y * y);
-            }
-
-            // Scales the Vector2Int to magnitude of 1 and returns it
-            inline Vector2 Normalize()
-            {
-                float magnitude = GetMagnitude();
-                x /= magnitude;
-                y /= magnitude;
-                return Vector2(x, y);
-            }
-
+            float GetMagnitude() const;
+            // Scales the Vector2Int to 8 direction
+            Vector2Int& EightDirection();
+            // Returns the 8 direction version of the Vector2Int
+            Vector2Int EightDirectioned() const;
             // Returns the normalized version of the Vector2Int
-            inline Vector2 Normalized()
-            {
-                Vector2 result = Vector2(x, y);
-                result.Normalize();
-                return result;
-            }
+            Vector2 Normalized() const;
 
-            //Returns a Vector2Int(0, 0)
-            static inline Vector2Int Zero() { return Vector2Int(0, 0); }
-            //Returns a Vector2Int(1, 1)                            
-            static inline Vector2Int One() { return Vector2Int(1, 1); }
-            //Returns a Vector2Int(0, 1)                           
-            static inline Vector2Int Up() { return Vector2Int(0, 1); }
-            //Returns a Vector2Int(1, 0)                          
-            static inline Vector2Int Right() { return Vector2Int(1, 0); }
-            //Returns a Vector2Int(0, -1)
-            static inline Vector2Int Down() { return Vector2Int(0, -1); }
-            //Returns a Vector2Int(-1, 0)
-            static inline Vector2Int Left() { return Vector2Int(-1, 0); }
-
-#pragma endregion
+            // Returns a Vector2Int(0, 0)
+            static Vector2Int Zero();
+            // Returns a Vector2Int(1, 1)
+            static Vector2Int One();
+            // Returns a Vector2Int(0, 1)
+            static Vector2Int Up();
+            // Returns a Vector2Int(1, 0)
+            static Vector2Int Right();
+            // Returns a Vector2Int(0, -1)
+            static Vector2Int Down();
+            // Returns a Vector2Int(-1, 0)
+            static Vector2Int Left();
         };
 
 #pragma endregion
@@ -582,10 +287,7 @@ namespace GamEncin
         /// <param name="min:">Minimum border, inclusive</param>
         /// <param name="max:">Maximum border, inclusive</param>
         /// <returns>A random float value between min and max values</returns>
-        inline float RandomRangeFloat(float min, float max)
-        {
-            return min + (float) rand() / (float) (RAND_MAX / (max - min));
-        }
+        float RandomRangeFloat(float min, float max);
 
         /// <summary>
         /// Generates a random integer
@@ -593,73 +295,49 @@ namespace GamEncin
         /// <param name="min:">Minimum border, inclusive</param>
         /// <param name="max:">Maximum border, inclusive</param>
         /// <returns>A random integer value between min and max values</returns>
-        inline int RandomRangeInteger(int min, int max)
-        {
-            return min + (int) (rand() % (max - min + 1));
-        }
+        int RandomRangeInteger(int min, int max);
 
         /// <summary>
         /// Generates a random Vector2
         /// </summary>
         /// <returns>A random point in unit circle</returns>
-        inline Vector2 RandomVector2()
-        {
-            return(Vector2(RandomRangeFloat(-1, 1), RandomRangeFloat(-1, 1)));
-        }
+        Vector2 RandomVector2();
 
         /// <summary>
         /// Generates a random Vector3
         /// </summary>
         /// <returns>A random point in unit sphere</returns>
-        inline Vector3 RandomVector3()
-        {
-            return(Vector3(RandomRangeFloat(-1, 1), RandomRangeFloat(-1, 1), RandomRangeFloat(-1, 1)));
-        }
+        Vector3 RandomVector3();
+
+        /// <summary>
+        /// Generates a random Vector2 direction with magnitude of 1
+        /// </summary>
+        /// <returns>A normalized random Vector2</returns>
+        Vector2 RandomVector2Direction();
 
         /// <summary>
         /// Generates a random Vector3 direction with magnitude of 1
         /// </summary>
         /// <returns>A normalized random Vector3</returns>
-        inline Vector3 RandomDirection()
-        {
-            return RandomVector3().Normalize();
-        }
+        Vector3 RandomVector3Direction();
 
         // Returns the smaller value between two float values
-        inline float Min(float a, float b)
-        {
-            return a < b ? a : b;
-        }
+        float Min(float a, float b);
 
         // Returns the vector with smaller magnitude between two Vector2
-        inline Vector2 Min(Vector2 a, Vector2 b)
-        {
-            return a.GetMagnitude() < b.GetMagnitude() ? a : b;
-        }
+        Vector2 Min(Vector2 a, Vector2 b);
 
         // Returns the vector with smaller magnitude between two Vector3
-        inline Vector3 Min(Vector3 a, Vector3 b)
-        {
-            return a.GetMagnitude() < b.GetMagnitude() ? a : b;
-        }
+        Vector3 Min(Vector3 a, Vector3 b);
 
         // Returns the greater value between two float values
-        inline float Max(float a, float b)
-        {
-            return a > b ? a : b;
-        }
+        float Max(float a, float b);
 
         // Returns the vector with greater magnitude between two Vector2
-        inline Vector2 Max(Vector2 a, Vector2 b)
-        {
-            return a.GetMagnitude() > b.GetMagnitude() ? a : b;
-        }
+        Vector2 Max(Vector2 a, Vector2 b);
 
         // Returns the vector with greater magnitude between two Vector3
-        inline Vector3 Max(Vector3 a, Vector3 b)
-        {
-            return a.GetMagnitude() > b.GetMagnitude() ? a : b;
-        }
+        Vector3 Max(Vector3 a, Vector3 b);
 
         /// <summary>
         /// Clamps the value between min and max values
@@ -668,10 +346,7 @@ namespace GamEncin
         /// <param name="min:">Min value</param>
         /// <param name="max:">Max value</param>
         /// <returns>Min, max or inbetween float</returns>
-        inline float Clamp(float value, float min, float max)
-        {
-            return value < min ? min : value > max ? max : value;
-        }
+        float Clamp(float value, float min, float max);
 
         /// <summary>
         /// Clamps the Vector2 magnitude between 0 and max value
@@ -679,11 +354,7 @@ namespace GamEncin
         /// <param name="value:">Vector to restrict</param>
         /// <param name="max:">Max magnitude</param>
         /// <returns>Original vector or a Vector2 with max magnitude</returns>
-        inline Vector2 ClampVectorMagnitude(Vector2 vector, float max)
-        {
-            float magnitude = vector.GetMagnitude();
-            return magnitude > max ? vector * (max / magnitude) : vector;
-        }
+        Vector2 ClampVectorMagnitude(Vector2 vector, float max);
 
         /// <summary>
         /// Clamps the Vector3 magnitude between 0 and max value
@@ -691,11 +362,7 @@ namespace GamEncin
         /// <param name="value:">Vector to restrict</param>
         /// <param name="max:">Max magnitude</param>
         /// <returns>Original vector or a Vector3 with max magnitude</returns>
-        inline Vector3 ClampVectorMagnitude(Vector3 vector, float max)
-        {
-            float magnitude = vector.GetMagnitude();
-            return magnitude > max ? vector * (max / magnitude) : vector;
-        }
+        Vector3 ClampVectorMagnitude(Vector3 vector, float max);
 
         /// <summary>
         /// Linear Interpolation between two float values
@@ -704,10 +371,7 @@ namespace GamEncin
         /// <param name="endVal:">End value</param>
         /// <param name="t:">Between 0 and 1. 0 is startVal, 1 is endVal</param>
         /// <returns>The float value between start and end values depending on t</returns>
-        inline float Lerp(float startVal, float endVal, float t)
-        {
-            return startVal + (endVal - startVal) * Clamp(t, 0, 1);
-        }
+        float Lerp(float startVal, float endVal, float t);
 
         /// <summary>
         /// Linear Interpolation between two Vector2
@@ -716,10 +380,7 @@ namespace GamEncin
         /// <param name="endVal:">End vector</param>
         /// <param name="t:">Between 0 and 1. 0 is startVec, 1 is endVec</param>
         /// <returns>The Vector2 between start and end vectors depending on t</returns>
-        inline Vector2 Lerp(Vector2 startVec, Vector2 endVec, float t)
-        {
-            return startVec + (endVec - startVec) * Clamp(t, 0, 1);
-        }
+        Vector2 Lerp(Vector2 startVec, Vector2 endVec, float t);
 
         /// <summary>
         /// Linear Interpolation between two Vector3
@@ -728,10 +389,7 @@ namespace GamEncin
         /// <param name="endVal:">End vector</param>
         /// <param name="t:">Between 0 and 1. 0 is startVec, 1 is endVec</param>
         /// <returns>The Vector3 between start and end vectors depending on t</returns>
-        inline static Vector3 Lerp(Vector3 startVec, Vector3 endVec, float t)
-        {
-            return startVec + (endVec - startVec) * Clamp(t, 0, 1);
-        }
+        Vector3 Lerp(Vector3 startVec, Vector3 endVec, float t);
 
         /// <summary>
         /// Returns the distance between two Vector2 point
@@ -739,10 +397,7 @@ namespace GamEncin
         /// <param name="startVec:">Start vector</param>
         /// <param name="endVec:">End vector</param>
         /// <returns> </returns>
-        inline static float Distance(Vector2 a, Vector2 b)
-        {
-            return (b - a).GetMagnitude();
-        }
+        float Distance(Vector2 a, Vector2 b);
 
         /// <summary>
         /// Returns the distance between two Vector3 point
@@ -750,10 +405,7 @@ namespace GamEncin
         /// <param name="startVec:">Start vector</param>
         /// <param name="endVec:">End vector</param>
         /// <returns> </returns>
-        inline static float Distance(Vector3 a, Vector3 b)
-        {
-            return (b - a).GetMagnitude();
-        }
+        float Distance(Vector3 a, Vector3 b);
 
 #pragma endregion
     }

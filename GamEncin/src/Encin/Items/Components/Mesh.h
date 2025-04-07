@@ -370,58 +370,30 @@ namespace GamEncin
         }
     };
 
-
-    struct Face;
     struct Edge;
+    struct Face;
 
     struct Vertex
     {
         unsigned int id = 0;
 
-        Vector3 position = Vector3::Zero(),
-            normal = Vector3::Forward();
+        Vector3 position = Vector3::Zero();
+        Vector3 normal = Vector3::Forward();
 
         Vector2 texture = Vector2::Zero();
-
         Vector4 color = Vector4::One();
 
         vector<Face*> faces;
         vector<Edge*> edges;
 
-        void SetID(unsigned int id)
-        {
-            this->id = id;
-        }
+        void SetID(unsigned int id);
+        void SetPosition(Vector3 position);
+        void SetNormal(Vector3 normal);
+        void SetTexture(Vector2 texture);
+        void SetColor(Vector4 color);
 
-        void SetPosition(Vector3 position)
-        {
-            this->position = position;
-        }
-
-        void SetNormal(Vector3 normal)
-        {
-            this->normal = normal;
-        }
-
-        void SetTexture(Vector2 texture)
-        {
-            this->texture = texture;
-        }
-
-        void SetColor(Vector4 color)
-        {
-            this->color = color;
-        }
-
-        void AddFace(Face* face)
-        {
-            faces.push_back(face);
-        }
-
-        void AddEdge(Edge* edge)
-        {
-            edges.push_back(edge);
-        }
+        void AddFace(Face* face);
+        void AddEdge(Edge* edge);
     };
 
     struct Edge
@@ -439,10 +411,7 @@ namespace GamEncin
         Edge* prevLeftEdge = nullptr;
         Edge* prevRightEdge = nullptr;
 
-        void SetID(unsigned int id)
-        {
-            this->id = id;
-        }
+        void SetID(unsigned int id);
     };
 
     struct Face
@@ -452,10 +421,7 @@ namespace GamEncin
         array<Vertex*, 3> vertices;
         array<Edge*, 3> edges;
 
-        void SetID(unsigned int id)
-        {
-            this->id = id;
-        }
+        void SetID(unsigned int id);
     };
 
     struct MeshData

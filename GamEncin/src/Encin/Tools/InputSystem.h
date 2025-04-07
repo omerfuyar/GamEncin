@@ -14,7 +14,7 @@ namespace GamEncin
 {
     namespace InputSystem
     {
-        //TODO be careful while adding new inputs, add them also in Tools.cpp arrays they should be identical
+        //TODO be careful while adding new inputs, add them also in InputSystem.cpp arrays. they should be identical !!!
 
         enum KeyCode
         {
@@ -160,7 +160,7 @@ namespace GamEncin
         public:
             GLFWgamepadstate state = GLFWgamepadstate();
             string name;
-            int ID;
+            int id;
 
             //Should use GamepadButtonCode enum as key
             map<int, KeyButtonStatus> buttons;
@@ -169,7 +169,7 @@ namespace GamEncin
             Vector2 leftStick = Vector2::Zero(),
                 rightStick = Vector2::Zero();
 
-            Gamepad(int ID) : ID(ID) {}
+            Gamepad(int id);
             void Initialize(GLFWwindow* window);
             void Update(GLFWwindow* window);
         };
@@ -184,9 +184,9 @@ namespace GamEncin
 
             Input() = delete;
             Input(const Input&) = delete;
-            void operator=(const Input&) = delete;
+            void operator = (const Input&) = delete;
 
-            static void GamepadCallBack(int gamepadID, int event);
+            static void GamepadCallBack(int gamepadId, int event);
 
         public:
             //shouldn't be used by the user
@@ -194,9 +194,9 @@ namespace GamEncin
             //shouldn't be used by the user
             static void UpdateInputs();
             //shouldn't be used by the user
-            static void ConnectGamepad(int gamepadID);
+            static void ConnectGamepad(int gamepadId);
             //shouldn't be used by the user
-            static void DisconnectGamepad(int gamepadID);
+            static void DisconnectGamepad(int gamepadId);
 
             /// <summary>
             /// Gets keyboard key inputs from user
@@ -226,17 +226,17 @@ namespace GamEncin
             /// <param name="status:">Status to get from key</param>
             /// <param name="button:">Button ID with GamepadButtonCode enum</param>
             /// <returns>True if the button is in that status</returns>
-            static bool GetGamepadButton(int gamepadID, KeyButtonStatus status, GamepadButtonCode button);
+            static bool GetGamepadButton(int gamepadId, KeyButtonStatus status, GamepadButtonCode button);
             //Returns the float value of the left trigger of given gamepad. 0 is not pressed, 1 is fully pressed
-            static float GetGamepadLeftTrigger(int gamepadID);
+            static float GetGamepadLeftTrigger(int gamepadId);
             //Returns the float value of the right trigger of given gamepad. 0 is not pressed, 1 is fully pressed
-            static float GetGamepadRightTrigger(int gamepadID);
+            static float GetGamepadRightTrigger(int gamepadId);
             //Returns the Vector2 value of the left stick of given gamepad.
-            static Vector2 GetGamepadLeftStick(int gamepadID);
+            static Vector2 GetGamepadLeftStick(int gamepadId);
             //Returns the Vector2 of the right stick of given gamepad.
-            static Vector2 GetGamepadRightStick(int gamepadID);
+            static Vector2 GetGamepadRightStick(int gamepadId);
             //Returns true if the gamepad is connected
-            static bool IsGamepadConnected(int gamepadID);
+            static bool IsGamepadConnected(int gamepadId);
 
             /// <summary>
             /// Gets the shortcut inputs for WASD and arrow + Control and Shift / Ctrl keys in Vector3.
