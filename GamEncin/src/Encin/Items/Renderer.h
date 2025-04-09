@@ -30,7 +30,7 @@ namespace GamEncin
         void EndRenderer();
 
     private:
-        void GLSendUniformVector3(GLuint& location, Vector3 vector3);
+        void GLSendUniformVector3(unsigned int& location, Vector3 vector3);
         void ClearColor(Vector4 clearColor);
     };
 }

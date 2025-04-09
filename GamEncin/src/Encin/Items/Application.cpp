@@ -182,7 +182,7 @@ namespace GamEncin
     void Application::PrintLog(LogType logType, string addMessage)
     {
         PrintLog(logType);
-        printf("Additional Message : %s\n", addMessage.c_str());
+        printf("Additional Message : %s\n\n", addMessage.c_str());
     }
 
     void Application::Stop(LogType logType)

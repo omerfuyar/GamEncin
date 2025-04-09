@@ -16,7 +16,7 @@ namespace GamEncin
         GLfloat cameraFOV = 0.0f;
         Vector2Int size = Vector2Int(1080, 1080);
 
-        void UseCamera(GLuint& transformMatrixLocation);
+        void UseCamera(unsigned int& transformMatrixLocation);
 
     private:
         glm::mat4 perspectiveMatrix = glm::mat4(1.0f),

@@ -8,11 +8,13 @@
 #include <cmath>
 #include <map>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 using std::array;
 using std::map;
 using std::string;
+using std::unordered_map;
 using std::vector;
 
 namespace GamEncin
@@ -221,7 +223,7 @@ namespace GamEncin
         public:
             float x, y, z, w;
 
-            Vector4(float x = 0, float y = 0, float z = 0, float w = 0);
+            Vector4(float x = 0, float y = 0, float z = 0, float w = 1);
             Vector4(const glm::vec4& vec);
             Vector4(const Vector2& vec);
             Vector4(const Vector3& vec);

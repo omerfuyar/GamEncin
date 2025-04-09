@@ -48,18 +48,18 @@ public:
     }
 };
 
-//class myObject : public Cube
-//{
-//public:
-//    float rotSpeed = 75;
-//
-//    myObject() : Cube(1)
-//    {
-//        name = "myObject";
-//    }
-//
-//    void Update()override
-//    {
-//        rotation += Vector3::One() * rotSpeed * Application::deltaTime;
-//    }
-//};
+class MyComponent : public Component
+{
+public:
+    float rotSpeed = 75;
+
+    MyComponent(Object* object) : Component(object)
+    {
+    }
+
+    void Update()override
+    {
+        object->transform->rotation += Vector3::Up() * rotSpeed * Application::deltaTime;
+        //object->transform->position += Vector3::Forward() * Application::deltaTime;
+    }
+};

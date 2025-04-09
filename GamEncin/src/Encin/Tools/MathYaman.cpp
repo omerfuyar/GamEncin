@@ -367,7 +367,7 @@ namespace GamEncin
                 y * otherVec.z - z * otherVec.y,
                 z * otherVec.x - x * otherVec.z,
                 x * otherVec.y - y * otherVec.x
-            );
+            ).Normalize();
         }
 
         glm::vec3 Vector3::ToGLMvec3()
@@ -390,8 +390,8 @@ namespace GamEncin
 
         Vector4::Vector4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
         Vector4::Vector4(const glm::vec4& vec) : x(vec.x), y(vec.y), z(vec.z), w(vec.w) {}
-        Vector4::Vector4(const Vector2& vec) : x(vec.x), y(vec.y), z(0), w(0) {}
-        Vector4::Vector4(const Vector3& vec) : x(vec.x), y(vec.y), z(vec.z), w(0) {}
+        Vector4::Vector4(const Vector2& vec) : x(vec.x), y(vec.y), z(0), w(1) {}
+        Vector4::Vector4(const Vector3& vec) : x(vec.x), y(vec.y), z(vec.z), w(1) {}
 
         Vector4 Vector4::Zero() { return Vector4(0, 0, 0, 0); }
         Vector4 Vector4::One() { return Vector4(1, 1, 1, 1); }

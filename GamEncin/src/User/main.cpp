@@ -9,9 +9,16 @@ void SceneBuilding()
     camera->AddComponent<CameraController>();
 
     Object* myObject = scene.CreateObject();
-    //Object* myObject = scene.CreateObject<Mesh>();
     Mesh* mesh = myObject->AddComponent<Mesh>();
+    //mesh->SetMeshData(MeshBuilder::CreatePyramid());
+    //mesh->SetMeshData(MeshBuilder::CreateCube());
+    //mesh->SetMeshData(MeshBuilder::CreateSimit(0.5f, 0.25f, 17));
+    //mesh->SetMeshData(MeshBuilder::CreateSphere(0.5f, 3));
+    //mesh->SetMeshData(MeshBuilder::CreateCone(1.0f, 0.5f, 4));
+    //mesh->SetMeshData(MeshBuilder::CreateCylinder(1.0f, 0.5f, 201));
+    mesh->SetMeshData(MeshBuilder::CreateCircle(0.5f, 401));
     Transform* transform = myObject->GetComponent<Transform>();
+    MyComponent* myComponent = myObject->AddComponent<MyComponent>();
 
     //int totalVerticeCount = 0;
     //int totalIndiceCount = 0;

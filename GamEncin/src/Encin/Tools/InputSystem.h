@@ -4,11 +4,6 @@
 #include <GLFW/glfw3.h>
 
 #include <fstream>
-#include <map>
-#include <string>
-
-using std::map;
-using std::string;
 
 namespace GamEncin
 {
@@ -132,7 +127,7 @@ namespace GamEncin
         {
         public:
             //Should use MouseButtonCode enum as key
-            static map<int, KeyButtonStatus> buttons;
+            static unordered_map<int, KeyButtonStatus> buttons;
             static Vector2 position, positionDelta;
             static float scrollDelta;
 
@@ -147,7 +142,7 @@ namespace GamEncin
         {
         public:
             //Should use KeyCode enum as key
-            static map<int, KeyButtonStatus> keys;
+            static unordered_map<int, KeyButtonStatus> keys;
 
             static void Initialize(GLFWwindow* window);
             static void Update(GLFWwindow* window);
@@ -180,7 +175,7 @@ namespace GamEncin
             static GLFWwindow* window;
             static Mouse mouse;
             static KeyBoard keyboard;
-            static map<int, Gamepad*> gamepads;
+            static unordered_map<int, Gamepad*> gamepads;
 
             Input() = delete;
             Input(const Input&) = delete;

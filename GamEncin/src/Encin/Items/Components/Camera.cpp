@@ -8,7 +8,7 @@ namespace GamEncin
         this->cameraFOV = FOV;
     }
 
-    void Camera::UseCamera(GLuint& transformMatrixLocation)
+    void Camera::UseCamera(unsigned int& transformMatrixLocation)
     {
         Vector3 position = object->transform->position;
         Vector3 direction = object->transform->direction;

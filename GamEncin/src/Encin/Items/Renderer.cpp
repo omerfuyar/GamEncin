@@ -97,7 +97,7 @@ namespace GamEncin
         glViewport(0, 0, width, height);
     }
 
-    void Renderer::GLSendUniformVector3(GLuint& location, Vector3 vector3)
+    void Renderer::GLSendUniformVector3(unsigned int& location, Vector3 vector3)
     {
         glUniform3f(location, vector3.x, vector3.y, vector3.z);
     }

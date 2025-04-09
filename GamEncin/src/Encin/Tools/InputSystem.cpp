@@ -35,7 +35,7 @@ namespace GamEncin
 
 #pragma region Mouse
 
-        map<int, KeyButtonStatus> Mouse::buttons;
+        unordered_map<int, KeyButtonStatus> Mouse::buttons;
         Vector2 Mouse::position = Vector2::Zero(),
             Mouse::positionDelta = Vector2::Zero();
         float Mouse::scrollDelta = 0;
@@ -97,7 +97,7 @@ namespace GamEncin
 
 #pragma region KeyBoard
 
-        map<int, KeyButtonStatus> KeyBoard::keys;
+        unordered_map<int, KeyButtonStatus> KeyBoard::keys;
 
         void KeyBoard::Initialize(GLFWwindow* window)
         {
@@ -195,7 +195,7 @@ namespace GamEncin
         GLFWwindow* Input::window = nullptr;
         Mouse Input::mouse;
         KeyBoard Input::keyboard;
-        map<int, Gamepad*> Input::gamepads;
+        unordered_map<int, Gamepad*> Input::gamepads;
 
         void Input::GamepadCallBack(int gamepadId, int event)
         {

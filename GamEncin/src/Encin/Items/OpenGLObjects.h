@@ -1,5 +1,6 @@
 #pragma once
 #include "Encin/Tools/MathYaman.h"
+#include "Encin/Tools/Toolkit.h"
 
 #include "GLAD/glad.h"
 
@@ -12,22 +13,22 @@ namespace GamEncin
     struct VBO
     {
     public:
-        GLuint id;
+        unsigned int id;
 
-        VBO(vector<Vector3> vertices);
+        VBO(vector<RawVertex> vertices);
         void Bind();
-        void Update(vector<Vector3> vertices);
+        void Update(vector<RawVertex> vertices);
         void Delete();
     };
 
     struct VAO
     {
     public:
-        GLuint id;
+        unsigned int id;
 
         VAO();
         //one attribute is one piece of data that is passed to the vertex shader for one vertex, like position, color, normal, etc.
-        void LinkAttributes(GLuint layout, GLuint numComponents, GLenum type, GLuint offsetInBytes);
+        void LinkAttributes(unsigned int layout, unsigned int numComponents, unsigned int type, unsigned int offsetInBytes);
         void Bind();
         void Delete();
     };
@@ -35,9 +36,9 @@ namespace GamEncin
     struct IBO
     {
     public:
-        GLuint id;
+        unsigned int id;
 
-        IBO(vector<GLuint> indices);
+        IBO(vector<unsigned int> indices);
         void Bind();
         void Delete();
     };
@@ -45,18 +46,17 @@ namespace GamEncin
     struct Shader
     {
     public:
-        GLuint id,
+        unsigned int id,
             transformMatrixVarId,
             objPositionVarId,
             objRotationVarId,
             objScaleVarId;
 
-        // Constructor that build the Shader Program from 2 different shaders
         Shader(const char* vertexFile, const char* fragmentFile);
         void Use();
         void Delete();
 
     private:
-        void CheckShaderErrors(GLuint shader, const char* type);
+        void CheckShaderErrors(unsigned int shader, const char* type);
     };
 }
