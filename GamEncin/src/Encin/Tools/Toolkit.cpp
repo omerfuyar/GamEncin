@@ -167,7 +167,7 @@ namespace GamEncin
                                            meshData->vertices[indices[i * 3 + 2]]};
 
                 Face* face = new Face(faceVertices[0], faceVertices[1], faceVertices[2]);
-                //vertices of face is empty
+                //edges of face is empty
 
                 for(int i = 0; i < 3; i++) //for face edges
                 {
@@ -470,12 +470,15 @@ namespace GamEncin
             vector<unsigned int> indices;
 
             float x, z;
-            float yQuarter = height / 4;
-            float sectorStep = 2 * PI / resolution; //radian
+            float yQuarter = (float) height / 4.0f;
+            float sectorStep = 2.0f * PI / (float) resolution; //radian
             float currSectorAngle;
 
             Vector3 vec = Vector3(0, -yQuarter, 0);
-            vertices.push_back(RawVertex(vec, vec * 255));
+            vertices.push_back(RawVertex(vec, vec * 255)); //bottom center
+
+            vec = Vector3(0, yQuarter * 3, 0);
+            vertices.push_back(RawVertex(vec, vec * 255)); //top center
 
             for(int i = 0; i < resolution; ++i)
             {
@@ -488,20 +491,21 @@ namespace GamEncin
                 vertices.push_back(RawVertex(vec, vec * 255));
             }
 
-            vec = Vector3(0, yQuarter * 3, 0);
-            vertices.push_back(RawVertex(vec, vec * 255));
-
-            for(int i = 0; i < resolution; i++)
+            unsigned int topCenter = 1;
+            unsigned int bottomCenter = 0;
+            for(unsigned int i = 2; i < resolution + 2; i++)
             {
-                //circle
-                indices.push_back(0); //center1
-                indices.push_back(i + 1);
-                indices.push_back((i + 1) % resolution + 1);
+                unsigned int nextIndex = (i + 1 > resolution + 1) ? 2 : i + 1;
 
-                //sides
-                indices.push_back(resolution + 1); //top
-                indices.push_back(i + 1);
-                indices.push_back((i + 1) % resolution + 1);
+                // Circle
+                indices.push_back(i);
+                indices.push_back(bottomCenter); // Bottom
+                indices.push_back(nextIndex);
+
+                // Sides
+                indices.push_back(i);
+                indices.push_back(topCenter); // Top
+                indices.push_back(nextIndex);
             }
 
             return CreateMeshData(vertices, indices);
@@ -546,9 +550,6 @@ namespace GamEncin
 
                 for(int j = 0; j < resolution; j++) //minor
                 {
-                    assert(currMajorIndex + j < resolution * resolution);
-                    assert(nextMajorIndex + j < resolution * resolution);
-
                     indices.push_back(currMajorIndex + j);
                     indices.push_back(nextMajorIndex + j);
                     indices.push_back(currMajorIndex + (j + 1) % resolution);

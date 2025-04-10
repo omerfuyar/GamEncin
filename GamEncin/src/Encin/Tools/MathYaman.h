@@ -24,13 +24,13 @@ namespace GamEncin
 #pragma region Constants
 
         // Pi
-        extern const float PI;
+        extern const double PI;
         // Euler's number
-        extern const float E;
+        extern const double E;
         // Earth's gravity
-        extern const float GRAVITY;
+        extern const double GRAVITY;
         // Gravitational constant
-        extern const float G;
+        extern const double G;
 
 #pragma endregion
 

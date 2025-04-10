@@ -59,7 +59,7 @@ public:
 
     void Update()override
     {
-        object->transform->rotation += Vector3::Up() * rotSpeed * Application::deltaTime;
+        //object->transform->rotation += Vector3::Up() * rotSpeed * Application::deltaTime;
         //object->transform->position += Vector3::Forward() * Application::deltaTime;
     }
 };
