@@ -1,5 +1,7 @@
 #include "Encin/Encin.h"
 
+
+
 namespace GamEncin
 {
     namespace Toolkit
@@ -196,8 +198,10 @@ namespace GamEncin
                 //face of meshData is set
             }
 
-            printf("MeshBuilder::CreateMeshData: %u vertices, %u edges, %u faces\n",
-                   meshData->vertices.size(), meshData->edges.size(), meshData->faces.size());
+            printf("MeshBuilder::CreateMeshData: %ud vertices, %ud edges, %ud faces\n",
+                   (unsigned int) meshData->vertices.size(),
+                   (unsigned int) meshData->edges.size(),
+                   (unsigned int) meshData->faces.size());
 
             printf("total size of meshData: ");
             unsigned long int size = 0;
@@ -208,7 +212,6 @@ namespace GamEncin
 
             printf("%lu bytes\n\n", size);
 
-            int asd = 0;
             for(auto& [id, edge] : meshData->edges)
             {
                 if(!edge->leftFace)
@@ -219,10 +222,8 @@ namespace GamEncin
                 if(!edge->rightFace)
                 {
                     printf("Edge %u : %u, %u : right face didn't attached (boundary?)\n", edge->id, edge->startVertex->id, edge->endVertex->id);
-                    asd++;
                 }
             }
-            printf("asd: %d\n", asd);
 
             return meshData;
         }

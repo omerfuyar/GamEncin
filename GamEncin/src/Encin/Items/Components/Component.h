@@ -7,7 +7,8 @@ namespace GamEncin
     class Component
     {
     public:
-        Component(Object* object);
+        Component() = default;
+        Component(Object* obj);
         ~Component();
 
         Object* object = nullptr;

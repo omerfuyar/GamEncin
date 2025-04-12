@@ -7,8 +7,6 @@ namespace GamEncin
     class Transform : public Component
     {
     public:
-        Transform(Object* object) : Component(object) {};
-
         Transform* parent = nullptr;
         vector<Transform*> children;
 
@@ -20,6 +18,7 @@ namespace GamEncin
             localScale = Vector3::One(),
             direction = Vector3::Forward();
 
+        Transform(Object* obj);
         void Update() override;
 
     private:

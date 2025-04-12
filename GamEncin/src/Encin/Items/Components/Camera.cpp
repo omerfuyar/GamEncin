@@ -2,16 +2,21 @@
 
 namespace GamEncin
 {
-    Camera::Camera(Object* object, Vector2Int size, float FOV) : Component(object)
+    Camera::Camera(Object* obj) :Component(obj)
     {
-        this->size = size;
-        this->cameraFOV = FOV;
+    }
+
+    void Camera::SetFOV(float fov)
+    {
+        cameraFOV = Clamp(fov, 0, 180);
     }
 
     void Camera::UseCamera(unsigned int& transformMatrixLocation)
     {
         Vector3 position = object->transform->position;
         Vector3 direction = object->transform->direction;
+        Vector2Int size = Renderer::GetMainWindowSize();
+
         viewMatrix = glm::lookAt(position.ToGLMvec3(),
                                  (position + direction).ToGLMvec3(),
                                  Vector3::Up().ToGLMvec3());

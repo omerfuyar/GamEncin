@@ -2,5 +2,7 @@
 
 namespace GamEncin
 {
-
+    RigidBody::RigidBody(Object* obj) : Component(obj)
+    {
+    }
 }

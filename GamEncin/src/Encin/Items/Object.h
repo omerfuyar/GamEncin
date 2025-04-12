@@ -13,21 +13,23 @@ namespace GamEncin
 
     class Object
     {
-    public:
-        Object() = default;
-        Object(Scene* scene);
-        Object(Scene* scene, string name, string tag);
-        Object(Scene* scene, string name, string tag, Layer layer);
-        ~Object();
+    private:
+        Scene* scene = nullptr;
+        vector<Component*> components;
 
+    public:
         string name = "Object",
             tag = "Default Tag";
 
         Layer layer;
 
-        Scene* scene = nullptr;
-        vector<Component*> components;
         Transform* transform = AddComponent<Transform>();
+
+        Object() = default;
+        Object(Scene* scene);
+        Object(Scene* scene, string name, string tag);
+        Object(Scene* scene, string name, string tag, Layer layer);
+        ~Object();
 
         template <typename T>
         T* GetComponent()
@@ -88,6 +90,8 @@ namespace GamEncin
             }
         }
 
+
+        void AddComponent(Component* component);
         void RemoveComponent(Component* component);
 
         void Awake();

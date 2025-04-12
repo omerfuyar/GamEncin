@@ -4,16 +4,17 @@ namespace GamEncin
 {
 #pragma region Variable Definitions
 
-    Scene* Application::currentScene = nullptr;
-    string Application::programName = "GamEncin Default";
     vector<Scene*> Application::scenes;
+    Scene* Application::currentScene = nullptr;
+    GLFWwindow* Application::window = nullptr;
+    string Application::programName = "GamEncin Default";
 
     int Application::fixedFPS = 0;
 
-    float Application::deltaTime = 0.0,
-        Application::fixedDeltaTime = 0.0,
-        Application::accumulatedTime = 0.0,
-        Application::secondsPastFromStart = 0.0;
+    float Application::deltaTime = 0.0f,
+        Application::fixedDeltaTime = 0.0f,
+        Application::accumulatedTime = 0.0f,
+        Application::secondsPastFromStart = 0.0f;
 
     bool Application::printFPS = false,
         Application::isRunning = false;
@@ -27,29 +28,62 @@ namespace GamEncin
         return *scene;
     }
 
-    void Application::SetCurrentScene(Scene& scene)
+    void Application::SetCurrentScene(Scene* scene)
     {
-        currentScene = &scene;
+        currentScene = scene;
+    }
+
+    void Application::SetFixedFPS(int fps)
+    {
+        fixedFPS = fps;
+    }
+
+    void Application::SetProgramName(string name)
+    {
+        programName = name;
+    }
+
+    void Application::SetFPSPrint(bool value)
+    {
+        printFPS = value;
+    }
+
+    Scene* Application::GetCurrentScene()
+    {
+        return currentScene;
+    }
+
+    GLFWwindow* Application::GetMainWindow()
+    {
+        return window;
+    }
+
+    string Application::GetProgramName()
+    {
+        return programName;
     }
 
     Scene& Application::CreateAndUseScene()
     {
         Scene* scene = new Scene();
         scenes.push_back(scene);
-        SetCurrentScene(*scene);
+        SetCurrentScene(scene);
         return *scene;
     }
 
     void Application::Awake()
     {
         srand(time(NULL));
+        Renderer::InitialRender();//TODO 
+        window = Renderer::GetMainWindow();
         currentScene->Awake();
-        Input::Initialize(currentScene->renderer->window); //after the window is created
+        Input::Initialize(window); //after the window is created
     }
 
     void Application::Start()
     {
         currentScene->Start();
+        Renderer::RenderFrame();
     }
 
     void Application::Update()
@@ -61,6 +95,7 @@ namespace GamEncin
     void Application::LateUpdate()
     {
         currentScene->LateUpdate();
+        Renderer::RenderFrame();
     }
 
     void Application::FixUpdate()
@@ -76,7 +111,8 @@ namespace GamEncin
         {
             char buff[100];
             snprintf(buff, sizeof(buff), "%s | FPS: %d | Delta Time: %f", programName.c_str(), (int) (1 / deltaTime), deltaTime);
-            glfwSetWindowTitle(currentScene->renderer->window, buff);
+            glfwSetWindowTitle(window, buff);
+            printf("FPS: %d | Delta Time: %f\n", (int) (1 / deltaTime), deltaTime);
         }
     }
 
@@ -103,7 +139,7 @@ namespace GamEncin
         steady_clock::time_point lastFrame = high_resolution_clock::now();
         float fpsTimer = 0.0;
 
-        while(!currentScene->renderer->windowCloseInput)
+        while(!Renderer::GetWindowCloseInput())
         {
             steady_clock::time_point now = high_resolution_clock::now();
             deltaTime = duration<float>(now - lastFrame).count();
@@ -190,7 +226,7 @@ namespace GamEncin
         isRunning = false;
         printf("\nExit Code : %d\n", logType);
         PrintLog(logType);
-        currentScene->renderer->EndRenderer();
+        Renderer::EndRenderer();
         for(Scene* scene : scenes)
             delete scene;
         scenes.clear();
@@ -202,7 +238,7 @@ namespace GamEncin
         isRunning = false;
         printf("\nExit Code : %d\n", logType);
         PrintLog(logType, addMessage);
-        currentScene->renderer->EndRenderer();
+        Renderer::EndRenderer();
         for(Scene* scene : scenes)
             delete scene;
         scenes.clear();

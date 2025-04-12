@@ -2,34 +2,27 @@
 
 namespace GamEncin
 {
-
-    Scene::Scene()
-    {
-        renderer = new Renderer();
-    }
-
-    Object* Scene::CreateObject()
+    Object& Scene::CreateObject()
     {
         Object* object = new Object(this);
         AddObject(object);
-        return object;
+        return *object;
     }
 
-    Object* Scene::CreateObject(string name, string tag)
+    Object& Scene::CreateObject(string name, string tag)
     {
         Object* object = new Object(this, name, tag);
         AddObject(object);
-        return object;
+        return *object;
     }
 
-    Object* Scene::CreateAndUseCameraObject(Vector2Int size)
+    Object& Scene::CreateAndUseCameraObject()
     {
-        Object* object = CreateObject("Camera", "Camera");
-        object->transform->position = Vector3(0, 0, 0);
-        object->transform->rotation = Vector3(0, -90, 0);
-        Camera* camera = object->AddComponent<Camera>();
+        Object& object = CreateObject("Camera", "Camera");
+        object.transform->position = Vector3(0, 0, 0);
+        object.transform->rotation = Vector3(0, -90, 0);
+        Camera* camera = object.AddComponent<Camera>();
         SetMainCamera(camera);
-        camera->size = size;
         return object;
     }
 
@@ -41,7 +34,7 @@ namespace GamEncin
             return;
         }
 
-        renderer->mainCamera = camera;
+        Renderer::SetMainCamera(camera);
     }
 
     void Scene::AddObject(Object* object)
@@ -90,8 +83,6 @@ namespace GamEncin
 
     void Scene::Awake()
     {
-        renderer->InitialRender();
-
         for(Object* object : objects)
         {
             object->Awake();
@@ -104,8 +95,6 @@ namespace GamEncin
         {
             object->Start();
         }
-
-        renderer->RenderFrame();
     }
 
     void Scene::Update()
@@ -122,8 +111,6 @@ namespace GamEncin
         {
             object->LateUpdate();
         }
-
-        renderer->RenderFrame();
     }
 
     void Scene::FixUpdate()
@@ -141,5 +128,4 @@ namespace GamEncin
             object->StartOfSecond();
         }
     }
-
 }

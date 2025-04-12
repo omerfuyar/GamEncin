@@ -2,6 +2,16 @@
 
 namespace GamEncin
 {
+    vector<Mesh*> Renderer::meshes;
+    Shader* Renderer::shaderProgram = nullptr;
+    Camera* Renderer::mainCamera = nullptr;
+    GLFWwindow* Renderer::window = nullptr;
+    Vector2Int Renderer::windowSize = Vector2Int(1080, 1080);
+    Vector4 Renderer::clearColor = Vector4(0.2f, 0.3f, 0.3f, 1.0f);
+    bool  Renderer::isFullScreen = false,
+        Renderer::vSyncEnabled = false,
+        Renderer::windowCloseInput = false;
+
     void Renderer::InitialRender()
     {
         if(glfwInit() == GLFW_FALSE)
@@ -12,7 +22,7 @@ namespace GamEncin
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        window = glfwCreateWindow(initWindowSize.x, initWindowSize.y, Application::programName.c_str(), NULL, NULL);
+        window = glfwCreateWindow(windowSize.x, windowSize.y, Application::GetProgramName().c_str(), NULL, NULL);
 
         if(!window)
             Application::Stop(GLFWErr);
@@ -27,6 +37,10 @@ namespace GamEncin
         if(!gladLoadGL())
             Application::Stop(GLADErr);
 
+        SetFullScreen(isFullScreen);
+
+        SetVSync(vSyncEnabled);
+
         shaderProgram = new Shader("GamEncin/src/Shaders/vert.glsl", "GamEncin/src/Shaders/frag.glsl");
 
         glEnable(GL_DEPTH_TEST);
@@ -35,6 +49,95 @@ namespace GamEncin
         {
             mesh->Initialize();
         }
+    }
+
+    void Renderer::SetWindowProperties(bool newIsFullScreenNew, bool newVSyncEnabled, Vector2Int newWindowSize, Vector4 newClearColor)
+    {
+        isFullScreen = newIsFullScreenNew;
+        clearColor = newClearColor;
+        vSyncEnabled = newVSyncEnabled;
+        windowSize = newWindowSize;
+
+        if(Application::isRunning)
+        {
+            SetFullScreen(isFullScreen);
+            SetVSync(vSyncEnabled);
+        }
+    }
+
+    void Renderer::SetMainCamera(Camera* camera)
+    {
+        mainCamera = camera;
+    }
+
+    void Renderer::SetMainWindowSize(Vector2Int newWindowSize)
+    {
+        if(isFullScreen)
+        {
+            GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+            const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+            glViewport(0, 0, mode->width, mode->height);
+        }
+        else
+        {
+            windowSize = newWindowSize;
+            glViewport(0, 0, windowSize.x, windowSize.y);
+        }
+    }
+
+    void Renderer::SetFullScreen(bool value)
+    {
+        isFullScreen = value;
+
+        GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+        if(isFullScreen)
+        {
+            printf("Monitor Resolution: %d x %d\n", mode->width, mode->height);
+            printf("Monitor Refresh Rate: %d\n", mode->refreshRate);
+
+            glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+        }
+        else
+        {
+            glfwSetWindowMonitor(window, NULL, 100, 100, windowSize.x, windowSize.y, 0);
+        }
+    }
+
+    void Renderer::SetVSync(bool value)
+    {
+        vSyncEnabled = value;
+        glfwSwapInterval(vSyncEnabled ? 1 : 0);
+    }
+
+    bool Renderer::GetWindowCloseInput()
+    {
+        return windowCloseInput;
+    }
+
+    GLFWwindow* Renderer::GetMainWindow()
+    {
+        return window;
+    }
+
+    Vector2Int Renderer::GetMainWindowSize()
+    {
+        if(isFullScreen)
+        {
+            GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+            const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+            return Vector2Int(mode->width, mode->height);
+        }
+        else
+        {
+            return windowSize;
+        }
+    }
+
+    bool Renderer::IsFullScreen()
+    {
+        return isFullScreen;
     }
 
     void Renderer::AddMesh(Mesh* mesh)
@@ -63,13 +166,12 @@ namespace GamEncin
 
     void Renderer::RenderFrame()
     {
-        ClearColor(clearColor);
-
         shaderProgram->Use();
 
         for(Mesh* mesh : meshes)
         {
             Transform* transform = mesh->object->transform;
+
             GLSendUniformVector3(shaderProgram->objPositionVarId, transform->position);
             GLSendUniformVector3(shaderProgram->objScaleVarId, transform->scale);
             GLSendUniformVector3(shaderProgram->objRotationVarId, transform->rotation);
@@ -82,6 +184,10 @@ namespace GamEncin
         mainCamera->UseCamera(shaderProgram->transformMatrixVarId);
 
         windowCloseInput = glfwWindowShouldClose(window);
+
+        ClearColor(clearColor);
+
+        glFinish();
     }
 
     void Renderer::ClearColor(Vector4 clearColor)
@@ -90,11 +196,9 @@ namespace GamEncin
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    //called when the window is resized
     void Renderer::FrameBufferSizeCallback(GLFWwindow* window, int width, int height)
     {
-        Application::currentScene->renderer->mainCamera->size = Vector2(width, height);
-        glViewport(0, 0, width, height);
+        SetMainWindowSize(Vector2Int(width, height));
     }
 
     void Renderer::GLSendUniformVector3(unsigned int& location, Vector3 vector3)

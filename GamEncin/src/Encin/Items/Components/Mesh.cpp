@@ -5,25 +5,19 @@ namespace GamEncin
 
 #pragma region Primitives 
 
-    void Mesh::SetMeshData(MeshData* data)
-    {
-        meshData.DeleteData();
-        meshData = *data;
-    }
-
-    Mesh::Mesh(Object* object) : Component(object)
+    Mesh::Mesh(Object* obj) : Component(obj)
     {
         if(Application::isRunning)
         {
             Initialize();
         }
 
-        object->scene->renderer->AddMesh(this);
+        Renderer::AddMesh(this);
     }
 
     Mesh::~Mesh()
     {
-        object->scene->renderer->RemoveMesh(this);
+        Renderer::RemoveMesh(this);
 
         if(vao)
         {
@@ -40,6 +34,12 @@ namespace GamEncin
             ebo->Delete();
             delete ebo;
         }
+    }
+
+    void Mesh::SetMeshData(MeshData* data)
+    {
+        meshData.DeleteData();
+        meshData = *data;
     }
 
     void Mesh::Initialize()

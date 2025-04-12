@@ -2,6 +2,10 @@
 
 namespace GamEncin
 {
+    Transform::Transform(Object* obj) :Component(obj)
+    {
+    }
+
     void Transform::UpdateProperties()
     {
         direction.x = CosDeg(rotation.x) * CosDeg(rotation.y);

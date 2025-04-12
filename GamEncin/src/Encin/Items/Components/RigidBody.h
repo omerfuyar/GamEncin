@@ -6,6 +6,6 @@ namespace GamEncin
 {
     class RigidBody : public Component
     {
-        RigidBody(Object* object) : Component(object) {};
+        RigidBody(Object* obj);
     };
 }

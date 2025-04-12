@@ -13,24 +13,37 @@ namespace GamEncin
     class Renderer
     {
     public:
-        vector<Mesh*> meshes;
-        Shader* shaderProgram = nullptr;
-        Camera* mainCamera = nullptr;
-        GLFWwindow* window = nullptr;
+        static void SetWindowProperties(bool isFullScreen, bool vSyncEnabled, Vector2Int newWindowSize, Vector4 newClearColor);
+        static void SetMainCamera(Camera* camera);
+        static void SetMainWindowSize(Vector2Int newWindowSize);
+        static void SetFullScreen(bool value);
+        static void SetVSync(bool value);
 
-        Vector2Int initWindowSize = Vector2Int(1080, 1080);
-        Vector4 clearColor = Vector4::Zero();
-        bool windowCloseInput = false;
+        static bool GetWindowCloseInput();
+        static GLFWwindow* GetMainWindow();
+        static Vector2Int GetMainWindowSize();
+        static bool IsFullScreen();
 
-        void AddMesh(Mesh* mesh);
-        void RemoveMesh(Mesh* mesh);
-        void RenderFrame();
-        void InitialRender();
+        static void AddMesh(Mesh* mesh);
+        static void RemoveMesh(Mesh* mesh);
+        static void RenderFrame();
+        static void InitialRender();
         static void FrameBufferSizeCallback(GLFWwindow* window, int width, int height);
-        void EndRenderer();
+        static void EndRenderer();
 
     private:
-        void GLSendUniformVector3(unsigned int& location, Vector3 vector3);
-        void ClearColor(Vector4 clearColor);
+        static vector<Mesh*> meshes;
+        static Shader* shaderProgram;
+        static Camera* mainCamera;
+        static GLFWwindow* window;
+
+        static Vector2Int windowSize;
+        static Vector4 clearColor;
+        static bool  isFullScreen,
+            vSyncEnabled,
+            windowCloseInput;
+
+        static void GLSendUniformVector3(unsigned int& location, Vector3 vector3);
+        static void ClearColor(Vector4 clearColor);
     };
 }

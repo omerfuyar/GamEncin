@@ -1,24 +1,20 @@
 #include "GamEncin.h"
 
-//GE_SELECT_OPTIMUM_GPU
+//#define GE_SELECT_OPTIMUM_GPU
 
 void SceneBuilding()
 {
     Scene& scene = Application::CreateAndUseScene();
-    Object* camera = scene.CreateAndUseCameraObject(Vector2Int(1080, 1080));
-    camera->AddComponent<CameraController>();
+    Object& camera = scene.CreateAndUseCameraObject();
+    camera.AddComponent<CameraController>();
+    camera.GetComponent<Camera>()->SetFOV(45.0f);
 
-    Object* myObject = scene.CreateObject();
-    Mesh* mesh = myObject->AddComponent<Mesh>();
-    //mesh->SetMeshData(MeshBuilder::CreatePyramid());
-    //mesh->SetMeshData(MeshBuilder::CreateCube());
-    //mesh->SetMeshData(MeshBuilder::CreateSimit(0.5f, 0.25f, 17));
-    //mesh->SetMeshData(MeshBuilder::CreateSphere(0.5f, 3));
-    mesh->SetMeshData(MeshBuilder::CreateCone(1.0f, 0.5f, 300));
-    //mesh->SetMeshData(MeshBuilder::CreateCylinder(1.0f, 0.5f, 201));
-    //mesh->SetMeshData(MeshBuilder::CreateCircle(0.5f, 401));
-    Transform* transform = myObject->GetComponent<Transform>();
-    MyComponent* myComponent = myObject->AddComponent<MyComponent>();
+    Object& myObject = scene.CreateObject();
+
+    Mesh* mesh = myObject.AddComponent<Mesh>();
+    mesh->SetMeshData(MeshBuilder::CreateCube());
+
+    MyComponent* myComponent = myObject.AddComponent<MyComponent>();
 
     //int totalVerticeCount = 0;
     //int totalIndiceCount = 0;
@@ -48,12 +44,10 @@ void SceneBuilding()
 
 void SetVariables()
 {
-    Application::fixedFPS = 50;
-    Application::printFPS = true;
-    Application::programName = "GamEncin";
-    Application::currentScene->renderer->initWindowSize = Vector2Int(1080, 1080);
-    Application::currentScene->renderer->clearColor = Vector4(0.2, 0.3, 0.3, 1.0);
-    Application::currentScene->renderer->mainCamera->cameraFOV = 50.0;
+    Application::SetFixedFPS(50);
+    Application::SetFPSPrint(true);
+    Application::SetProgramName("GamEncin");
+    Renderer::SetWindowProperties(true, false, Vector2Int(1080, 720), Vector4(0.2f, 0.3f, 0.3f, 1.0f));
 }
 
 int main()
@@ -65,3 +59,12 @@ int main()
 
     return 0;
 }
+
+#ifdef GE_SELECT_OPTIMUM_GPU
+#include <Windows.h>
+extern "C"
+{
+    _declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
+    _declspec(dllexport) DWORD AmdPowerXpressRequestHighPerformance = 0x00000001;
+}
+#endif

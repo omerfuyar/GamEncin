@@ -9,13 +9,11 @@ namespace GamEncin
     class Camera : public Component
     {
     public:
-        Camera(Object* object) : Component(object) {};
-        Camera(Object* object, Vector2Int size, float FOV);
-        ~Camera() = default;
+        Camera(Object* obj);
 
-        GLfloat cameraFOV = 0.0f;
-        Vector2Int size = Vector2Int(1080, 1080);
+        GLfloat cameraFOV = 45.0f;
 
+        void SetFOV(float fov);
         void UseCamera(unsigned int& transformMatrixLocation);
 
     private:

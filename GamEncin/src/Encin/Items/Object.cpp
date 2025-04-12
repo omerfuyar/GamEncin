@@ -37,6 +37,25 @@ namespace GamEncin
         }
     }
 
+    void Object::AddComponent(Component* component)
+    {
+        if(!component)
+        {
+            Application::PrintLog(NullPointerErr, "Component trying to add is null");
+            return;
+        }
+
+        auto obj = std::find(components.begin(), components.end(), component);
+
+        if(obj != components.end())
+        {
+            Application::PrintLog(ElementDuplicationErr, "Component trying to add is already in the object");
+            return;
+        }
+
+        components.push_back(component);
+    }
+
     void Object::RemoveComponent(Component* component)
     {
         if(!component)

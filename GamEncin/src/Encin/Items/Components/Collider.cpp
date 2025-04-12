@@ -2,5 +2,7 @@
 
 namespace GamEncin
 {
-
+    Collider::Collider(Object* obj) : Component(obj)
+    {
+    }
 }

@@ -209,7 +209,7 @@ namespace GamEncin
             /// <returns>True if the button is in that status</returns>
             static bool GetMouseButton(KeyButtonStatus status, MouseButtonCode button);
             // Gets the scroll delta, change of scroll in last frame, of the mouse. Can be either 0, 1 or -1
-            static int GetMouseScrollDelta();
+            static float GetMouseScrollDelta();
             // Returns the Vector2 which represents mouse position in pixels. Top left corner of the window is the origin
             static Vector2 GetMousePosition();
             // Returns the position delta, change of position in last frame, of the mouse.

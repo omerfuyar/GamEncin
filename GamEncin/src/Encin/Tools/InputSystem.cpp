@@ -77,7 +77,7 @@ namespace GamEncin
 
         void Mouse::MouseScrollCallBack(GLFWwindow* window, double offtetX, double offsetY)
         {
-            scrollDelta = offsetY;
+            scrollDelta = (float) offsetY;
         }
 
         void Mouse::MouseButtonCallBack(GLFWwindow* window, int button, int action, int mods)
@@ -281,7 +281,7 @@ namespace GamEncin
             return mouse.buttons[button] == status;
         }
 
-        int Input::GetMouseScrollDelta()
+        float Input::GetMouseScrollDelta()
         {
             return mouse.scrollDelta;
         }
@@ -367,7 +367,7 @@ namespace GamEncin
 
             if(GetKey(Pressed, KeyCode::LeftControl) || GetKey(Pressed, KeyCode::RightControl))
                 axis.z -= 1;
-            if(GetKey(Pressed, KeyCode::LeftShift) || GetKey(Pressed, KeyCode::RightShift))
+            if(GetKey(Pressed, KeyCode::Space) || GetKey(Pressed, KeyCode::Space))
                 axis.z += 1;
 
             return axis;

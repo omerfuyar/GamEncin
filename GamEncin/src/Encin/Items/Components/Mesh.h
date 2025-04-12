@@ -11,7 +11,7 @@ namespace GamEncin
     class Mesh : public Component
     {
     public:
-        Mesh(Object* object);
+        Mesh(Object* obj);
         ~Mesh();
 
         MeshData meshData;

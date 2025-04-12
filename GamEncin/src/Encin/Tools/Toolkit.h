@@ -2,10 +2,7 @@
 #include "Encin/Tools/MathYaman.h"
 
 #include <GLAD/glad.h>
-
-#include <Windows.h>
-
-#define GE_SELECT_OPTIMUM_GPU extern"C"{_declspec(dllexport)DWORD NvOptimusEnablement=0x00000001;_declspec(dllexport)DWORD AmdPowerXpressRequestHighPerformance=0x00000001;}
+#include <GLFW/glfw3.h>
 
 namespace GamEncin
 {

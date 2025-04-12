@@ -6,6 +6,6 @@ namespace GamEncin
 {
     class Collider : public Component
     {
-        Collider(Object* object) : Component(object) {};
+        Collider(Object* obj);
     };
 }

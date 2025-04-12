@@ -2,10 +2,17 @@
 
 namespace GamEncin
 {
-
-    Component::Component(Object* object)
+    Component::Component(Object* obj)
     {
-        this->object = object;
+        if(!obj)
+        {
+            Application::PrintLog(NullPointerErr, "Object trying to set to component is null");
+            return;
+        }
+        else
+        {
+            object = obj;
+        }
     }
 
     Component::~Component()

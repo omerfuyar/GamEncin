@@ -476,13 +476,13 @@ namespace GamEncin
 
         float Vector2Int::GetMagnitude() const
         {
-            return SquareRoot(x * x + y * y);
+            return SquareRoot((float) (x * x + y * y));
         }
 
         Vector2Int& Vector2Int::EightDirection()
         {
-            x /= Abs(x);
-            y /= Abs(y);
+            x /= (int) Abs((float) x);
+            y /= (int) Abs((float) y);
             return *this;
         }
 
@@ -495,7 +495,7 @@ namespace GamEncin
 
         Vector2 Vector2Int::Normalized() const
         {
-            Vector2 result = Vector2(x, y);
+            Vector2 result = Vector2((float) x, (float) y);
             result.Normalize();
             return result;
         }
