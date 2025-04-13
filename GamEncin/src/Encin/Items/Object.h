@@ -2,8 +2,6 @@
 #include "Encin/Tools/MathYaman.h"
 #include "Encin/Tools/Toolkit.h"
 
-#include <algorithm>
-
 namespace GamEncin
 {
     class Scene;

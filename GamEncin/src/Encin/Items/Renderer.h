@@ -1,5 +1,6 @@
 #pragma once
 #include "Encin/Tools/MathYaman.h"
+#include "Encin/Tools/OpenGLObjects.h"
 
 #include "GLAD/glad.h"
 #include "GLFW/glfw3.h"
@@ -13,37 +14,51 @@ namespace GamEncin
     class Renderer
     {
     public:
+        static void AddMesh(Mesh* mesh);
+        static void RemoveMesh(Mesh* mesh);
+        static void InitialRender();
+        static void RenderFrame();
+        static void EndRenderer();
+        static void FrameBufferSizeCallback(GLFWwindow* window, int width, int height);
+
         static void SetWindowProperties(bool isFullScreen, bool vSyncEnabled, Vector2Int newWindowSize, Vector4 newClearColor);
         static void SetMainCamera(Camera* camera);
         static void SetMainWindowSize(Vector2Int newWindowSize);
         static void SetFullScreen(bool value);
         static void SetVSync(bool value);
 
-        static bool GetWindowCloseInput();
         static GLFWwindow* GetMainWindow();
         static Vector2Int GetMainWindowSize();
+        static bool GetWindowCloseInput();
         static bool IsFullScreen();
-
-        static void AddMesh(Mesh* mesh);
-        static void RemoveMesh(Mesh* mesh);
-        static void RenderFrame();
-        static void InitialRender();
-        static void FrameBufferSizeCallback(GLFWwindow* window, int width, int height);
-        static void EndRenderer();
+        static bool IsVSyncEnabled();
 
     private:
-        static vector<Mesh*> meshes;
+        static unordered_map<unsigned int, Mesh*> meshes;
         static Shader* shaderProgram;
         static Camera* mainCamera;
         static GLFWwindow* window;
 
+        static VAO* mainVAO;
+        static VBO* modelVertexVBO;
+        static IBO* modelIndexIBO;
+        static SSBO* modelMatrixSSBO;
+
         static Vector2Int windowSize;
         static Vector4 clearColor;
-        static bool  isFullScreen,
-            vSyncEnabled,
-            windowCloseInput;
 
-        static void GLSendUniformVector3(unsigned int& location, Vector3 vector3);
+        static vector<RawVertex> batchedVertices;
+        static vector<unsigned int> batchedIndices;
+        static vector<Matrix4> batchedModelMatrices;
+
+        static bool isFullScreen;
+        static bool vSyncEnabled;
+        static bool windowCloseInput;
+
+        static void GLSendUniformMatrix4(unsigned int& location, Matrix4 matrix4);
         static void ClearColor(Vector4 clearColor);
+        static void UpdateBatchedVerticesAndIndices();
+        static void DrawBatchedMeshes();
+        static void LinkAttributes();
     };
 }

@@ -24,6 +24,11 @@ namespace GamEncin
             //this->texture = texture;
         }
 
+        void RawVertex::SetObjectId(unsigned int objectId)
+        {
+            this->objectId = objectId;
+        }
+
         void RawVertex::SetPosition(Vector3 position)
         {
             this->position = position;
@@ -102,47 +107,68 @@ namespace GamEncin
             return false;
         }
 
+        MeshData::MeshData(unsigned int vertexCount)
+        {
+            vertices.resize(vertexCount);
+        }
+
         vector<unsigned int> MeshData::GetIndiceArray()
         {
             vector<unsigned int> indices;
-            for(auto& pair : faces)
+
+            for(Face* face : faces)
             {
-                Face& face = *pair.second;
                 for(int i = 0; i < 3; i++)
                 {
-                    indices.push_back(face.vertices[i]->id);
+                    indices.push_back(face->vertices[i]->id);
                 }
             }
+
             return indices;
         }
 
         vector<RawVertex> MeshData::GetRawVertexArray()
         {
-            vector<RawVertex> vertices;
-            for(auto& pair : this->vertices)
+            vector<RawVertex> rawVertices;
+
+            for(RawVertex* rawVert : vertices)
             {
-                vertices.push_back(*pair.second);
+                rawVertices.push_back(*rawVert);
             }
-            return vertices;
+
+            return rawVertices;
+        }
+
+        Edge* MeshData::TryFindEdge(unsigned int edgeId)
+        {
+            for(Edge* edge : edges)
+            {
+                if(edge && edge->id == edgeId)
+                {
+                    return edge;
+                }
+            }
+
+            return nullptr;
         }
 
         void MeshData::DeleteData()
         {
-            for(auto& pair : vertices)
+            for(Vertex* vert : vertices)
             {
-                delete pair.second;
+                delete vert;
             }
             vertices.clear();
 
-            for(auto& pair : edges)
+            for(Edge* edge : edges)
             {
-                delete pair.second;
+                delete edge;
             }
             edges.clear();
 
-            for(auto& pair : faces)
+            for(Face* face : faces)
             {
-                delete pair.second;
+                delete face;
             }
             faces.clear();
         }
@@ -153,7 +179,7 @@ namespace GamEncin
 
         MeshData* MeshBuilder::CreateMeshData(const vector<RawVertex> vertices, const vector<unsigned int> indices)
         {
-            MeshData* meshData = new MeshData();
+            MeshData* meshData = new MeshData(vertices.size());
 
             int vertexCount = vertices.size();
             for(int i = 0; i < vertexCount; i++)
@@ -175,26 +201,26 @@ namespace GamEncin
                 {
                     Vertex* startVert = faceVertices[i];
                     Vertex* endVert = faceVertices[(i + 1) % 3];
-                    Edge* edge = nullptr;
-                    unsigned int edgeId = MeshBuilder::GenerateEdgeId(startVert, endVert);
 
-                    if(meshData->edges.contains(edgeId))
+                    unsigned int edgeId = MeshBuilder::GenerateEdgeId(startVert, endVert);
+                    Edge* edge = meshData->TryFindEdge(edgeId);
+
+                    if(edge)
                     {
-                        edge = meshData->edges[edgeId];
                         edge->rightFace = face;
                     }
-                    else
+                    else //if null
                     {
                         edge = new Edge(startVert, endVert);
                         edge->leftFace = face;
-                        meshData->edges[edgeId] = edge;
+                        meshData->edges.push_back(edge);
                     }
 
                     face->edges[i] = edge;
                 }
                 //edges of face and meshData is set
 
-                meshData->faces[face->id] = face;
+                meshData->faces.push_back(face);
                 //face of meshData is set
             }
 
@@ -206,13 +232,13 @@ namespace GamEncin
             printf("total size of meshData: ");
             unsigned long int size = 0;
 
-            size += meshData->vertices.size() * (sizeof(Vertex) + sizeof(unsigned int));
-            size += meshData->edges.size() * (sizeof(Edge) + sizeof(unsigned int));
-            size += meshData->faces.size() * (sizeof(Face) + sizeof(unsigned int));
+            size += meshData->vertices.size() * sizeof(Vertex);
+            size += meshData->edges.size() * sizeof(Edge);
+            size += meshData->faces.size() * sizeof(Face);
 
             printf("%lu bytes\n\n", size);
 
-            for(auto& [id, edge] : meshData->edges)
+            for(Edge* edge : meshData->edges)
             {
                 if(!edge->leftFace)
                 {
@@ -576,6 +602,8 @@ namespace GamEncin
             sort(ids.begin(), ids.end());
             return ((ids[0] << 16) | ids[1]);
         }
+
+
 
 #pragma endregion
 

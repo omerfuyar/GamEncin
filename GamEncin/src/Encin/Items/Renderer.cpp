@@ -2,15 +2,63 @@
 
 namespace GamEncin
 {
-    vector<Mesh*> Renderer::meshes;
+    unordered_map<unsigned int, Mesh*> Renderer::meshes;
     Shader* Renderer::shaderProgram = nullptr;
     Camera* Renderer::mainCamera = nullptr;
     GLFWwindow* Renderer::window = nullptr;
+
+    VAO* Renderer::mainVAO = nullptr;
+    VBO* Renderer::modelVertexVBO = nullptr;
+    IBO* Renderer::modelIndexIBO = nullptr;
+    SSBO* Renderer::modelMatrixSSBO = nullptr;
+
     Vector2Int Renderer::windowSize = Vector2Int(1080, 1080);
     Vector4 Renderer::clearColor = Vector4(0.2f, 0.3f, 0.3f, 1.0f);
+    vector<RawVertex> Renderer::batchedVertices;
+    vector<unsigned int> Renderer::batchedIndices;
+    vector<Matrix4> Renderer::batchedModelMatrices;
+
     bool  Renderer::isFullScreen = false,
         Renderer::vSyncEnabled = false,
         Renderer::windowCloseInput = false;
+
+    void Renderer::AddMesh(Mesh* mesh)
+    {
+        if(!mesh)
+        {
+            Application::Stop(NullPointerErr, "Mesh trying to add is null");
+            return;
+        }
+
+        //auto obj = std::find(meshes.begin(), meshes.end(), mesh);
+        //
+        //if(obj != meshes.end())
+        //{
+        //    Application::Stop(ElementDuplicationErr, "Mesh already exists");
+        //    return;
+        //}
+
+        meshes[meshes.size()] = mesh;
+    }
+
+    void Renderer::RemoveMesh(Mesh* mesh)
+    {
+        if(!mesh)
+        {
+            Application::Stop(NullPointerErr, "Mesh trying to remove is null");
+            return;
+        }
+
+        //auto obj = std::find(meshes.begin(), meshes.end(), mesh);
+        //if(obj != meshes.end())
+        //{
+        //    meshes.erase(obj);
+        //}
+        //else
+        //{
+        //    Application::Stop(ElementCouldNotFoundErr, "Couldn't found mesh to remove");
+        //}
+    }
 
     void Renderer::InitialRender()
     {
@@ -45,9 +93,54 @@ namespace GamEncin
 
         glEnable(GL_DEPTH_TEST);
 
-        for(Mesh* mesh : meshes)
+        mainVAO = new VAO(sizeof(RawVertex) + sizeof(unsigned int));
+        modelVertexVBO = new VBO();
+        modelIndexIBO = new IBO();
+        modelMatrixSSBO = new SSBO();
+
+        UpdateBatchedVerticesAndIndices();
+
+        LinkAttributes();
+    }
+
+    void Renderer::RenderFrame()
+    {
+        ClearColor(clearColor);
+
+        shaderProgram->Use();
+
+        mainCamera->UseCamera(shaderProgram->viewMatrixVarId, shaderProgram->projectionMatrixVarId);
+
+        UpdateBatchedVerticesAndIndices();
+
+        DrawBatchedMeshes();
+
+        glfwSwapBuffers(window);
+
+        windowCloseInput = glfwWindowShouldClose(window);
+
+        glFinish();
+    }
+
+    void Renderer::EndRenderer()
+    {
+        if(shaderProgram)
+            shaderProgram->Delete();
+        glfwDestroyWindow(window);
+        glfwTerminate();
+    }
+
+    void Renderer::FrameBufferSizeCallback(GLFWwindow* window, int width, int height)
+    {
+        if(isFullScreen)
         {
-            mesh->Initialize();
+            GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+            const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+            glViewport(0, 0, mode->width, mode->height);
+        }
+        else
+        {
+            SetMainWindowSize(Vector2Int(width, height));
         }
     }
 
@@ -72,31 +165,18 @@ namespace GamEncin
 
     void Renderer::SetMainWindowSize(Vector2Int newWindowSize)
     {
-        if(isFullScreen)
-        {
-            GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-            const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-            glViewport(0, 0, mode->width, mode->height);
-        }
-        else
-        {
-            windowSize = newWindowSize;
-            glViewport(0, 0, windowSize.x, windowSize.y);
-        }
+        windowSize = newWindowSize;
+        glViewport(0, 0, windowSize.x, windowSize.y);
     }
 
     void Renderer::SetFullScreen(bool value)
     {
         isFullScreen = value;
 
-        GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-
         if(isFullScreen)
         {
-            printf("Monitor Resolution: %d x %d\n", mode->width, mode->height);
-            printf("Monitor Refresh Rate: %d\n", mode->refreshRate);
-
+            GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+            const GLFWvidmode* mode = glfwGetVideoMode(monitor);
             glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
         }
         else
@@ -109,11 +189,6 @@ namespace GamEncin
     {
         vSyncEnabled = value;
         glfwSwapInterval(vSyncEnabled ? 1 : 0);
-    }
-
-    bool Renderer::GetWindowCloseInput()
-    {
-        return windowCloseInput;
     }
 
     GLFWwindow* Renderer::GetMainWindow()
@@ -135,59 +210,24 @@ namespace GamEncin
         }
     }
 
+    bool Renderer::GetWindowCloseInput()
+    {
+        return windowCloseInput;
+    }
+
     bool Renderer::IsFullScreen()
     {
         return isFullScreen;
     }
 
-    void Renderer::AddMesh(Mesh* mesh)
+    bool Renderer::IsVSyncEnabled()
     {
-        meshes.push_back(mesh);
+        return vSyncEnabled;
     }
 
-    void Renderer::RemoveMesh(Mesh* mesh)
+    void Renderer::GLSendUniformMatrix4(unsigned int& location, Matrix4 matrix4)
     {
-        if(!mesh)
-        {
-            Application::Stop(NullPointerErr, "Mesh trying to remove is null");
-            return;
-        }
-
-        auto obj = std::find(meshes.begin(), meshes.end(), mesh);
-        if(obj != meshes.end())
-        {
-            meshes.erase(obj);
-        }
-        else
-        {
-            Application::Stop(ElementCouldNotFoundErr, "Couldn't found mesh to remove");
-        }
-    }
-
-    void Renderer::RenderFrame()
-    {
-        shaderProgram->Use();
-
-        for(Mesh* mesh : meshes)
-        {
-            Transform* transform = mesh->object->transform;
-
-            GLSendUniformVector3(shaderProgram->objPositionVarId, transform->position);
-            GLSendUniformVector3(shaderProgram->objScaleVarId, transform->scale);
-            GLSendUniformVector3(shaderProgram->objRotationVarId, transform->rotation);
-
-            mesh->Draw();
-        }
-
-        glfwSwapBuffers(window);
-
-        mainCamera->UseCamera(shaderProgram->transformMatrixVarId);
-
-        windowCloseInput = glfwWindowShouldClose(window);
-
-        ClearColor(clearColor);
-
-        glFinish();
+        glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix4));
     }
 
     void Renderer::ClearColor(Vector4 clearColor)
@@ -196,21 +236,59 @@ namespace GamEncin
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    void Renderer::FrameBufferSizeCallback(GLFWwindow* window, int width, int height)
+    void Renderer::UpdateBatchedVerticesAndIndices()
     {
-        SetMainWindowSize(Vector2Int(width, height));
+        batchedVertices.clear();
+
+        batchedIndices.clear();
+
+        batchedModelMatrices.clear();
+        batchedModelMatrices.resize(meshes.size());
+
+        for(auto& pair : meshes)
+        {
+            Mesh* mesh = pair.second;
+
+
+            for(RawVertex* vertex : mesh->meshData.vertices)
+            {
+                if(!vertex)
+                {
+                    Application::Stop(NullPointerErr, "Vertex is null");
+                    return;
+                }
+
+                vertex->objectId = pair.first; //assign objectId to each vertex, ready to use now
+            }
+
+            //append matrices to main batch
+            batchedModelMatrices[pair.first] = mesh->object->transform->GetWorldModelMatrix();
+            //todo optimize this, do not compute each time getting world matrix
+
+            vector<RawVertex> tempVertices = mesh->meshData.GetRawVertexArray();
+            vector<unsigned int> tempIndices = mesh->meshData.GetIndiceArray();
+
+            //append vertices and indices to main batch
+            batchedVertices.insert(batchedVertices.end(), tempVertices.begin(), tempVertices.end());
+            batchedIndices.insert(batchedIndices.end(), tempIndices.begin(), tempIndices.end());
+        }
+
+        modelVertexVBO->Update(batchedVertices);
+        modelIndexIBO->Update(batchedIndices);
+        modelMatrixSSBO->Update(batchedModelMatrices);
     }
 
-    void Renderer::GLSendUniformVector3(unsigned int& location, Vector3 vector3)
+    void Renderer::DrawBatchedMeshes()
     {
-        glUniform3f(location, vector3.x, vector3.y, vector3.z);
+        //binding has been done UpdateBatchedVerticesAndIndices
+
+        glDrawElements(GL_TRIANGLES, batchedIndices.size(), GL_UNSIGNED_INT, 0);
     }
 
-    void Renderer::EndRenderer()
+    void Renderer::LinkAttributes()
     {
-        if(shaderProgram)
-            shaderProgram->Delete();
-        glfwDestroyWindow(window);
-        glfwTerminate();
+        mainVAO->LinkAttribute(VBO_OBJECT_ID_LAYOUT, 1, GL_UNSIGNED_INT, 0); //unsigned int
+        mainVAO->LinkAttribute(VBO_POSITION_LAYOUT, 3, GL_FLOAT, sizeof(unsigned int)); //Vector3
+        mainVAO->LinkAttribute(VBO_COLOR_LAYOUT, 4, GL_FLOAT, sizeof(unsigned int) + sizeof(Vector3)); //Vector4
     }
 }

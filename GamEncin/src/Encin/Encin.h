@@ -8,12 +8,12 @@
 
 #include "Encin/Items/Application.h"
 #include "Encin/Items/Object.h"
-#include "Encin/Items/OpenGLObjects.h"
 #include "Encin/Items/Renderer.h"
 #include "Encin/Items/Scene.h"
 
 #include "Encin/Tools/InputSystem.h"
 #include "Encin/Tools/MathYaman.h"
+#include "Encin/Tools/OpenGLObjects.h"
 #include "Encin/Tools/Toolkit.h"
 
 #include <GLAD/glad.h>

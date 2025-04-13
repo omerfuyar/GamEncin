@@ -2,45 +2,19 @@
 
 namespace GamEncin
 {
-#pragma region VBO
-
-    VBO::VBO(vector<RawVertex> vertices)
-    {
-        glGenBuffers(1, &id);
-        Update(vertices);
-    }
-
-    void VBO::Bind()
-    {
-        glBindBuffer(GL_ARRAY_BUFFER, id);
-    }
-
-    void VBO::Update(vector<RawVertex> vertices)
-    {
-        Bind();
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(RawVertex), vertices.data(), GL_STATIC_DRAW);
-    }
-
-    void VBO::Delete()
-    {
-        glDeleteBuffers(1, &id);
-    }
-
-#pragma endregion
-
 #pragma region VAO
 
-    VAO::VAO()
+    VAO::VAO(unsigned int strideSize)
     {
         glGenVertexArrays(1, &id);
+        this->strideSize = strideSize;
     }
 
-    void VAO::LinkAttributes(unsigned int layout, unsigned int numComponents, unsigned int type, unsigned int offsetInBytes)
+    void VAO::LinkAttribute(unsigned int layout, unsigned int numComponents, unsigned int type, unsigned int offsetInBytes)
     {
-        GLsizei stride = sizeof(RawVertex); //TODO position + color
         GLvoid* offsetVar = (GLvoid*) (offsetInBytes);
 
-        glVertexAttribPointer(layout, numComponents, type, GL_FALSE, stride, offsetVar);
+        glVertexAttribPointer(layout, numComponents, type, GL_FALSE, strideSize, offsetVar);
         // layout: location of the vertex attribute in the shader, like 0 for position, 1 for color
         //in shader, layout(location = 0) in vec3 position;
         //numComponents: how many components does the attribute have, like 3 for position, 4 for color
@@ -63,13 +37,36 @@ namespace GamEncin
 
 #pragma endregion
 
-#pragma region IBO
+#pragma region VBO
 
-    IBO::IBO(vector<unsigned int> indices)
+    VBO::VBO()
     {
         glGenBuffers(1, &id);
+    }
+
+    void VBO::Bind()
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, id);
+    }
+
+    void VBO::Update(vector<RawVertex> vertices)
+    {
         Bind();
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(RawVertex), vertices.data(), GL_STATIC_DRAW);
+    }
+
+    void VBO::Delete()
+    {
+        glDeleteBuffers(1, &id);
+    }
+
+#pragma endregion
+
+#pragma region IBO
+
+    IBO::IBO()
+    {
+        glGenBuffers(1, &id);
     }
 
     void IBO::Bind()
@@ -77,7 +74,38 @@ namespace GamEncin
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
     }
 
+    void IBO::Update(vector<unsigned int> indices)
+    {
+        Bind();
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
+    }
+
     void IBO::Delete()
+    {
+        glDeleteBuffers(1, &id);
+    }
+
+#pragma endregion
+
+#pragma region SSBO
+
+    SSBO::SSBO()
+    {
+        glGenBuffers(1, &id);
+    }
+
+    void SSBO::Bind()
+    {
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, SSBO_MODEL_MATRICES_BINDING, id);
+    }
+
+    void SSBO::Update(vector<Matrix4> modelMatrices)
+    {
+        Bind();
+        glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(Matrix4) * modelMatrices.size(), modelMatrices.data(), GL_STATIC_DRAW);
+    }
+
+    void SSBO::Delete()
     {
         glDeleteBuffers(1, &id);
     }
@@ -114,10 +142,9 @@ namespace GamEncin
         glDeleteShader(fragmentShader);
         //shaders already compiled and linked to the program, so we can delete them
 
-        transformMatrixVarId = glGetUniformLocation(id, "transformMatrix");
-        objPositionVarId = glGetUniformLocation(id, "objPosition");
-        objRotationVarId = glGetUniformLocation(id, "objRotation");
-        objScaleVarId = glGetUniformLocation(id, "objScale");
+
+        viewMatrixVarId = glGetUniformLocation(id, "viewMatrix");
+        projectionMatrixVarId = glGetUniformLocation(id, "projectionMatrix");
     }
 
     void Shader::Use()
@@ -156,5 +183,4 @@ namespace GamEncin
     }
 
 #pragma endregion
-
 }

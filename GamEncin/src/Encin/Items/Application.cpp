@@ -149,13 +149,14 @@ namespace GamEncin
             secondsPastFromStart += deltaTime;
             fpsTimer += deltaTime;
 
+            Update();
+
             while(accumulatedTime >= fixedDeltaTime)
             {
                 FixUpdate();
                 accumulatedTime -= fixedDeltaTime;
             }
 
-            Update();
             LateUpdate();
 
             if(fpsTimer >= 1.0f)
@@ -205,7 +206,13 @@ namespace GamEncin
                 fprintf(stderr, "ERROR: Program is already running");
                 break;
             case NullPointerErr:
-                fprintf(stderr, "ERROR: Null pointer exception");
+                fprintf(stderr, "ERROR: The pointer trying to access is null");
+                break;
+            case ElementDuplicationErr:
+                fprintf(stderr, "ERROR: Element duplicated / already exist");
+                break;
+            case IndexOutOfRangeErr:
+                fprintf(stderr, "ERROR: Index out of range");
                 break;
             default:
                 fprintf(stdout, "UNKNOWN MESSAGE");

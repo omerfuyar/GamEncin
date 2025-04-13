@@ -5,9 +5,12 @@
 void SceneBuilding()
 {
     Scene& scene = Application::CreateAndUseScene();
-    Object& camera = scene.CreateAndUseCameraObject();
-    camera.AddComponent<CameraController>();
-    camera.GetComponent<Camera>()->SetFOV(45.0f);
+    Object& cameraObj = scene.CreateAndUseCameraObject();
+    cameraObj.AddComponent<CameraController>();
+    Camera* camera = cameraObj.GetComponent<Camera>();
+    camera->SetCameraFOV(50.0f);
+    camera->SetPerspective(true);
+    camera->SetClipPlanes(0.1f, 300.0f);
 
     Object& myObject = scene.CreateObject();
 
@@ -47,7 +50,7 @@ void SetVariables()
     Application::SetFixedFPS(50);
     Application::SetFPSPrint(true);
     Application::SetProgramName("GamEncin");
-    Renderer::SetWindowProperties(true, false, Vector2Int(1080, 720), Vector4(0.2f, 0.3f, 0.3f, 1.0f));
+    Renderer::SetWindowProperties(false, false, Vector2Int(1080, 720), Vector4(0.2f, 0.3f, 0.3f, 1.0f));
 }
 
 int main()

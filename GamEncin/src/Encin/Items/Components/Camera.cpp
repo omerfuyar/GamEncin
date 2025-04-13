@@ -2,29 +2,49 @@
 
 namespace GamEncin
 {
-    Camera::Camera(Object* obj) :Component(obj)
-    {
-    }
+    Camera::Camera(Object* obj) :Component(obj) {}
 
-    void Camera::SetFOV(float fov)
+    void Camera::SetCameraFOV(float fov)
     {
         cameraFOV = Clamp(fov, 0, 180);
     }
 
-    void Camera::UseCamera(unsigned int& transformMatrixLocation)
+    void Camera::SetPerspective(bool value)
     {
-        Vector3 position = object->transform->position;
-        Vector3 direction = object->transform->direction;
+        isPerspective = value;
+    }
+
+    void Camera::SetClipPlanes(float nearClip, float farClip)
+    {
+        nearClipPlane = nearClip;
+        farClipPlane = farClip;
+    }
+
+    bool Camera::IsPerspective()
+    {
+        return isPerspective;
+    }
+
+    void Camera::UseCamera(unsigned int& viewMatrixVarId, unsigned int& projectionMatrixVarId)
+    {
+        glm::vec3 position = object->transform->position.ToGLMvec3();
+        glm::vec3 direction = object->transform->direction.ToGLMvec3();
         Vector2Int size = Renderer::GetMainWindowSize();
 
-        viewMatrix = glm::lookAt(position.ToGLMvec3(),
-                                 (position + direction).ToGLMvec3(),
-                                 Vector3::Up().ToGLMvec3());
+        //viewMatrix = glm::inverse(object->transform->GetWorldModelMatrix());
+        viewMatrix = glm::lookAt(position, position + direction, glm::vec3(0, 1, 0));
 
-        //TODO Deg2Rad may be cause problems with namespace
-        perspectiveMatrix = glm::perspective(Deg2Rad(cameraFOV), (float) size.x / (float) size.y, 0.1f, 100.0f);
+        if(!isPerspective)
+        {
+            projectionMatrix = glm::ortho((float) -size.x / 2.0f, (float) size.x / 2.0f, (float) -size.y / 2.0f, (float) size.y / 2.0f, nearClipPlane, farClipPlane);
+        }
+        else
+        {
+            projectionMatrix = glm::perspective(Deg2Rad(cameraFOV), (float) size.x / (float) size.y, nearClipPlane, farClipPlane);
+        }
 
-        glUniformMatrix4fv(transformMatrixLocation, 1, GL_FALSE, glm::value_ptr(perspectiveMatrix * viewMatrix));
+        glUniformMatrix4fv(viewMatrixVarId, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+        glUniformMatrix4fv(projectionMatrixVarId, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
         //value_ptr : &mat4[0][0] address of first element of the matrix
     }
 }

@@ -2,6 +2,7 @@
 #include <GLM/glm.hpp>
 #include <GLM/gtc/matrix_transform.hpp>
 #include <GLM/gtc/type_ptr.hpp>
+#include <GLM/gtx/transform.hpp>
 
 #include <algorithm>
 #include <array>
@@ -11,11 +12,15 @@
 #include <unordered_map>
 #include <vector>
 
+#define GLM_ENABLE_EXPERIMENTAL
+
 using std::array;
 using std::map;
 using std::string;
 using std::unordered_map;
 using std::vector;
+
+typedef glm::mat4 Matrix4;
 
 namespace GamEncin
 {

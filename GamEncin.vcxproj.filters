@@ -66,7 +66,7 @@
     <ClCompile Include="GamEncin\src\Encin\Tools\Toolkit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GamEncin\src\Encin\Items\OpenGLObjects.cpp">
+    <ClCompile Include="GamEncin\src\Encin\Tools\OpenGLObjects.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -995,7 +995,7 @@
     <ClInclude Include="GamEncin\src\Encin\Items\Components\Component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GamEncin\src\Encin\Items\OpenGLObjects.h">
+    <ClInclude Include="GamEncin\src\Encin\Tools\OpenGLObjects.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GamEncin\src\Encin\Encin.h">

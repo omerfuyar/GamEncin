@@ -92,7 +92,7 @@
     <ClCompile Include="Dependencies\GLM\detail\glm.cpp" />
     <ClCompile Include="Dependencies\GLM\glm.cppm" />
     <ClCompile Include="GamEncin\src\Encin\Items\Application.cpp" />
-    <ClCompile Include="GamEncin\src\Encin\Items\OpenGLObjects.cpp" />
+    <ClCompile Include="GamEncin\src\Encin\Tools\OpenGLObjects.cpp" />
     <ClCompile Include="GamEncin\src\Encin\Tools\InputSystem.cpp" />
     <ClCompile Include="GamEncin\src\Encin\Tools\MathYaman.cpp" />
     <ClCompile Include="GamEncin\src\Encin\Tools\Toolkit.cpp" />
@@ -403,7 +403,7 @@
     <ClInclude Include="Dependencies\GLM\vec4.hpp" />
     <ClInclude Include="Dependencies\GLM\vector_relational.hpp" />
     <ClInclude Include="GamEncin\src\Encin\Items\Application.h" />
-    <ClInclude Include="GamEncin\src\Encin\Items\OpenGLObjects.h" />
+    <ClInclude Include="GamEncin\src\Encin\Tools\OpenGLObjects.h" />
     <ClInclude Include="GamEncin\src\Encin\Tools\InputSystem.h" />
     <ClInclude Include="GamEncin\src\Encin\Tools\MathYaman.h" />
     <ClInclude Include="GamEncin\src\Encin\Tools\Toolkit.h" />

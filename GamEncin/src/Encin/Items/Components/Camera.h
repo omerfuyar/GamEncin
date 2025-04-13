@@ -2,8 +2,6 @@
 #include "Encin/Items/Components/Component.h"
 #include "Encin/Tools/MathYaman.h"
 
-#include "GLAD/glad.h"
-
 namespace GamEncin
 {
     class Camera : public Component
@@ -11,13 +9,23 @@ namespace GamEncin
     public:
         Camera(Object* obj);
 
-        GLfloat cameraFOV = 45.0f;
+        float cameraFOV = 45.0f;
 
-        void SetFOV(float fov);
-        void UseCamera(unsigned int& transformMatrixLocation);
+        void SetCameraFOV(float fov);
+        void SetPerspective(bool value);
+        void SetClipPlanes(float nearClip, float farClip);
+
+        bool IsPerspective();
+
+        void UseCamera(unsigned int& viewMatrixVarId, unsigned int& projectionMatrixVarId);
 
     private:
-        glm::mat4 perspectiveMatrix = glm::mat4(1.0f),
-            viewMatrix = glm::mat4(1.0f);
+        bool isPerspective = true;
+
+        float nearClipPlane = 0.1f;
+        float farClipPlane = 100.0f;
+
+        Matrix4 projectionMatrix = Matrix4(1.0f);
+        Matrix4 viewMatrix = Matrix4(1.0f);
     };
 }

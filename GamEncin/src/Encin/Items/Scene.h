@@ -9,9 +9,6 @@ namespace GamEncin
 
     class Scene
     {
-    private:
-        vector<Object*> objects;
-
     public:
         Object& CreateObject();
         Object& CreateObject(string name, string tag);
@@ -27,5 +24,8 @@ namespace GamEncin
         void LateUpdate();
         void FixUpdate();
         void StartOfSecond();
+
+    private:
+        vector<Object*> objects;
     };
 }

@@ -19,7 +19,7 @@ namespace GamEncin
         // all end types, exit codes that can be used in the game
         enum LogType
         {
-            Safe, GLFWErr, GLADErr, ShaderCompilationErr, ShaderLinkingErr, ElementCouldNotFoundErr, TypeMismachErr, IOErr, IODeviceWarn, ProgramDuplicationErr, NullPointerErr, ElementDuplicationErr
+            Safe, GLFWErr, GLADErr, ShaderCompilationErr, ShaderLinkingErr, ElementCouldNotFoundErr, TypeMismachErr, IOErr, IODeviceWarn, ProgramDuplicationErr, NullPointerErr, ElementDuplicationErr, IndexOutOfRangeErr
         };
 
 #pragma endregion
@@ -31,15 +31,17 @@ namespace GamEncin
 
         struct RawVertex
         {
+            unsigned int objectId = 0;
+
             Vector3 position = Vector3::Zero();
-            //Vector3 normal = Vector3::Forward();
-
-            //Vector2 texture = Vector2::Zero();
-
             Vector4 color = Vector4::One();
+            //Vector3 normal = Vector3::Forward();
+            //Vector2 texture = Vector2::Zero();
+            //TODO order matters due to shader layout
 
             RawVertex(Vector3 position, Vector4 color);
             RawVertex(Vector3 position, Vector4 color, Vector3 normal, Vector2 texture);
+            void SetObjectId(unsigned int objectId);
             void SetPosition(Vector3 position);
             void SetNormal(Vector3 normal);
             void SetTexture(Vector2 texture);
@@ -85,12 +87,17 @@ namespace GamEncin
 
         struct MeshData
         {
-            unordered_map<unsigned int, Vertex*> vertices;
-            unordered_map<unsigned int, Edge*> edges;
-            unordered_map<unsigned int, Face*> faces;
+            vector<Vertex*> vertices;
+            vector<Edge*> edges;
+            vector<Face*> faces;
+
+            MeshData() = default;
+            MeshData(unsigned int vertexCount);
 
             vector<unsigned int> GetIndiceArray();
             vector<RawVertex> GetRawVertexArray();
+
+            Edge* TryFindEdge(unsigned int edgeId);
 
             void DeleteData();
         };
