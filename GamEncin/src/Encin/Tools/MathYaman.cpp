@@ -330,6 +330,12 @@ namespace GamEncin
             return *this;
         }
 
+        Vector3 Vector3::operator * (const Matrix4 other) const
+        {
+            glm::vec3 result = other * glm::vec4(x, y, z, 1);
+            return Vector3(result.x, result.y, result.z);
+        }
+
         bool Vector3::operator == (const Vector3& other)
         {
             return x == other.x && y == other.y && z == other.z;

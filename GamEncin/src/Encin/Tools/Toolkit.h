@@ -19,7 +19,7 @@ namespace GamEncin
         // all end types, exit codes that can be used in the game
         enum LogType
         {
-            Safe, GLFWErr, GLADErr, ShaderCompilationErr, ShaderLinkingErr, ElementCouldNotFoundErr, TypeMismachErr, IOErr, IODeviceWarn, ProgramDuplicationErr, NullPointerErr, ElementDuplicationErr, IndexOutOfRangeErr
+            Safe, GLFWErr, GLADErr, ShaderCompilationErr, ShaderLinkingErr, ElementCouldNotFoundErr, TypeMismachErr, IOErr, IODeviceWarn, ProgramDuplicationErr, NullPointerErr, ElementDuplicationErr, IndexOutOfRangeErr, idoiterr
         };
 
 #pragma endregion

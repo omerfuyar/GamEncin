@@ -25,6 +25,15 @@ namespace GamEncin
         glEnableVertexAttribArray(layout); //like binding the format we want to read buffer data
     }
 
+    void VAO::LinkIntegerAttribute(unsigned int layout, unsigned int numComponents, unsigned int type, unsigned int offsetInBytes)
+    {
+        GLvoid* offsetVar = (GLvoid*) (offsetInBytes);
+
+        glVertexAttribIPointer(layout, numComponents, type, strideSize, offsetVar);
+
+        glEnableVertexAttribArray(layout);
+    }
+
     void VAO::Bind()
     {
         glBindVertexArray(id);
@@ -96,6 +105,7 @@ namespace GamEncin
 
     void SSBO::Bind()
     {
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, id);
         glBindBufferBase(GL_SHADER_STORAGE_BUFFER, SSBO_MODEL_MATRICES_BINDING, id);
     }
 
@@ -103,6 +113,8 @@ namespace GamEncin
     {
         Bind();
         glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(Matrix4) * modelMatrices.size(), modelMatrices.data(), GL_STATIC_DRAW);
+        //glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(Matrix4) * modelMatrices.size(), modelMatrices.data());
+
     }
 
     void SSBO::Delete()

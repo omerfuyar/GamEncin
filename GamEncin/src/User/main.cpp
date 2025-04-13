@@ -13,7 +13,7 @@ void SceneBuilding()
     camera->SetClipPlanes(0.1f, 300.0f);
 
     Object& myObject = scene.CreateObject();
-
+    Transform* myObjectTR = myObject.transform;
     Mesh* mesh = myObject.AddComponent<Mesh>();
     mesh->SetMeshData(MeshBuilder::CreateCube());
 

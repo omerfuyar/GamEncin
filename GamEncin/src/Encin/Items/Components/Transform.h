@@ -10,6 +10,29 @@ namespace GamEncin
         Transform* parent = nullptr;
         vector<Transform*> children;
 
+        void SetParent(Transform* newParent);
+        void SetLocalPosition(Vector3 newLocalPosition);
+        void AddPosition(Vector3 positionToAdd);
+        void SetLocalRotation(Vector3 newLocalRotation);
+        void AddRotation(Vector3 rotationToAdd);
+        void SetLocalScale(Vector3 newLocalScale);
+        void AddScale(Vector3 scaleToAdd);
+
+        Vector3 GetLocalPosition();
+        Vector3 GetGlobalPosition();
+        Vector3 GetLocalRotation();
+        Vector3 GetGlobalRotation();
+        Vector3 GetLocalScale();
+        Vector3 GetGlobalScale();
+        Vector3 GetDirection();
+
+        const Matrix4& GetModelMatrix();
+
+        Transform(Object* obj);
+
+    private:
+        Matrix4 modelMatrix = Matrix4(1.0f);
+
         Vector3 position = Vector3::Zero();
         Vector3 rotation = Vector3::Zero();
         Vector3 scale = Vector3::One();
@@ -19,17 +42,5 @@ namespace GamEncin
         Vector3 localScale = Vector3::One();
 
         Vector3 direction = Vector3::Forward();
-
-        Matrix4 GetLocalModelMatrix();
-        Matrix4 GetWorldModelMatrix();
-
-        Transform(Object* obj);
-        void Update() override;
-
-    private:
-        Matrix4 localModelMatrix = Matrix4(1.0f);
-        Matrix4 worldModelMatrix = Matrix4(1.0f);
-
-        void UpdateProperties();
     };
 }

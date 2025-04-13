@@ -188,6 +188,7 @@ namespace GamEncin
             Vector3& operator *= (const Vector3& other);
             Vector3 operator / (const float other) const;
             Vector3& operator /= (const float other);
+            Vector3 operator * (const Matrix4 other) const;
             bool operator==(const Vector3& other);
             bool operator!=(const Vector3& other);
 

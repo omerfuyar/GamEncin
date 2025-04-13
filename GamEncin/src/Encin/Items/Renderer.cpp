@@ -98,8 +98,6 @@ namespace GamEncin
         modelIndexIBO = new IBO();
         modelMatrixSSBO = new SSBO();
 
-        UpdateBatchedVerticesAndIndices();
-
         LinkAttributes();
     }
 
@@ -119,7 +117,8 @@ namespace GamEncin
 
         windowCloseInput = glfwWindowShouldClose(window);
 
-        glFinish();
+        //glFinish();
+        //glFlush();
     }
 
     void Renderer::EndRenderer()
@@ -249,7 +248,6 @@ namespace GamEncin
         {
             Mesh* mesh = pair.second;
 
-
             for(RawVertex* vertex : mesh->meshData.vertices)
             {
                 if(!vertex)
@@ -258,11 +256,11 @@ namespace GamEncin
                     return;
                 }
 
-                vertex->objectId = pair.first; //assign objectId to each vertex, ready to use now
+                vertex->SetObjectId(pair.first); //set objectId to each vertex, ready to use now
             }
 
             //append matrices to main batch
-            batchedModelMatrices[pair.first] = mesh->object->transform->GetWorldModelMatrix();
+            batchedModelMatrices[pair.first] = mesh->object->transform->GetModelMatrix();
             //todo optimize this, do not compute each time getting world matrix
 
             vector<RawVertex> tempVertices = mesh->meshData.GetRawVertexArray();
@@ -287,7 +285,7 @@ namespace GamEncin
 
     void Renderer::LinkAttributes()
     {
-        mainVAO->LinkAttribute(VBO_OBJECT_ID_LAYOUT, 1, GL_UNSIGNED_INT, 0); //unsigned int
+        mainVAO->LinkIntegerAttribute(VBO_OBJECT_ID_LAYOUT, 1, GL_UNSIGNED_INT, 0); //unsigned int
         mainVAO->LinkAttribute(VBO_POSITION_LAYOUT, 3, GL_FLOAT, sizeof(unsigned int)); //Vector3
         mainVAO->LinkAttribute(VBO_COLOR_LAYOUT, 4, GL_FLOAT, sizeof(unsigned int) + sizeof(Vector3)); //Vector4
     }

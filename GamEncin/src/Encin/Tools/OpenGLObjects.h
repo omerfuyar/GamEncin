@@ -22,6 +22,7 @@ namespace GamEncin
         VAO(unsigned int strideSize);
         //one attribute is one piece of data that is passed to the vertex shader for one vertex, like position, color, normal, etc.
         void LinkAttribute(unsigned int layout, unsigned int numComponents, unsigned int type, unsigned int offsetInBytes);
+        void LinkIntegerAttribute(unsigned int layout, unsigned int numComponents, unsigned int type, unsigned int offsetInBytes);
         void Bind();
         void Delete();
     };

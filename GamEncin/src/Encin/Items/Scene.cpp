@@ -19,8 +19,8 @@ namespace GamEncin
     Object& Scene::CreateAndUseCameraObject()
     {
         Object& object = CreateObject("Camera", "Camera");
-        object.transform->position = Vector3(0, 0, 0);
-        object.transform->rotation = Vector3(0, -90, 0);
+        object.transform->SetLocalPosition(Vector3(0, 0, 0));
+        object.transform->SetLocalRotation(Vector3(0, -90, 0));
         Camera* camera = object.AddComponent<Camera>();
         SetMainCamera(camera);
         return object;

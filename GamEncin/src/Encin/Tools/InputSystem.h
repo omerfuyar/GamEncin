@@ -119,7 +119,7 @@ namespace GamEncin
 
         enum KeyButtonStatus
         {
-            Released, Pressed, Down, Up
+            Release, Press, Down, Up
         };
 
         //shouldn't be used by the user

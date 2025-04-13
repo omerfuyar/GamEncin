@@ -47,7 +47,7 @@ namespace GamEncin
 
             for(MouseButtonCode code : mouseButtonArr)
             {
-                buttons[code] = Released;
+                buttons[code] = Release;
             }
         }
 
@@ -66,10 +66,10 @@ namespace GamEncin
                 switch(button.second)
                 {
                     case Up:
-                        button.second = Released;
+                        button.second = Release;
                         break;
                     case Down:
-                        button.second = Pressed;
+                        button.second = Press;
                         break;
                 }
             }
@@ -105,7 +105,7 @@ namespace GamEncin
 
             for(KeyCode code : keyCodeArr)
             {
-                keys[code] = Released;
+                keys[code] = Release;
             }
         }
 
@@ -116,10 +116,10 @@ namespace GamEncin
                 switch(key.second)
                 {
                     case Up:
-                        key.second = Released;
+                        key.second = Release;
                         break;
                     case Down:
-                        key.second = Pressed;
+                        key.second = Press;
                         break;
                 }
             }
@@ -150,7 +150,7 @@ namespace GamEncin
 
             for(GamepadButtonCode code : gamepadButtonArr)
             {
-                buttons[code] = Released;
+                buttons[code] = Release;
             }
         }
 
@@ -172,17 +172,17 @@ namespace GamEncin
                 bool isPressed = state.buttons[button.first];
                 switch(button.second)
                 {
-                    case Pressed:
-                        button.second = isPressed ? Pressed : Up;
+                    case Press:
+                        button.second = isPressed ? Press : Up;
                         break;
                     case Down:
-                        button.second = isPressed ? Pressed : Up;
+                        button.second = isPressed ? Press : Up;
                         break;
-                    case Released:
-                        button.second = isPressed ? Down : Released;
+                    case Release:
+                        button.second = isPressed ? Down : Release;
                         break;
                     case Up:
-                        button.second = isPressed ? Down : Released;
+                        button.second = isPressed ? Down : Release;
                         break;
                 }
             }
@@ -355,19 +355,19 @@ namespace GamEncin
         {
             Vector3 axis(0, 0, 0);
 
-            if(GetKey(Pressed, KeyCode::W) || GetKey(Pressed, KeyCode::UpArrow))
+            if(GetKey(Press, KeyCode::W) || GetKey(Press, KeyCode::UpArrow))
                 axis.y += 1;
-            if(GetKey(Pressed, KeyCode::S) || GetKey(Pressed, KeyCode::DownArrow))
+            if(GetKey(Press, KeyCode::S) || GetKey(Press, KeyCode::DownArrow))
                 axis.y -= 1;
 
-            if(GetKey(Pressed, KeyCode::D) || GetKey(Pressed, KeyCode::RightArrow))
+            if(GetKey(Press, KeyCode::D) || GetKey(Press, KeyCode::RightArrow))
                 axis.x += 1;
-            if(GetKey(Pressed, KeyCode::A) || GetKey(Pressed, KeyCode::LeftArrow))
+            if(GetKey(Press, KeyCode::A) || GetKey(Press, KeyCode::LeftArrow))
                 axis.x -= 1;
 
-            if(GetKey(Pressed, KeyCode::LeftControl) || GetKey(Pressed, KeyCode::RightControl))
+            if(GetKey(Press, KeyCode::LeftControl) || GetKey(Press, KeyCode::RightControl))
                 axis.z -= 1;
-            if(GetKey(Pressed, KeyCode::Space) || GetKey(Pressed, KeyCode::Space))
+            if(GetKey(Press, KeyCode::Space) || GetKey(Press, KeyCode::Space))
                 axis.z += 1;
 
             return axis;

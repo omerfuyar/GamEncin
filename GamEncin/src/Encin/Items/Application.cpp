@@ -214,6 +214,9 @@ namespace GamEncin
             case IndexOutOfRangeErr:
                 fprintf(stderr, "ERROR: Index out of range");
                 break;
+            case idoiterr:
+                fprintf(stderr, "ERROR: IDOITERR, idiot");
+                break;
             default:
                 fprintf(stdout, "UNKNOWN MESSAGE");
                 break;

@@ -16,14 +16,26 @@ public:
 
     void StartOfSecond() override
     {
-        printf("camera position: %f %f %f\n", cameraTR->position.x, cameraTR->position.y, cameraTR->position.z);
-        printf("camera rotation: %f %f %f\n", cameraTR->rotation.x, cameraTR->rotation.y, cameraTR->rotation.z);
-        printf("camera scale: %f %f %f\n", cameraTR->scale.x, cameraTR->scale.y, cameraTR->scale.z);
-        printf("camera direction: %f %f %f\n", cameraTR->direction.x, cameraTR->direction.y, cameraTR->direction.z);
+        Vector3 tempVec = cameraTR->GetLocalPosition();
+        printf("\ncamera localPosition: %f %f %f\n", tempVec.x, tempVec.y, tempVec.z);
+        tempVec = cameraTR->GetLocalRotation();
+        printf("camera localRotation: %f %f %f\n", tempVec.x, tempVec.y, tempVec.z);
+        tempVec = cameraTR->GetLocalScale();
+        printf("camera localScale: %f %f %f\n\n", tempVec.x, tempVec.y, tempVec.z);
 
-        Matrix4 modelMatrix = cameraTR->GetWorldModelMatrix();
+        tempVec = cameraTR->GetGlobalPosition();
+        printf("camera globalPosition: %f %f %f\n", tempVec.x, tempVec.y, tempVec.z);
+        tempVec = cameraTR->GetGlobalRotation();
+        printf("camera globalRotation: %f %f %f\n", tempVec.x, tempVec.y, tempVec.z);
+        tempVec = cameraTR->GetGlobalScale();
+        printf("camera globalScale: %f %f %f\n", tempVec.x, tempVec.y, tempVec.z);
 
-        printf("cam model matrix\n\n");
+        tempVec = cameraTR->GetDirection();
+        printf("\ncamera direction: %f %f %f\n", tempVec.x, tempVec.y, tempVec.z);
+
+        Matrix4 modelMatrix = cameraTR->GetModelMatrix();
+
+        printf("\ncam model matrix\n");
         for(int i = 0; i < 4; ++i)
         {
             for(int j = 0; j < 4; ++j)
@@ -33,6 +45,7 @@ public:
             printf("\n");
         }
         printf("\n\n");
+
     }
 
     void Start() override
@@ -44,7 +57,7 @@ public:
 
     void Update() override
     {
-        if(Input::GetKey(Pressed, KeyCode::Escape) || Input::GetKey(Pressed, Q))
+        if(Input::GetKey(Press, KeyCode::Escape) || Input::GetKey(Press, Q))
         {
             Application::Stop(Safe);
             return;
@@ -60,7 +73,7 @@ public:
             Renderer::SetVSync(!Renderer::IsVSyncEnabled());
         }
 
-        if(!Input::GetMouseButton(Pressed, Left))
+        if(!Input::GetMouseButton(Press, Left))
         {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             return;
@@ -71,21 +84,34 @@ public:
         Vector3 movement = Input::GetMovementVector();
         Vector2 mouseDelta = Input::GetMousePositionDelta();
 
-        float tempSpeed = Input::GetKey(Pressed, LeftShift) ? camMoveSpeed * shiftMultiplier : camMoveSpeed;
+        float tempSpeed = Input::GetKey(Press, LeftShift) ? camMoveSpeed * shiftMultiplier : camMoveSpeed;
 
         camera->cameraFOV += -Input::GetMouseScrollDelta();
 
-        cameraTR->position += cameraTR->direction * tempSpeed * movement.y * Application::deltaTime;
-        cameraTR->position += cameraTR->direction.Cross(Vector3::Up()) * tempSpeed * movement.x * Application::deltaTime;
-        cameraTR->position += Vector3::Up() * tempSpeed * movement.z * Application::deltaTime;
+        Vector3 camPos = cameraTR->GetLocalPosition();
+        Vector3 camDir = cameraTR->GetDirection();
 
-        cameraTR->rotation += Vector3(-mouseDelta.y, mouseDelta.x, 0) * camRotateSpeed * Application::deltaTime;
-        cameraTR->rotation.x = Clamp(cameraTR->rotation.x, -89.0f, 89.0f);
+        cameraTR->AddPosition(camDir * tempSpeed * movement.y * Application::deltaTime);
+        cameraTR->AddPosition(camDir.Cross(Vector3::Up()) * tempSpeed * movement.x * Application::deltaTime);
+        cameraTR->AddPosition(Vector3::Up() * tempSpeed * movement.z * Application::deltaTime);
+
+        cameraTR->AddRotation(Vector3(-mouseDelta.y, mouseDelta.x, 0) * camRotateSpeed * Application::deltaTime);
+        Vector3 camRot = cameraTR->GetLocalRotation();
+        //cameraTR->SetLocalRotation(Vector3(Clamp(cameraTR->GetGlobalRotation().x, -89.0f, 89.0f), camRot.y, camRot.z));
+
+        if(Input::GetKey(Down, B))
+        {
+            cameraTR->AddScale(Vector3::One() / 4.0f);
+        }
+        if(Input::GetKey(Down, V))
+        {
+            cameraTR->AddScale(Vector3::One() / -4.0f);
+        }
     }
 
     void FixUpdate() override
     {
-        //if(!Input::GetMouseButton(Pressed, Left))
+        //if(!Input::GetMouseButton(Press, Left))
         //{
         //    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         //    return;

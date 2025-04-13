@@ -27,8 +27,8 @@ namespace GamEncin
 
     void Camera::UseCamera(unsigned int& viewMatrixVarId, unsigned int& projectionMatrixVarId)
     {
-        glm::vec3 position = object->transform->position.ToGLMvec3();
-        glm::vec3 direction = object->transform->direction.ToGLMvec3();
+        glm::vec3 position = object->transform->GetGlobalPosition().ToGLMvec3();
+        glm::vec3 direction = object->transform->GetDirection().ToGLMvec3();
         Vector2Int size = Renderer::GetMainWindowSize();
 
         //viewMatrix = glm::inverse(object->transform->GetWorldModelMatrix());
