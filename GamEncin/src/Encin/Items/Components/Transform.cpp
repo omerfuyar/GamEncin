@@ -128,12 +128,19 @@ namespace GamEncin
     {
         //direction = glm::normalize(glm::vec3(GetModelMatrix()[2]));
 
-        Matrix4 tempMatrix = GetModelMatrix();
-        tempMatrix[0] /= scale.x;
-        tempMatrix[1] /= scale.y;
-        tempMatrix[2] /= scale.z;
+        //Matrix4 tempMatrix = GetModelMatrix();
+        //tempMatrix[0] /= scale.x;
+        //tempMatrix[1] /= scale.y;
+        //tempMatrix[2] /= scale.z;
+        //
+        //direction = glm::normalize(glm::vec3(tempMatrix[2]));
 
-        direction = glm::normalize(glm::vec3(tempMatrix[2]));
+        Vector3 tempRot = GetGlobalRotation();
+
+        direction.x = CosDeg(tempRot.x) * CosDeg(tempRot.y);
+        direction.y = SinDeg(tempRot.x);
+        direction.z = CosDeg(tempRot.x) * SinDeg(tempRot.y);
+        direction.Normalize();
 
         return direction;
     }

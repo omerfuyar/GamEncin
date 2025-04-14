@@ -129,6 +129,14 @@ namespace GamEncin
         }
     }
 
+    void Application::Restart()
+    {
+        isRunning = false;
+        PrintLog(Safe);
+        Renderer::EndRenderer();
+        Run();
+    }
+
     void Application::GameLoops()
     {
         Awake();

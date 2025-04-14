@@ -26,17 +26,18 @@ namespace GamEncin
     {
         if(!mesh)
         {
-            Application::Stop(NullPointerErr, "Mesh trying to add is null");
+            Application::PrintLog(NullPointerErr, "Mesh trying to add is null");
             return;
         }
 
-        //auto obj = std::find(meshes.begin(), meshes.end(), mesh);
-        //
-        //if(obj != meshes.end())
-        //{
-        //    Application::Stop(ElementDuplicationErr, "Mesh already exists");
-        //    return;
-        //}
+        for(auto& pair : meshes)
+        {
+            if(pair.second == mesh)
+            {
+                Application::PrintLog(ElementDuplicationErr, "Mesh already exists");
+                return;
+            }
+        }
 
         meshes[meshes.size()] = mesh;
     }
@@ -89,11 +90,19 @@ namespace GamEncin
 
         SetVSync(vSyncEnabled);
 
+        //TODO for release
+        //string exePath = Input::GetExeFilePath();
+        //string vertShaderPath = exePath + "/vert.glsl";
+        //string fragShaderPath = exePath + "/frag.glsl";
+        //
+        //shaderProgram = new Shader(vertShaderPath.c_str(), fragShaderPath.c_str());
+
         shaderProgram = new Shader("GamEncin/src/Shaders/vert.glsl", "GamEncin/src/Shaders/frag.glsl");
 
         glEnable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
 
-        mainVAO = new VAO(sizeof(RawVertex) + sizeof(unsigned int));
+        mainVAO = new VAO(sizeof(RawVertex));
         modelVertexVBO = new VBO();
         modelIndexIBO = new IBO();
         modelMatrixSSBO = new SSBO();
@@ -118,7 +127,7 @@ namespace GamEncin
         windowCloseInput = glfwWindowShouldClose(window);
 
         //glFinish();
-        //glFlush();
+        glFlush();
     }
 
     void Renderer::EndRenderer()
@@ -261,7 +270,7 @@ namespace GamEncin
 
             //append matrices to main batch
             batchedModelMatrices[pair.first] = mesh->object->transform->GetModelMatrix();
-            //todo optimize this, do not compute each time getting world matrix
+            //TODO optimize this, do not compute each time getting world matrix
 
             vector<RawVertex> tempVertices = mesh->meshData.GetRawVertexArray();
             vector<unsigned int> tempIndices = mesh->meshData.GetIndiceArray();
@@ -270,21 +279,25 @@ namespace GamEncin
             batchedVertices.insert(batchedVertices.end(), tempVertices.begin(), tempVertices.end());
             batchedIndices.insert(batchedIndices.end(), tempIndices.begin(), tempIndices.end());
         }
-
-        modelVertexVBO->Update(batchedVertices);
-        modelIndexIBO->Update(batchedIndices);
-        modelMatrixSSBO->Update(batchedModelMatrices);
     }
 
     void Renderer::DrawBatchedMeshes()
     {
-        //binding has been done UpdateBatchedVerticesAndIndices
+        mainVAO->Bind();
+        modelVertexVBO->Update(batchedVertices);
+        modelIndexIBO->Update(batchedIndices);
+        modelMatrixSSBO->Update(batchedModelMatrices);
 
         glDrawElements(GL_TRIANGLES, batchedIndices.size(), GL_UNSIGNED_INT, 0);
     }
 
     void Renderer::LinkAttributes()
     {
+        mainVAO->Bind();
+        modelVertexVBO->Bind();
+        modelIndexIBO->Bind();
+        modelMatrixSSBO->Bind();
+
         mainVAO->LinkIntegerAttribute(VBO_OBJECT_ID_LAYOUT, 1, GL_UNSIGNED_INT, 0); //unsigned int
         mainVAO->LinkAttribute(VBO_POSITION_LAYOUT, 3, GL_FLOAT, sizeof(unsigned int)); //Vector3
         mainVAO->LinkAttribute(VBO_COLOR_LAYOUT, 4, GL_FLOAT, sizeof(unsigned int) + sizeof(Vector3)); //Vector4

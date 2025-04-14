@@ -5,7 +5,7 @@ layout(std430, binding = 0) buffer ModelWorldMatrices
     mat4 modelWorldMatrices[]; // variable length array
 };
     
-layout (location = 0) in int vertObjectId;
+layout (location = 0) in uint vertObjectId;
 layout (location = 1) in vec3 vertPos;
 layout (location = 2) in vec4 vertColor;
 

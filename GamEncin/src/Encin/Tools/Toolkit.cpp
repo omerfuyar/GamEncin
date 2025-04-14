@@ -224,32 +224,32 @@ namespace GamEncin
                 //face of meshData is set
             }
 
-            printf("MeshBuilder::CreateMeshData: %ud vertices, %ud edges, %ud faces\n",
-                   (unsigned int) meshData->vertices.size(),
-                   (unsigned int) meshData->edges.size(),
-                   (unsigned int) meshData->faces.size());
-
-            printf("total size of meshData: ");
-            unsigned long int size = 0;
-
-            size += meshData->vertices.size() * sizeof(Vertex);
-            size += meshData->edges.size() * sizeof(Edge);
-            size += meshData->faces.size() * sizeof(Face);
-
-            printf("%lu bytes\n\n", size);
-
-            for(Edge* edge : meshData->edges)
-            {
-                if(!edge->leftFace)
-                {
-                    printf("Edge %u : %u, %u : left face didn't attached (boundary?)\n", edge->id, edge->startVertex->id, edge->endVertex->id);
-
-                }
-                if(!edge->rightFace)
-                {
-                    printf("Edge %u : %u, %u : right face didn't attached (boundary?)\n", edge->id, edge->startVertex->id, edge->endVertex->id);
-                }
-            }
+            //printf("MeshBuilder::CreateMeshData: %u vertices, %u edges, %u faces\n",
+            //       (unsigned int) meshData->vertices.size(),
+            //       (unsigned int) meshData->edges.size(),
+            //       (unsigned int) meshData->faces.size());
+            //
+            //printf("total size of meshData: ");
+            //unsigned long int size = 0;
+            //
+            //size += meshData->vertices.size() * sizeof(Vertex);
+            //size += meshData->edges.size() * sizeof(Edge);
+            //size += meshData->faces.size() * sizeof(Face);
+            //
+            //printf("%lu bytes\n\n", size);
+            //
+            //for(Edge* edge : meshData->edges)
+            //{
+            //    if(!edge->leftFace)
+            //    {
+            //        printf("Edge %u : %u, %u : left face didn't attached (boundary?)\n", edge->id, edge->startVertex->id, edge-//>endVertex->id);
+            //
+            //    }
+            //    if(!edge->rightFace)
+            //    {
+            //        printf("Edge %u : %u, %u : right face didn't attached (boundary?)\n", edge->id, edge->startVertex->id, edge-//>endVertex->id);
+            //    }
+            //}
 
             return meshData;
         }

@@ -6,7 +6,7 @@ namespace GamEncin
 
     void Camera::SetCameraFOV(float fov)
     {
-        cameraFOV = Clamp(fov, 0, 180);
+        cameraFOV = Clamp(fov, 1, 179);
     }
 
     void Camera::SetPerspective(bool value)
@@ -34,14 +34,9 @@ namespace GamEncin
         //viewMatrix = glm::inverse(object->transform->GetWorldModelMatrix());
         viewMatrix = glm::lookAt(position, position + direction, glm::vec3(0, 1, 0));
 
-        if(!isPerspective)
-        {
-            projectionMatrix = glm::ortho((float) -size.x / 2.0f, (float) size.x / 2.0f, (float) -size.y / 2.0f, (float) size.y / 2.0f, nearClipPlane, farClipPlane);
-        }
-        else
-        {
-            projectionMatrix = glm::perspective(Deg2Rad(cameraFOV), (float) size.x / (float) size.y, nearClipPlane, farClipPlane);
-        }
+        projectionMatrix = isPerspective ?
+            glm::perspective(Deg2Rad(cameraFOV), (float) size.x / (float) size.y, nearClipPlane, farClipPlane) :
+            glm::ortho((float) -size.x / 2.0f, (float) size.x / 2.0f, (float) -size.y / 2.0f, (float) size.y / 2.0f, nearClipPlane, farClipPlane);
 
         glUniformMatrix4fv(viewMatrixVarId, 1, GL_FALSE, glm::value_ptr(viewMatrix));
         glUniformMatrix4fv(projectionMatrixVarId, 1, GL_FALSE, glm::value_ptr(projectionMatrix));

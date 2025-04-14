@@ -16,6 +16,8 @@ public:
 
     void StartOfSecond() override
     {
+        return;
+
         Vector3 tempVec = cameraTR->GetLocalPosition();
         printf("\ncamera localPosition: %f %f %f\n", tempVec.x, tempVec.y, tempVec.z);
         tempVec = cameraTR->GetLocalRotation();
@@ -71,6 +73,11 @@ public:
         if(Input::GetKey(Down, V))
         {
             Renderer::SetVSync(!Renderer::IsVSyncEnabled());
+        }
+
+        if(Input::GetKey(Down, R))
+        {
+            Application::Restart();
         }
 
         if(!Input::GetMouseButton(Press, Left))
@@ -136,13 +143,50 @@ public:
 class MyComponent : public Component
 {
 public:
-    float rotSpeed = 75;
+    float rotSpeed = 7.5;
 
     MyComponent(Object* obj) : Component(obj) {}
 
+    void StartOfSecond() override
+    {
+        return;
+
+        Vector3 tempVec = object->transform->GetLocalPosition();
+        printf("\nmyObject localPosition: %f %f %f\n", tempVec.x, tempVec.y, tempVec.z);
+        tempVec = object->transform->GetLocalRotation();
+        printf("myObject localRotation: %f %f %f\n", tempVec.x, tempVec.y, tempVec.z);
+        tempVec = object->transform->GetLocalScale();
+        printf("myObject localScale: %f %f %f\n\n", tempVec.x, tempVec.y, tempVec.z);
+
+        tempVec = object->transform->GetGlobalPosition();
+        printf("myObject globalPosition: %f %f %f\n", tempVec.x, tempVec.y, tempVec.z);
+        tempVec = object->transform->GetGlobalRotation();
+        printf("myObject globalRotation: %f %f %f\n", tempVec.x, tempVec.y, tempVec.z);
+        tempVec = object->transform->GetGlobalScale();
+        printf("myObject globalScale: %f %f %f\n", tempVec.x, tempVec.y, tempVec.z);
+
+        tempVec = object->transform->GetDirection();
+        printf("\nmyObject direction: %f %f %f\n", tempVec.x, tempVec.y, tempVec.z);
+
+        Matrix4 modelMatrix = object->transform->GetModelMatrix();
+
+        printf("\nmyObject model matrix\n");
+        for(int i = 0; i < 4; ++i)
+        {
+            for(int j = 0; j < 4; ++j)
+            {
+                printf("%f ", modelMatrix[i][j]);
+            }
+            printf("\n");
+        }
+        printf("\n\n");
+    }
+
     void Update()override
     {
-        //object->transform->rotation += Vector3::Up() * rotSpeed * Application::deltaTime;
-        //object->transform->position += Vector3::Forward() * Application::deltaTime;
+        if(Input::GetKey(Press, C))
+        {
+            object->transform->AddRotation(Vector3::One() * rotSpeed * Application::deltaTime);
+        }
     }
 };

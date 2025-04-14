@@ -112,8 +112,7 @@ namespace GamEncin
     void SSBO::Update(vector<Matrix4> modelMatrices)
     {
         Bind();
-        glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(Matrix4) * modelMatrices.size(), modelMatrices.data(), GL_STATIC_DRAW);
-        //glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(Matrix4) * modelMatrices.size(), modelMatrices.data());
+        glBufferData(GL_SHADER_STORAGE_BUFFER, modelMatrices.size() * sizeof(Matrix4), modelMatrices.data(), GL_STATIC_DRAW);
 
     }
 

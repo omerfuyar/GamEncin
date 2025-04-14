@@ -389,7 +389,27 @@ namespace GamEncin
             }
 
             Application::Stop(IOErr);
+
             return "";
+        }
+
+        string Input::GetExeFilePath()
+        {
+            char buffer[MAX_PATH];
+            GetModuleFileNameA(NULL, buffer, MAX_PATH);
+            std::filesystem::path exePath(buffer);
+
+            string result = exePath.parent_path().string();
+
+            for(char& c : result)
+            {
+                if(c == '\\')
+                {
+                    c = '/';
+                }
+            }
+
+            return result;
         }
     }
 

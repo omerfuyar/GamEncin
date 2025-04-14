@@ -33,6 +33,7 @@ namespace GamEncin
         static Scene& CreateScene();
         static Scene& CreateAndUseScene();
         static void Run();
+        static void Restart();
         static void PrintLog(LogType endType, string addMessage);
         static void Stop(LogType endType);
         static void Stop(LogType endType, string addMessage);

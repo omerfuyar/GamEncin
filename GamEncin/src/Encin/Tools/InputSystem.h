@@ -3,7 +3,9 @@
 
 #include <GLFW/glfw3.h>
 
+#include <filesystem>
 #include <fstream>
+#include <windows.h>
 
 namespace GamEncin
 {
@@ -245,6 +247,8 @@ namespace GamEncin
             /// <param name="fileName:">Direction and name of the intended file</param>
             /// <returns>A string that contains all file data</returns>
             static string GetFileContents(const char* fileName);
+
+            static string GetExeFilePath();
         };
     }
 }
