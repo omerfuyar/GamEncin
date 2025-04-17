@@ -10,6 +10,8 @@ namespace GamEncin
 
 #pragma region Primitives
 
+#pragma region RawVertex
+
         RawVertex::RawVertex(Vector3 position, Vector4 color)
         {
             this->position = position;
@@ -49,6 +51,10 @@ namespace GamEncin
             //this->texture = texture; TODO
         }
 
+#pragma endregion
+
+#pragma region Vertex
+
         Vertex::Vertex(unsigned int id, const RawVertex& rawVertex) : RawVertex(rawVertex)
         {
             this->id = id;
@@ -56,13 +62,27 @@ namespace GamEncin
 
         void Vertex::AddFace(Face* face)
         {
-            faces[face->id] = face;
+            faces.push_back(face);
         }
 
         void Vertex::AddEdge(Edge* edge)
         {
-            edges[edge->id] = edge;
+            edges.push_back(edge);
         }
+
+        Face* Vertex::TryGetFace(unsigned int faceId)
+        {
+            return 0;
+        }
+
+        Edge* Vertex::TryGetEdge(unsigned int edgeId)
+        {
+            return 0;
+        }
+
+#pragma endregion
+
+#pragma region Edge
 
         Edge::Edge(Vertex* startVertex, Vertex* endVertex)
         {
@@ -74,6 +94,10 @@ namespace GamEncin
             startVertex->AddEdge(this);
             endVertex->AddEdge(this);
         }
+
+#pragma endregion
+
+#pragma region Face
 
         Face::Face(Vertex* vertex1, Vertex* vertex2, Vertex* vertex3)
         {
@@ -107,9 +131,14 @@ namespace GamEncin
             return false;
         }
 
+#pragma endregion
+
+#pragma region MeshData
+
         MeshData::MeshData(unsigned int vertexCount)
         {
             vertices.resize(vertexCount);
+            this->id = id;
         }
 
         vector<unsigned int> MeshData::GetIndiceArray()
@@ -118,10 +147,9 @@ namespace GamEncin
 
             for(Face* face : faces)
             {
-                for(int i = 0; i < 3; i++)
-                {
-                    indices.push_back(face->vertices[i]->id);
-                }
+                indices.push_back(face->vertices[0]->id);
+                indices.push_back(face->vertices[1]->id);
+                indices.push_back(face->vertices[2]->id);
             }
 
             return indices;
@@ -172,6 +200,18 @@ namespace GamEncin
             }
             faces.clear();
         }
+
+        void MeshData::AssignToObject(unsigned int objectId)
+        {
+            id = objectId;
+
+            for(Vertex* vert : vertices)
+            {
+                vert->SetObjectId(objectId);
+            }
+        }
+
+#pragma endregion
 
 #pragma endregion
 
@@ -602,8 +642,6 @@ namespace GamEncin
             sort(ids.begin(), ids.end());
             return ((ids[0] << 16) | ids[1]);
         }
-
-
 
 #pragma endregion
 

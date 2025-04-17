@@ -56,7 +56,7 @@ namespace GamEncin
 
         SSBO();
         void Bind();
-        void Update(vector<Matrix4> modelMatrices);
+        void Update(vector<Matrix4*> modelMatrices);
         void Delete();
     };
 

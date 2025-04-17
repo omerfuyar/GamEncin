@@ -145,7 +145,7 @@ namespace GamEncin
         return direction;
     }
 
-    const Matrix4& Transform::GetModelMatrix()
+    Matrix4* Transform::GetModelMatrix()
     {
         Matrix4 Translate = glm::translate(localPosition.ToGLMvec3());
 
@@ -160,9 +160,14 @@ namespace GamEncin
 
         if(parent)
         {
-            modelMatrix = parent->GetModelMatrix() * modelMatrix;
+            modelMatrix = *parent->GetModelMatrix() * modelMatrix;
         }
 
-        return modelMatrix;
+        return &modelMatrix;
+    }
+
+    void Transform::Update()
+    {
+        GetModelMatrix();
     }
 }

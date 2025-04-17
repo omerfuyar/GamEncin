@@ -10,6 +10,8 @@ namespace GamEncin
         Transform* parent = nullptr;
         vector<Transform*> children;
 
+        Transform(Object* obj);
+
         void SetParent(Transform* newParent);
         void SetLocalPosition(Vector3 newLocalPosition);
         void AddPosition(Vector3 positionToAdd);
@@ -26,9 +28,9 @@ namespace GamEncin
         Vector3 GetGlobalScale();
         Vector3 GetDirection();
 
-        const Matrix4& GetModelMatrix();
+        Matrix4* GetModelMatrix();
 
-        Transform(Object* obj);
+        void Update() override;
 
     private:
         Matrix4 modelMatrix = Matrix4(1.0f);

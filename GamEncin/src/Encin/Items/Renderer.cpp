@@ -2,7 +2,7 @@
 
 namespace GamEncin
 {
-    unordered_map<unsigned int, Mesh*> Renderer::meshes;
+    vector<Mesh*> Renderer::meshes;
     Shader* Renderer::shaderProgram = nullptr;
     Camera* Renderer::mainCamera = nullptr;
     GLFWwindow* Renderer::window = nullptr;
@@ -16,7 +16,7 @@ namespace GamEncin
     Vector4 Renderer::clearColor = Vector4(0.2f, 0.3f, 0.3f, 1.0f);
     vector<RawVertex> Renderer::batchedVertices;
     vector<unsigned int> Renderer::batchedIndices;
-    vector<Matrix4> Renderer::batchedModelMatrices;
+    vector<Matrix4*> Renderer::batchedModelMatrices;
 
     bool  Renderer::isFullScreen = false,
         Renderer::vSyncEnabled = false,
@@ -30,35 +30,68 @@ namespace GamEncin
             return;
         }
 
-        for(auto& pair : meshes)
+        auto obj = std::find(meshes.begin(), meshes.end(), mesh);
+
+        if(obj != meshes.end())
         {
-            if(pair.second == mesh)
-            {
-                Application::PrintLog(ElementDuplicationErr, "Mesh already exists");
-                return;
-            }
+            Application::PrintLog(ElementDuplicationErr, "Mesh already exists in the renderer");
+            return;
         }
 
-        meshes[meshes.size()] = mesh;
+        mesh->meshData.AssignToObject(batchedModelMatrices.size());
+
+        vector<RawVertex> tempVertices = mesh->meshData.GetRawVertexArray();
+        vector<unsigned int> tempIndices = mesh->meshData.GetIndiceArray();
+
+        batchedVertices.insert(batchedVertices.end(), tempVertices.begin(), tempVertices.end());
+        batchedIndices.insert(batchedIndices.end(), tempIndices.begin(), tempIndices.end());
+
+        batchedModelMatrices.push_back(mesh->object->transform->GetModelMatrix());
+
+        meshes.push_back(mesh);
     }
 
     void Renderer::RemoveMesh(Mesh* mesh)
     {
         if(!mesh)
         {
-            Application::Stop(NullPointerErr, "Mesh trying to remove is null");
+            Application::PrintLog(NullPointerErr, "Mesh trying to remove is null");
             return;
         }
 
-        //auto obj = std::find(meshes.begin(), meshes.end(), mesh);
-        //if(obj != meshes.end())
-        //{
-        //    meshes.erase(obj);
-        //}
-        //else
-        //{
-        //    Application::Stop(ElementCouldNotFoundErr, "Couldn't found mesh to remove");
-        //}
+        auto obj = std::find(meshes.begin(), meshes.end(), mesh);
+
+        if(obj == meshes.end())
+        {
+            Application::PrintLog(ElementCouldNotFoundErr, "Couldn't found mesh to remove");
+            return;
+        }
+
+        for(int i = 0; i < batchedVertices.size(); i++)
+        {
+            if(batchedVertices[i].objectId == mesh->meshData.id)
+            {
+                auto beginIt = batchedVertices.begin() + i;
+                auto endIt = beginIt + mesh->meshData.vertices.size();
+                batchedVertices.erase(beginIt, endIt);
+                break;
+            }
+        }
+
+        for(int i = 0; i < batchedIndices.size(); i++)
+        {
+            if(batchedIndices[i] == mesh->meshData.id)
+            {
+                auto beginIt = batchedIndices.begin() + i;
+                auto endIt = beginIt + (mesh->meshData.faces.size() * 3);
+                batchedIndices.erase(beginIt, endIt);
+                break;
+            }
+        }
+
+        batchedModelMatrices[mesh->meshData.id] = nullptr;
+
+        meshes.erase(obj);
     }
 
     void Renderer::InitialRender()
@@ -97,7 +130,7 @@ namespace GamEncin
         //
         //shaderProgram = new Shader(vertShaderPath.c_str(), fragShaderPath.c_str());
 
-        shaderProgram = new Shader("GamEncin/src/Shaders/vert.glsl", "GamEncin/src/Shaders/frag.glsl");
+        shaderProgram = new Shader("C:/Users/denem/Documents/Programming/C - C++/GamEncin/GamEncin/src/Shaders/vert.glsl", "C:/Users/denem/Documents/Programming/C - C++/GamEncin/GamEncin/src/Shaders/frag.glsl");
 
         glEnable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
@@ -117,8 +150,6 @@ namespace GamEncin
         shaderProgram->Use();
 
         mainCamera->UseCamera(shaderProgram->viewMatrixVarId, shaderProgram->projectionMatrixVarId);
-
-        UpdateBatchedVerticesAndIndices();
 
         DrawBatchedMeshes();
 
@@ -244,46 +275,10 @@ namespace GamEncin
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    void Renderer::UpdateBatchedVerticesAndIndices()
-    {
-        batchedVertices.clear();
-
-        batchedIndices.clear();
-
-        batchedModelMatrices.clear();
-        batchedModelMatrices.resize(meshes.size());
-
-        for(auto& pair : meshes)
-        {
-            Mesh* mesh = pair.second;
-
-            for(RawVertex* vertex : mesh->meshData.vertices)
-            {
-                if(!vertex)
-                {
-                    Application::Stop(NullPointerErr, "Vertex is null");
-                    return;
-                }
-
-                vertex->SetObjectId(pair.first); //set objectId to each vertex, ready to use now
-            }
-
-            //append matrices to main batch
-            batchedModelMatrices[pair.first] = mesh->object->transform->GetModelMatrix();
-            //TODO optimize this, do not compute each time getting world matrix
-
-            vector<RawVertex> tempVertices = mesh->meshData.GetRawVertexArray();
-            vector<unsigned int> tempIndices = mesh->meshData.GetIndiceArray();
-
-            //append vertices and indices to main batch
-            batchedVertices.insert(batchedVertices.end(), tempVertices.begin(), tempVertices.end());
-            batchedIndices.insert(batchedIndices.end(), tempIndices.begin(), tempIndices.end());
-        }
-    }
-
     void Renderer::DrawBatchedMeshes()
     {
         mainVAO->Bind();
+
         modelVertexVBO->Update(batchedVertices);
         modelIndexIBO->Update(batchedIndices);
         modelMatrixSSBO->Update(batchedModelMatrices);

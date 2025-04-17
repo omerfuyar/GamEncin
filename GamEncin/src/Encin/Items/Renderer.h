@@ -34,7 +34,7 @@ namespace GamEncin
         static bool IsVSyncEnabled();
 
     private:
-        static unordered_map<unsigned int, Mesh*> meshes;
+        static vector<Mesh*> meshes;
         static Shader* shaderProgram;
         static Camera* mainCamera;
         static GLFWwindow* window;
@@ -49,7 +49,7 @@ namespace GamEncin
 
         static vector<RawVertex> batchedVertices;
         static vector<unsigned int> batchedIndices;
-        static vector<Matrix4> batchedModelMatrices;
+        static vector<Matrix4*> batchedModelMatrices;
 
         static bool isFullScreen;
         static bool vSyncEnabled;
@@ -57,7 +57,6 @@ namespace GamEncin
 
         static void GLSendUniformMatrix4(unsigned int& location, Matrix4 matrix4);
         static void ClearColor(Vector4 clearColor);
-        static void UpdateBatchedVerticesAndIndices();
         static void DrawBatchedMeshes();
         static void LinkAttributes();
     };

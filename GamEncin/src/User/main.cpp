@@ -18,12 +18,20 @@ void SceneBuilding()
     camera->SetPerspective(true);
     camera->SetClipPlanes(0.1f, 300.0f);
 
+    //Object& myObject = scene.CreateObject();
+    //Transform* myObjectTR = myObject.transform;
+    //Mesh* mesh = myObject.AddComponent<Mesh>();
+    //mesh->SetMeshData(MeshBuilder::CreateCube());
+    //Renderer::AddMesh(mesh);
+    //
+    //MyComponent* myComponent = myObject.AddComponent<MyComponent>();
+
     int totalVerticeCount = 0;
     int totalIndiceCount = 0;
     int totalObjectCount = 0;
 
     int side = 101;
-    float gap = 0.001f;
+    float gap = 0.01f;
     for(int i = 0; i < side; i++)
     {
         for(int j = 0; j < side; j++)
@@ -32,15 +40,18 @@ void SceneBuilding()
             Transform* myObjectTR = myObject.transform;
             Mesh* mesh = myObject.AddComponent<Mesh>();
             mesh->SetMeshData(MeshBuilder::CreateCube());
+            Renderer::AddMesh(mesh);
 
             MyComponent* myComponent = myObject.AddComponent<MyComponent>();
 
+            int sum = i + j;
             totalIndiceCount += mesh->meshData.faces.size() * 3;
             totalVerticeCount += mesh->meshData.vertices.size();
             totalObjectCount++;
-            myObjectTR->AddPosition(Vector3((i - side / 2.0f), (j - side / 2.0f), 0) * gap);
-            myObjectTR->AddPosition(Vector3(0, 0, -10));
-            myObjectTR->SetLocalRotation(Vector3((i + j), (i + j), (i + j)) * gap * 10);
+
+            myObjectTR->AddPosition(Vector3(sum, sum, sum) * gap / 10);
+            myObjectTR->AddPosition(Vector3(0, 0, -5));
+            myObjectTR->AddRotation(Vector3(sum, sum, sum) * gap);
         }
     }
 
@@ -60,7 +71,6 @@ void SetVariables()
 
 int main()
 {
-    Input::GetExeFilePath();
     SceneBuilding();
     SetVariables();
 

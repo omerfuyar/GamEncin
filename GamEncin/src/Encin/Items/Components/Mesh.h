@@ -4,8 +4,6 @@
 #include "Encin/Tools/OpenGLObjects.h"
 #include "Encin/Tools/Toolkit.h"
 
-#include <GLAD/glad.h>
-
 namespace GamEncin
 {
     class Mesh : public Component

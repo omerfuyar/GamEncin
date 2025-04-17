@@ -52,12 +52,14 @@ namespace GamEncin
         {
             unsigned int id = 0;
 
-            unordered_map<unsigned int, Face*> faces;
-            unordered_map<unsigned int, Edge*> edges;
+            vector<Face*> faces;
+            vector<Edge*> edges;
 
             Vertex(unsigned int id, const RawVertex& rawVertex);
             void AddFace(Face* face);
             void AddEdge(Edge* edge);
+            Face* TryGetFace(unsigned int faceId);
+            Edge* TryGetEdge(unsigned int edgeId);
         };
 
         struct Edge
@@ -87,6 +89,8 @@ namespace GamEncin
 
         struct MeshData
         {
+            unsigned int id = 0;
+
             vector<Vertex*> vertices;
             vector<Edge*> edges;
             vector<Face*> faces;
@@ -100,6 +104,7 @@ namespace GamEncin
             Edge* TryFindEdge(unsigned int edgeId);
 
             void DeleteData();
+            void AssignToObject(unsigned int objectId);
         };
 
         class MeshBuilder

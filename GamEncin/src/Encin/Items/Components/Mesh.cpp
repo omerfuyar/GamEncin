@@ -7,12 +7,6 @@ namespace GamEncin
 
     Mesh::Mesh(Object* obj) : Component(obj)
     {
-        //if(Application::isRunning)
-        //{
-        //    Initialize();
-        //} TODO
-
-        Renderer::AddMesh(this);
     }
 
     Mesh::~Mesh()

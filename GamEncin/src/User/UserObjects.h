@@ -35,7 +35,7 @@ public:
         tempVec = cameraTR->GetDirection();
         printf("\ncamera direction: %f %f %f\n", tempVec.x, tempVec.y, tempVec.z);
 
-        Matrix4 modelMatrix = cameraTR->GetModelMatrix();
+        Matrix4 modelMatrix = *cameraTR->GetModelMatrix();
 
         printf("\ncam model matrix\n");
         for(int i = 0; i < 4; ++i)
@@ -77,7 +77,7 @@ public:
 
         if(Input::GetKey(Down, R))
         {
-            Application::Restart();
+            cameraTR->SetLocalPosition(Vector3(0, 0, 0));
         }
 
         if(!Input::GetMouseButton(Press, Left))
@@ -168,7 +168,7 @@ public:
         tempVec = object->transform->GetDirection();
         printf("\nmyObject direction: %f %f %f\n", tempVec.x, tempVec.y, tempVec.z);
 
-        Matrix4 modelMatrix = object->transform->GetModelMatrix();
+        Matrix4 modelMatrix = *object->transform->GetModelMatrix();
 
         printf("\nmyObject model matrix\n");
         for(int i = 0; i < 4; ++i)
