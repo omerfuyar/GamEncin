@@ -2,6 +2,8 @@
 
 //#define GE_SELECT_OPTIMUM_GPU
 
+//deneme
+
 void SceneBuilding()
 {
     Scene& scene = Application::CreateAndUseScene();
@@ -27,7 +29,7 @@ void SceneBuilding()
     mesh->SetMeshData(MeshBuilder::CreateSphere(0.5, 250));
     myObjectTR->AddPosition(Vector3(0, 0, -1.5f));
     Renderer::AddMesh(mesh);
-    
+
     totalIndiceCount += mesh->meshData.faces.size() * 3;
     totalVerticeCount += mesh->meshData.vertices.size();
     totalObjectCount++;
