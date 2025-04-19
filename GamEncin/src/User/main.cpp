@@ -1,6 +1,7 @@
 #include "GamEncin.h"
 
 //#define GE_SELECT_OPTIMUM_GPU
+//deneme2
 
 //asd
 
