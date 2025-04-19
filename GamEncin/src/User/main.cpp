@@ -1,6 +1,6 @@
 #include "GamEncin.h"
 
-#define GE_SELECT_OPTIMUM_GPU
+//#define GE_SELECT_OPTIMUM_GPU
 
 void SceneBuilding()
 {
@@ -21,41 +21,41 @@ void SceneBuilding()
     int totalIndiceCount = 0;
     int totalObjectCount = 0;
 
-    //Object& myObject = scene.CreateObject();
-    //Transform* myObjectTR = myObject.transform;
-    //Mesh* mesh = myObject.AddComponent<Mesh>();
-    //mesh->SetMeshData(MeshBuilder::CreateSphere(0.5, 250));
-    //myObjectTR->AddPosition(Vector3(0, 0, -1.5f));
-    //Renderer::AddMesh(mesh);
-    //
-    //totalIndiceCount += mesh->meshData.faces.size() * 3;
-    //totalVerticeCount += mesh->meshData.vertices.size();
-    //totalObjectCount++;
+    Object& myObject = scene.CreateObject();
+    Transform* myObjectTR = myObject.transform;
+    Mesh* mesh = myObject.AddComponent<Mesh>();
+    mesh->SetMeshData(MeshBuilder::CreateSphere(0.5, 250));
+    myObjectTR->AddPosition(Vector3(0, 0, -1.5f));
+    Renderer::AddMesh(mesh);
+    
+    totalIndiceCount += mesh->meshData.faces.size() * 3;
+    totalVerticeCount += mesh->meshData.vertices.size();
+    totalObjectCount++;
 
-    int side = 11;
+    int side = 101;
     float gap = 0.01f;
-    for(int i = 0; i < side; i++)
-    {
-        for(int j = 0; j < side; j++)
-        {
-            Object& myObject = scene.CreateObject();
-            myObject.tag = "myObj";
-            Transform* myObjectTR = myObject.transform;
-            Mesh* mesh = myObject.AddComponent<Mesh>();
-            mesh->SetMeshData(MeshBuilder::CreateSphere(0.5, 10));
-            Renderer::AddMesh(mesh);
-
-            MyComponent* myComponent = myObject.AddComponent<MyComponent>();
-
-            totalIndiceCount += mesh->meshData.faces.size() * 3;
-            totalVerticeCount += mesh->meshData.vertices.size();
-            totalObjectCount++;
-
-            myObjectTR->AddPosition(Vector3(j - side / 2, i - side / 2, -25) * gap);
-            myObjectTR->AddRotation(Vector3(j, i, 0));
-            myObjectTR->SetLocalScale(Vector3(1, 5, 10) * 0.1f);
-        }
-    }
+    //for(int i = 0; i < side; i++)
+    //{
+    //    for(int j = 0; j < side; j++)
+    //    {
+    //        Object& myObject = scene.CreateObject();
+    //        myObject.tag = "myObj";
+    //        Transform* myObjectTR = myObject.transform;
+    //        Mesh* mesh = myObject.AddComponent<Mesh>();
+    //        mesh->SetMeshData(MeshBuilder::CreateSphere(0.5, 10));
+    //        Renderer::AddMesh(mesh);
+    //
+    //        MyComponent* myComponent = myObject.AddComponent<MyComponent>();
+    //
+    //        totalIndiceCount += mesh->meshData.faces.size() * 3;
+    //        totalVerticeCount += mesh->meshData.vertices.size();
+    //        totalObjectCount++;
+    //
+    //        myObjectTR->AddPosition(Vector3(j - side / 2, i - side / 2, -25) * gap);
+    //        myObjectTR->AddRotation(Vector3(j, i, 0));
+    //        myObjectTR->SetLocalScale(Vector3(1, 5, 10) * 0.1f);
+    //    }
+    //}
 
     printf("\ntotal vertice count: %d\n", totalVerticeCount);
     printf("total indice count: %d\n", totalIndiceCount);

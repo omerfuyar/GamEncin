@@ -140,7 +140,7 @@ namespace GamEncin
         //
         //shaderProgram = new Shader(vertShaderPath.c_str(), fragShaderPath.c_str());
 
-        shaderProgram = new Shader("C:/Users/denem/Documents/Programming/C - C++/GamEncin/GamEncin/src/Shaders/vert.glsl", "C:/Users/denem/Documents/Programming/C - C++/GamEncin/GamEncin/src/Shaders/frag.glsl");
+        shaderProgram = new Shader("GamEncin/src/Shaders/vert.glsl", "GamEncin/src/Shaders/frag.glsl");
 
         glEnable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
