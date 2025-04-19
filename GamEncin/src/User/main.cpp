@@ -2,8 +2,6 @@
 
 //#define GE_SELECT_OPTIMUM_GPU
 
-//deneme
-
 void SceneBuilding()
 {
     Scene& scene = Application::CreateAndUseScene();
