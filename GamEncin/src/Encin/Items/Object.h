@@ -58,9 +58,8 @@ namespace GamEncin
             }
 
             T* component = new T(this);
-            Component* castedComponent = dynamic_cast<Component*>(component);
 
-            if(castedComponent)
+            if(dynamic_cast<Component*>(component))
             {
                 components.push_back(component);
             }
@@ -88,6 +87,8 @@ namespace GamEncin
             }
         }
 
+
+        Scene* GetScene();
 
         void AddComponent(Component* component);
         void RemoveComponent(Component* component);

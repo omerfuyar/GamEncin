@@ -147,14 +147,18 @@ namespace GamEncin
 
     Matrix4* Transform::GetModelMatrix()
     {
-        Matrix4 Translate = glm::translate(localPosition.ToGLMvec3());
+        Vector3 tempPos = GetGlobalPosition();
+        Vector3 tempRot = GetGlobalRotation();
+        Vector3 tempScale = GetGlobalScale();
 
-        Matrix4 RotateX = glm::rotate(Deg2Rad(localRotation.x), glm::vec3(1, 0, 0));
-        Matrix4 RotateY = glm::rotate(Deg2Rad(localRotation.y), glm::vec3(0, 1, 0));
-        Matrix4 RotateZ = glm::rotate(Deg2Rad(localRotation.z), glm::vec3(0, 0, 1));
+        Matrix4 Translate = glm::translate(tempPos.ToGLMvec3());
+
+        Matrix4 RotateX = glm::rotate(Deg2Rad(tempRot.x), glm::vec3(1, 0, 0));
+        Matrix4 RotateY = glm::rotate(Deg2Rad(tempRot.y), glm::vec3(0, 1, 0));
+        Matrix4 RotateZ = glm::rotate(Deg2Rad(tempRot.z), glm::vec3(0, 0, 1));
         Matrix4 Rotate = RotateZ * RotateY * RotateX;
 
-        Matrix4 Scale = glm::scale(localScale.ToGLMvec3());
+        Matrix4 Scale = glm::scale(tempScale.ToGLMvec3());
 
         modelMatrix = Translate * Rotate * Scale;
 
@@ -166,7 +170,7 @@ namespace GamEncin
         return &modelMatrix;
     }
 
-    void Transform::Update()
+    void Transform::LateUpdate()
     {
         GetModelMatrix();
     }

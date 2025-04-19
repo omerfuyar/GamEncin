@@ -113,13 +113,14 @@ namespace GamEncin
     {
         Bind();
 
-        vector<Matrix4> tempMatrixVector(modelMatrices.size());;
-        for(int i = 0; i < modelMatrices.size(); i++)
+        vector<Matrix4> modelMatricesCopy;
+
+        for(Matrix4* matrix : modelMatrices)
         {
-            tempMatrixVector[i] = modelMatrices[i] ? *modelMatrices[i] : Matrix4(1.0f);
+            modelMatricesCopy.push_back(matrix ? *matrix : Matrix4(1.0f));
         }
 
-        glBufferData(GL_SHADER_STORAGE_BUFFER, tempMatrixVector.size() * sizeof(Matrix4), tempMatrixVector.data(), GL_STATIC_DRAW);
+        glBufferData(GL_SHADER_STORAGE_BUFFER, modelMatricesCopy.size() * sizeof(Matrix4), modelMatricesCopy.data(), GL_STATIC_DRAW);
 
     }
 

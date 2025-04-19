@@ -12,6 +12,8 @@ public:
     Camera* camera = nullptr;
     GLFWwindow* window = nullptr;
 
+    vector<Mesh*> meshes;
+
     CameraController(Object* obj) : Component(obj) {}
 
     void StartOfSecond() override
@@ -55,6 +57,13 @@ public:
         cameraTR = object->transform;
         camera = object->GetComponent<Camera>();
         window = Application::GetMainWindow();
+
+        vector<Object*> tempObjs = object->GetScene()->FindObjectsWithTag("myObj");
+
+        for(Object* obj : tempObjs)
+        {
+            meshes.push_back(obj->GetComponent<Mesh>());
+        }
     }
 
     void Update() override
@@ -80,6 +89,11 @@ public:
             cameraTR->SetLocalPosition(Vector3(0, 0, 0));
         }
 
+        if(Input::GetKey(Down, Q))
+        {
+            Renderer::RemoveMesh(meshes[RandomRangeInteger(0, meshes.size())]);
+        }
+
         if(!Input::GetMouseButton(Press, Left))
         {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -103,8 +117,7 @@ public:
         cameraTR->AddPosition(Vector3::Up() * tempSpeed * movement.z * Application::deltaTime);
 
         cameraTR->AddRotation(Vector3(-mouseDelta.y, mouseDelta.x, 0) * camRotateSpeed * Application::deltaTime);
-        Vector3 camRot = cameraTR->GetLocalRotation();
-        //cameraTR->SetLocalRotation(Vector3(Clamp(cameraTR->GetGlobalRotation().x, -89.0f, 89.0f), camRot.y, camRot.z));
+        cameraTR->SetLocalRotation(Vector3(Clamp(cameraTR->GetGlobalRotation().x, -89.0f, 89.0f), cameraTR->GetLocalRotation().y, cameraTR->GetLocalRotation().z));
 
         if(Input::GetKey(Down, B))
         {
@@ -143,13 +156,15 @@ public:
 class MyComponent : public Component
 {
 public:
-    float rotSpeed = 7.5;
+    float rotSpeed = 150;
 
     MyComponent(Object* obj) : Component(obj) {}
 
     void StartOfSecond() override
     {
         return;
+
+        printf("myComponent StartOfSecond : id : %d, \n", object->GetComponent<Mesh>()->meshData.id);
 
         Vector3 tempVec = object->transform->GetLocalPosition();
         printf("\nmyObject localPosition: %f %f %f\n", tempVec.x, tempVec.y, tempVec.z);
@@ -182,11 +197,11 @@ public:
         printf("\n\n");
     }
 
-    void Update()override
+    void Update() override
     {
         if(Input::GetKey(Press, C))
         {
-            object->transform->AddRotation(Vector3::One() * rotSpeed * Application::deltaTime);
+            object->transform->AddRotation(RandomVector3Direction() * rotSpeed * Application::deltaTime);
         }
     }
 };

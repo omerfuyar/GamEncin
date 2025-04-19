@@ -37,6 +37,11 @@ namespace GamEncin
         }
     }
 
+    Scene* Object::GetScene()
+    {
+        return scene;
+    }
+
     void Object::AddComponent(Component* component)
     {
         if(!component)

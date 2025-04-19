@@ -24,6 +24,36 @@ namespace GamEncin
         return object;
     }
 
+    Object* Scene::FindFirstObjectWitTag(string tag)
+    {
+        for(Object* object : objects)
+        {
+            if(object->tag == tag)
+            {
+                return object;
+            }
+        }
+
+        Application::PrintLog(ElementCouldNotFoundErr, "Couldn't found object with the tag");
+
+        return nullptr;
+    }
+
+    vector<Object*> Scene::FindObjectsWithTag(string tag)
+    {
+        vector<Object*> foundObjects;
+
+        for(Object* object : objects)
+        {
+            if(object->tag == tag)
+            {
+                foundObjects.push_back(object);
+            }
+        }
+
+        return foundObjects;
+    }
+
     void Scene::SetMainCamera(Camera* camera)
     {
         if(!camera)

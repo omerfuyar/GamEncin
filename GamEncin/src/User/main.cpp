@@ -7,58 +7,60 @@ void SceneBuilding()
     Scene& scene = Application::CreateAndUseScene();
 
     Object& cameraObj = scene.CreateAndUseCameraObject();
+    Camera* camera = cameraObj.GetComponent<Camera>();
+    camera->SetCameraFOV(50.0f);
+    camera->SetPerspective(true);
+    camera->SetClipPlanes(0.1f, 300.0f);
 
     Transform* cameraTR = cameraObj.transform;
     cameraTR->AddRotation(Vector3(0, -90, 0));
 
     CameraController* camController = cameraObj.AddComponent<CameraController>();
 
-    Camera* camera = cameraObj.GetComponent<Camera>();
-    camera->SetCameraFOV(50.0f);
-    camera->SetPerspective(true);
-    camera->SetClipPlanes(0.1f, 300.0f);
-
-    //Object& myObject = scene.CreateObject();
-    //Transform* myObjectTR = myObject.transform;
-    //Mesh* mesh = myObject.AddComponent<Mesh>();
-    //mesh->SetMeshData(MeshBuilder::CreateCube());
-    //Renderer::AddMesh(mesh);
-    //
-    //MyComponent* myComponent = myObject.AddComponent<MyComponent>();
-
     int totalVerticeCount = 0;
     int totalIndiceCount = 0;
     int totalObjectCount = 0;
 
-    int side = 101;
+    //Object& myObject = scene.CreateObject();
+    //Transform* myObjectTR = myObject.transform;
+    //Mesh* mesh = myObject.AddComponent<Mesh>();
+    //mesh->SetMeshData(MeshBuilder::CreateSphere(0.5, 250));
+    //myObjectTR->AddPosition(Vector3(0, 0, -1.5f));
+    //Renderer::AddMesh(mesh);
+    //
+    //totalIndiceCount += mesh->meshData.faces.size() * 3;
+    //totalVerticeCount += mesh->meshData.vertices.size();
+    //totalObjectCount++;
+
+    int side = 11;
     float gap = 0.01f;
     for(int i = 0; i < side; i++)
     {
         for(int j = 0; j < side; j++)
         {
             Object& myObject = scene.CreateObject();
+            myObject.tag = "myObj";
             Transform* myObjectTR = myObject.transform;
             Mesh* mesh = myObject.AddComponent<Mesh>();
-            mesh->SetMeshData(MeshBuilder::CreateCube());
+            mesh->SetMeshData(MeshBuilder::CreateSphere(0.5, 10));
             Renderer::AddMesh(mesh);
 
             MyComponent* myComponent = myObject.AddComponent<MyComponent>();
 
-            int sum = i + j;
             totalIndiceCount += mesh->meshData.faces.size() * 3;
             totalVerticeCount += mesh->meshData.vertices.size();
             totalObjectCount++;
 
-            myObjectTR->AddPosition(Vector3(sum, sum, sum) * gap / 10);
-            myObjectTR->AddPosition(Vector3(0, 0, -5));
-            myObjectTR->AddRotation(Vector3(sum, sum, sum) * gap);
+            myObjectTR->AddPosition(Vector3(j - side / 2, i - side / 2, -25) * gap);
+            myObjectTR->AddRotation(Vector3(j, i, 0));
+            myObjectTR->SetLocalScale(Vector3(1, 5, 10) * 0.1f);
         }
     }
 
-    printf("total vertice count: %d\n", totalVerticeCount);
+    printf("\ntotal vertice count: %d\n", totalVerticeCount);
     printf("total indice count: %d\n", totalIndiceCount);
     printf("total triangle count: %d\n", totalIndiceCount / 3);
-    printf("total object count: %d\n", totalObjectCount);
+    printf("total object count: %d\n\n", totalObjectCount);
 }
 
 void SetVariables()

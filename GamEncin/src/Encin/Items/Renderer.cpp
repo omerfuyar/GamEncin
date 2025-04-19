@@ -12,15 +12,16 @@ namespace GamEncin
     IBO* Renderer::modelIndexIBO = nullptr;
     SSBO* Renderer::modelMatrixSSBO = nullptr;
 
-    Vector2Int Renderer::windowSize = Vector2Int(1080, 1080);
-    Vector4 Renderer::clearColor = Vector4(0.2f, 0.3f, 0.3f, 1.0f);
     vector<RawVertex> Renderer::batchedVertices;
     vector<unsigned int> Renderer::batchedIndices;
     vector<Matrix4*> Renderer::batchedModelMatrices;
 
-    bool  Renderer::isFullScreen = false,
-        Renderer::vSyncEnabled = false,
-        Renderer::windowCloseInput = false;
+    Vector2Int Renderer::windowSize = Vector2Int(1080, 1080);
+    Vector4 Renderer::clearColor = Vector4(0.2f, 0.3f, 0.3f, 1.0f);
+
+    bool Renderer::isFullScreen = false;
+    bool Renderer::vSyncEnabled = false;
+    bool Renderer::windowCloseInput = false;
 
     void Renderer::AddMesh(Mesh* mesh)
     {
@@ -38,8 +39,7 @@ namespace GamEncin
             return;
         }
 
-        mesh->meshData.AssignToObject(batchedModelMatrices.size());
-
+        mesh->meshData.SetForBatch(batchedModelMatrices.size(), batchedVertices.size(), batchedVertices.size() + batchedIndices.size());
         vector<RawVertex> tempVertices = mesh->meshData.GetRawVertexArray();
         vector<unsigned int> tempIndices = mesh->meshData.GetIndiceArray();
 
@@ -53,6 +53,14 @@ namespace GamEncin
 
     void Renderer::RemoveMesh(Mesh* mesh)
     {
+        printf("\nid to remove : %d\n", mesh->meshData.id);
+        printf("\nmesh ids before removal : ");
+        for(Mesh* mesh : meshes)
+        {
+            printf("%d, ", mesh->meshData.id);
+        }
+        printf("\n");
+
         if(!mesh)
         {
             Application::PrintLog(NullPointerErr, "Mesh trying to remove is null");
@@ -67,31 +75,33 @@ namespace GamEncin
             return;
         }
 
-        for(int i = 0; i < batchedVertices.size(); i++)
-        {
-            if(batchedVertices[i].objectId == mesh->meshData.id)
-            {
-                auto beginIt = batchedVertices.begin() + i;
-                auto endIt = beginIt + mesh->meshData.vertices.size();
-                batchedVertices.erase(beginIt, endIt);
-                break;
-            }
-        }
+        auto vertexBeginIt = batchedVertices.begin() + mesh->meshData.batchVertexOffset;
+        auto vertexEndIt = vertexBeginIt + mesh->meshData.vertices.size();
+        batchedVertices.erase(vertexBeginIt, vertexEndIt);
 
-        for(int i = 0; i < batchedIndices.size(); i++)
-        {
-            if(batchedIndices[i] == mesh->meshData.id)
-            {
-                auto beginIt = batchedIndices.begin() + i;
-                auto endIt = beginIt + (mesh->meshData.faces.size() * 3);
-                batchedIndices.erase(beginIt, endIt);
-                break;
-            }
-        }
+        auto indexBeginIt = batchedIndices.begin() + mesh->meshData.batchIndexOffset;
+        auto indexEndIt = indexBeginIt + (mesh->meshData.faces.size() * 3);
+        batchedIndices.erase(indexBeginIt, indexEndIt);
 
-        batchedModelMatrices[mesh->meshData.id] = nullptr;
+        auto modelMatrixIt = batchedModelMatrices.begin() + mesh->meshData.batchVertexOffset;
+        batchedModelMatrices.erase(modelMatrixIt);
+
+        for(int i = mesh->meshData.id + 1; i < meshes.size(); i++)
+        {
+            Mesh* tempMesh = meshes[i];
+            tempMesh->meshData.SetForBatch(i - 1,
+                                           tempMesh->meshData.batchVertexOffset - mesh->meshData.vertices.size(),
+                                           tempMesh->meshData.batchIndexOffset - (mesh->meshData.faces.size() * 3));
+        }
 
         meshes.erase(obj);
+
+        printf("\nmesh ids after removal : ");
+        for(Mesh* mesh : meshes)
+        {
+            printf("%d, ", mesh->meshData.id);
+        }
+        printf("\n");
     }
 
     void Renderer::InitialRender()
@@ -289,6 +299,7 @@ namespace GamEncin
     void Renderer::LinkAttributes()
     {
         mainVAO->Bind();
+
         modelVertexVBO->Bind();
         modelIndexIBO->Bind();
         modelMatrixSSBO->Bind();

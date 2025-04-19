@@ -14,6 +14,7 @@
 #include "Encin/Tools/InputSystem.h"
 #include "Encin/Tools/MathYaman.h"
 #include "Encin/Tools/OpenGLObjects.h"
+#include "Encin/Tools/Time.h"
 #include "Encin/Tools/Toolkit.h"
 
 #include <GLAD/glad.h>
@@ -23,3 +24,4 @@ using namespace GamEncin;
 using namespace GamEncin::MathYaman;
 using namespace GamEncin::InputSystem;
 using namespace GamEncin::Toolkit;
+using namespace GamEncin::Time;

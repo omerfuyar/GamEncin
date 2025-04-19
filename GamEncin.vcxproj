@@ -103,6 +103,7 @@
     <ClCompile Include="GamEncin\src\Encin\Items\Components\Mesh.cpp" />
     <ClCompile Include="GamEncin\src\Encin\Items\Components\RigidBody.cpp" />
     <ClCompile Include="GamEncin\src\Encin\Items\Components\Transform.cpp" />
+    <ClCompile Include="GamEncin\src\Encin\Tools\Time.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GamEncin\src\Encin\Encin.h" />
@@ -415,6 +416,7 @@
     <ClInclude Include="GamEncin\src\Encin\Items\Components\Mesh.h" />
     <ClInclude Include="GamEncin\src\Encin\Items\Components\RigidBody.h" />
     <ClInclude Include="GamEncin\src\Encin\Items\Components\Transform.h" />
+    <ClInclude Include="GamEncin\src\Encin\Tools\Time.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="LICENSE.txt" />

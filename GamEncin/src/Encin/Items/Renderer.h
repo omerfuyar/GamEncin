@@ -44,12 +44,12 @@ namespace GamEncin
         static IBO* modelIndexIBO;
         static SSBO* modelMatrixSSBO;
 
-        static Vector2Int windowSize;
-        static Vector4 clearColor;
-
         static vector<RawVertex> batchedVertices;
         static vector<unsigned int> batchedIndices;
         static vector<Matrix4*> batchedModelMatrices;
+
+        static Vector2Int windowSize;
+        static Vector4 clearColor;
 
         static bool isFullScreen;
         static bool vSyncEnabled;

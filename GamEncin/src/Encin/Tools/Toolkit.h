@@ -90,13 +90,17 @@ namespace GamEncin
         struct MeshData
         {
             unsigned int id = 0;
+            unsigned int batchVertexOffset = 0;
+            unsigned int batchIndexOffset = 0;
 
             vector<Vertex*> vertices;
-            vector<Edge*> edges;
+            unordered_map<unsigned int, Edge*> edges;
             vector<Face*> faces;
 
             MeshData() = default;
             MeshData(unsigned int vertexCount);
+
+            void SetForBatch(unsigned int id, unsigned int batchVertexOffset, unsigned int batchIndexOffset);
 
             vector<unsigned int> GetIndiceArray();
             vector<RawVertex> GetRawVertexArray();
@@ -104,7 +108,6 @@ namespace GamEncin
             Edge* TryFindEdge(unsigned int edgeId);
 
             void DeleteData();
-            void AssignToObject(unsigned int objectId);
         };
 
         class MeshBuilder
