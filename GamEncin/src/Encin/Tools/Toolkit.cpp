@@ -430,8 +430,6 @@ namespace GamEncin
 
         MeshData* MeshBuilder::CreateSphere(float halfRadius, int resolution)
         {
-            ScopedIntervalTimer timer("MeshBuilder::CreateSphere");
-
             if(resolution < 3)
             {
                 Application::PrintLog(TypeMismachErr, "Resolution can not be smaller then 3, value set to 3.");
@@ -495,8 +493,6 @@ namespace GamEncin
                     }
                 }
             }
-
-            timer.PrintPastTime("Sphere created");
 
             return CreateMeshData(vertices, indices);
         }

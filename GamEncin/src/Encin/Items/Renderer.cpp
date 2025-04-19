@@ -61,6 +61,10 @@ namespace GamEncin
         }
         printf("\n");
 
+        printf("batched vertices size : %d\n", batchedVertices.size());
+        printf("batched indices size : %d\n", batchedIndices.size());
+        printf("batched matrices size : %d\n", batchedModelMatrices.size());
+
         if(!mesh)
         {
             Application::PrintLog(NullPointerErr, "Mesh trying to remove is null");
@@ -83,7 +87,7 @@ namespace GamEncin
         auto indexEndIt = indexBeginIt + (mesh->meshData.faces.size() * 3);
         batchedIndices.erase(indexBeginIt, indexEndIt);
 
-        auto modelMatrixIt = batchedModelMatrices.begin() + mesh->meshData.batchVertexOffset;
+        auto modelMatrixIt = batchedModelMatrices.begin() + mesh->meshData.id;
         batchedModelMatrices.erase(modelMatrixIt);
 
         for(int i = mesh->meshData.id + 1; i < meshes.size(); i++)
