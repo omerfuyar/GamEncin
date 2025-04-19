@@ -109,19 +109,11 @@ namespace GamEncin
         glBindBufferBase(GL_SHADER_STORAGE_BUFFER, SSBO_MODEL_MATRICES_BINDING, id);
     }
 
-    void SSBO::Update(vector<Matrix4*> modelMatrices)
+    void SSBO::Update(vector<Matrix4> modelMatrices)
     {
         Bind();
 
-        vector<Matrix4> modelMatricesCopy;
-
-        for(Matrix4* matrix : modelMatrices)
-        {
-            modelMatricesCopy.push_back(matrix ? *matrix : Matrix4(1.0f));
-        }
-
-        glBufferData(GL_SHADER_STORAGE_BUFFER, modelMatricesCopy.size() * sizeof(Matrix4), modelMatricesCopy.data(), GL_STATIC_DRAW);
-
+        glBufferData(GL_SHADER_STORAGE_BUFFER, modelMatrices.size() * sizeof(Matrix4), modelMatrices.data(), GL_STATIC_DRAW);
     }
 
     void SSBO::Delete()

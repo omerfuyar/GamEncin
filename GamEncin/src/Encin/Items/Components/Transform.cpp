@@ -145,7 +145,7 @@ namespace GamEncin
         return direction;
     }
 
-    Matrix4* Transform::GetModelMatrix()
+    Matrix4 Transform::GetModelMatrix()
     {
         Vector3 tempPos = GetGlobalPosition();
         Vector3 tempRot = GetGlobalRotation();
@@ -164,10 +164,10 @@ namespace GamEncin
 
         if(parent)
         {
-            modelMatrix = *parent->GetModelMatrix() * modelMatrix;
+            modelMatrix = parent->GetModelMatrix() * modelMatrix;
         }
 
-        return &modelMatrix;
+        return modelMatrix;
     }
 
     void Transform::LateUpdate()

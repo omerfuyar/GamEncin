@@ -1,6 +1,6 @@
 #include "GamEncin.h"
 
-//#define GE_SELECT_OPTIMUM_GPU
+#define GE_SELECT_OPTIMUM_GPU
 
 void SceneBuilding()
 {
@@ -32,8 +32,8 @@ void SceneBuilding()
     totalVerticeCount += mesh->meshData.vertices.size();
     totalObjectCount++;
 
-    int side = 101;
-    float gap = 0.01f;
+    //int side = 3;
+    //float gap = 0.01f;
     //for(int i = 0; i < side; i++)
     //{
     //    for(int j = 0; j < side; j++)
@@ -42,7 +42,7 @@ void SceneBuilding()
     //        myObject.tag = "myObj";
     //        Transform* myObjectTR = myObject.transform;
     //        Mesh* mesh = myObject.AddComponent<Mesh>();
-    //        mesh->SetMeshData(MeshBuilder::CreateSphere(0.5, 10));
+    //        mesh->SetMeshData(MeshBuilder::CreateCube());
     //        Renderer::AddMesh(mesh);
     //
     //        MyComponent* myComponent = myObject.AddComponent<MyComponent>();
@@ -51,9 +51,8 @@ void SceneBuilding()
     //        totalVerticeCount += mesh->meshData.vertices.size();
     //        totalObjectCount++;
     //
-    //        myObjectTR->AddPosition(Vector3(j - side / 2, i - side / 2, -25) * gap);
-    //        myObjectTR->AddRotation(Vector3(j, i, 0));
-    //        myObjectTR->SetLocalScale(Vector3(1, 5, 10) * 0.1f);
+    //        myObjectTR->AddPosition(Vector3(j - side / 2, i - side / 2, -10));
+    //        //myObjectTR->AddRotation(Vector3(j, i, 0));
     //    }
     //}
 

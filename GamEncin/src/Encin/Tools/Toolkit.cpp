@@ -156,9 +156,9 @@ namespace GamEncin
 
             for(Face* face : faces)
             {
-                indices.push_back(batchIndexOffset + face->vertices[0]->id);
-                indices.push_back(batchIndexOffset + face->vertices[1]->id);
-                indices.push_back(batchIndexOffset + face->vertices[2]->id);
+                indices.push_back(batchVertexOffset + face->vertices[0]->id);
+                indices.push_back(batchVertexOffset + face->vertices[1]->id);
+                indices.push_back(batchVertexOffset + face->vertices[2]->id);
             }
 
             return indices;

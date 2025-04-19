@@ -28,7 +28,7 @@ namespace GamEncin
         Vector3 GetGlobalScale();
         Vector3 GetDirection();
 
-        Matrix4* GetModelMatrix();
+        Matrix4 GetModelMatrix();
 
         void LateUpdate() override;
 

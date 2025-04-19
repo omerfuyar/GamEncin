@@ -14,7 +14,7 @@ namespace GamEncin
 
     vector<RawVertex> Renderer::batchedVertices;
     vector<unsigned int> Renderer::batchedIndices;
-    vector<Matrix4*> Renderer::batchedModelMatrices;
+    vector<Matrix4> Renderer::batchedModelMatrices;
 
     Vector2Int Renderer::windowSize = Vector2Int(1080, 1080);
     Vector4 Renderer::clearColor = Vector4(0.2f, 0.3f, 0.3f, 1.0f);
@@ -39,7 +39,7 @@ namespace GamEncin
             return;
         }
 
-        mesh->meshData.SetForBatch(batchedModelMatrices.size(), batchedVertices.size(), batchedVertices.size() + batchedIndices.size());
+        mesh->meshData.SetForBatch(batchedModelMatrices.size(), batchedVertices.size(), batchedIndices.size());
         vector<RawVertex> tempVertices = mesh->meshData.GetRawVertexArray();
         vector<unsigned int> tempIndices = mesh->meshData.GetIndiceArray();
 
@@ -53,18 +53,6 @@ namespace GamEncin
 
     void Renderer::RemoveMesh(Mesh* mesh)
     {
-        printf("\nid to remove : %d\n", mesh->meshData.id);
-        printf("\nmesh ids before removal : ");
-        for(Mesh* mesh : meshes)
-        {
-            printf("%d, ", mesh->meshData.id);
-        }
-        printf("\n");
-
-        printf("batched vertices size : %d\n", batchedVertices.size());
-        printf("batched indices size : %d\n", batchedIndices.size());
-        printf("batched matrices size : %d\n", batchedModelMatrices.size());
-
         if(!mesh)
         {
             Application::PrintLog(NullPointerErr, "Mesh trying to remove is null");
@@ -93,12 +81,39 @@ namespace GamEncin
         for(int i = mesh->meshData.id + 1; i < meshes.size(); i++)
         {
             Mesh* tempMesh = meshes[i];
-            tempMesh->meshData.SetForBatch(i - 1,
-                                           tempMesh->meshData.batchVertexOffset - mesh->meshData.vertices.size(),
-                                           tempMesh->meshData.batchIndexOffset - (mesh->meshData.faces.size() * 3));
+
+            tempMesh->meshData.SetForBatch(
+                i - 1,
+                tempMesh->meshData.batchVertexOffset - mesh->meshData.vertices.size(),
+                tempMesh->meshData.batchIndexOffset - (mesh->meshData.faces.size() * 3)
+            );
+        }
+
+        for(int i = mesh->meshData.batchVertexOffset; i < batchedVertices.size(); i++)
+        {
+            batchedVertices[i].objectId -= 1;
+        }
+
+        for(int i = mesh->meshData.batchIndexOffset; i < batchedIndices.size(); i++)
+        {
+            batchedIndices[i] -= mesh->meshData.vertices.size();
         }
 
         meshes.erase(obj);
+
+        for(int i = 0; i < batchedVertices.size(); i++)
+        {
+            printf("batched vertices %d : %f %f %f\n", i, batchedVertices[i].position.x, batchedVertices[i].position.y, batchedVertices[i].position.z);
+        }
+
+        for(int i = 0; i < batchedIndices.size(); i++)
+        {
+            printf("batched indices %d : %d\n", i, batchedIndices[i]);
+        }
+
+        printf("batched vertices size : %d\n", batchedVertices.size());
+        printf("batched indices size : %d\n", batchedIndices.size());
+        printf("batched matrices size : %d\n", batchedModelMatrices.size());
 
         printf("\nmesh ids after removal : ");
         for(Mesh* mesh : meshes)
@@ -294,10 +309,21 @@ namespace GamEncin
         mainVAO->Bind();
 
         modelVertexVBO->Update(batchedVertices);
+
         modelIndexIBO->Update(batchedIndices);
+
+        UpdateModelMatrices();
         modelMatrixSSBO->Update(batchedModelMatrices);
 
         glDrawElements(GL_TRIANGLES, batchedIndices.size(), GL_UNSIGNED_INT, 0);
+    }
+
+    void Renderer::UpdateModelMatrices()
+    {
+        for(Mesh* mesh : meshes)
+        {
+            batchedModelMatrices[mesh->meshData.id] = mesh->object->transform->GetModelMatrix();
+        }
     }
 
     void Renderer::LinkAttributes()

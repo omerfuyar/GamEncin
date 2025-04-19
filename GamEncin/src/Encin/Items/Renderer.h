@@ -46,7 +46,7 @@ namespace GamEncin
 
         static vector<RawVertex> batchedVertices;
         static vector<unsigned int> batchedIndices;
-        static vector<Matrix4*> batchedModelMatrices;
+        static vector<Matrix4> batchedModelMatrices;
 
         static Vector2Int windowSize;
         static Vector4 clearColor;
@@ -58,6 +58,7 @@ namespace GamEncin
         static void GLSendUniformMatrix4(unsigned int& location, Matrix4 matrix4);
         static void ClearColor(Vector4 clearColor);
         static void DrawBatchedMeshes();
+        static void UpdateModelMatrices();
         static void LinkAttributes();
     };
 }

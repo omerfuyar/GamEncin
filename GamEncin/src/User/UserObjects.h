@@ -37,7 +37,7 @@ public:
         tempVec = cameraTR->GetDirection();
         printf("\ncamera direction: %f %f %f\n", tempVec.x, tempVec.y, tempVec.z);
 
-        Matrix4 modelMatrix = *cameraTR->GetModelMatrix();
+        Matrix4 modelMatrix = cameraTR->GetModelMatrix();
 
         printf("\ncam model matrix\n");
         for(int i = 0; i < 4; ++i)
@@ -89,9 +89,18 @@ public:
             cameraTR->SetLocalPosition(Vector3(0, 0, 0));
         }
 
-        if(Input::GetKey(Down, Q))
+        if(Input::GetKey(Down, T))
         {
-            Renderer::RemoveMesh(meshes[RandomRangeInteger(0, meshes.size())]);
+            if(meshes.size() == 0)
+            {
+                printf("No meshes to remove\n");
+                return;
+            }
+
+            int index = RandomRangeInteger(0, meshes.size() - 1);
+            Mesh* meshToRemove = meshes[index];
+            Renderer::RemoveMesh(meshToRemove);
+            meshes.erase(meshes.begin() + index);
         }
 
         if(!Input::GetMouseButton(Press, Left))
@@ -183,7 +192,7 @@ public:
         tempVec = object->transform->GetDirection();
         printf("\nmyObject direction: %f %f %f\n", tempVec.x, tempVec.y, tempVec.z);
 
-        Matrix4 modelMatrix = *object->transform->GetModelMatrix();
+        Matrix4 modelMatrix = object->transform->GetModelMatrix();
 
         printf("\nmyObject model matrix\n");
         for(int i = 0; i < 4; ++i)
