@@ -89,20 +89,6 @@ public:
             cameraTR->SetLocalPosition(Vector3(0, 0, 0));
         }
 
-        if(Input::GetKey(Down, T))
-        {
-            if(meshes.size() == 0)
-            {
-                printf("No meshes to remove\n");
-                return;
-            }
-
-            int index = RandomRangeInteger(0, meshes.size() - 1);
-            Mesh* meshToRemove = meshes[index];
-            Renderer::RemoveMesh(meshToRemove);
-            meshes.erase(meshes.begin() + index);
-        }
-
         if(!Input::GetMouseButton(Press, Left))
         {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -165,7 +151,7 @@ public:
 class MyComponent : public Component
 {
 public:
-    float rotSpeed = 150;
+    float rotSpeed = 20;
 
     MyComponent(Object* obj) : Component(obj) {}
 
@@ -208,9 +194,11 @@ public:
 
     void Update() override
     {
+        object->transform->AddRotation(Vector3(1, 3, 1) * rotSpeed * Application::deltaTime);
+
         if(Input::GetKey(Press, C))
         {
-            object->transform->AddRotation(RandomVector3Direction() * rotSpeed * Application::deltaTime);
+            object->transform->AddRotation(RandomVector3Direction());
         }
     }
 };

@@ -13,7 +13,9 @@ namespace GamEncin
         ~Mesh();
 
         MeshData meshData;
+        Texture* meshTexture;
 
         void SetMeshData(MeshData* data);
+        void SetMeshTexture(Texture* texture);
     };
 }

@@ -7,8 +7,10 @@
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <cstdlib>
 #include <map>
 #include <string>
+#include <typeinfo>
 #include <unordered_map>
 #include <vector>
 

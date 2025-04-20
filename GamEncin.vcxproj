@@ -85,10 +85,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Dependencies\GLAD\glad.c" />
     <ClCompile Include="GamEncin\src\Encin\Items\Components\Camera.cpp" />
     <ClCompile Include="GamEncin\src\Encin\Items\Components\Collider.cpp" />
     <ClCompile Include="GamEncin\src\Encin\Items\Components\Component.cpp" />
-    <ClCompile Include="Dependencies\GLAD\glad.c" />
     <ClCompile Include="Dependencies\GLM\detail\glm.cpp" />
     <ClCompile Include="Dependencies\GLM\glm.cppm" />
     <ClCompile Include="GamEncin\src\Encin\Items\Application.cpp" />
@@ -106,12 +106,13 @@
     <ClCompile Include="GamEncin\src\Encin\Tools\Time.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Dependencies\GLAD\glad.h" />
+    <ClInclude Include="Dependencies\GLAD\khrplatform.h" />
+    <ClInclude Include="Dependencies\STB\stb_image.h" />
     <ClInclude Include="GamEncin\src\Encin\Encin.h" />
     <ClInclude Include="GamEncin\src\Encin\Items\Components\Camera.h" />
     <ClInclude Include="GamEncin\src\Encin\Items\Components\Collider.h" />
     <ClInclude Include="GamEncin\src\Encin\Items\Components\Component.h" />
-    <ClInclude Include="Dependencies\GLAD\glad.h" />
-    <ClInclude Include="Dependencies\GLAD\khrplatform.h" />
     <ClInclude Include="Dependencies\GLFW\glfw3.h" />
     <ClInclude Include="Dependencies\GLFW\glfw3native.h" />
     <ClInclude Include="Dependencies\GLM\common.hpp" />
@@ -576,6 +577,9 @@
   </ItemGroup>
   <ItemGroup>
     <Library Include="Dependencies\GLFW\glfw3.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="GamEncin\src\Resources\test.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

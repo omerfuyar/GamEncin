@@ -19,6 +19,7 @@
 
 #include <GLAD/glad.h>
 #include <GLFW/glfw3.h>
+#include <STB/stb_image.h>
 
 using namespace GamEncin;
 using namespace GamEncin::MathYaman;

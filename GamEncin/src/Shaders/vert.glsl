@@ -1,26 +1,42 @@
 #version 460 core
+#extension GL_ARB_bindless_texture : require
+#extension GL_ARB_gpu_shader_int64 : require
 
 layout(std430, binding = 0) buffer ModelWorldMatrices
 {
-    mat4 modelWorldMatrices[]; // variable length array
+    mat4 modelWorldMatrices[];
 };
-    
-layout (location = 0) in uint vertObjectId;
-layout (location = 1) in vec3 vertPos;
-layout (location = 2) in vec4 vertColor;
 
-out vec4 color;
-//TODO flat for disable color interpolation
+layout(std430, binding = 1) buffer ModelTextureHandles
+{
+    uint64_t modelTextureHandles[]; 
+};
+
+layout (location = 0) in uint vertObjectId;
+layout (location = 1) in vec3 vertPosition;
+layout (location = 2) in vec4 vertColor;
+layout (location = 3) in vec3 vertNormal;
+layout (location = 4) in vec2 vertUV;
+
+flat out uint64_t modelTextureHandle;
+out mat4 modelMatrix; //dunno why Im sending this to fragment shader but it may be useful.
+out vec4 fragColor;
+out vec3 fragNormal;
+out vec2 fragUV;
 
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
-//TODO hard code to Shader constructor 
 
 void main()
 {
-    gl_Position = projectionMatrix * viewMatrix * modelWorldMatrices[vertObjectId] * vec4(vertPos, 1.0);
-    //vUV = aUV;
-    //vNormal = mat3(transpose(inverse(uModel))) * aNormal; // for correct lighting
+    modelMatrix = modelWorldMatrices[vertObjectId];
+    modelTextureHandle = modelTextureHandles[vertObjectId];
 
-    color = vertColor / 255.0;
+    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertPosition, 1.0);
+
+    fragColor = vertColor / 255.0;
+
+    fragNormal = mat3(transpose(inverse(modelMatrix))) * vertNormal;
+
+    fragUV = vertUV;
 }

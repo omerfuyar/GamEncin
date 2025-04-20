@@ -14,13 +14,13 @@
 #pragma once
 
 // Dependencies
-#include "../detail/setup.hpp"
-#include "../detail/qualifier.hpp"
 #include "../common.hpp"
-#include "../integer.hpp"
+#include "../detail/qualifier.hpp"
+#include "../detail/setup.hpp"
 #include "../exponential.hpp"
 #include "../ext/scalar_common.hpp"
 #include "../ext/vector_common.hpp"
+#include "../integer.hpp"
 #include <limits>
 
 #if GLM_MESSAGES == GLM_ENABLE && !defined(GLM_EXT_INCLUDED)
@@ -29,15 +29,15 @@
 
 namespace glm
 {
-	/// @addtogroup gtc_integer
-	/// @{
+    /// @addtogroup gtc_integer
+    /// @{
 
-	/// Returns the log2 of x for integer values. Useful to compute mipmap count from the texture size.
-	/// @see gtc_integer
-	template<length_t L, typename T, qualifier Q>
-	GLM_FUNC_DECL vec<L, T, Q> log2(vec<L, T, Q> const& v);
+    /// Returns the log2 of x for integer values. Useful to compute mipmap count from the uv size.
+    /// @see gtc_integer
+    template<length_t L, typename T, qualifier Q>
+    GLM_FUNC_DECL vec<L, T, Q> log2(vec<L, T, Q> const& v);
 
-	/// @}
+    /// @}
 } //namespace glm
 
 #include "integer.inl"

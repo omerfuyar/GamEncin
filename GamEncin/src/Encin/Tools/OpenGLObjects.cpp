@@ -2,15 +2,15 @@
 
 namespace GamEncin
 {
-#pragma region VAO
+#pragma region GLArrayObject
 
-    VAO::VAO(unsigned int strideSize)
+    GLArrayObject::GLArrayObject(unsigned int strideSize)
     {
         glGenVertexArrays(1, &id);
         this->strideSize = strideSize;
     }
 
-    void VAO::LinkAttribute(unsigned int layout, unsigned int numComponents, unsigned int type, unsigned int offsetInBytes)
+    void GLArrayObject::LinkAttribute(unsigned int layout, unsigned int numComponents, unsigned int type, unsigned int offsetInBytes)
     {
         GLvoid* offsetVar = (GLvoid*) (offsetInBytes);
 
@@ -25,7 +25,7 @@ namespace GamEncin
         glEnableVertexAttribArray(layout); //like binding the format we want to read buffer data
     }
 
-    void VAO::LinkIntegerAttribute(unsigned int layout, unsigned int numComponents, unsigned int type, unsigned int offsetInBytes)
+    void GLArrayObject::LinkIntegerAttribute(unsigned int layout, unsigned int numComponents, unsigned int type, unsigned int offsetInBytes)
     {
         GLvoid* offsetVar = (GLvoid*) (offsetInBytes);
 
@@ -34,94 +34,18 @@ namespace GamEncin
         glEnableVertexAttribArray(layout);
     }
 
-    void VAO::Bind()
+    void GLArrayObject::Bind()
     {
         glBindVertexArray(id);
     }
 
-    void VAO::Delete()
+    void GLArrayObject::Delete()
     {
         glDeleteVertexArrays(1, &id);
     }
 
 #pragma endregion
 
-#pragma region VBO
-
-    VBO::VBO()
-    {
-        glGenBuffers(1, &id);
-    }
-
-    void VBO::Bind()
-    {
-        glBindBuffer(GL_ARRAY_BUFFER, id);
-    }
-
-    void VBO::Update(vector<RawVertex> vertices)
-    {
-        Bind();
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(RawVertex), vertices.data(), GL_STATIC_DRAW);
-    }
-
-    void VBO::Delete()
-    {
-        glDeleteBuffers(1, &id);
-    }
-
-#pragma endregion
-
-#pragma region IBO
-
-    IBO::IBO()
-    {
-        glGenBuffers(1, &id);
-    }
-
-    void IBO::Bind()
-    {
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
-    }
-
-    void IBO::Update(vector<unsigned int> indices)
-    {
-        Bind();
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
-    }
-
-    void IBO::Delete()
-    {
-        glDeleteBuffers(1, &id);
-    }
-
-#pragma endregion
-
-#pragma region SSBO
-
-    SSBO::SSBO()
-    {
-        glGenBuffers(1, &id);
-    }
-
-    void SSBO::Bind()
-    {
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, id);
-        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, SSBO_MODEL_MATRICES_BINDING, id);
-    }
-
-    void SSBO::Update(vector<Matrix4> modelMatrices)
-    {
-        Bind();
-
-        glBufferData(GL_SHADER_STORAGE_BUFFER, modelMatrices.size() * sizeof(Matrix4), modelMatrices.data(), GL_STATIC_DRAW);
-    }
-
-    void SSBO::Delete()
-    {
-        glDeleteBuffers(1, &id);
-    }
-
-#pragma endregion
 
 #pragma region Shader
 

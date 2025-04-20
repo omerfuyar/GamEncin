@@ -169,9 +169,4 @@ namespace GamEncin
 
         return modelMatrix;
     }
-
-    void Transform::LateUpdate()
-    {
-        GetModelMatrix();
-    }
 }

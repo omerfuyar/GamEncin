@@ -21,18 +21,20 @@ void SceneBuilding()
     int totalIndiceCount = 0;
     int totalObjectCount = 0;
 
-    Object& myObject = scene.CreateObject();
-    Transform* myObjectTR = myObject.transform;
-    Mesh* mesh = myObject.AddComponent<Mesh>();
-    mesh->SetMeshData(MeshBuilder::CreateSphere(0.5, 250));
-    myObjectTR->AddPosition(Vector3(0, 0, -1.5f));
-    Renderer::AddMesh(mesh);
+    Object& myObject2 = scene.CreateObject();
+    Mesh* mesh1 = myObject2.AddComponent<Mesh>();
+    myObject2.AddComponent<MyComponent>();
+    mesh1->SetMeshData(MeshBuilder::CreateCube());
+    mesh1->SetMeshTexture(TextureManager::GetTexture("GamEncin/src/Resources/test.jpg"));
+    myObject2.transform->AddPosition(Vector3(0, 0, -1.0f));
+    Renderer::AddMesh(mesh1);
 
-    totalIndiceCount += mesh->meshData.faces.size() * 3;
-    totalVerticeCount += mesh->meshData.vertices.size();
+
+    totalIndiceCount += mesh1->meshData.faces.size() * 3;
+    totalVerticeCount += mesh1->meshData.vertices.size();
     totalObjectCount++;
 
-    //int side = 3;
+    //int side = 101;
     //float gap = 0.01f;
     //for(int i = 0; i < side; i++)
     //{
@@ -44,6 +46,7 @@ void SceneBuilding()
     //        Mesh* mesh = myObject.AddComponent<Mesh>();
     //        mesh->SetMeshData(MeshBuilder::CreateCube());
     //        Renderer::AddMesh(mesh);
+    //        myObject.transform->SetParent(myObject2.transform);
     //
     //        MyComponent* myComponent = myObject.AddComponent<MyComponent>();
     //
@@ -51,8 +54,8 @@ void SceneBuilding()
     //        totalVerticeCount += mesh->meshData.vertices.size();
     //        totalObjectCount++;
     //
-    //        myObjectTR->AddPosition(Vector3(j - side / 2, i - side / 2, -10));
-    //        //myObjectTR->AddRotation(Vector3(j, i, 0));
+    //        myObjectTR->AddPosition(Vector3(j - side / 2, i - side / 2, -1));
+    //        myObjectTR->AddRotation(Vector3(j, i, 0));
     //    }
     //}
 
@@ -81,7 +84,6 @@ int main()
 }
 
 #ifdef GE_SELECT_OPTIMUM_GPU
-//#include <windows.h>
 extern "C"
 {
     _declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;

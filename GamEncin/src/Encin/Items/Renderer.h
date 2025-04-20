@@ -18,8 +18,8 @@ namespace GamEncin
         static void RemoveMesh(Mesh* mesh);
         static void InitialRender();
         static void RenderFrame();
-        static void EndRenderer();
         static void FrameBufferSizeCallback(GLFWwindow* window, int width, int height);
+        static void EndRenderer();
 
         static void SetWindowProperties(bool isFullScreen, bool vSyncEnabled, Vector2Int newWindowSize, Vector4 newClearColor);
         static void SetMainCamera(Camera* camera);
@@ -39,14 +39,16 @@ namespace GamEncin
         static Camera* mainCamera;
         static GLFWwindow* window;
 
-        static VAO* mainVAO;
-        static VBO* modelVertexVBO;
-        static IBO* modelIndexIBO;
-        static SSBO* modelMatrixSSBO;
+        static GLArrayObject* mainVAO;
+        static GLBufferObject<RawVertex>* modelVertexBO;
+        static GLBufferObject<unsigned int>* modelIndexBO;
+        static GLShaderStorageBufferObject<Matrix4>* modelMatrixSSBO;
+        static GLShaderStorageBufferObject<unsigned long long>* modelTextureHandlesSSBO;
 
         static vector<RawVertex> batchedVertices;
         static vector<unsigned int> batchedIndices;
         static vector<Matrix4> batchedModelMatrices;
+        static vector<unsigned long long> batchedTextureHandles;
 
         static Vector2Int windowSize;
         static Vector4 clearColor;
@@ -58,7 +60,7 @@ namespace GamEncin
         static void GLSendUniformMatrix4(unsigned int& location, Matrix4 matrix4);
         static void ClearColor(Vector4 clearColor);
         static void DrawBatchedMeshes();
-        static void UpdateModelMatrices();
+        static void UpdateSSBOs();
         static void LinkAttributes();
     };
 }

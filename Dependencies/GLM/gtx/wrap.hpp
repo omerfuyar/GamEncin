@@ -8,14 +8,14 @@
 ///
 /// Include <glm/gtx/wrap.hpp> to use the features of this extension.
 ///
-/// Wrapping mode of texture coordinates.
+/// Wrapping mode of uv coordinates.
 
 #pragma once
 
 // Dependency:
-#include "../glm.hpp"
 #include "../ext/scalar_common.hpp"
 #include "../ext/vector_common.hpp"
+#include "../glm.hpp"
 #include "../gtc/vec1.hpp"
 
 #ifndef GLM_ENABLE_EXPERIMENTAL
@@ -26,10 +26,10 @@
 
 namespace glm
 {
-	/// @addtogroup gtx_wrap
-	/// @{
+    /// @addtogroup gtx_wrap
+    /// @{
 
-	/// @}
+    /// @}
 }// namespace glm
 
 #include "wrap.inl"

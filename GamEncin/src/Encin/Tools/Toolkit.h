@@ -24,6 +24,38 @@ namespace GamEncin
 
 #pragma endregion
 
+#pragma region Texture
+
+        struct Texture
+        {
+            unsigned int id = 0;
+            unsigned int bitsPerPixel = 0;
+            unsigned char* data = nullptr;
+            unsigned long long handle = 0;
+            Vector2Int size = Vector2Int::Zero();
+            string filePath = "";
+
+            Texture() = default;
+            Texture(unsigned int id, unsigned int bitsPerPixel, unsigned char* data, unsigned long long handle, Vector2Int size, string filePath);
+
+            void Initialize();
+            void Delete();
+        };
+
+        class TextureManager
+        {
+        public:
+            static Texture* GetTexture(string textFilePath);
+            static void AddTexture(Texture* texture);
+            static void DeleteTexture(Texture* textureToDelete);
+            static void InitializeTextures();
+
+        private:
+            static vector<Texture*> loadedTextures;
+        };
+
+#pragma endregion
+
 #pragma region Mesh Tools
 
         struct Edge;
@@ -35,17 +67,16 @@ namespace GamEncin
 
             Vector3 position = Vector3::Zero();
             Vector4 color = Vector4::One();
-            //Vector3 normal = Vector3::Forward();
-            //Vector2 texture = Vector2::Zero();
+            Vector3 normal = Vector3::Forward();
+            Vector2 uv = Vector2::Zero();
             //TODO order matters due to shader layout
+            //TODO dont forget to link attributes
 
             RawVertex(Vector3 position, Vector4 color);
-            RawVertex(Vector3 position, Vector4 color, Vector3 normal, Vector2 texture);
+            RawVertex(Vector3 position, Vector2 texture);
             void SetObjectId(unsigned int objectId);
-            void SetPosition(Vector3 position);
-            void SetNormal(Vector3 normal);
-            void SetTexture(Vector2 texture);
-            void SetColor(Vector4 color);
+            void AddNormal(Vector3 normal);
+            void NormalizeNormal();
         };
 
         struct Vertex : RawVertex
@@ -98,14 +129,12 @@ namespace GamEncin
             vector<Face*> faces;
 
             MeshData() = default;
-            MeshData(unsigned int vertexCount);
-
-            void SetForBatch(unsigned int id, unsigned int batchVertexOffset, unsigned int batchIndexOffset);
+            MeshData(vector<Vertex*> vertices, unordered_map<unsigned int, Edge*> edges, vector<Face*> faces);
 
             vector<unsigned int> GetIndiceArray();
             vector<RawVertex> GetRawVertexArray();
 
-            Edge* TryFindEdge(unsigned int edgeId);
+            void SetForBatch(unsigned int id, unsigned int batchVertexOffset, unsigned int batchIndexOffset);
 
             void DeleteData();
         };

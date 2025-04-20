@@ -7,14 +7,16 @@ namespace GamEncin
     Camera* Renderer::mainCamera = nullptr;
     GLFWwindow* Renderer::window = nullptr;
 
-    VAO* Renderer::mainVAO = nullptr;
-    VBO* Renderer::modelVertexVBO = nullptr;
-    IBO* Renderer::modelIndexIBO = nullptr;
-    SSBO* Renderer::modelMatrixSSBO = nullptr;
+    GLArrayObject* Renderer::mainVAO = nullptr;
+    GLBufferObject<RawVertex>* Renderer::modelVertexBO = nullptr;
+    GLBufferObject<unsigned int>* Renderer::modelIndexBO = nullptr;
+    GLShaderStorageBufferObject<Matrix4>* Renderer::modelMatrixSSBO = nullptr;
+    GLShaderStorageBufferObject<unsigned long long>* Renderer::modelTextureHandlesSSBO = nullptr;
 
     vector<RawVertex> Renderer::batchedVertices;
     vector<unsigned int> Renderer::batchedIndices;
     vector<Matrix4> Renderer::batchedModelMatrices;
+    vector<unsigned long long> Renderer::batchedTextureHandles;
 
     Vector2Int Renderer::windowSize = Vector2Int(1080, 1080);
     Vector4 Renderer::clearColor = Vector4(0.2f, 0.3f, 0.3f, 1.0f);
@@ -39,7 +41,7 @@ namespace GamEncin
             return;
         }
 
-        mesh->meshData.SetForBatch(batchedModelMatrices.size(), batchedVertices.size(), batchedIndices.size());
+        mesh->meshData.SetForBatch(meshes.size(), batchedVertices.size(), batchedIndices.size());
         vector<RawVertex> tempVertices = mesh->meshData.GetRawVertexArray();
         vector<unsigned int> tempIndices = mesh->meshData.GetIndiceArray();
 
@@ -47,6 +49,7 @@ namespace GamEncin
         batchedIndices.insert(batchedIndices.end(), tempIndices.begin(), tempIndices.end());
 
         batchedModelMatrices.push_back(mesh->object->transform->GetModelMatrix());
+        batchedTextureHandles.push_back(mesh->meshTexture->handle);
 
         meshes.push_back(mesh);
     }
@@ -78,6 +81,9 @@ namespace GamEncin
         auto modelMatrixIt = batchedModelMatrices.begin() + mesh->meshData.id;
         batchedModelMatrices.erase(modelMatrixIt);
 
+        auto textureHandleIt = batchedTextureHandles.begin() + mesh->meshData.id;
+        batchedTextureHandles.erase(textureHandleIt);
+
         for(int i = mesh->meshData.id + 1; i < meshes.size(); i++)
         {
             Mesh* tempMesh = meshes[i];
@@ -91,7 +97,7 @@ namespace GamEncin
 
         for(int i = mesh->meshData.batchVertexOffset; i < batchedVertices.size(); i++)
         {
-            batchedVertices[i].objectId -= 1;
+            batchedVertices[i].objectId--;
         }
 
         for(int i = mesh->meshData.batchIndexOffset; i < batchedIndices.size(); i++)
@@ -100,27 +106,6 @@ namespace GamEncin
         }
 
         meshes.erase(obj);
-
-        for(int i = 0; i < batchedVertices.size(); i++)
-        {
-            printf("batched vertices %d : %f %f %f\n", i, batchedVertices[i].position.x, batchedVertices[i].position.y, batchedVertices[i].position.z);
-        }
-
-        for(int i = 0; i < batchedIndices.size(); i++)
-        {
-            printf("batched indices %d : %d\n", i, batchedIndices[i]);
-        }
-
-        printf("batched vertices size : %d\n", batchedVertices.size());
-        printf("batched indices size : %d\n", batchedIndices.size());
-        printf("batched matrices size : %d\n", batchedModelMatrices.size());
-
-        printf("\nmesh ids after removal : ");
-        for(Mesh* mesh : meshes)
-        {
-            printf("%d, ", mesh->meshData.id);
-        }
-        printf("\n");
     }
 
     void Renderer::InitialRender()
@@ -152,7 +137,10 @@ namespace GamEncin
 
         SetVSync(vSyncEnabled);
 
-        //TODO for release
+        glEnable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
+
+        //TODO for release, works
         //string exePath = Input::GetExeFilePath();
         //string vertShaderPath = exePath + "/vert.glsl";
         //string fragShaderPath = exePath + "/frag.glsl";
@@ -161,15 +149,15 @@ namespace GamEncin
 
         shaderProgram = new Shader("GamEncin/src/Shaders/vert.glsl", "GamEncin/src/Shaders/frag.glsl");
 
-        glEnable(GL_DEPTH_TEST);
-        glDisable(GL_CULL_FACE);
-
-        mainVAO = new VAO(sizeof(RawVertex));
-        modelVertexVBO = new VBO();
-        modelIndexIBO = new IBO();
-        modelMatrixSSBO = new SSBO();
+        mainVAO = new GLArrayObject(sizeof(RawVertex));
+        modelVertexBO = new GLBufferObject<RawVertex>(GL_ARRAY_BUFFER, GL_STATIC_DRAW);
+        modelIndexBO = new GLBufferObject<unsigned int>(GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
+        modelMatrixSSBO = new GLShaderStorageBufferObject<Matrix4>(SSBO_MODEL_MATRICES_BINDING, GL_STATIC_DRAW);
+        modelTextureHandlesSSBO = new GLShaderStorageBufferObject<unsigned long long>(SSBO_TEXTURE_HANDLES_BINDING, GL_STATIC_DRAW);
 
         LinkAttributes();
+
+        TextureManager::InitializeTextures();
     }
 
     void Renderer::RenderFrame()
@@ -186,16 +174,7 @@ namespace GamEncin
 
         windowCloseInput = glfwWindowShouldClose(window);
 
-        //glFinish();
         glFlush();
-    }
-
-    void Renderer::EndRenderer()
-    {
-        if(shaderProgram)
-            shaderProgram->Delete();
-        glfwDestroyWindow(window);
-        glfwTerminate();
     }
 
     void Renderer::FrameBufferSizeCallback(GLFWwindow* window, int width, int height)
@@ -212,9 +191,16 @@ namespace GamEncin
         }
     }
 
-    void Renderer::SetWindowProperties(bool newIsFullScreenNew, bool newVSyncEnabled, Vector2Int newWindowSize, Vector4 newClearColor)
+    void Renderer::EndRenderer()
+    { //TODO
+        glFinish();
+        glfwDestroyWindow(window);
+        glfwTerminate();
+    }
+
+    void Renderer::SetWindowProperties(bool newIsFullScreen, bool newVSyncEnabled, Vector2Int newWindowSize, Vector4 newClearColor)
     {
-        isFullScreen = newIsFullScreenNew;
+        isFullScreen = newIsFullScreen;
         clearColor = newClearColor;
         vSyncEnabled = newVSyncEnabled;
         windowSize = newWindowSize;
@@ -308,21 +294,23 @@ namespace GamEncin
     {
         mainVAO->Bind();
 
-        modelVertexVBO->Update(batchedVertices);
+        modelVertexBO->Update(batchedVertices);
 
-        modelIndexIBO->Update(batchedIndices);
+        modelIndexBO->Update(batchedIndices);
 
-        UpdateModelMatrices();
+        UpdateSSBOs();
         modelMatrixSSBO->Update(batchedModelMatrices);
+        modelTextureHandlesSSBO->Update(batchedTextureHandles);
 
         glDrawElements(GL_TRIANGLES, batchedIndices.size(), GL_UNSIGNED_INT, 0);
     }
 
-    void Renderer::UpdateModelMatrices()
+    void Renderer::UpdateSSBOs()
     {
         for(Mesh* mesh : meshes)
         {
             batchedModelMatrices[mesh->meshData.id] = mesh->object->transform->GetModelMatrix();
+            batchedTextureHandles[mesh->meshData.id] = mesh->meshTexture ? mesh->meshTexture->handle : 0;
         }
     }
 
@@ -330,12 +318,21 @@ namespace GamEncin
     {
         mainVAO->Bind();
 
-        modelVertexVBO->Bind();
-        modelIndexIBO->Bind();
+        modelVertexBO->Bind();
+        modelIndexBO->Bind();
         modelMatrixSSBO->Bind();
+        modelTextureHandlesSSBO->Bind();
 
+        unsigned int offset = 0;
         mainVAO->LinkIntegerAttribute(VBO_OBJECT_ID_LAYOUT, 1, GL_UNSIGNED_INT, 0); //unsigned int
-        mainVAO->LinkAttribute(VBO_POSITION_LAYOUT, 3, GL_FLOAT, sizeof(unsigned int)); //Vector3
-        mainVAO->LinkAttribute(VBO_COLOR_LAYOUT, 4, GL_FLOAT, sizeof(unsigned int) + sizeof(Vector3)); //Vector4
+        offset += sizeof(unsigned int);
+        mainVAO->LinkAttribute(VBO_POSITION_LAYOUT, 3, GL_FLOAT, offset); //Vector3
+        offset += sizeof(Vector3);
+        mainVAO->LinkAttribute(VBO_COLOR_LAYOUT, 4, GL_FLOAT, offset); //Vector4
+        offset += sizeof(Vector4);
+        mainVAO->LinkAttribute(VBO_NORMAL_LAYOUT, 3, GL_FLOAT, offset); //Vector3
+        offset += sizeof(Vector3);
+        mainVAO->LinkAttribute(VBO_UV_LAYOUT, 2, GL_FLOAT, offset); //Vector2
+        offset += sizeof(Vector2);
     }
 }

@@ -19,4 +19,9 @@ namespace GamEncin
         meshData.DeleteData();
         meshData = *data;
     }
+
+    void Mesh::SetMeshTexture(Texture* texture)
+    {
+        meshTexture = texture;
+    }
 }

@@ -1,9 +1,140 @@
 #include "Encin/Encin.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include <STB/stb_image.h>
+
 
 namespace GamEncin
 {
     namespace Toolkit
     {
+#pragma region Textures
+
+        Texture::Texture(unsigned int id, unsigned int bitsPerPixel, unsigned char* data, unsigned long long handle, Vector2Int size, string filePath)
+        {
+            this->id = id;
+            this->bitsPerPixel = bitsPerPixel;
+            this->data = data;
+            this->size = size;
+            this->handle = handle;
+            this->filePath = filePath;
+        }
+
+        void Texture::Initialize()
+        {
+            glGenTextures(1, &id);
+            glBindTexture(GL_TEXTURE_2D, id);
+
+            unsigned int imageFormat = (bitsPerPixel == 32) ? GL_RGBA : GL_RGB;
+            glTexImage2D(GL_TEXTURE_2D, 0, imageFormat, size.x, size.y, 0, imageFormat, GL_UNSIGNED_BYTE, data);
+            glGenerateMipmap(GL_TEXTURE_2D);
+
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+            handle = glGetTextureHandleARB(id);
+            glMakeTextureHandleResidentARB(handle);
+
+            printf("Texture %s loaded with id: %u\n", filePath.c_str(), id);
+            printf("Texture %s handle: %llu\n", filePath.c_str(), handle);
+            printf("Texture %s size: %d x %d\n", filePath.c_str(), size.x, size.y);
+            printf("Texture %s bits per pixel: %u\n", filePath.c_str(), bitsPerPixel);
+            printf("Texture %s data size: %d\n", filePath.c_str(), size.x * size.y * (bitsPerPixel / 8));
+        }
+
+        void Texture::Delete()
+        {
+            glMakeTextureHandleNonResidentARB(handle);
+            glDeleteTextures(1, &id);
+        }
+
+        vector<Texture*> TextureManager::loadedTextures;
+
+        Texture* TextureManager::GetTexture(string textureFilePath)
+        {
+            auto obj = std::find_if(loadedTextures.begin(), loadedTextures.end(), [&textureFilePath](Texture* texture)
+                                    {
+                                        return texture->filePath == textureFilePath;
+                                    });
+
+            if(obj != loadedTextures.end())
+            {
+                return *obj;
+            }
+
+            int imageWidth, imageHeight, imageChannels;
+            unsigned char* imageData = stbi_load(textureFilePath.c_str(), &imageWidth, &imageHeight, &imageChannels, 0);
+            if(!imageData)
+            {
+                Application::PrintLog(IOErr, "Couldn't load texture file: " + textureFilePath);
+                return nullptr;
+            }
+
+            stbi_image_free(imageData);
+
+            Texture* texture = new Texture(0, imageChannels * 8, imageData, 0, Vector2Int(imageWidth, imageHeight), textureFilePath);
+
+            if(Application::isRunning)
+            {
+                texture->Initialize();
+            }
+
+            loadedTextures.push_back(texture);
+
+            return texture;
+        }
+
+        void TextureManager::AddTexture(Texture* texture)
+        {
+            if(!texture)
+            {
+                Application::PrintLog(NullPointerErr, "Texture trying to add is null");
+                return;
+            }
+
+            auto obj = std::find(loadedTextures.begin(), loadedTextures.end(), texture);
+
+            if(obj != loadedTextures.end())
+            {
+                Application::PrintLog(ElementDuplicationErr, "Texture already exists in the renderer");
+                return;
+            }
+
+            loadedTextures.push_back(texture);
+        }
+
+        void TextureManager::DeleteTexture(Texture* textureToDelete)
+        {
+            if(!textureToDelete)
+            {
+                Application::PrintLog(NullPointerErr, "Texture trying to delete is null");
+                return;
+            }
+
+            auto obj = std::find(loadedTextures.begin(), loadedTextures.end(), textureToDelete);
+
+            if(obj == loadedTextures.end())
+            {
+                Application::PrintLog(ElementCouldNotFoundErr, "Couldn't found texture to delete");
+                return;
+            }
+
+            textureToDelete->Delete();
+
+            loadedTextures.erase(obj);
+        }
+
+        void TextureManager::InitializeTextures()
+        {
+            for(Texture* texture : loadedTextures)
+            {
+                texture->Initialize();
+            }
+        }
+
+#pragma endregion
+
 #pragma region Mesh Tools
 
 #pragma region Primitives
@@ -16,12 +147,10 @@ namespace GamEncin
             this->color = color;
         }
 
-        RawVertex::RawVertex(Vector3 position, Vector4 color, Vector3 normal, Vector2 texture)
+        RawVertex::RawVertex(Vector3 position, Vector2 texture)
         {
             this->position = position;
-            this->color = color;
-            //this->normal = normal; TODO
-            //this->texture = texture;
+            this->uv = texture;
         }
 
         void RawVertex::SetObjectId(unsigned int objectId)
@@ -29,24 +158,14 @@ namespace GamEncin
             this->objectId = objectId;
         }
 
-        void RawVertex::SetPosition(Vector3 position)
+        void RawVertex::AddNormal(Vector3 normal)
         {
-            this->position = position;
+            this->normal += normal;
         }
 
-        void RawVertex::SetColor(Vector4 color)
+        void RawVertex::NormalizeNormal()
         {
-            this->color = color;
-        }
-
-        void RawVertex::SetNormal(Vector3 normal)
-        {
-            // this->normal = normal; TODO
-        }
-
-        void RawVertex::SetTexture(Vector2 texture)
-        {
-            //this->texture = texture; TODO
+            this->normal.Normalize();
         }
 
 #pragma endregion
@@ -108,6 +227,19 @@ namespace GamEncin
             vertex1->AddFace(this);
             vertex2->AddFace(this);
             vertex3->AddFace(this);
+
+            Vector3& v0 = vertices[0]->position;
+            Vector3& v1 = vertices[1]->position;
+            Vector3& v2 = vertices[2]->position;
+
+            Vector3 edge1 = v1 - v0;
+            Vector3 edge2 = v2 - v0;
+
+            Vector3 faceNormal = edge1.Cross(edge2).Normalized();
+
+            vertices[0]->AddNormal(faceNormal);
+            vertices[1]->AddNormal(faceNormal);
+            vertices[2]->AddNormal(faceNormal);
         }
 
         void Face::SetEdges(Edge* edge1, Edge* edge2, Edge* edge3)
@@ -133,9 +265,11 @@ namespace GamEncin
 
 #pragma region MeshData
 
-        MeshData::MeshData(unsigned int vertexCount)
+        MeshData::MeshData(vector<Vertex*> vertices, unordered_map<unsigned int, Edge*> edges, vector<Face*> faces)
         {
-            vertices.resize(vertexCount);
+            this->vertices = vertices;
+            this->edges = edges;
+            this->faces = faces;
         }
 
         void MeshData::SetForBatch(unsigned int id, unsigned int batchVertexOffset, unsigned int batchIndexOffset)
@@ -176,18 +310,6 @@ namespace GamEncin
             return rawVertices;
         }
 
-        Edge* MeshData::TryFindEdge(unsigned int edgeId)
-        {
-            auto it = edges.find(edgeId);
-
-            if(it != edges.end())
-            {
-                return it->second;
-            }
-
-            return nullptr;
-        }
-
         void MeshData::DeleteData()
         {
             for(Vertex* vert : vertices)
@@ -217,20 +339,23 @@ namespace GamEncin
 
         MeshData* MeshBuilder::CreateMeshData(const vector<RawVertex> vertices, const vector<unsigned int> indices)
         {
-            MeshData* meshData = new MeshData(vertices.size());
+            vector<Vertex*> tempVertices;
+            tempVertices.resize(vertices.size());
+            unordered_map<unsigned int, Edge*> tempEdges;
+            vector<Face*> tempFaces;
 
             int vertexCount = vertices.size();
             for(int i = 0; i < vertexCount; i++)
             {
-                meshData->vertices[i] = new Vertex(i, vertices[i]);
+                tempVertices[i] = new Vertex(i, vertices[i]);
             }
 
             int triangleCount = indices.size() / 3;
             for(int i = 0; i < triangleCount; i++) //for triangles
             {
-                Vertex* faceVertices[3] = {meshData->vertices[indices[i * 3]],
-                                           meshData->vertices[indices[i * 3 + 1]],
-                                           meshData->vertices[indices[i * 3 + 2]]};
+                Vertex* faceVertices[3] = {tempVertices[indices[i * 3]],
+                                           tempVertices[indices[i * 3 + 1]],
+                                           tempVertices[indices[i * 3 + 2]]};
 
 
                 Face* face = new Face(faceVertices[0], faceVertices[1], faceVertices[2]);
@@ -242,7 +367,8 @@ namespace GamEncin
                     Vertex* endVert = faceVertices[(i + 1) % 3];
 
                     unsigned int edgeId = MeshBuilder::GenerateEdgeId(startVert, endVert);
-                    Edge* edge = meshData->TryFindEdge(edgeId);
+                    auto it = tempEdges.find(edgeId);
+                    Edge* edge = it == tempEdges.end() ? nullptr : it->second;
 
                     if(edge)
                     {
@@ -252,19 +378,40 @@ namespace GamEncin
                     {
                         edge = new Edge(startVert, endVert);
                         edge->leftFace = face;
-                        meshData->edges[edgeId] = edge;
+                        tempEdges[edgeId] = edge;
                     }
 
                     face->edges[i] = edge;
                 }
                 //edges of face and meshData is set
 
-                meshData->faces.push_back(face);
+                tempFaces.push_back(face);
                 //face of meshData is set
             }
 
-            return meshData;
+            for(Vertex* vertex : tempVertices)
+            {
+                vertex->NormalizeNormal();
+            }
+
+            return new MeshData(tempVertices, tempEdges, tempFaces);
         }
+
+        unsigned int MeshBuilder::GenerateFaceId(Vertex* vertex1, Vertex* vertex2, Vertex* vertex3)
+        {
+            array<unsigned int, 3> ids = {vertex1->id, vertex2->id, vertex3->id};
+            sort(ids.begin(), ids.end());
+            return ((ids[0] << 22) | (ids[1] << 11) | ids[2]);
+        }
+
+        unsigned int MeshBuilder::GenerateEdgeId(Vertex* vertex1, Vertex* vertex2)
+        {
+            array<unsigned int, 2> ids = {vertex1->id, vertex2->id};
+            sort(ids.begin(), ids.end());
+            return ((ids[0] << 16) | ids[1]);
+        }
+
+#pragma region Primitive Creators
 
         MeshData* MeshBuilder::CreatePlane(float sideLength)
         {
@@ -327,14 +474,14 @@ namespace GamEncin
 
             vector<RawVertex> vertices =
             {
-                RawVertex(Vector3(-1, -1, -1) * xyzCoord, Vector3(128, 0, 128)),
-                RawVertex(Vector3(1, -1, -1) * xyzCoord, Vector3(255, 165, 0)),
-                RawVertex(Vector3(1, -1, 1) * xyzCoord, Vector3(0, 128, 128)),
-                RawVertex(Vector3(-1, -1, 1) * xyzCoord, Vector3(75, 0, 130)),
-                RawVertex(Vector3(-1, 1, 1) * xyzCoord, Vector3(255, 20, 147)),
-                RawVertex(Vector3(1, 1, 1) * xyzCoord, Vector3(0, 255, 127)),
-                RawVertex(Vector3(1, 1, -1) * xyzCoord, Vector3(255, 105, 180)),
-                RawVertex(Vector3(-1, 1, -1) * xyzCoord, Vector3(0, 191, 255))
+                RawVertex(Vector3(-1, -1, -1) * xyzCoord, Vector2(0,0)),
+                RawVertex(Vector3(1, -1, -1) * xyzCoord, Vector2(0,1)),
+                RawVertex(Vector3(1, -1, 1) * xyzCoord, Vector2(1,0)),
+                RawVertex(Vector3(-1, -1, 1) * xyzCoord, Vector2(1,1)),
+                RawVertex(Vector3(-1, 1, 1) * xyzCoord, Vector2(0,1)),
+                RawVertex(Vector3(1, 1, 1) * xyzCoord, Vector2(0,0)),
+                RawVertex(Vector3(1, 1, -1) * xyzCoord, Vector2(1,0)),
+                RawVertex(Vector3(-1, 1, -1) * xyzCoord, Vector2(1,1))
             };
 
             vector<unsigned int> indices = {
@@ -599,20 +746,6 @@ namespace GamEncin
             }
 
             return CreateMeshData(vertices, indices);
-        }
-
-        unsigned int MeshBuilder::GenerateFaceId(Vertex* vertex1, Vertex* vertex2, Vertex* vertex3)
-        {
-            array<unsigned int, 3> ids = {vertex1->id, vertex2->id, vertex3->id};
-            sort(ids.begin(), ids.end());
-            return ((ids[0] << 22) | (ids[1] << 11) | ids[2]);
-        }
-
-        unsigned int MeshBuilder::GenerateEdgeId(Vertex* vertex1, Vertex* vertex2)
-        {
-            array<unsigned int, 2> ids = {vertex1->id, vertex2->id};
-            sort(ids.begin(), ids.end());
-            return ((ids[0] << 16) | ids[1]);
         }
 
 #pragma endregion

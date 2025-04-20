@@ -6,20 +6,23 @@
 
 //TODO BE CAREFUL WITH THESE IN THE VERTEX SHADER
 #define SSBO_MODEL_MATRICES_BINDING 0
+#define SSBO_TEXTURE_HANDLES_BINDING 1
 
 #define VBO_OBJECT_ID_LAYOUT 0
 #define VBO_POSITION_LAYOUT 1
 #define VBO_COLOR_LAYOUT 2
+#define VBO_NORMAL_LAYOUT 3
+#define VBO_UV_LAYOUT 4
 
 namespace GamEncin
 {
-    struct VAO
+    struct GLArrayObject
     {
     public:
         unsigned int id;
         unsigned int strideSize;
 
-        VAO(unsigned int strideSize);
+        GLArrayObject(unsigned int strideSize);
         //one attribute is one piece of data that is passed to the vertex shader for one vertex, like position, color, normal, etc.
         void LinkAttribute(unsigned int layout, unsigned int numComponents, unsigned int type, unsigned int offsetInBytes);
         void LinkIntegerAttribute(unsigned int layout, unsigned int numComponents, unsigned int type, unsigned int offsetInBytes);
@@ -27,37 +30,56 @@ namespace GamEncin
         void Delete();
     };
 
-    struct VBO
+    template <typename T>
+    struct GLBufferObject
     {
     public:
-        unsigned int id;
+        GLBufferObject(unsigned int typeOfBufferObject, unsigned int typeOfDraw)
+        {
+            this->typeOfBufferObject = typeOfBufferObject;
+            this->typeOfDraw = typeOfDraw;
+            glGenBuffers(1, &this->id);
+        }
 
-        VBO();
-        void Bind();
-        void Update(vector<RawVertex> vertices);
-        void Delete();
+        void Update(vector<T> vectorOfType)
+        {
+            Bind();
+            glBufferData(this->typeOfBufferObject, vectorOfType.size() * sizeof(T), vectorOfType.data(), this->typeOfDraw);
+        }
+
+        void Bind()
+        {
+            glBindBuffer(typeOfBufferObject, id);
+        }
+
+        void Delete()
+        {
+            glDeleteBuffers(1, &id);
+        }
+
+    protected:
+        unsigned int id;
+        unsigned int typeOfBufferObject;
+        unsigned int typeOfDraw;
     };
 
-    struct IBO
+    template <typename T>
+    struct GLShaderStorageBufferObject : GLBufferObject<T>
     {
     public:
-        unsigned int id;
+        GLShaderStorageBufferObject(unsigned int locationToBind, unsigned int typeOfDraw) : GLBufferObject<T>(GL_SHADER_STORAGE_BUFFER, typeOfDraw)
+        {
+            this->locationToBind = locationToBind;
+        }
 
-        IBO();
-        void Bind();
-        void Update(vector<unsigned int> indices);
-        void Delete();
-    };
+        void Bind()
+        {
+            glBindBuffer(this->typeOfBufferObject, this->id);
+            glBindBufferBase(this->typeOfBufferObject, this->locationToBind, this->id);
+        }
 
-    struct SSBO
-    {
-    public:
-        unsigned int id;
-
-        SSBO();
-        void Bind();
-        void Update(vector<Matrix4> modelMatrices);
-        void Delete();
+    protected:
+        unsigned int locationToBind;
     };
 
     struct Shader

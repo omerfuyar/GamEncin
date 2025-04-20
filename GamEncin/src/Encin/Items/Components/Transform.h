@@ -30,8 +30,6 @@ namespace GamEncin
 
         Matrix4 GetModelMatrix();
 
-        void LateUpdate() override;
-
     private:
         Matrix4 modelMatrix = Matrix4(1.0f);
 
