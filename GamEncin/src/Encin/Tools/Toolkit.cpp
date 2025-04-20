@@ -24,7 +24,10 @@ namespace GamEncin
             glGenTextures(1, &id);
             glBindTexture(GL_TEXTURE_2D, id);
 
-            unsigned int imageFormat = (bitsPerPixel == 32) ? GL_RGBA : GL_RGB;
+            unsigned int imageFormat = (bitsPerPixel / 8 == 4) ? GL_RGBA :
+                (bitsPerPixel / 8 == 3) ? GL_RGB :
+                (bitsPerPixel / 8 == 2) ? GL_RG : GL_RED;
+
             glTexImage2D(GL_TEXTURE_2D, 0, imageFormat, size.x, size.y, 0, imageFormat, GL_UNSIGNED_BYTE, data);
             glGenerateMipmap(GL_TEXTURE_2D);
 
@@ -35,6 +38,8 @@ namespace GamEncin
 
             handle = glGetTextureHandleARB(id);
             glMakeTextureHandleResidentARB(handle);
+
+            stbi_image_free(data);
 
             printf("Texture %s loaded with id: %u\n", filePath.c_str(), id);
             printf("Texture %s handle: %llu\n", filePath.c_str(), handle);
@@ -53,6 +58,8 @@ namespace GamEncin
 
         Texture* TextureManager::GetTexture(string textureFilePath)
         {
+            printf("size : %d\n", loadedTextures.size());
+
             auto obj = std::find_if(loadedTextures.begin(), loadedTextures.end(), [&textureFilePath](Texture* texture)
                                     {
                                         return texture->filePath == textureFilePath;
@@ -71,7 +78,6 @@ namespace GamEncin
                 return nullptr;
             }
 
-            stbi_image_free(imageData);
 
             Texture* texture = new Texture(0, imageChannels * 8, imageData, 0, Vector2Int(imageWidth, imageHeight), textureFilePath);
 
@@ -141,10 +147,10 @@ namespace GamEncin
 
 #pragma region RawVertex
 
-        RawVertex::RawVertex(Vector3 position, Vector4 color)
+        RawVertex::RawVertex(Vector3 position, Vector4 temp)
         {
             this->position = position;
-            this->color = color;
+            this->uv = Vector2(temp.x, temp.y);
         }
 
         RawVertex::RawVertex(Vector3 position, Vector2 texture)
@@ -474,23 +480,56 @@ namespace GamEncin
 
             vector<RawVertex> vertices =
             {
-                RawVertex(Vector3(-1, -1, -1) * xyzCoord, Vector2(0,0)),
-                RawVertex(Vector3(1, -1, -1) * xyzCoord, Vector2(0,1)),
-                RawVertex(Vector3(1, -1, 1) * xyzCoord, Vector2(1,0)),
-                RawVertex(Vector3(-1, -1, 1) * xyzCoord, Vector2(1,1)),
-                RawVertex(Vector3(-1, 1, 1) * xyzCoord, Vector2(0,1)),
-                RawVertex(Vector3(1, 1, 1) * xyzCoord, Vector2(0,0)),
-                RawVertex(Vector3(1, 1, -1) * xyzCoord, Vector2(1,0)),
-                RawVertex(Vector3(-1, 1, -1) * xyzCoord, Vector2(1,1))
+                // Bottom face
+                RawVertex(Vector3(-1, -1, -1) * xyzCoord, Vector2(0, 0)),
+                RawVertex(Vector3(1, -1, -1) * xyzCoord, Vector2(1, 0)),
+                RawVertex(Vector3(1, -1, 1) * xyzCoord, Vector2(1, 1)),
+                RawVertex(Vector3(-1, -1, 1) * xyzCoord, Vector2(0, 1)),
+
+                // Top face
+                RawVertex(Vector3(-1, 1, -1) * xyzCoord, Vector2(0, 0)),
+                RawVertex(Vector3(1, 1, -1) * xyzCoord, Vector2(1, 0)),
+                RawVertex(Vector3(1, 1, 1) * xyzCoord, Vector2(1, 1)),
+                RawVertex(Vector3(-1, 1, 1) * xyzCoord, Vector2(0, 1)),
+
+                // Front face
+                RawVertex(Vector3(-1, -1, 1) * xyzCoord, Vector2(0, 0)),
+                RawVertex(Vector3(1, -1, 1) * xyzCoord, Vector2(1, 0)),
+                RawVertex(Vector3(1, 1, 1) * xyzCoord, Vector2(1, 1)),
+                RawVertex(Vector3(-1, 1, 1) * xyzCoord, Vector2(0, 1)),
+
+                // Back face
+                RawVertex(Vector3(-1, -1, -1) * xyzCoord, Vector2(0, 0)),
+                RawVertex(Vector3(1, -1, -1) * xyzCoord, Vector2(1, 0)),
+                RawVertex(Vector3(1, 1, -1) * xyzCoord, Vector2(1, 1)),
+                RawVertex(Vector3(-1, 1, -1) * xyzCoord, Vector2(0, 1)),
+
+                // Left face
+                RawVertex(Vector3(-1, -1, -1) * xyzCoord, Vector2(0, 0)),
+                RawVertex(Vector3(-1, -1, 1) * xyzCoord, Vector2(1, 0)),
+                RawVertex(Vector3(-1, 1, 1) * xyzCoord, Vector2(1, 1)),
+                RawVertex(Vector3(-1, 1, -1) * xyzCoord, Vector2(0, 1)),
+
+                // Right face
+                RawVertex(Vector3(1, -1, -1) * xyzCoord, Vector2(0, 0)),
+                RawVertex(Vector3(1, -1, 1) * xyzCoord, Vector2(1, 0)),
+                RawVertex(Vector3(1, 1, 1) * xyzCoord, Vector2(1, 1)),
+                RawVertex(Vector3(1, 1, -1) * xyzCoord, Vector2(0, 1)),
             };
 
             vector<unsigned int> indices = {
+                // Bottom face
                 0, 1, 2, 2, 3, 0,
+                // Top face
                 4, 5, 6, 6, 7, 4,
-                1, 2, 5, 5, 6, 1,
-                0, 1, 6, 6, 7, 0,
-                2, 3, 4, 4, 5, 2,
-                3, 0, 7, 7, 4, 3
+                // Front face
+                8, 9, 10, 10, 11, 8,
+                // Back face
+                12, 13, 14, 14, 15, 12,
+                // Left face
+                16, 17, 18, 18, 19, 16,
+                // Right face
+                20, 21, 22, 22, 23, 20
             };
 
             return CreateMeshData(vertices, indices);

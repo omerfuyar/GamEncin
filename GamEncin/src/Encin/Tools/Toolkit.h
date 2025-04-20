@@ -66,13 +66,12 @@ namespace GamEncin
             unsigned int objectId = 0;
 
             Vector3 position = Vector3::Zero();
-            Vector4 color = Vector4::One();
             Vector3 normal = Vector3::Forward();
             Vector2 uv = Vector2::Zero();
             //TODO order matters due to shader layout
             //TODO dont forget to link attributes
 
-            RawVertex(Vector3 position, Vector4 color);
+            RawVertex(Vector3 position, Vector4 temp);
             RawVertex(Vector3 position, Vector2 texture);
             void SetObjectId(unsigned int objectId);
             void AddNormal(Vector3 normal);

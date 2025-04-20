@@ -10,9 +10,8 @@
 
 #define VBO_OBJECT_ID_LAYOUT 0
 #define VBO_POSITION_LAYOUT 1
-#define VBO_COLOR_LAYOUT 2
-#define VBO_NORMAL_LAYOUT 3
-#define VBO_UV_LAYOUT 4
+#define VBO_NORMAL_LAYOUT 2
+#define VBO_UV_LAYOUT 3
 
 namespace GamEncin
 {

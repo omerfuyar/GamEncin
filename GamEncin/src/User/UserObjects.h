@@ -89,6 +89,30 @@ public:
             cameraTR->SetLocalPosition(Vector3(0, 0, 0));
         }
 
+        if(Input::GetKey(Press, T))
+        {
+            if(meshes.size() > 0)
+            {
+                auto index = RandomRangeInteger(0, meshes.size() - 1);
+                auto meshToDelete = meshes[index];
+                Renderer::RemoveMesh(meshToDelete);
+                meshes.erase(meshes.begin() + index);
+            }
+        }
+
+        if(Input::GetKey(Press, Y))
+        {
+            Object& myObject = object->GetScene()->CreateObject();
+            Mesh* mesh = myObject.AddComponent<Mesh>();
+            mesh->SetMeshData(MeshBuilder::CreateCube());
+            mesh->SetMeshTexture(TextureManager::GetTexture(RandomRangeInteger(0, 1) == 0 ? "GamEncin/src/Resources/test3.jpg" : "GamEncin/src/Resources/test.jpg"));
+            myObject.tag = "myObj";
+            Renderer::AddMesh(mesh);
+            meshes.push_back(mesh);
+            myObject.transform->AddPosition(RandomVector3() * 10);
+            printf("size : %d\n", meshes.size());
+        }
+
         if(!Input::GetMouseButton(Press, Left))
         {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -123,35 +147,12 @@ public:
             cameraTR->AddScale(Vector3::One() / -4.0f);
         }
     }
-
-    void FixUpdate() override
-    {
-        //if(!Input::GetMouseButton(Press, Left))
-        //{
-        //    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-        //    return;
-        //}
-        //
-        //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        //
-        //Vector3 movement = Input::GetMovementVector();
-        //Vector2 mouseDelta = Input::GetMousePositionDelta();
-        //
-        //camera->cameraFOV += -Input::GetMouseScrollDelta();
-        //
-        //cameraTR->position += cameraTR->direction * camMoveSpeed * movement.y;
-        //cameraTR->position += cameraTR->direction.Cross(Vector3::Up()) * camMoveSpeed * movement.x;
-        //cameraTR->position += Vector3::Up() * camMoveSpeed * movement.z;
-        //
-        //cameraTR->rotation += Vector3(-mouseDelta.y, mouseDelta.x, 0) * camRotateSpeed;
-        //cameraTR->rotation.x = Clamp(cameraTR->rotation.x, -89.0f, 89.0f);
-    }
 };
 
 class MyComponent : public Component
 {
 public:
-    float rotSpeed = 20;
+    float rotSpeed = 25;
 
     MyComponent(Object* obj) : Component(obj) {}
 

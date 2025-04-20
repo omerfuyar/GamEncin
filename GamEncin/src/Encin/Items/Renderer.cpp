@@ -328,8 +328,6 @@ namespace GamEncin
         offset += sizeof(unsigned int);
         mainVAO->LinkAttribute(VBO_POSITION_LAYOUT, 3, GL_FLOAT, offset); //Vector3
         offset += sizeof(Vector3);
-        mainVAO->LinkAttribute(VBO_COLOR_LAYOUT, 4, GL_FLOAT, offset); //Vector4
-        offset += sizeof(Vector4);
         mainVAO->LinkAttribute(VBO_NORMAL_LAYOUT, 3, GL_FLOAT, offset); //Vector3
         offset += sizeof(Vector3);
         mainVAO->LinkAttribute(VBO_UV_LAYOUT, 2, GL_FLOAT, offset); //Vector2

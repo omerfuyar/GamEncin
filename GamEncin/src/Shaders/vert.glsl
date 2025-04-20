@@ -14,13 +14,11 @@ layout(std430, binding = 1) buffer ModelTextureHandles
 
 layout (location = 0) in uint vertObjectId;
 layout (location = 1) in vec3 vertPosition;
-layout (location = 2) in vec4 vertColor;
-layout (location = 3) in vec3 vertNormal;
-layout (location = 4) in vec2 vertUV;
+layout (location = 2) in vec3 vertNormal;
+layout (location = 3) in vec2 vertUV;
 
 flat out uint64_t modelTextureHandle;
 out mat4 modelMatrix; //dunno why Im sending this to fragment shader but it may be useful.
-out vec4 fragColor;
 out vec3 fragNormal;
 out vec2 fragUV;
 
@@ -33,8 +31,6 @@ void main()
     modelTextureHandle = modelTextureHandles[vertObjectId];
 
     gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertPosition, 1.0);
-
-    fragColor = vertColor / 255.0;
 
     fragNormal = mat3(transpose(inverse(modelMatrix))) * vertNormal;
 
