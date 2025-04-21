@@ -7,9 +7,6 @@ namespace GamEncin
     class Transform : public Component
     {
     public:
-        Transform* parent = nullptr;
-        vector<Transform*> children;
-
         Transform(Object* obj);
 
         void SetParent(Transform* newParent);
@@ -20,17 +17,20 @@ namespace GamEncin
         void SetLocalScale(Vector3 newLocalScale);
         void AddScale(Vector3 scaleToAdd);
 
-        Vector3 GetLocalPosition();
-        Vector3 GetGlobalPosition();
-        Vector3 GetLocalRotation();
-        Vector3 GetGlobalRotation();
-        Vector3 GetLocalScale();
-        Vector3 GetGlobalScale();
-        Vector3 GetDirection();
+        Transform* const GetParent();
+        Vector3 const GetLocalPosition();
+        Vector3 const GetGlobalPosition();
+        Vector3 const GetLocalRotation();
+        Vector3 const GetGlobalRotation();
+        Vector3 const GetLocalScale();
+        Vector3 const GetGlobalScale();
+        Vector3 const GetDirection();
 
-        Matrix4 GetModelMatrix();
+        Matrix4 const GetModelMatrix();
 
     private:
+        Transform* parent = nullptr;
+
         Matrix4 modelMatrix = Matrix4(1.0f);
 
         Vector3 position = Vector3::Zero();

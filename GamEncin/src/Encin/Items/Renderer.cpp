@@ -2,6 +2,13 @@
 
 namespace GamEncin
 {
+    bool Renderer::isFullScreen = false;
+    bool Renderer::vSyncEnabled = false;
+    bool Renderer::windowCloseInput = false;
+
+    Vector2Int Renderer::windowSize = Vector2Int(1080, 1080);
+    Vector4 Renderer::clearColor = Vector4(0.2f, 0.3f, 0.3f, 1.0f);
+
     vector<Mesh*> Renderer::meshes;
     Shader* Renderer::shaderProgram = nullptr;
     Camera* Renderer::mainCamera = nullptr;
@@ -18,12 +25,92 @@ namespace GamEncin
     vector<Matrix4> Renderer::batchedModelMatrices;
     vector<unsigned long long> Renderer::batchedTextureHandles;
 
-    Vector2Int Renderer::windowSize = Vector2Int(1080, 1080);
-    Vector4 Renderer::clearColor = Vector4(0.2f, 0.3f, 0.3f, 1.0f);
+    void Renderer::SetWindowProperties(bool newIsFullScreen, bool newVSyncEnabled, Vector2Int newWindowSize, Vector4 newClearColor)
+    {
+        isFullScreen = newIsFullScreen;
+        clearColor = newClearColor;
+        vSyncEnabled = newVSyncEnabled;
+        windowSize = newWindowSize;
 
-    bool Renderer::isFullScreen = false;
-    bool Renderer::vSyncEnabled = false;
-    bool Renderer::windowCloseInput = false;
+        if(Application::IsRunning())
+        {
+            SetFullScreen(isFullScreen);
+            SetVSync(vSyncEnabled);
+        }
+    }
+
+    void Renderer::SetMainCamera(Camera* camera)
+    {
+        if(!camera)
+        {
+            Application::PrintLog(NullPointerErr, "Camera trying to set as main is null");
+            return;
+        }
+
+        mainCamera = camera;
+    }
+
+    void Renderer::SetMainWindowSize(Vector2Int newWindowSize)
+    {
+        windowSize = newWindowSize;
+        glViewport(0, 0, windowSize.x, windowSize.y);
+    }
+
+    void Renderer::SetFullScreen(bool value)
+    {
+        isFullScreen = value;
+
+        if(isFullScreen)
+        {
+            GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+            const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+            glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+        }
+        else
+        {
+            glfwSetWindowMonitor(window, NULL, 100, 100, windowSize.x, windowSize.y, 0);
+        }
+    }
+
+    void Renderer::SetVSync(bool value)
+    {
+        vSyncEnabled = value;
+        glfwSwapInterval(vSyncEnabled ? 1 : 0);
+    }
+
+    bool Renderer::GetWindowCloseInput()
+    {
+        return windowCloseInput;
+    }
+
+    bool Renderer::IsFullScreen()
+    {
+        return isFullScreen;
+    }
+
+    bool Renderer::IsVSyncEnabled()
+    {
+        return vSyncEnabled;
+    }
+
+    GLFWwindow* Renderer::GetMainWindow()
+    {
+        return window;
+    }
+
+    Vector2Int Renderer::GetMainWindowSize()
+    {
+        if(isFullScreen)
+        {
+            GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+            const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+            return Vector2Int(mode->width, mode->height);
+        }
+        else
+        {
+            return windowSize;
+        }
+    }
 
     void Renderer::AddMesh(Mesh* mesh)
     {
@@ -41,15 +128,15 @@ namespace GamEncin
             return;
         }
 
-        mesh->meshData.SetForBatch(meshes.size(), batchedVertices.size(), batchedIndices.size());
-        vector<RawVertex> tempVertices = mesh->meshData.GetRawVertexArray();
-        vector<unsigned int> tempIndices = mesh->meshData.GetIndiceArray();
+        mesh->GetMeshData().SetForBatch(meshes.size(), batchedVertices.size(), batchedIndices.size());
+        vector<RawVertex> tempVertices = mesh->GetMeshData().GetRawVertexArray();
+        vector<unsigned int> tempIndices = mesh->GetMeshData().GetIndiceArray();
 
         batchedVertices.insert(batchedVertices.end(), tempVertices.begin(), tempVertices.end());
         batchedIndices.insert(batchedIndices.end(), tempIndices.begin(), tempIndices.end());
 
-        batchedModelMatrices.push_back(mesh->object->transform->GetModelMatrix());
-        batchedTextureHandles.push_back(mesh->meshTexture->handle);
+        batchedModelMatrices.push_back(mesh->GetOwnerObject()->GetTransform()->GetModelMatrix());
+        batchedTextureHandles.push_back(mesh->GetMeshTexture()->handle);
 
         meshes.push_back(mesh);
     }
@@ -70,39 +157,39 @@ namespace GamEncin
             return;
         }
 
-        auto vertexBeginIt = batchedVertices.begin() + mesh->meshData.batchVertexOffset;
-        auto vertexEndIt = vertexBeginIt + mesh->meshData.vertices.size();
+        auto vertexBeginIt = batchedVertices.begin() + mesh->GetMeshData().batchVertexOffset;
+        auto vertexEndIt = vertexBeginIt + mesh->GetMeshData().vertices.size();
         batchedVertices.erase(vertexBeginIt, vertexEndIt);
 
-        auto indexBeginIt = batchedIndices.begin() + mesh->meshData.batchIndexOffset;
-        auto indexEndIt = indexBeginIt + (mesh->meshData.faces.size() * 3);
+        auto indexBeginIt = batchedIndices.begin() + mesh->GetMeshData().batchIndexOffset;
+        auto indexEndIt = indexBeginIt + (mesh->GetMeshData().faces.size() * 3);
         batchedIndices.erase(indexBeginIt, indexEndIt);
 
-        auto modelMatrixIt = batchedModelMatrices.begin() + mesh->meshData.id;
+        auto modelMatrixIt = batchedModelMatrices.begin() + mesh->GetMeshData().id;
         batchedModelMatrices.erase(modelMatrixIt);
 
-        auto textureHandleIt = batchedTextureHandles.begin() + mesh->meshData.id;
+        auto textureHandleIt = batchedTextureHandles.begin() + mesh->GetMeshData().id;
         batchedTextureHandles.erase(textureHandleIt);
 
-        for(int i = mesh->meshData.id + 1; i < meshes.size(); i++)
+        for(int i = mesh->GetMeshData().id + 1; i < meshes.size(); i++)
         {
             Mesh* tempMesh = meshes[i];
 
-            tempMesh->meshData.SetForBatch(
+            tempMesh->GetMeshData().SetForBatch(
                 i - 1,
-                tempMesh->meshData.batchVertexOffset - mesh->meshData.vertices.size(),
-                tempMesh->meshData.batchIndexOffset - (mesh->meshData.faces.size() * 3)
+                tempMesh->GetMeshData().batchVertexOffset - mesh->GetMeshData().vertices.size(),
+                tempMesh->GetMeshData().batchIndexOffset - (mesh->GetMeshData().faces.size() * 3)
             );
         }
 
-        for(int i = mesh->meshData.batchVertexOffset; i < batchedVertices.size(); i++)
+        for(int i = mesh->GetMeshData().batchVertexOffset; i < batchedVertices.size(); i++)
         {
             batchedVertices[i].objectId--;
         }
 
-        for(int i = mesh->meshData.batchIndexOffset; i < batchedIndices.size(); i++)
+        for(int i = mesh->GetMeshData().batchIndexOffset; i < batchedIndices.size(); i++)
         {
-            batchedIndices[i] -= mesh->meshData.vertices.size();
+            batchedIndices[i] -= mesh->GetMeshData().vertices.size();
         }
 
         meshes.erase(obj);
@@ -192,102 +279,18 @@ namespace GamEncin
     }
 
     void Renderer::EndRenderer()
-    { //TODO
+    {
         glFinish();
-        glfwDestroyWindow(window);
         glfwTerminate();
     }
 
-    void Renderer::SetWindowProperties(bool newIsFullScreen, bool newVSyncEnabled, Vector2Int newWindowSize, Vector4 newClearColor)
+    void Renderer::UpdateSSBOs()
     {
-        isFullScreen = newIsFullScreen;
-        clearColor = newClearColor;
-        vSyncEnabled = newVSyncEnabled;
-        windowSize = newWindowSize;
-
-        if(Application::isRunning)
+        for(Mesh* mesh : meshes)
         {
-            SetFullScreen(isFullScreen);
-            SetVSync(vSyncEnabled);
+            batchedModelMatrices[mesh->GetMeshData().id] = mesh->GetOwnerObject()->GetTransform()->GetModelMatrix();
+            batchedTextureHandles[mesh->GetMeshData().id] = mesh->GetMeshTexture() ? mesh->GetMeshTexture()->handle : 0;
         }
-    }
-
-    void Renderer::SetMainCamera(Camera* camera)
-    {
-        mainCamera = camera;
-    }
-
-    void Renderer::SetMainWindowSize(Vector2Int newWindowSize)
-    {
-        windowSize = newWindowSize;
-        glViewport(0, 0, windowSize.x, windowSize.y);
-    }
-
-    void Renderer::SetFullScreen(bool value)
-    {
-        isFullScreen = value;
-
-        if(isFullScreen)
-        {
-            GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-            const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-            glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
-        }
-        else
-        {
-            glfwSetWindowMonitor(window, NULL, 100, 100, windowSize.x, windowSize.y, 0);
-        }
-    }
-
-    void Renderer::SetVSync(bool value)
-    {
-        vSyncEnabled = value;
-        glfwSwapInterval(vSyncEnabled ? 1 : 0);
-    }
-
-    GLFWwindow* Renderer::GetMainWindow()
-    {
-        return window;
-    }
-
-    Vector2Int Renderer::GetMainWindowSize()
-    {
-        if(isFullScreen)
-        {
-            GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-            const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-            return Vector2Int(mode->width, mode->height);
-        }
-        else
-        {
-            return windowSize;
-        }
-    }
-
-    bool Renderer::GetWindowCloseInput()
-    {
-        return windowCloseInput;
-    }
-
-    bool Renderer::IsFullScreen()
-    {
-        return isFullScreen;
-    }
-
-    bool Renderer::IsVSyncEnabled()
-    {
-        return vSyncEnabled;
-    }
-
-    void Renderer::GLSendUniformMatrix4(unsigned int& location, Matrix4 matrix4)
-    {
-        glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix4));
-    }
-
-    void Renderer::ClearColor(Vector4 clearColor)
-    {
-        glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
     void Renderer::DrawBatchedMeshes()
@@ -305,13 +308,10 @@ namespace GamEncin
         glDrawElements(GL_TRIANGLES, batchedIndices.size(), GL_UNSIGNED_INT, 0);
     }
 
-    void Renderer::UpdateSSBOs()
+    void Renderer::ClearColor(Vector4 clearColor)
     {
-        for(Mesh* mesh : meshes)
-        {
-            batchedModelMatrices[mesh->meshData.id] = mesh->object->transform->GetModelMatrix();
-            batchedTextureHandles[mesh->meshData.id] = mesh->meshTexture ? mesh->meshTexture->handle : 0;
-        }
+        glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
     void Renderer::LinkAttributes()
@@ -332,5 +332,10 @@ namespace GamEncin
         offset += sizeof(Vector3);
         mainVAO->LinkAttribute(VBO_UV_LAYOUT, 2, GL_FLOAT, offset); //Vector2
         offset += sizeof(Vector2);
+    }
+
+    void Renderer::GLSendUniformMatrix4(unsigned int& location, Matrix4 matrix4)
+    {
+        glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix4));
     }
 }

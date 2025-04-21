@@ -11,7 +11,11 @@ namespace GamEncin
         Component(Object* obj);
         ~Component();
 
-        Object* object = nullptr;
+        //Get the object that owns this component
+        Object* GetOwnerObject() const;
+
+        //Set the object that owns this component
+        void SetObject(Object* obj);
 
         virtual void Awake() {}
         virtual void Start() {}
@@ -19,5 +23,8 @@ namespace GamEncin
         virtual void LateUpdate() {}
         virtual void FixUpdate() {}
         virtual void StartOfSecond() {}
+
+    protected:
+        Object* object = nullptr;
     };
 }

@@ -360,14 +360,14 @@ namespace GamEncin
             return *this;
         }
 
-        Vector3 Vector3::Normalized() const
+        Vector3 const Vector3::Normalized() const
         {
             Vector3 result = *this;
             result.Normalize();
             return result;
         }
 
-        Vector3 Vector3::Cross(const Vector3& otherVec) const
+        Vector3 const Vector3::Cross(const Vector3& otherVec)
         {
             return Vector3(
                 y * otherVec.z - z * otherVec.y,
@@ -376,7 +376,7 @@ namespace GamEncin
             ).Normalize();
         }
 
-        glm::vec3 Vector3::ToGLMvec3()
+        glm::vec3 const Vector3::ToGLMvec3() const
         {
             return glm::vec3(x, y, z);
         }

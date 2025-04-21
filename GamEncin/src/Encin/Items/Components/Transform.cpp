@@ -9,37 +9,40 @@ namespace GamEncin
         if(newParent == this)
         {
             Application::PrintLog(idoiterr, "Transform trying to set as parent is itself");
+            return;
         }
 
-        if(parent)
-        {
-            auto child = std::find(parent->children.begin(), parent->children.end(), this);
+        newParent = parent;
 
-            if(child != parent->children.end())
-            {
-                parent->children.erase(child);
-            }
-            else
-            {
-                Application::PrintLog(ElementCouldNotFoundErr, "Transform trying to remove parent is not in children");
-            }
-        }
-
-        parent = newParent;
-
-        if(parent)
-        {
-            auto child = std::find(parent->children.begin(), parent->children.end(), this);
-
-            if(child == parent->children.end())
-            {
-                parent->children.push_back(this);
-            }
-            else
-            {
-                Application::PrintLog(ElementDuplicationErr, "Transform trying to add itself as child is already in children");
-            }
-        }
+        //if(parent)
+        //{
+        //    auto child = std::find(parent->children.begin(), parent->children.end(), this);
+        //
+        //    if(child != parent->children.end())
+        //    {
+        //        parent->children.erase(child);
+        //    }
+        //    else
+        //    {
+        //        Application::PrintLog(ElementCouldNotFoundErr, "Transform trying to remove parent is not in children");
+        //    }
+        //}
+        //
+        //parent = newParent;
+        //
+        //if(parent)
+        //{
+        //    auto child = std::find(parent->children.begin(), parent->children.end(), this);
+        //
+        //    if(child == parent->children.end())
+        //    {
+        //        parent->children.push_back(this);
+        //    }
+        //    else
+        //    {
+        //        Application::PrintLog(ElementDuplicationErr, "Transform trying to add itself as child is already in children");
+        //    }
+        //}
     }
 
     void Transform::SetLocalPosition(Vector3 newLocalPosition)
@@ -72,12 +75,17 @@ namespace GamEncin
         SetLocalScale(localScale + scaleToAdd);
     }
 
-    Vector3 Transform::GetLocalPosition()
+    Transform* const Transform::GetParent()
+    {
+        return parent;
+    }
+
+    Vector3 const Transform::GetLocalPosition()
     {
         return localPosition;
     }
 
-    Vector3 Transform::GetGlobalPosition()
+    Vector3 const Transform::GetGlobalPosition()
     {
         position = parent ? parent->GetGlobalPosition() + localPosition : localPosition;
 
@@ -86,12 +94,12 @@ namespace GamEncin
         return position;
     }
 
-    Vector3 Transform::GetLocalRotation()
+    Vector3 const Transform::GetLocalRotation()
     {
         return localRotation;
     }
 
-    Vector3 Transform::GetGlobalRotation()
+    Vector3 const Transform::GetGlobalRotation()
     {
         rotation = parent ? parent->GetGlobalRotation() + localRotation : localRotation;
 
@@ -106,12 +114,12 @@ namespace GamEncin
         return rotation;
     }
 
-    Vector3 Transform::GetLocalScale()
+    Vector3 const Transform::GetLocalScale()
     {
         return localScale;
     }
 
-    Vector3 Transform::GetGlobalScale()
+    Vector3 const Transform::GetGlobalScale()
     {
         scale = parent ? parent->GetGlobalScale() * localScale : localScale;
 
@@ -124,7 +132,7 @@ namespace GamEncin
         return scale;
     }
 
-    Vector3 Transform::GetDirection()
+    Vector3 const Transform::GetDirection()
     {
         //direction = glm::normalize(glm::vec3(GetModelMatrix()[2]));
 
@@ -137,15 +145,14 @@ namespace GamEncin
 
         Vector3 tempRot = GetGlobalRotation();
 
-        direction.x = CosDeg(tempRot.x) * CosDeg(tempRot.y);
-        direction.y = SinDeg(tempRot.x);
-        direction.z = CosDeg(tempRot.x) * SinDeg(tempRot.y);
-        direction.Normalize();
+        direction = Vector3(CosDeg(tempRot.x) * CosDeg(tempRot.y),
+                            SinDeg(tempRot.x),
+                            CosDeg(tempRot.x) * SinDeg(tempRot.y)).Normalize();
 
         return direction;
     }
 
-    Matrix4 Transform::GetModelMatrix()
+    Matrix4 const Transform::GetModelMatrix()
     {
         Vector3 tempPos = GetGlobalPosition();
         Vector3 tempRot = GetGlobalRotation();

@@ -581,6 +581,7 @@
   <ItemGroup>
     <Image Include="GamEncin\src\Resources\test.jpg" />
     <Image Include="GamEncin\src\Resources\test2.jpg" />
+    <Image Include="GamEncin\src\Resources\test3.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

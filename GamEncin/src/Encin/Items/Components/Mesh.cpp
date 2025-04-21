@@ -24,4 +24,14 @@ namespace GamEncin
     {
         meshTexture = texture;
     }
+
+    MeshData Mesh::GetMeshData() const
+    {
+        return meshData;
+    }
+
+    Texture* Mesh::GetMeshTexture() const
+    {
+        return meshTexture;
+    }
 }

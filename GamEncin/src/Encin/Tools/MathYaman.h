@@ -199,14 +199,14 @@ namespace GamEncin
             // Scales and returns the Vector3 magnitude of 1
             Vector3& Normalize();
             // Returns the normalized version of the Vector3
-            Vector3 Normalized() const;
+            Vector3 const Normalized() const;
             /// <summary>
             /// Returns the cross product of two Vector3
             /// </summary>
             /// <param name="otherVec: ">Vector to take cross</param>
-            Vector3 Cross(const Vector3& otherVec) const;
+            Vector3 const Cross(const Vector3& otherVec);
             // Returns the glm vec3 version of the Vector3
-            glm::vec3 ToGLMvec3();
+            glm::vec3 const ToGLMvec3() const;
 
             // Returns a Vector3(0, 0, 0)
             static Vector3 Zero();

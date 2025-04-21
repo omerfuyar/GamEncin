@@ -9,10 +9,8 @@ namespace GamEncin
             Application::PrintLog(NullPointerErr, "Object trying to set to component is null");
             return;
         }
-        else
-        {
-            object = obj;
-        }
+
+        object = obj;
     }
 
     Component::~Component()
@@ -21,5 +19,21 @@ namespace GamEncin
         {
             object->RemoveComponent(this);
         }
+    }
+
+    Object* Component::GetOwnerObject() const
+    {
+        return object;
+    }
+
+    void Component::SetObject(Object* obj)
+    {
+        if(!obj)
+        {
+            Application::PrintLog(NullPointerErr, "Object trying to set to component is null");
+            return;
+        }
+
+        object = obj;
     }
 }

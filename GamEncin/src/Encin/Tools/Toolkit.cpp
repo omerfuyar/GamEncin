@@ -58,8 +58,6 @@ namespace GamEncin
 
         Texture* TextureManager::GetTexture(string textureFilePath)
         {
-            printf("size : %d\n", loadedTextures.size());
-
             auto obj = std::find_if(loadedTextures.begin(), loadedTextures.end(), [&textureFilePath](Texture* texture)
                                     {
                                         return texture->filePath == textureFilePath;
@@ -81,7 +79,7 @@ namespace GamEncin
 
             Texture* texture = new Texture(0, imageChannels * 8, imageData, 0, Vector2Int(imageWidth, imageHeight), textureFilePath);
 
-            if(Application::isRunning)
+            if(Application::IsRunning())
             {
                 texture->Initialize();
             }
@@ -480,37 +478,31 @@ namespace GamEncin
 
             vector<RawVertex> vertices =
             {
-                // Bottom face
                 RawVertex(Vector3(-1, -1, -1) * xyzCoord, Vector2(0, 0)),
                 RawVertex(Vector3(1, -1, -1) * xyzCoord, Vector2(1, 0)),
                 RawVertex(Vector3(1, -1, 1) * xyzCoord, Vector2(1, 1)),
                 RawVertex(Vector3(-1, -1, 1) * xyzCoord, Vector2(0, 1)),
 
-                // Top face
                 RawVertex(Vector3(-1, 1, -1) * xyzCoord, Vector2(0, 0)),
                 RawVertex(Vector3(1, 1, -1) * xyzCoord, Vector2(1, 0)),
                 RawVertex(Vector3(1, 1, 1) * xyzCoord, Vector2(1, 1)),
                 RawVertex(Vector3(-1, 1, 1) * xyzCoord, Vector2(0, 1)),
 
-                // Front face
                 RawVertex(Vector3(-1, -1, 1) * xyzCoord, Vector2(0, 0)),
                 RawVertex(Vector3(1, -1, 1) * xyzCoord, Vector2(1, 0)),
                 RawVertex(Vector3(1, 1, 1) * xyzCoord, Vector2(1, 1)),
                 RawVertex(Vector3(-1, 1, 1) * xyzCoord, Vector2(0, 1)),
 
-                // Back face
                 RawVertex(Vector3(-1, -1, -1) * xyzCoord, Vector2(0, 0)),
                 RawVertex(Vector3(1, -1, -1) * xyzCoord, Vector2(1, 0)),
                 RawVertex(Vector3(1, 1, -1) * xyzCoord, Vector2(1, 1)),
                 RawVertex(Vector3(-1, 1, -1) * xyzCoord, Vector2(0, 1)),
 
-                // Left face
                 RawVertex(Vector3(-1, -1, -1) * xyzCoord, Vector2(0, 0)),
                 RawVertex(Vector3(-1, -1, 1) * xyzCoord, Vector2(1, 0)),
                 RawVertex(Vector3(-1, 1, 1) * xyzCoord, Vector2(1, 1)),
                 RawVertex(Vector3(-1, 1, -1) * xyzCoord, Vector2(0, 1)),
 
-                // Right face
                 RawVertex(Vector3(1, -1, -1) * xyzCoord, Vector2(0, 0)),
                 RawVertex(Vector3(1, -1, 1) * xyzCoord, Vector2(1, 0)),
                 RawVertex(Vector3(1, 1, 1) * xyzCoord, Vector2(1, 1)),
@@ -518,17 +510,11 @@ namespace GamEncin
             };
 
             vector<unsigned int> indices = {
-                // Bottom face
                 0, 1, 2, 2, 3, 0,
-                // Top face
                 4, 5, 6, 6, 7, 4,
-                // Front face
                 8, 9, 10, 10, 11, 8,
-                // Back face
                 12, 13, 14, 14, 15, 12,
-                // Left face
                 16, 17, 18, 18, 19, 16,
-                // Right face
                 20, 21, 22, 22, 23, 20
             };
 

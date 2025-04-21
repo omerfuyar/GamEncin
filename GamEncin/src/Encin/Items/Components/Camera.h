@@ -9,19 +9,22 @@ namespace GamEncin
     public:
         Camera(Object* obj);
 
-        float cameraFOV = 45.0f;
-        float orthographicSize = 10.0f;
-
         void SetCameraFOV(float fov);
+        void AddCameraFOV(float fov);
         void SetOrthographicSize(float size);
+        void AddOrthographicSize(float size);
         void SetPerspective(bool value);
         void SetClipPlanes(float nearClip, float farClip);
 
-        bool IsPerspective();
+        bool const IsPerspective();
+        float const GetCameraFOV();
+        float const GetOrthographicSize();
 
         void UseCamera(unsigned int& viewMatrixVarId, unsigned int& projectionMatrixVarId);
 
     private:
+        float cameraFOV = 45.0f;
+        float orthographicSize = 10.0f;
         bool isPerspective = true;
 
         float nearClipPlane = 0.1f;

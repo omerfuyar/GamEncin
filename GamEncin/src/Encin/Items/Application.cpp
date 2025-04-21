@@ -4,38 +4,28 @@ namespace GamEncin
 {
 #pragma region Variable Definitions
 
+    double Application::deltaTime = 0.0f;
+    double Application::fixedDeltaTime = 0.0f;
+    double Application::accumulatedTime = 0.0f;
+    double Application::secondsPastFromStart = 0.0f;
+
+    bool Application::printFPS = false;
+    bool Application::isRunning = false;
+
+    unsigned int Application::fixedFPS = 0;
+
+    string Application::programName = "GamEncin";
+
     vector<Scene*> Application::scenes;
+
     Scene* Application::currentScene = nullptr;
-    GLFWwindow* Application::window = nullptr;
-    string Application::programName = "GamEncin Default";
-
-    int Application::fixedFPS = 0;
-
-    float Application::deltaTime = 0.0f,
-        Application::fixedDeltaTime = 0.0f,
-        Application::accumulatedTime = 0.0f,
-        Application::secondsPastFromStart = 0.0f;
-
-    bool Application::printFPS = false,
-        Application::isRunning = false;
 
 #pragma endregion
 
-    Scene& Application::CreateScene()
+    void Application::SetFixedFPS(unsigned int fps)
     {
-        Scene* scene = new Scene();
-        scenes.push_back(scene);
-        return *scene;
-    }
-
-    void Application::SetCurrentScene(Scene* scene)
-    {
-        currentScene = scene;
-    }
-
-    void Application::SetFixedFPS(int fps)
-    {
-        fixedFPS = fps;
+        fixedFPS = Clamp(fps, 1, 1000);
+        fixedDeltaTime = 1.0f / (float) fixedFPS;
     }
 
     void Application::SetProgramName(string name)
@@ -43,141 +33,112 @@ namespace GamEncin
         programName = name;
     }
 
-    void Application::SetFPSPrint(bool value)
+    void Application::SetPrintFPS(bool value)
     {
         printFPS = value;
     }
 
-    Scene* Application::GetCurrentScene()
+    void Application::SetCurrentScene(Scene* scene)
     {
-        return currentScene;
+        if(!scene)
+        {
+            PrintLog(NullPointerErr, "Scene trying to set current is null");
+            return;
+        }
+
+        auto obj = std::find(scenes.begin(), scenes.end(), scene);
+
+        if(obj == scenes.end())
+        {
+            PrintLog(ElementDuplicationErr, "Scene trying to set current does not exist in application scenes");
+            return;
+        }
+
+        currentScene = scene;
     }
 
-    GLFWwindow* Application::GetMainWindow()
+    float const Application::GetFixedDeltaTime()
     {
-        return window;
+        return fixedDeltaTime;
     }
 
-    string Application::GetProgramName()
+    float const Application::GetDeltaTime()
+    {
+        return deltaTime;
+    }
+
+    float const Application::GetAccumulatedTime()
+    {
+        return accumulatedTime;
+    }
+
+    float const Application::GetSecondsPastFromStart()
+    {
+        return secondsPastFromStart;
+    }
+
+    bool const Application::IsRunning()
+    {
+        return isRunning;
+    }
+
+    string const Application::GetProgramName()
     {
         return programName;
     }
 
-    Scene& Application::CreateAndUseScene()
+    Scene* const Application::GetCurrentScene()
+    {
+        return currentScene;
+    }
+
+    Scene& Application::CreateScene()
     {
         Scene* scene = new Scene();
-        scenes.push_back(scene);
+        AddScene(scene);
+        return *scene;
+    }
+
+    Scene& Application::CreateAndUseScene()
+    {
+        Scene* scene = &CreateScene();
         SetCurrentScene(scene);
         return *scene;
     }
 
-    void Application::Awake()
+    void Application::AddScene(Scene* scene)
     {
-        srand(time(NULL));
-        Renderer::InitialRender();//TODO 
-        window = Renderer::GetMainWindow();
-        currentScene->Awake();
-        Input::Initialize(window); //after the window is created
-    }
-
-    void Application::Start()
-    {
-        currentScene->Start();
-        Renderer::RenderFrame();
-    }
-
-    void Application::Update()
-    {
-        Input::UpdateInputs();
-        currentScene->Update();
-    }
-
-    void Application::LateUpdate()
-    {
-        currentScene->LateUpdate();
-        Renderer::RenderFrame();
-    }
-
-    void Application::FixUpdate()
-    {
-        currentScene->FixUpdate();
-    }
-
-    void Application::StartOfSecond()
-    {
-        currentScene->StartOfSecond();
-
-        if(printFPS)
+        if(!scene)
         {
-            char buff[100];
-            snprintf(buff, sizeof(buff), "%s | FPS: %d | Delta Time: %f", programName.c_str(), (int) (1 / deltaTime), deltaTime);
-            glfwSetWindowTitle(window, buff);
-            printf("FPS: %d | Delta Time: %f\n", (int) (1 / deltaTime), deltaTime);
+            PrintLog(NullPointerErr, "Scene trying to add is null");
+            return;
         }
+
+        auto obj = std::find(scenes.begin(), scenes.end(), scene);
+
+        if(obj != scenes.end())
+        {
+            PrintLog(ElementDuplicationErr, "Scene trying to add already exist");
+            return;
+        }
+
+        scenes.push_back(scene);
     }
 
     void Application::Run()
     {
         if(!isRunning)
         {
-            GameLoops();
             isRunning = true;
+            GameLoops();
         }
         else
         {
-            Stop(ProgramDuplicationErr);
+            PrintLog(ProgramDuplicationErr, "Application is already working");
         }
     }
 
-    void Application::Restart()
-    {
-        isRunning = false;
-        PrintLog(Safe);
-        Renderer::EndRenderer();
-        Run();
-    }
-
-    void Application::GameLoops()
-    {
-        Awake();
-
-        Start();
-
-        fixedDeltaTime = 1.0 / (float) fixedFPS;
-        steady_clock::time_point lastFrame = high_resolution_clock::now();
-        float fpsTimer = 0.0;
-
-        while(!Renderer::GetWindowCloseInput())
-        {
-            steady_clock::time_point now = high_resolution_clock::now();
-            deltaTime = duration<float>(now - lastFrame).count();
-            lastFrame = now;
-
-            accumulatedTime += deltaTime;
-            secondsPastFromStart += deltaTime;
-            fpsTimer += deltaTime;
-
-            Update();
-
-            while(accumulatedTime >= fixedDeltaTime)
-            {
-                FixUpdate();
-                accumulatedTime -= fixedDeltaTime;
-            }
-
-            LateUpdate();
-
-            if(fpsTimer >= 1.0f)
-            {
-                StartOfSecond();
-                fpsTimer = 0;
-            }
-        }
-
-        Stop(Safe);
-    }
-
-    void Application::PrintLog(LogType logType)
+    void Application::PrintLog(LogType logType, string addMessage)
     {
         printf("\n");
 
@@ -231,24 +192,11 @@ namespace GamEncin
         }
 
         printf("\n");
-    }
 
-    void Application::PrintLog(LogType logType, string addMessage)
-    {
-        PrintLog(logType);
-        printf("Additional Message : %s\n\n", addMessage.c_str());
-    }
-
-    void Application::Stop(LogType logType)
-    {
-        isRunning = false;
-        printf("\nExit Code : %d\n", logType);
-        PrintLog(logType);
-        Renderer::EndRenderer();
-        for(Scene* scene : scenes)
-            delete scene;
-        scenes.clear();
-        exit(logType);
+        if(addMessage != "")
+        {
+            printf("Additional Message : %s\n", addMessage.c_str());
+        }
     }
 
     void Application::Stop(LogType logType, string addMessage)
@@ -257,9 +205,90 @@ namespace GamEncin
         printf("\nExit Code : %d\n", logType);
         PrintLog(logType, addMessage);
         Renderer::EndRenderer();
-        for(Scene* scene : scenes)
-            delete scene;
-        scenes.clear();
         exit(logType);
+    }
+
+    void Application::GameLoops()
+    {
+        Awake();
+
+        Start();
+
+        fixedDeltaTime = 1.0f / (double) fixedFPS;
+        steady_clock::time_point lastFrame = high_resolution_clock::now();
+        double fpsTimer = 0.0f;
+
+        while(!Renderer::GetWindowCloseInput())
+        {
+            steady_clock::time_point now = high_resolution_clock::now();
+            deltaTime = duration<float>(now - lastFrame).count();
+            lastFrame = now;
+
+            accumulatedTime += deltaTime;
+            secondsPastFromStart += deltaTime;
+            fpsTimer += deltaTime;
+
+            Update();
+
+            while(accumulatedTime >= fixedDeltaTime)
+            {
+                FixUpdate();
+                accumulatedTime -= fixedDeltaTime;
+            }
+
+            LateUpdate();
+
+            if(fpsTimer >= 1.0f)
+            {
+                StartOfSecond();
+                fpsTimer = 0;
+            }
+        }
+
+        Stop(Safe, "End of game loops");
+    }
+
+    void Application::Awake()
+    {
+        srand(time(NULL));
+        Renderer::InitialRender();//TODO 
+        currentScene->Awake();
+        Input::Initialize(Renderer::GetMainWindow()); //after the window is created
+    }
+
+    void Application::Start()
+    {
+        currentScene->Start();
+        Renderer::RenderFrame();
+    }
+
+    void Application::Update()
+    {
+        Input::UpdateInputs();
+        currentScene->Update();
+    }
+
+    void Application::LateUpdate()
+    {
+        currentScene->LateUpdate();
+        Renderer::RenderFrame();
+    }
+
+    void Application::FixUpdate()
+    {
+        currentScene->FixUpdate();
+    }
+
+    void Application::StartOfSecond()
+    {
+        currentScene->StartOfSecond();
+
+        if(printFPS)
+        {
+            char buff[100];
+            snprintf(buff, sizeof(buff), "%s | FPS: %d | Delta Time: %f", programName.c_str(), (int) (1 / deltaTime), deltaTime);
+            glfwSetWindowTitle(Renderer::GetMainWindow(), buff);
+            printf("FPS: %d | Delta Time: %f\n", (int) (1 / deltaTime), deltaTime);
+        }
     }
 }

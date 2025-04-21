@@ -12,10 +12,14 @@ namespace GamEncin
         Mesh(Object* obj);
         ~Mesh();
 
-        MeshData meshData;
-        Texture* meshTexture;
-
         void SetMeshData(MeshData* data);
         void SetMeshTexture(Texture* texture);
+
+        MeshData GetMeshData() const;
+        Texture* GetMeshTexture() const;
+
+    private:
+        MeshData meshData;
+        Texture* meshTexture = nullptr;
     };
 }

@@ -10,14 +10,11 @@ namespace GamEncin
     class Scene
     {
     public:
-        Object& CreateObject();
-        Object& CreateObject(string name, string tag);
-        Object& CreateAndUseCameraObject();
         Object* FindFirstObjectWitTag(string tag);
         vector<Object*> FindObjectsWithTag(string tag);
 
-        void SetMainCamera(Camera* camera);
-
+        Object& CreateObject(string name = "Object", string tag = "Default", Layer layer = Layer::Default);
+        Object& CreateAndUseCameraObject();
         void AddObject(Object* object);
         void RemoveObject(Object* object);
         void Clear();

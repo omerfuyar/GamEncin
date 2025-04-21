@@ -11,23 +11,14 @@ namespace GamEncin
 
     class Object
     {
-    private:
-        Scene* scene = nullptr;
-        vector<Component*> components;
-
     public:
-        string name = "Object",
-            tag = "Default Tag";
-
-        Layer layer;
-
-        Transform* transform = AddComponent<Transform>();
-
-        Object() = default;
-        Object(Scene* scene);
-        Object(Scene* scene, string name, string tag);
-        Object(Scene* scene, string name, string tag, Layer layer);
+        Object(Scene* scene = nullptr, string name = "Object", string tag = "Default", Layer layer = Layer::Default);
         ~Object();
+
+        void SetScene(Scene* scene);
+        void SetName(string name);
+        void SetTag(string tag);
+        void SetLayer(Layer layer);
 
         template <typename T>
         T* GetComponent()
@@ -45,6 +36,11 @@ namespace GamEncin
             Application::PrintLog(NullPointerErr, "Component couldn't found in the object");
             return nullptr;
         }
+        Scene* GetScene() const;
+        string GetName() const;
+        string GetTag() const;
+        Layer GetLayer() const;
+        Transform* GetTransform() const;
 
         template <typename T>
         T* AddComponent()
@@ -70,7 +66,7 @@ namespace GamEncin
 
             return component;
         }
-
+        void AddComponent(Component* component);
         template <typename T>
         void RemoveComponent()
         {
@@ -86,11 +82,6 @@ namespace GamEncin
                 Application::PrintLog(ElementCouldNotFoundErr, "Couldn't found component to remove");
             }
         }
-
-
-        Scene* GetScene();
-
-        void AddComponent(Component* component);
         void RemoveComponent(Component* component);
 
         void Awake();
@@ -99,5 +90,16 @@ namespace GamEncin
         void LateUpdate();
         void FixUpdate();
         void StartOfSecond();
+
+    private:
+        Scene* scene = nullptr;
+
+        string name = "Object",
+            tag = "Default";
+
+        Layer layer;
+
+        Transform* transform = AddComponent<Transform>();
+        vector<Component*> components;
     };
 }

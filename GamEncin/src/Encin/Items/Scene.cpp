@@ -2,33 +2,12 @@
 
 namespace GamEncin
 {
-    Object& Scene::CreateObject()
-    {
-        Object* object = new Object(this);
-        AddObject(object);
-        return *object;
-    }
-
-    Object& Scene::CreateObject(string name, string tag)
-    {
-        Object* object = new Object(this, name, tag);
-        AddObject(object);
-        return *object;
-    }
-
-    Object& Scene::CreateAndUseCameraObject()
-    {
-        Object& object = CreateObject("Camera", "Camera");
-        Camera* camera = object.AddComponent<Camera>();
-        SetMainCamera(camera);
-        return object;
-    }
 
     Object* Scene::FindFirstObjectWitTag(string tag)
     {
         for(Object* object : objects)
         {
-            if(object->tag == tag)
+            if(object->GetTag() == tag)
             {
                 return object;
             }
@@ -45,7 +24,7 @@ namespace GamEncin
 
         for(Object* object : objects)
         {
-            if(object->tag == tag)
+            if(object->GetTag() == tag)
             {
                 foundObjects.push_back(object);
             }
@@ -54,15 +33,19 @@ namespace GamEncin
         return foundObjects;
     }
 
-    void Scene::SetMainCamera(Camera* camera)
+    Object& Scene::CreateObject(string name, string tag, Layer layer)
     {
-        if(!camera)
-        {
-            Application::PrintLog(NullPointerErr, "Camera trying to set is null");
-            return;
-        }
+        Object* object = new Object(this, name, tag, layer);
+        AddObject(object);
+        return *object;
+    }
 
+    Object& Scene::CreateAndUseCameraObject()
+    {
+        Object& object = CreateObject("Camera", "Camera");
+        Camera* camera = object.AddComponent<Camera>();
         Renderer::SetMainCamera(camera);
+        return object;
     }
 
     void Scene::AddObject(Object* object)
@@ -94,14 +77,12 @@ namespace GamEncin
 
         auto obj = std::find(objects.begin(), objects.end(), object);
 
-        if(obj != objects.end())
-        {
-            objects.erase(obj);
-        }
-        else
+        if(obj == objects.end())
         {
             Application::PrintLog(ElementCouldNotFoundErr, "Couldn't found object to remove");
         }
+
+        objects.erase(obj);
     }
 
     void Scene::Clear()

@@ -2,17 +2,6 @@
 
 namespace GamEncin
 {
-    Object::Object(Scene* scene)
-    {
-        this->scene = scene;
-    }
-
-    Object::Object(Scene* scene, string name, string tag)
-    {
-        this->scene = scene;
-        this->name = name;
-        this->tag = tag;
-    }
 
     Object::Object(Scene* scene, string name, string tag, Layer layer)
     {
@@ -30,14 +19,49 @@ namespace GamEncin
         }
 
         components.clear();
-
-        if(scene)
-        {
-            scene->RemoveObject(this);
-        }
     }
 
-    Scene* Object::GetScene()
+    void Object::SetScene(Scene* scene)
+    {
+        this->scene = scene;
+    }
+
+    void Object::SetName(string name)
+    {
+        this->name = name;
+    }
+
+    void Object::SetTag(string tag)
+    {
+        this->tag = tag;
+    }
+
+    void Object::SetLayer(Layer layer)
+    {
+        this->layer = layer;
+    }
+
+    string Object::GetName() const
+    {
+        return name;
+    }
+
+    string Object::GetTag() const
+    {
+        return tag;
+    }
+
+    Layer Object::GetLayer() const
+    {
+        return layer;
+    }
+
+    Transform* Object::GetTransform() const
+    {
+        return transform;
+    }
+
+    Scene* Object::GetScene() const
     {
         return scene;
     }
