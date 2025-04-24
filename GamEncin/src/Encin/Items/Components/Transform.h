@@ -1,6 +1,5 @@
 #pragma once
 #include "Encin/Items/Components/Component.h"
-#include "Encin/Tools/MathYaman.h"
 
 namespace GamEncin
 {

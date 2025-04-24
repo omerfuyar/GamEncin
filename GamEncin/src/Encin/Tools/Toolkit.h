@@ -4,10 +4,14 @@
 #include <GLAD/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <typeindex>
+
 namespace GamEncin
 {
     namespace Toolkit
     {
+#pragma region Other
+
 #pragma region Enums
 
         // all the layers that can be used in the game
@@ -19,8 +23,41 @@ namespace GamEncin
         // all end types, exit codes that can be used in the game
         enum LogType
         {
-            Safe, GLFWErr, GLADErr, ShaderCompilationErr, ShaderLinkingErr, ElementCouldNotFoundErr, TypeMismachErr, IOErr, IODeviceWarn, ProgramDuplicationErr, NullPointerErr, ElementDuplicationErr, IndexOutOfRangeErr, idoiterr
+            Safe, GLFWErr, GLADErr, ShaderCompilationErr, ShaderLinkingErr, ElementCouldNotFoundErr, TypeMismachErr, IOErr, IODeviceWarn, ProgramDuplicationErr, NullPointerErr, ElementDuplicationErr, IndexOutOfRangeErr, idoiterr, ComponentRequirementErr
         };
+
+#pragma endregion
+
+#pragma region BinaryTree
+
+        //TODO
+        //template <typename T>
+        //struct BinaryTreeNode
+        //{
+        //    BinaryTreeNode(T data) : data(data) {}
+        //
+        //    T data;
+        //    BinaryTreeNode* left = nullptr;
+        //    BinaryTreeNode* right = nullptr;
+        //};
+        //
+        //template <typename T>
+        //struct BinaryTree
+        //{
+        //public:
+        //    BinaryTree() = default;
+        //
+        //    BinaryTreeNode<T>* GetRoot() const { return root; }
+        //
+        //    void AddNode(T data);
+        //    void DeleteNode(T data);
+        //    void Clear();
+        //
+        //private:
+        //    BinaryTreeNode<T>* root = nullptr;
+        //};
+
+#pragma endregion
 
 #pragma endregion
 
@@ -127,7 +164,6 @@ namespace GamEncin
             unordered_map<unsigned int, Edge*> edges;
             vector<Face*> faces;
 
-            MeshData() = default;
             MeshData(vector<Vertex*> vertices, unordered_map<unsigned int, Edge*> edges, vector<Face*> faces);
 
             vector<unsigned int> GetIndiceArray();

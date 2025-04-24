@@ -2,9 +2,6 @@
 #include "Encin/Tools/MathYaman.h"
 #include "Encin/Tools/OpenGLObjects.h"
 
-#include "GLAD/glad.h"
-#include "GLFW/glfw3.h"
-
 namespace GamEncin
 {
     class Camera;
@@ -20,11 +17,11 @@ namespace GamEncin
         static void SetFullScreen(bool value);
         static void SetVSync(bool value);
 
-        static bool GetWindowCloseInput();
-        static bool IsFullScreen();
-        static bool IsVSyncEnabled();
-        static GLFWwindow* GetMainWindow();
-        static Vector2Int GetMainWindowSize();
+        static  bool const GetWindowCloseInput();
+        static  bool const IsFullScreen();
+        static  bool const IsVSyncEnabled();
+        static  GLFWwindow* const GetMainWindow();
+        static  Vector2Int const GetMainWindowSize();
 
         static void AddMesh(Mesh* mesh);
         static void RemoveMesh(Mesh* mesh);
@@ -56,6 +53,10 @@ namespace GamEncin
         static vector<unsigned int> batchedIndices;
         static vector<Matrix4> batchedModelMatrices;
         static vector<unsigned long long> batchedTextureHandles;
+
+        Renderer() = delete;
+        Renderer(const Renderer&) = delete;
+        void operator=(const Renderer&) = delete;
 
         static void UpdateSSBOs();
         static void DrawBatchedMeshes();

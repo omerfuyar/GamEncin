@@ -41,27 +41,43 @@ namespace GamEncin
         this->layer = layer;
     }
 
-    string Object::GetName() const
+    bool const Object::HasComponent(std::type_index componentType)
+    {
+        for(Component* component : components)
+        {
+            printf("Component Type : %s\n", typeid(*component).name());
+            printf("Component Type : %s\n", componentType.name());
+            printf("%d\n", componentType == typeid(*component));
+            if(componentType == typeid(component))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    string const Object::GetName()
     {
         return name;
     }
 
-    string Object::GetTag() const
+    string const Object::GetTag()
     {
         return tag;
     }
 
-    Layer Object::GetLayer() const
+    Layer const Object::GetLayer()
     {
         return layer;
     }
 
-    Transform* Object::GetTransform() const
+    Transform* const Object::GetTransform()
     {
         return transform;
     }
 
-    Scene* Object::GetScene() const
+    Scene* const Object::GetScene()
     {
         return scene;
     }
@@ -95,13 +111,60 @@ namespace GamEncin
 
         auto obj = std::find(components.begin(), components.end(), component);
 
-        if(obj != components.end())
-        {
-            components.erase(obj);
-        }
-        else
+        if(obj == components.end())
         {
             Application::PrintLog(ElementCouldNotFoundErr, "Couldn't found component to remove");
+            return;
+        }
+
+        components.erase(obj);
+    }
+
+    void Object::OnTriggerEnter(const RigidBody* enteredRigidBody)
+    {
+        for(Component* component : components)
+        {
+            component->OnTriggerEnter(enteredRigidBody);
+        }
+    }
+
+    void Object::OnTriggerStay(const RigidBody* stayingRigidBody)
+    {
+        for(Component* component : components)
+        {
+            component->OnTriggerStay(stayingRigidBody);
+        }
+    }
+
+    void Object::OnTriggerExit(const RigidBody* exitedRigidBody)
+    {
+        for(Component* component : components)
+        {
+            component->OnTriggerExit(exitedRigidBody);
+        }
+    }
+
+    void Object::OnCollisionEnter(const RigidBody* enteredRigidBody)
+    {
+        for(Component* component : components)
+        {
+            component->OnCollisionEnter(enteredRigidBody);
+        }
+    }
+
+    void Object::OnCollisionStay(const RigidBody* stayingRigidBody)
+    {
+        for(Component* component : components)
+        {
+            component->OnCollisionStay(stayingRigidBody);
+        }
+    }
+
+    void Object::OnCollisionExit(const RigidBody* exitedRigidBody)
+    {
+        for(Component* component : components)
+        {
+            component->OnCollisionExit(exitedRigidBody);
         }
     }
 

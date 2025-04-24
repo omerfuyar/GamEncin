@@ -1,4 +1,4 @@
-In OpenGL, objects like VAOs, VBOs, shaders, and textures arehandles or
+In OpenGL, objects like VAOs, VBOs, shaders, and textures are handles or
 IDs that reference data stored in the GPU. So we use GLuint to store them.
 
 lifecycle / pipeline of each object:

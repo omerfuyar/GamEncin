@@ -1,8 +1,11 @@
 #pragma once
+#include "Encin/Tools/MathYaman.h"
+#include "Encin/Tools/Toolkit.h"
 
 namespace GamEncin
 {
     class Object;
+    class RigidBody;
 
     class Component
     {
@@ -12,10 +15,21 @@ namespace GamEncin
         ~Component();
 
         //Get the object that owns this component
-        Object* GetOwnerObject() const;
+        Object* const GetOwnerObject();
 
         //Set the object that owns this component
         void SetObject(Object* obj);
+
+        virtual void OnTriggerEnter(const RigidBody* enteredRigidBody) {};
+        virtual void OnTriggerStay(const RigidBody* stayingRigidBody) {};
+        virtual void OnTriggerExit(const RigidBody* exitedRigidBody) {};
+
+        virtual void OnCollisionEnter(const RigidBody* enteredRigidBody) {};
+        virtual void OnCollisionStay(const RigidBody* stayingRigidBody) {};
+        virtual void OnCollisionExit(const RigidBody* exitedRigidBody) {};
+
+        virtual void OnEnable() {}
+        virtual void OnDisable() {}
 
         virtual void Awake() {}
         virtual void Start() {}

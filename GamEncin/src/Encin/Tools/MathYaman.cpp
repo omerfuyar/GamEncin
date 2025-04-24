@@ -6,14 +6,21 @@ namespace GamEncin
     {
 #pragma region Constants
 
-        const double E = 2.7182817,
-            PI = 3.1415927,
-            GRAVITY = 9.80665,
-            G = 6.67 / 1e11;
+        const double E = 2.7182817;
+        const double PI = 3.1415927;
+        const double GRAVITY = 9.80665;
+        const double G = 6.67 / 1e11;
 
 #pragma endregion
 
 #pragma region Basic Functions
+
+        int Factorial(int n)
+        {
+            if(n < 0) return -1;
+            if(n == 0 || n == 1) return 1;
+            return n * Factorial(n - 1);
+        }
 
         bool Between(float value, float min, float max)
         {
@@ -48,6 +55,11 @@ namespace GamEncin
         float Power(float base, float exponent)
         {
             return pow(base, exponent);
+        }
+
+        float Square(float value)
+        {
+            return value * value;
         }
 
         float Log(float value, float base)
@@ -354,9 +366,16 @@ namespace GamEncin
         Vector3& Vector3::Normalize()
         {
             float magnitude = GetMagnitude();
+
+            if(magnitude == 0)
+            {
+                return *this;
+            }
+
             x /= magnitude;
             y /= magnitude;
             z /= magnitude;
+
             return *this;
         }
 
@@ -374,6 +393,11 @@ namespace GamEncin
                 z * otherVec.x - x * otherVec.z,
                 x * otherVec.y - y * otherVec.x
             ).Normalize();
+        }
+
+        float const Vector3::Dot(const Vector3& otherVec)
+        {
+            return x * otherVec.x + y * otherVec.y + z * otherVec.z;
         }
 
         glm::vec3 const Vector3::ToGLMvec3() const
@@ -591,6 +615,16 @@ namespace GamEncin
             return value < min ? min : value > max ? max : value;
         }
 
+        float ClampMin(float value, float min)
+        {
+            return value < min ? min : value;
+        }
+
+        float ClampMax(float value, float max)
+        {
+            return value > max ? max : value;
+        }
+
         Vector2 ClampVectorMagnitude(Vector2 vector, float max)
         {
             float magnitude = vector.GetMagnitude();
@@ -626,6 +660,22 @@ namespace GamEncin
         float Distance(Vector3 a, Vector3 b)
         {
             return (b - a).GetMagnitude();
+        }
+
+        bool IsSubString(const char* str, const char* subStr)
+        {
+            if(!str || !subStr)
+                return false;
+            int strLen = strlen(str);
+            int subStrLen = strlen(subStr);
+            if(strLen < subStrLen)
+                return false;
+            for(int i = 0; i <= strLen - subStrLen; ++i)
+            {
+                if(strncmp(&str[i], subStr, subStrLen) == 0)
+                    return true;
+            }
+            return false;
         }
 
 #pragma endregion

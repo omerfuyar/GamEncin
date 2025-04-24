@@ -43,6 +43,9 @@ namespace GamEncin
 
 #pragma region Basic Functions
 
+        // Returns the factorial of the number
+        int Factorial(int n);
+
         // Returns true if the value is between min and max values, inclusive
         bool Between(float value, float min, float max);
 
@@ -63,6 +66,9 @@ namespace GamEncin
 
         // Returns the power of the base to the exponent
         float Power(float base, float exponent);
+
+        // Returns the Square of the float value
+        float Square(float value);
 
         // Returns the logarithm of the value to the base
         float Log(float value, float base);
@@ -196,15 +202,22 @@ namespace GamEncin
 
             // Returns the magnitude of the Vector3
             float GetMagnitude() const;
+
             // Scales and returns the Vector3 magnitude of 1
             Vector3& Normalize();
+
             // Returns the normalized version of the Vector3
             Vector3 const Normalized() const;
+
             /// <summary>
             /// Returns the cross product of two Vector3
             /// </summary>
             /// <param name="otherVec: ">Vector to take cross</param>
             Vector3 const Cross(const Vector3& otherVec);
+
+            // Returns the dot product of two Vector3
+            float const Dot(const Vector3& otherVec);
+
             // Returns the glm vec3 version of the Vector3
             glm::vec3 const ToGLMvec3() const;
 
@@ -352,16 +365,32 @@ namespace GamEncin
         /// <summary>
         /// Clamps the value between min and max values
         /// </summary>
-        /// <param name="value:">Value to restrict</param>
+        /// <param name="value:">Value to clamp</param>
         /// <param name="min:">Min value</param>
         /// <param name="max:">Max value</param>
         /// <returns>Min, max or inbetween float</returns>
         float Clamp(float value, float min, float max);
 
         /// <summary>
+        /// Sets the value to min if it is smaller than min
+        /// </summary>
+        /// <param name="value">Value to clamp</param>
+        /// <param name="min">Min value</param>
+        /// <returns></returns>
+        float ClampMin(float value, float min);
+
+        /// <summary>
+        /// Sets the value to max if it is greater than max
+        /// </summary>
+        /// <param name="value">Value to clamp</param>
+        /// <param name="max">Max value</param>
+        /// <returns></returns>
+        float ClampMax(float value, float max);
+
+        /// <summary>
         /// Clamps the Vector2 magnitude between 0 and max value
         /// </summary>
-        /// <param name="value:">Vector to restrict</param>
+        /// <param name="value:">Vector to clamp</param>
         /// <param name="max:">Max magnitude</param>
         /// <returns>Original vector or a Vector2 with max magnitude</returns>
         Vector2 ClampVectorMagnitude(Vector2 vector, float max);
@@ -414,8 +443,16 @@ namespace GamEncin
         /// </summary>
         /// <param name="startVec:">Start vector</param>
         /// <param name="endVec:">End vector</param>
-        /// <returns> </returns>
+        /// <returns></returns>
         float Distance(Vector3 a, Vector3 b);
+
+        /// <summary>
+        /// Returns true if string2 is a substring of string1
+        /// </summary>
+        /// <param name="string1"></param>
+        /// <param name="string2"></param>
+        /// <returns></returns>
+        bool IsSubString(const char* string1, const char* string2);
 
 #pragma endregion
     }

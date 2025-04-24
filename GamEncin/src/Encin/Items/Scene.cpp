@@ -3,7 +3,7 @@
 namespace GamEncin
 {
 
-    Object* Scene::FindFirstObjectWitTag(string tag)
+    Object* const Scene::FindFirstObjectWitTag(string tag)
     {
         for(Object* object : objects)
         {
@@ -18,7 +18,7 @@ namespace GamEncin
         return nullptr;
     }
 
-    vector<Object*> Scene::FindObjectsWithTag(string tag)
+    vector<Object*> const Scene::FindObjectsWithTag(string tag)
     {
         vector<Object*> foundObjects;
 
@@ -80,12 +80,13 @@ namespace GamEncin
         if(obj == objects.end())
         {
             Application::PrintLog(ElementCouldNotFoundErr, "Couldn't found object to remove");
+            return;
         }
 
         objects.erase(obj);
     }
 
-    void Scene::Clear()
+    void Scene::ClearScene()
     {
         objects.clear();
     }

@@ -1,7 +1,6 @@
 #pragma once 
 #include "GamEncin.h"
 
-
 class MyComponent : public Component
 {
 public:
@@ -13,7 +12,7 @@ public:
     {
         return;
 
-        printf("myComponent StartOfSecond : id : %d, \n", object->GetComponent<Mesh>()->GetMeshData().id);
+        printf("myComponent StartOfSecond : id : %d, \n", object->GetComponent<Mesh>()->GetMeshData()->id);
 
         Vector3 tempVec = object->GetTransform()->GetLocalPosition();
         printf("\nmyObject localPosition: %f %f %f\n", tempVec.x, tempVec.y, tempVec.z);
@@ -67,8 +66,8 @@ public:
     Transform* cameraTR = nullptr;
     Camera* camera = nullptr;
     GLFWwindow* window = nullptr;
-
-    vector<Mesh*> meshes;
+    RigidBody* sphereRB = nullptr;
+    RigidBody* planeRB = nullptr;
 
     CameraController(Object* obj) : Component(obj) {}
 
@@ -113,17 +112,11 @@ public:
         cameraTR = object->GetTransform();
         camera = object->GetComponent<Camera>();
         window = Renderer::GetMainWindow();
-
-        vector<Object*> tempObjs = object->GetScene()->FindObjectsWithTag("myObj");
-
-        for(Object* obj : tempObjs)
-        {
-            meshes.push_back(obj->GetComponent<Mesh>());
-        }
     }
 
     void Update() override
     {
+
         if(Input::GetKey(Press, KeyCode::Escape) || Input::GetKey(Press, Q))
         {
             Application::Stop(Safe);
@@ -145,29 +138,14 @@ public:
             cameraTR->SetLocalPosition(Vector3(0, 0, 0));
         }
 
-        if(Input::GetKey(Press, T))
+        if(Input::GetKey(Down, T))
         {
-            if(meshes.size() > 0)
-            {
-                auto index = RandomRangeInteger(0, meshes.size() - 1);
-                auto meshToDelete = meshes[index];
-                Renderer::RemoveMesh(meshToDelete);
-                meshes.erase(meshes.begin() + index);
-            }
+            sphereRB->SetDynamic(!sphereRB->IsDynamic());
+            planeRB->SetDynamic(!planeRB->IsDynamic());
         }
 
         if(Input::GetKey(Down, Y))
         {
-            Object& myObject = object->GetScene()->CreateObject();
-            Mesh* mesh = myObject.AddComponent<Mesh>();
-            mesh->SetMeshData(MeshBuilder::CreateCube());
-            mesh->SetMeshTexture(TextureManager::GetTexture(RandomRangeInteger(0, 1) == 0 ? "GamEncin/src/Resources/test3.jpg" : "GamEncin/src/Resources/test.jpg"));
-            myObject.SetTag("myObj");
-            Renderer::AddMesh(mesh);
-            meshes.push_back(mesh);
-            myObject.GetTransform()->AddPosition(RandomVector3() * 10);
-            myObject.AddComponent<MyComponent>();
-            printf("size : %d\n", meshes.size());
         }
 
         if(Input::GetKey(Down, O))
@@ -202,11 +180,11 @@ public:
 
         if(Input::GetKey(Down, B))
         {
-            cameraTR->AddScale(Vector3::One() / 4.0f);
+            sphereRB->GetOwnerObject()->GetTransform()->AddScale(Vector3::One() / 4.0f);
         }
         if(Input::GetKey(Down, V))
         {
-            cameraTR->AddScale(Vector3::One() / -4.0f);
+            sphereRB->GetOwnerObject()->GetTransform()->AddScale(Vector3::One() / -4.0f);
         }
     }
 };

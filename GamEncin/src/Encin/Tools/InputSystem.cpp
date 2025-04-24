@@ -6,7 +6,7 @@ namespace GamEncin
     {
 #pragma region Enum Arrays
 
-        //TODO Be careful with the order of the keys and adding new keys, these arrays should be identical with the enum type in Tools.h
+        // TODO Be careful with the order of the keys and adding new keys, these arrays should be identical with the enum type in Tools.h
         KeyCode keyCodeArr[] = {
             A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
 
@@ -14,12 +14,10 @@ namespace GamEncin
 
             Space, Enter, BackSpace, Escape, Tab, LeftShift, RightShift, LeftControl, RightControl, LeftAlt, RightAlt, CapsLock, UpArrow, DownArrow, LeftArrow, RightArrow,
 
-            F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12
-        };
+            F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12};
 
         MouseButtonCode mouseButtonArr[] = {
-            Left, Right, Middle, Fn1, Fn2, Fn3, Fn4, Fn5
-        };
+            Left, Right, Middle, Fn1, Fn2, Fn3, Fn4, Fn5};
 
         GamepadButtonCode gamepadButtonArr[] = {
             A_Cross, B_Circle, X_Square, Y_Triangle,
@@ -28,8 +26,7 @@ namespace GamEncin
 
             Back, Start, Guide,
 
-            DPadUp, DPadRight, DPadDown, DPadLeft
-        };
+            DPadUp, DPadRight, DPadDown, DPadLeft};
 
 #pragma endregion
 
@@ -37,21 +34,21 @@ namespace GamEncin
 
         unordered_map<int, KeyButtonStatus> Mouse::buttons;
         Vector2 Mouse::position = Vector2::Zero(),
-            Mouse::positionDelta = Vector2::Zero();
+                Mouse::positionDelta = Vector2::Zero();
         float Mouse::scrollDelta = 0;
 
-        void Mouse::Initialize(GLFWwindow* window)
+        void Mouse::Initialize(GLFWwindow *window)
         {
             glfwSetMouseButtonCallback(window, MouseButtonCallBack);
             glfwSetScrollCallback(window, MouseScrollCallBack);
 
-            for(MouseButtonCode code : mouseButtonArr)
+            for (MouseButtonCode code : mouseButtonArr)
             {
                 buttons[code] = Release;
             }
         }
 
-        void Mouse::Update(GLFWwindow* window)
+        void Mouse::Update(GLFWwindow *window)
         {
             double x, y;
             Vector2 temp = position;
@@ -61,35 +58,35 @@ namespace GamEncin
             positionDelta = position - temp;
 
             scrollDelta = 0;
-            for(auto& button : buttons)
+            for (auto &button : buttons)
             {
-                switch(button.second)
+                switch (button.second)
                 {
-                    case Up:
-                        button.second = Release;
-                        break;
-                    case Down:
-                        button.second = Press;
-                        break;
+                case Up:
+                    button.second = Release;
+                    break;
+                case Down:
+                    button.second = Press;
+                    break;
                 }
             }
         }
 
-        void Mouse::MouseScrollCallBack(GLFWwindow* window, double offtetX, double offsetY)
+        void Mouse::MouseScrollCallBack(GLFWwindow *window, double offtetX, double offsetY)
         {
-            scrollDelta = (float) offsetY;
+            scrollDelta = (float)offsetY;
         }
 
-        void Mouse::MouseButtonCallBack(GLFWwindow* window, int button, int action, int mods)
+        void Mouse::MouseButtonCallBack(GLFWwindow *window, int button, int action, int mods)
         {
-            switch(action)
+            switch (action)
             {
-                case GLFW_PRESS:
-                    buttons[button] = Down;
-                    break;
-                case GLFW_RELEASE:
-                    buttons[button] = Up;
-                    break;
+            case GLFW_PRESS:
+                buttons[button] = Down;
+                break;
+            case GLFW_RELEASE:
+                buttons[button] = Up;
+                break;
             }
         }
 
@@ -99,42 +96,42 @@ namespace GamEncin
 
         unordered_map<int, KeyButtonStatus> KeyBoard::keys;
 
-        void KeyBoard::Initialize(GLFWwindow* window)
+        void KeyBoard::Initialize(GLFWwindow *window)
         {
             glfwSetKeyCallback(window, KeyCallBack);
 
-            for(KeyCode code : keyCodeArr)
+            for (KeyCode code : keyCodeArr)
             {
                 keys[code] = Release;
             }
         }
 
-        void KeyBoard::Update(GLFWwindow* window)
+        void KeyBoard::Update(GLFWwindow *window)
         {
-            for(auto& key : keys)
+            for (auto &key : keys)
             {
-                switch(key.second)
+                switch (key.second)
                 {
-                    case Up:
-                        key.second = Release;
-                        break;
-                    case Down:
-                        key.second = Press;
-                        break;
+                case Up:
+                    key.second = Release;
+                    break;
+                case Down:
+                    key.second = Press;
+                    break;
                 }
             }
         }
 
-        void KeyBoard::KeyCallBack(GLFWwindow* window, int key, int scanCode, int action, int mods)
+        void KeyBoard::KeyCallBack(GLFWwindow *window, int key, int scanCode, int action, int mods)
         {
-            switch(action)
+            switch (action)
             {
-                case GLFW_PRESS:
-                    keys[key] = Down;
-                    break;
-                case GLFW_RELEASE:
-                    keys[key] = Up;
-                    break;
+            case GLFW_PRESS:
+                keys[key] = Down;
+                break;
+            case GLFW_RELEASE:
+                keys[key] = Up;
+                break;
             }
         }
 
@@ -144,19 +141,19 @@ namespace GamEncin
 
         Gamepad::Gamepad(int id) : id(id) {}
 
-        void Gamepad::Initialize(GLFWwindow* window)
+        void Gamepad::Initialize(GLFWwindow *window)
         {
             name = glfwGetGamepadName(id);
 
-            for(GamepadButtonCode code : gamepadButtonArr)
+            for (GamepadButtonCode code : gamepadButtonArr)
             {
                 buttons[code] = Release;
             }
         }
 
-        void Gamepad::Update(GLFWwindow* window)
+        void Gamepad::Update(GLFWwindow *window)
         {
-            if(!glfwGetGamepadState(id, &state))
+            if (!glfwGetGamepadState(id, &state))
             {
                 Application::PrintLog(IODeviceWarn, "Couldn't get gamepad input.");
                 return;
@@ -167,23 +164,23 @@ namespace GamEncin
             leftStick = ClampVectorMagnitude(Vector2(state.axes[GLFW_GAMEPAD_AXIS_LEFT_X], state.axes[GLFW_GAMEPAD_AXIS_LEFT_Y]), 1);
             rightStick = ClampVectorMagnitude(Vector2(state.axes[GLFW_GAMEPAD_AXIS_RIGHT_X], state.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y]), 1);
 
-            for(auto& button : buttons)
+            for (auto &button : buttons)
             {
                 bool isPressed = state.buttons[button.first];
-                switch(button.second)
+                switch (button.second)
                 {
-                    case Press:
-                        button.second = isPressed ? Press : Up;
-                        break;
-                    case Down:
-                        button.second = isPressed ? Press : Up;
-                        break;
-                    case Release:
-                        button.second = isPressed ? Down : Release;
-                        break;
-                    case Up:
-                        button.second = isPressed ? Down : Release;
-                        break;
+                case Press:
+                    button.second = isPressed ? Press : Up;
+                    break;
+                case Down:
+                    button.second = isPressed ? Press : Up;
+                    break;
+                case Release:
+                    button.second = isPressed ? Down : Release;
+                    break;
+                case Up:
+                    button.second = isPressed ? Down : Release;
+                    break;
                 }
             }
         }
@@ -192,31 +189,31 @@ namespace GamEncin
 
 #pragma region Input
 
-        GLFWwindow* Input::window = nullptr;
+        GLFWwindow *Input::window = nullptr;
         Mouse Input::mouse;
         KeyBoard Input::keyboard;
-        unordered_map<int, Gamepad*> Input::gamepads;
+        unordered_map<int, Gamepad *> Input::gamepads;
 
         void Input::GamepadCallBack(int gamepadId, int event)
         {
-            if(!glfwJoystickIsGamepad(gamepadId))
+            if (!glfwJoystickIsGamepad(gamepadId))
             {
                 Application::PrintLog(IODeviceWarn, "Joystick couldn't connected. Application supports only gamepads, not joysticks.");
                 return;
             }
 
-            else if(event == GLFW_CONNECTED)
+            else if (event == GLFW_CONNECTED)
             {
                 ConnectGamepad(gamepadId);
             }
 
-            else if(event == GLFW_DISCONNECTED)
+            else if (event == GLFW_DISCONNECTED)
             {
                 DisconnectGamepad(gamepadId);
             }
         }
 
-        void Input::Initialize(GLFWwindow* _window)
+        void Input::Initialize(GLFWwindow *_window)
         {
             window = _window;
 
@@ -228,8 +225,8 @@ namespace GamEncin
 
             glfwSetJoystickCallback(GamepadCallBack);
 
-            for(int i = 0; i < 16; i++)
-                if(IsGamepadConnected(i)) //0-15
+            for (int i = 0; i < 16; i++)
+                if (IsGamepadConnected(i)) // 0-15
                     ConnectGamepad(i);
 
             mouse.Initialize(window);
@@ -238,10 +235,10 @@ namespace GamEncin
 
         void Input::UpdateInputs()
         {
-            //resetting values
+            // resetting values
             mouse.Update(window);
             keyboard.Update(window);
-            for(auto& gamepad : gamepads)
+            for (auto &gamepad : gamepads)
                 gamepad.second->Update(window);
 
             glfwPollEvents();
@@ -249,7 +246,7 @@ namespace GamEncin
 
         void Input::ConnectGamepad(int gamepadId)
         {
-            Gamepad* gamepad = new Gamepad(gamepadId);
+            Gamepad *gamepad = new Gamepad(gamepadId);
             gamepad->Initialize(window);
 
             char message[256];
@@ -298,7 +295,7 @@ namespace GamEncin
 
         bool Input::GetGamepadButton(int gamepadId, KeyButtonStatus status, GamepadButtonCode button)
         {
-            if(!IsGamepadConnected(0))
+            if (!IsGamepadConnected(0))
             {
                 Application::PrintLog(IODeviceWarn, "gamepad couldn't find.");
                 return false;
@@ -308,7 +305,7 @@ namespace GamEncin
 
         float Input::GetGamepadLeftTrigger(int gamepadId)
         {
-            if(!IsGamepadConnected(0))
+            if (!IsGamepadConnected(0))
             {
                 Application::PrintLog(IODeviceWarn, "gamepad couldn't find.");
                 return 0;
@@ -318,7 +315,7 @@ namespace GamEncin
 
         float Input::GetGamepadRightTrigger(int gamepadId)
         {
-            if(!IsGamepadConnected(0))
+            if (!IsGamepadConnected(0))
             {
                 Application::PrintLog(IODeviceWarn, "gamepad couldn't find.");
                 return 0;
@@ -328,7 +325,7 @@ namespace GamEncin
 
         Vector2 Input::GetGamepadLeftStick(int gamepadId)
         {
-            if(!IsGamepadConnected(0))
+            if (!IsGamepadConnected(0))
             {
                 Application::PrintLog(IODeviceWarn, "gamepad couldn't find.");
                 return Vector2::Zero();
@@ -338,7 +335,7 @@ namespace GamEncin
 
         Vector2 Input::GetGamepadRightStick(int gamepadId)
         {
-            if(!IsGamepadConnected(0))
+            if (!IsGamepadConnected(0))
             {
                 Application::PrintLog(IODeviceWarn, "gamepad couldn't find.");
                 return Vector2::Zero();
@@ -355,29 +352,29 @@ namespace GamEncin
         {
             Vector3 axis(0, 0, 0);
 
-            if(GetKey(Press, KeyCode::W) || GetKey(Press, KeyCode::UpArrow))
+            if (GetKey(Press, KeyCode::W) || GetKey(Press, KeyCode::UpArrow))
                 axis.y += 1;
-            if(GetKey(Press, KeyCode::S) || GetKey(Press, KeyCode::DownArrow))
+            if (GetKey(Press, KeyCode::S) || GetKey(Press, KeyCode::DownArrow))
                 axis.y -= 1;
 
-            if(GetKey(Press, KeyCode::D) || GetKey(Press, KeyCode::RightArrow))
+            if (GetKey(Press, KeyCode::D) || GetKey(Press, KeyCode::RightArrow))
                 axis.x += 1;
-            if(GetKey(Press, KeyCode::A) || GetKey(Press, KeyCode::LeftArrow))
+            if (GetKey(Press, KeyCode::A) || GetKey(Press, KeyCode::LeftArrow))
                 axis.x -= 1;
 
-            if(GetKey(Press, KeyCode::LeftControl) || GetKey(Press, KeyCode::RightControl))
+            if (GetKey(Press, KeyCode::LeftControl) || GetKey(Press, KeyCode::RightControl))
                 axis.z -= 1;
-            if(GetKey(Press, KeyCode::Space) || GetKey(Press, KeyCode::Space))
+            if (GetKey(Press, KeyCode::Space) || GetKey(Press, KeyCode::Space))
                 axis.z += 1;
 
             return axis;
         }
 
-        string Input::GetFileContents(const char* fileName)
+        string Input::GetFileContents(const char *fileName)
         {
             std::ifstream in(fileName, std::ios::binary);
 
-            if(in)
+            if (in)
             {
                 string contents;
                 in.seekg(0, std::ios::end);
@@ -385,7 +382,7 @@ namespace GamEncin
                 in.seekg(0, std::ios::beg);
                 in.read(&contents[0], contents.size());
                 in.close();
-                return(contents);
+                return (contents);
             }
 
             Application::Stop(IOErr);
@@ -401,9 +398,9 @@ namespace GamEncin
 
             string result = exePath.parent_path().string();
 
-            for(char& c : result)
+            for (char &c : result)
             {
-                if(c == '\\')
+                if (c == '\\')
                 {
                     c = '/';
                 }

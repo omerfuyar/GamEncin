@@ -9,7 +9,7 @@ This message is written by AI 🤠🤠.
 ## Features
 -Ok I'm writing this now.
 -For now, engine has some kind of object system and some basic logic in these objects.
--I inspired by Unity in object system like MonoBehaviour.
+-I inspired by Unity in object system like MonoBehavior.
 -Every object is in a scene and has some functions that are called in their times.
 -Also every object has some main features like position, rotation, scale etc.
 -For now, I only have .h and .cpp files that I need, I'm unsure about how the future will be.

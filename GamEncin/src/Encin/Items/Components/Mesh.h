@@ -1,6 +1,5 @@
 #pragma once
 #include "Encin/Items/Components/Component.h"
-#include "Encin/Tools/MathYaman.h"
 #include "Encin/Tools/OpenGLObjects.h"
 #include "Encin/Tools/Toolkit.h"
 
@@ -15,11 +14,11 @@ namespace GamEncin
         void SetMeshData(MeshData* data);
         void SetMeshTexture(Texture* texture);
 
-        MeshData GetMeshData() const;
-        Texture* GetMeshTexture() const;
+        MeshData* const GetMeshData();
+        Texture* const GetMeshTexture();
 
     private:
-        MeshData meshData;
+        MeshData* meshData = nullptr;
         Texture* meshTexture = nullptr;
     };
 }

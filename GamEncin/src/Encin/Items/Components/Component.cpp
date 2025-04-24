@@ -11,17 +11,21 @@ namespace GamEncin
         }
 
         object = obj;
+
+        OnEnable();
     }
 
     Component::~Component()
     {
+        OnDisable();
+
         if(object)
         {
             object->RemoveComponent(this);
         }
     }
 
-    Object* Component::GetOwnerObject() const
+    Object* const Component::GetOwnerObject()
     {
         return object;
     }
@@ -37,3 +41,4 @@ namespace GamEncin
         object = obj;
     }
 }
+

@@ -39,9 +39,6 @@
     <ClCompile Include="GamEncin\src\Encin\Items\Components\Transform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GamEncin\src\Encin\Items\Components\Collider.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GamEncin\src\Encin\Items\Components\RigidBody.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -70,6 +67,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Dependencies\GLAD\glad.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GamEncin\src\Encin\Items\RigidBodyManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -977,9 +977,6 @@
     <ClInclude Include="GamEncin\src\Encin\Items\Components\Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GamEncin\src\Encin\Items\Components\Collider.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GamEncin\src\Encin\Items\Components\RigidBody.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1010,6 +1007,9 @@
     <ClInclude Include="Dependencies\GLAD\glad.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GamEncin\src\Encin\Items\RigidBodyManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="LICENSE.txt" />
@@ -1024,8 +1024,8 @@
     <None Include="Other\TriangleOpenGL.pdf" />
     <None Include="Other\WindowOpenGL.pdf" />
     <None Include=".editorconfig" />
-    <None Include="GamEncin\src\Shaders\frag.glsl" />
-    <None Include="GamEncin\src\Shaders\vert.glsl" />
+    <None Include="GamEncin\src\Encin\Shaders\frag.glsl" />
+    <None Include="GamEncin\src\Encin\Shaders\vert.glsl" />
     <None Include="Dependencies\GLM\detail\func_common.inl">
       <Filter>Header Files</Filter>
     </None>
@@ -1456,6 +1456,12 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="GamEncin\src\Resources\test3.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="GamEncin\Resources\test.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="GamEncin\Resources\test3.jpg">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

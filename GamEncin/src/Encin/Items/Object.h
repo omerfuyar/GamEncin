@@ -8,6 +8,7 @@ namespace GamEncin
     class Component;
     class Transform;
     class Application;
+    class RigidBody;
 
     class Object
     {
@@ -21,7 +22,7 @@ namespace GamEncin
         void SetLayer(Layer layer);
 
         template <typename T>
-        T* GetComponent()
+        T* const GetComponent()
         {
             for(Component* component : components)
             {
@@ -36,11 +37,12 @@ namespace GamEncin
             Application::PrintLog(NullPointerErr, "Component couldn't found in the object");
             return nullptr;
         }
-        Scene* GetScene() const;
-        string GetName() const;
-        string GetTag() const;
-        Layer GetLayer() const;
-        Transform* GetTransform() const;
+        bool const HasComponent(std::type_index componentType);
+        string const GetName();
+        string const GetTag();
+        Layer const GetLayer();
+        Transform* const GetTransform();
+        Scene* const GetScene();
 
         template <typename T>
         T* AddComponent()
@@ -74,15 +76,22 @@ namespace GamEncin
 
             if(obj != components.end())
             {
-                components.erase(obj);
-                delete* obj;
-            }
-            else
-            {
                 Application::PrintLog(ElementCouldNotFoundErr, "Couldn't found component to remove");
+                return;
             }
+
+            components.erase(obj);
+            delete* obj;
         }
         void RemoveComponent(Component* component);
+
+        void OnTriggerEnter(const RigidBody* enteredRigidBody);
+        void OnTriggerStay(const RigidBody* stayingRigidBody);
+        void OnTriggerExit(const RigidBody* exitedRigidBody);
+
+        void OnCollisionEnter(const RigidBody* enteredRigidBody);
+        void OnCollisionStay(const RigidBody* stayingRigidBody);
+        void OnCollisionExit(const RigidBody* exitedRigidBody);
 
         void Awake();
         void Start();
@@ -100,6 +109,7 @@ namespace GamEncin
         Layer layer;
 
         Transform* transform = AddComponent<Transform>();
+
         vector<Component*> components;
     };
 }

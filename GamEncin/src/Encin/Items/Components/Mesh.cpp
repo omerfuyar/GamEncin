@@ -16,8 +16,18 @@ namespace GamEncin
 
     void Mesh::SetMeshData(MeshData* data)
     {
-        meshData.DeleteData();
-        meshData = *data;
+        if(!data)
+        {
+            Application::PrintLog(NullPointerErr, "Mesh data trying to set is null");
+            return;
+        }
+
+        if(meshData)
+        {
+            meshData->DeleteData();
+        }
+
+        meshData = data;
     }
 
     void Mesh::SetMeshTexture(Texture* texture)
@@ -25,12 +35,12 @@ namespace GamEncin
         meshTexture = texture;
     }
 
-    MeshData Mesh::GetMeshData() const
+    MeshData* const Mesh::GetMeshData()
     {
         return meshData;
     }
 
-    Texture* Mesh::GetMeshTexture() const
+    Texture* const Mesh::GetMeshTexture()
     {
         return meshTexture;
     }

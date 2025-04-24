@@ -2,10 +2,6 @@
 #include "Encin/Tools/MathYaman.h"
 #include "Encin/Tools/Toolkit.h"
 
-#include <chrono>
-
-using namespace std::chrono;
-
 namespace GamEncin
 {
     class Scene;
@@ -13,12 +9,12 @@ namespace GamEncin
     class Application //singleton
     {
     public:
+        //Sets whether to print the FPS in the console and in title or not
+        static void SetPrintFPS(bool value);
         //Changes the FixUpdate FPS
         static void SetFixedFPS(unsigned int fps);
         //Changes the name of the application and also window title
         static void SetProgramName(string name);
-        //Sets whether to print the FPS in the console and in title or not
-        static void SetPrintFPS(bool value);
         //Sets the application's currently active scene
         static void SetCurrentScene(Scene* scene);
 
@@ -32,6 +28,7 @@ namespace GamEncin
         static float const GetSecondsPastFromStart();
         //Returns whether the program is running or not
         static bool const IsRunning();
+        //Returns the name of the application
         static string const GetProgramName();
         //Returns the application's currently active scene
         static Scene* const GetCurrentScene();

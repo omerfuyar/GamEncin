@@ -78,27 +78,27 @@ namespace GamEncin
         glfwSwapInterval(vSyncEnabled ? 1 : 0);
     }
 
-    bool Renderer::GetWindowCloseInput()
+    bool const Renderer::GetWindowCloseInput()
     {
         return windowCloseInput;
     }
 
-    bool Renderer::IsFullScreen()
+    bool const Renderer::IsFullScreen()
     {
         return isFullScreen;
     }
 
-    bool Renderer::IsVSyncEnabled()
+    bool const Renderer::IsVSyncEnabled()
     {
         return vSyncEnabled;
     }
 
-    GLFWwindow* Renderer::GetMainWindow()
+    GLFWwindow* const Renderer::GetMainWindow()
     {
         return window;
     }
 
-    Vector2Int Renderer::GetMainWindowSize()
+    Vector2Int const Renderer::GetMainWindowSize()
     {
         if(isFullScreen)
         {
@@ -128,9 +128,9 @@ namespace GamEncin
             return;
         }
 
-        mesh->GetMeshData().SetForBatch(meshes.size(), batchedVertices.size(), batchedIndices.size());
-        vector<RawVertex> tempVertices = mesh->GetMeshData().GetRawVertexArray();
-        vector<unsigned int> tempIndices = mesh->GetMeshData().GetIndiceArray();
+        mesh->GetMeshData()->SetForBatch(meshes.size(), batchedVertices.size(), batchedIndices.size());
+        vector<RawVertex> tempVertices = mesh->GetMeshData()->GetRawVertexArray();
+        vector<unsigned int> tempIndices = mesh->GetMeshData()->GetIndiceArray();
 
         batchedVertices.insert(batchedVertices.end(), tempVertices.begin(), tempVertices.end());
         batchedIndices.insert(batchedIndices.end(), tempIndices.begin(), tempIndices.end());
@@ -157,39 +157,41 @@ namespace GamEncin
             return;
         }
 
-        auto vertexBeginIt = batchedVertices.begin() + mesh->GetMeshData().batchVertexOffset;
-        auto vertexEndIt = vertexBeginIt + mesh->GetMeshData().vertices.size();
+        MeshData& meshData = *mesh->GetMeshData();
+
+        auto vertexBeginIt = batchedVertices.begin() + meshData.batchVertexOffset;
+        auto vertexEndIt = vertexBeginIt + meshData.vertices.size();
         batchedVertices.erase(vertexBeginIt, vertexEndIt);
 
-        auto indexBeginIt = batchedIndices.begin() + mesh->GetMeshData().batchIndexOffset;
-        auto indexEndIt = indexBeginIt + (mesh->GetMeshData().faces.size() * 3);
+        auto indexBeginIt = batchedIndices.begin() + meshData.batchIndexOffset;
+        auto indexEndIt = indexBeginIt + (meshData.faces.size() * 3);
         batchedIndices.erase(indexBeginIt, indexEndIt);
 
-        auto modelMatrixIt = batchedModelMatrices.begin() + mesh->GetMeshData().id;
+        auto modelMatrixIt = batchedModelMatrices.begin() + meshData.id;
         batchedModelMatrices.erase(modelMatrixIt);
 
-        auto textureHandleIt = batchedTextureHandles.begin() + mesh->GetMeshData().id;
+        auto textureHandleIt = batchedTextureHandles.begin() + meshData.id;
         batchedTextureHandles.erase(textureHandleIt);
 
-        for(int i = mesh->GetMeshData().id + 1; i < meshes.size(); i++)
+        for(int i = meshData.id + 1; i < meshes.size(); i++)
         {
             Mesh* tempMesh = meshes[i];
 
-            tempMesh->GetMeshData().SetForBatch(
+            tempMesh->GetMeshData()->SetForBatch(
                 i - 1,
-                tempMesh->GetMeshData().batchVertexOffset - mesh->GetMeshData().vertices.size(),
-                tempMesh->GetMeshData().batchIndexOffset - (mesh->GetMeshData().faces.size() * 3)
+                tempMesh->GetMeshData()->batchVertexOffset - meshData.vertices.size(),
+                tempMesh->GetMeshData()->batchIndexOffset - (meshData.faces.size() * 3)
             );
         }
 
-        for(int i = mesh->GetMeshData().batchVertexOffset; i < batchedVertices.size(); i++)
+        for(int i = meshData.batchVertexOffset; i < batchedVertices.size(); i++)
         {
             batchedVertices[i].objectId--;
         }
 
-        for(int i = mesh->GetMeshData().batchIndexOffset; i < batchedIndices.size(); i++)
+        for(int i = meshData.batchIndexOffset; i < batchedIndices.size(); i++)
         {
-            batchedIndices[i] -= mesh->GetMeshData().vertices.size();
+            batchedIndices[i] -= meshData.vertices.size();
         }
 
         meshes.erase(obj);
@@ -234,7 +236,7 @@ namespace GamEncin
         //
         //shaderProgram = new Shader(vertShaderPath.c_str(), fragShaderPath.c_str());
 
-        shaderProgram = new Shader("GamEncin/src/Shaders/vert.glsl", "GamEncin/src/Shaders/frag.glsl");
+        shaderProgram = new Shader("GamEncin/src/Encin/Shaders/vert.glsl", "GamEncin/src/Encin/Shaders/frag.glsl");
 
         mainVAO = new GLArrayObject(sizeof(RawVertex));
         modelVertexBO = new GLBufferObject<RawVertex>(GL_ARRAY_BUFFER, GL_STATIC_DRAW);
@@ -288,8 +290,9 @@ namespace GamEncin
     {
         for(Mesh* mesh : meshes)
         {
-            batchedModelMatrices[mesh->GetMeshData().id] = mesh->GetOwnerObject()->GetTransform()->GetModelMatrix();
-            batchedTextureHandles[mesh->GetMeshData().id] = mesh->GetMeshTexture() ? mesh->GetMeshTexture()->handle : 0;
+            int index = mesh->GetMeshData()->id;
+            batchedModelMatrices[index] = mesh->GetOwnerObject()->GetTransform()->GetModelMatrix();
+            batchedTextureHandles[index] = mesh->GetMeshTexture() ? mesh->GetMeshTexture()->handle : 0;
         }
     }
 

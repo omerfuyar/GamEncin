@@ -85,9 +85,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GamEncin\src\Encin\Items\RigidBodyManager.cpp" />
     <ClCompile Include="Dependencies\GLAD\glad.c" />
     <ClCompile Include="GamEncin\src\Encin\Items\Components\Camera.cpp" />
-    <ClCompile Include="GamEncin\src\Encin\Items\Components\Collider.cpp" />
     <ClCompile Include="GamEncin\src\Encin\Items\Components\Component.cpp" />
     <ClCompile Include="Dependencies\GLM\detail\glm.cpp" />
     <ClCompile Include="Dependencies\GLM\glm.cppm" />
@@ -106,12 +106,12 @@
     <ClCompile Include="GamEncin\src\Encin\Tools\Time.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GamEncin\src\Encin\Items\RigidBodyManager.h" />
     <ClInclude Include="Dependencies\GLAD\glad.h" />
     <ClInclude Include="Dependencies\GLAD\khrplatform.h" />
     <ClInclude Include="Dependencies\STB\stb_image.h" />
     <ClInclude Include="GamEncin\src\Encin\Encin.h" />
     <ClInclude Include="GamEncin\src\Encin\Items\Components\Camera.h" />
-    <ClInclude Include="GamEncin\src\Encin\Items\Components\Collider.h" />
     <ClInclude Include="GamEncin\src\Encin\Items\Components\Component.h" />
     <ClInclude Include="Dependencies\GLFW\glfw3.h" />
     <ClInclude Include="Dependencies\GLFW\glfw3native.h" />
@@ -565,8 +565,8 @@
     <None Include="Dependencies\GLM\gtx\vector_angle.inl" />
     <None Include="Dependencies\GLM\gtx\vector_query.inl" />
     <None Include="Dependencies\GLM\gtx\wrap.inl" />
-    <None Include="GamEncin\src\Shaders\frag.glsl" />
-    <None Include="GamEncin\src\Shaders\vert.glsl" />
+    <None Include="GamEncin\src\Encin\Shaders\frag.glsl" />
+    <None Include="GamEncin\src\Encin\Shaders\vert.glsl" />
     <None Include="Notes.md" />
     <None Include="Other\IndexOpenGL.pdf" />
     <None Include="Other\ShadersOpenGL.pdf" />
@@ -579,6 +579,8 @@
     <Library Include="Dependencies\GLFW\glfw3.lib" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="GamEncin\Resources\test.jpg" />
+    <Image Include="GamEncin\Resources\test3.jpg" />
     <Image Include="GamEncin\src\Resources\test.jpg" />
     <Image Include="GamEncin\src\Resources\test2.jpg" />
     <Image Include="GamEncin\src\Resources\test3.jpg" />

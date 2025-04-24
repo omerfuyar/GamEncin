@@ -3,6 +3,8 @@
 
 #include <chrono>
 
+using namespace std::chrono;
+
 namespace GamEncin
 {
     namespace Time
@@ -39,10 +41,12 @@ namespace GamEncin
             void PrintPastTime(string addNote = "");
 
         private:
+            bool isRunning = false;
+
             string label;
+
             std::chrono::high_resolution_clock::time_point start;
             std::chrono::high_resolution_clock::time_point end;
-            bool isRunning = false;
         };
     }
 }

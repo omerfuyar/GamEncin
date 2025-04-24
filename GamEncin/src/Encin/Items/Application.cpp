@@ -22,6 +22,11 @@ namespace GamEncin
 
 #pragma endregion
 
+    void Application::SetPrintFPS(bool value)
+    {
+        printFPS = value;
+    }
+
     void Application::SetFixedFPS(unsigned int fps)
     {
         fixedFPS = Clamp(fps, 1, 1000);
@@ -31,11 +36,6 @@ namespace GamEncin
     void Application::SetProgramName(string name)
     {
         programName = name;
-    }
-
-    void Application::SetPrintFPS(bool value)
-    {
-        printFPS = value;
     }
 
     void Application::SetCurrentScene(Scene* scene)
@@ -163,7 +163,7 @@ namespace GamEncin
                 fprintf(stderr, "ERROR: Error occurred while linking shaders");
                 break;
             case ElementCouldNotFoundErr:
-                fprintf(stderr, "ERROR: Element could not be found");
+                fprintf(stderr, "ERROR: Element could not find");
                 break;
             case TypeMismachErr:
                 fprintf(stderr, "ERROR: Type mismatch occurred");
@@ -186,6 +186,9 @@ namespace GamEncin
             case idoiterr:
                 fprintf(stderr, "ERROR: IDOITERR, idiot");
                 break;
+            case ComponentRequirementErr:
+                fprintf(stderr, "ERROR: Component requirement error");
+                break;
             default:
                 fprintf(stdout, "UNKNOWN MESSAGE");
                 break;
@@ -202,9 +205,16 @@ namespace GamEncin
     void Application::Stop(LogType logType, string addMessage)
     {
         isRunning = false;
+
         printf("\nExit Code : %d\n", logType);
+
         PrintLog(logType, addMessage);
-        Renderer::EndRenderer();
+
+        if(isRunning)
+        {
+            Renderer::EndRenderer();
+        }
+
         exit(logType);
     }
 
@@ -252,14 +262,13 @@ namespace GamEncin
     {
         srand(time(NULL));
         Renderer::InitialRender();//TODO 
+        Input::Initialize(Renderer::GetMainWindow());
         currentScene->Awake();
-        Input::Initialize(Renderer::GetMainWindow()); //after the window is created
     }
 
     void Application::Start()
     {
         currentScene->Start();
-        Renderer::RenderFrame();
     }
 
     void Application::Update()
@@ -276,7 +285,9 @@ namespace GamEncin
 
     void Application::FixUpdate()
     {
+        RigidBodyManager::UpdateRigidBodies();
         currentScene->FixUpdate();
+        RigidBodyManager::ResolveCollisions();
     }
 
     void Application::StartOfSecond()

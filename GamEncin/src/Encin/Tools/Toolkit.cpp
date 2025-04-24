@@ -2,7 +2,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <STB/stb_image.h>
 
-
 namespace GamEncin
 {
     namespace Toolkit
@@ -41,11 +40,11 @@ namespace GamEncin
 
             stbi_image_free(data);
 
-            printf("Texture %s loaded with id: %u\n", filePath.c_str(), id);
-            printf("Texture %s handle: %llu\n", filePath.c_str(), handle);
-            printf("Texture %s size: %d x %d\n", filePath.c_str(), size.x, size.y);
-            printf("Texture %s bits per pixel: %u\n", filePath.c_str(), bitsPerPixel);
-            printf("Texture %s data size: %d\n", filePath.c_str(), size.x * size.y * (bitsPerPixel / 8));
+            //printf("Texture %s loaded with id: %u\n", filePath.c_str(), id);
+            //printf("Texture %s handle: %llu\n", filePath.c_str(), handle);
+            //printf("Texture %s size: %d x %d\n", filePath.c_str(), size.x, size.y);
+            //printf("Texture %s bits per pixel: %u\n", filePath.c_str(), bitsPerPixel);
+            //printf("Texture %s data size: %d\n", filePath.c_str(), size.x * size.y * (bitsPerPixel / 8));
         }
 
         void Texture::Delete()
@@ -361,7 +360,6 @@ namespace GamEncin
                                            tempVertices[indices[i * 3 + 1]],
                                            tempVertices[indices[i * 3 + 2]]};
 
-
                 Face* face = new Face(faceVertices[0], faceVertices[1], faceVertices[2]);
                 //edges of face is empty
 
@@ -397,6 +395,7 @@ namespace GamEncin
             {
                 vertex->NormalizeNormal();
             }
+
 
             return new MeshData(tempVertices, tempEdges, tempFaces);
         }
@@ -772,6 +771,8 @@ namespace GamEncin
 
             return CreateMeshData(vertices, indices);
         }
+
+#pragma endregion
 
 #pragma endregion
 
