@@ -112,11 +112,11 @@ namespace GamEncin
         float massA = colliderA->GetMass();
         float massB = colliderB->GetMass();
 
-        //TODO
-        Vector3 resolveVectorA = distance * 2 * massB / (massA + massB) * ((velocityB - velocityA).Dot(distance) / Square(distance.GetMagnitude()));
+        Vector3 resolveVectorA = (distance / Square(distance.GetMagnitude()) * (velocityB - velocityA).Dot(distance)) * (2 * massB / (massA + massB));
+        Vector3 resolveVectorB = (distance / Square(distance.GetMagnitude()) * (velocityA - velocityB).Dot(distance)) * (2 * massA / (massA + massB));
 
         colliderA->AddVelocity(resolveVectorA);
-        colliderB->AddVelocity(resolveVectorA * -1);
+        colliderB->AddVelocity(resolveVectorB);
 
         colliderA->RemoveCollision(colliderB);
         colliderB->RemoveCollision(colliderA);

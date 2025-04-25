@@ -34,7 +34,7 @@ void SceneBuilding()
 
     RigidBody* rb1 = myPlane.AddComponent<RigidBody>();
     RigidBodyManager::AddRigidBody(rb1);
-    rb1->SetDynamic(false);
+    rb1->SetDynamic(true);
     rb1->AddVelocity(Vector3(2, 0, 0));
     camController->planeRB = rb1;
     rb1->SetColliderRadius(3.0f);
@@ -53,7 +53,7 @@ void SceneBuilding()
 
     RigidBody* rb2 = mySphere.AddComponent<RigidBody>();
     RigidBodyManager::AddRigidBody(rb2);
-    rb2->SetDynamic(false);
+    rb2->SetDynamic(true);
     rb2->AddVelocity(Vector3(2, 0, 0));
     camController->sphereRB = rb2;
 
