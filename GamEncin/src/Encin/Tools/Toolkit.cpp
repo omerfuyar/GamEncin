@@ -433,7 +433,7 @@ namespace GamEncin
             return CreateMeshData(vertices, indices);
         }
 
-        MeshData* MeshBuilder::CreateCircle(float halfRadius, int resolution)
+        MeshData* MeshBuilder::CreateCircle(float radius, int resolution)
         {
             if(resolution < 3)
             {
@@ -454,8 +454,8 @@ namespace GamEncin
             {
                 currSectorAngle = i * sectorStep;
 
-                x = halfRadius * CosRad(currSectorAngle);
-                z = halfRadius * SinRad(currSectorAngle);
+                x = radius * CosRad(currSectorAngle);
+                z = radius * SinRad(currSectorAngle);
 
                 Vector3 vec = Vector3(x, 0, z);
                 vertices.push_back(RawVertex(vec, vec * 255));
@@ -543,7 +543,7 @@ namespace GamEncin
             return CreateMeshData(vertices, indices);
         }
 
-        MeshData* MeshBuilder::CreateCylinder(float height, float halfRadius, int resolution)
+        MeshData* MeshBuilder::CreateCylinder(float height, float radius, int resolution)
         {
             if(resolution < 3)
             {
@@ -567,8 +567,8 @@ namespace GamEncin
                 {
                     currSectorAngle = j * sectorStep;
 
-                    x = halfRadius * CosRad(currSectorAngle);
-                    z = halfRadius * SinRad(currSectorAngle);
+                    x = radius * CosRad(currSectorAngle);
+                    z = radius * SinRad(currSectorAngle);
 
                     Vector3 vec = Vector3(x, y, z);
 
@@ -599,7 +599,7 @@ namespace GamEncin
             return CreateMeshData(vertices, indices);
         }
 
-        MeshData* MeshBuilder::CreateSphere(float halfRadius, int resolution)
+        MeshData* MeshBuilder::CreateSphere(float radius, int resolution)
         {
             if(resolution < 3)
             {
@@ -622,8 +622,8 @@ namespace GamEncin
             {
                 currStackAngle = PI / 2 - i * stackStep; //from pi/2 to -pi/2 inclusive
 
-                xz = halfRadius * CosRad(currStackAngle);
-                y = halfRadius * SinRad(currStackAngle);
+                xz = radius * CosRad(currStackAngle);
+                y = radius * SinRad(currStackAngle);
 
                 for(int j = 0; j <= resolution; ++j)
                 {
@@ -668,7 +668,7 @@ namespace GamEncin
             return CreateMeshData(vertices, indices);
         }
 
-        MeshData* MeshBuilder::CreateCone(float height, float halfRadius, int resolution)
+        MeshData* MeshBuilder::CreateCone(float height, float radius, int resolution)
         {
             if(resolution < 3)
             {
@@ -694,8 +694,8 @@ namespace GamEncin
             {
                 currSectorAngle = i * sectorStep;
 
-                x = halfRadius * CosRad(currSectorAngle);
-                z = halfRadius * SinRad(currSectorAngle);
+                x = radius * CosRad(currSectorAngle);
+                z = radius * SinRad(currSectorAngle);
 
                 vec = Vector3(x, -yQuarter, z);
                 vertices.push_back(RawVertex(vec, vec * 255));
@@ -721,7 +721,7 @@ namespace GamEncin
             return CreateMeshData(vertices, indices);
         }
 
-        MeshData* MeshBuilder::CreateSimit(float halfRadius, float halfThickness, int resolution)
+        MeshData* MeshBuilder::CreateSimit(float radius, float halfThickness, int resolution)
         {
             if(resolution < 3)
             {
@@ -743,9 +743,9 @@ namespace GamEncin
                 for(int j = 0; j < resolution; j++)
                 {
                     currMinorAngle = j * sectorSteps;
-                    x = (halfRadius + halfThickness * CosRad(currMinorAngle)) * CosRad(currMajorAngle);
+                    x = (radius + halfThickness * CosRad(currMinorAngle)) * CosRad(currMajorAngle);
                     y = halfThickness * SinRad(currMinorAngle);
-                    z = (halfRadius + halfThickness * CosRad(currMinorAngle)) * SinRad(currMajorAngle);
+                    z = (radius + halfThickness * CosRad(currMinorAngle)) * SinRad(currMajorAngle);
 
 
                     Vector3 vec = Vector3(x, y, z);

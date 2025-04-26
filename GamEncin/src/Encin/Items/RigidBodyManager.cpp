@@ -104,7 +104,14 @@ namespace GamEncin
 
     void RigidBodyManager::ResolveDynamicVsDynamic(RigidBody* colliderA, RigidBody* colliderB)
     {
-        Vector3 distance = (colliderB->GetOwnerObject()->GetTransform()->GetGlobalPosition() - colliderA->GetOwnerObject()->GetTransform()->GetGlobalPosition());
+        Vector3 distance = colliderB->GetOwnerObject()->GetTransform()->GetGlobalPosition() - colliderA->GetOwnerObject()->GetTransform()->GetGlobalPosition();
+
+        float overlap = (colliderA->GetRigidBodyRadius() + colliderB->GetRigidBodyRadius()) - distance.GetMagnitude();
+        
+        colliderA->GetOwnerObject()->GetTransform()->AddPosition(distance.Normalized() * -overlap/2);
+        colliderB->GetOwnerObject()->GetTransform()->AddPosition(distance.Normalized() * overlap/2);
+
+        distance = colliderB->GetOwnerObject()->GetTransform()->GetGlobalPosition() - colliderA->GetOwnerObject()->GetTransform()->GetGlobalPosition();
 
         Vector3 velocityA = colliderA->GetVelocity();
         Vector3 velocityB = colliderB->GetVelocity();
@@ -112,8 +119,10 @@ namespace GamEncin
         float massA = colliderA->GetMass();
         float massB = colliderB->GetMass();
 
-        Vector3 resolveVectorA = (distance / Square(distance.GetMagnitude()) * (velocityB - velocityA).Dot(distance)) * (2 * massB / (massA + massB));
-        Vector3 resolveVectorB = (distance / Square(distance.GetMagnitude()) * (velocityA - velocityB).Dot(distance)) * (2 * massA / (massA + massB));
+        float n = (2 * (velocityB - velocityA).Dot(distance)) / (Square(distance.GetMagnitude()) * (massA + massB));
+
+        Vector3 resolveVectorA = distance * massB * n;
+        Vector3 resolveVectorB = distance * massA * -n;
 
         colliderA->AddVelocity(resolveVectorA);
         colliderB->AddVelocity(resolveVectorB);
@@ -124,12 +133,17 @@ namespace GamEncin
 
     void RigidBodyManager::ResolveDynamicVsStatic(RigidBody* colliderA, RigidBody* colliderB)
     {
-        Vector3 distance = (colliderA->GetOwnerObject()->GetTransform()->GetGlobalPosition() - colliderB->GetOwnerObject()->GetTransform()->GetGlobalPosition());
+        // TODO
+        Vector3 distance = (colliderB->GetOwnerObject()->GetTransform()->GetGlobalPosition() - colliderA->GetOwnerObject()->GetTransform()->GetGlobalPosition());
+
+        float overlap = colliderA->GetRigidBodyRadius() + colliderB->GetRigidBodyRadius() - distance.GetMagnitude();
+
+        colliderA->GetOwnerObject()->GetTransform()->AddPosition(distance.Normalized() * -overlap);
+
+        distance = colliderB->GetOwnerObject()->GetTransform()->GetGlobalPosition() - colliderA->GetOwnerObject()->GetTransform()->GetGlobalPosition();
 
         Vector3 velocityA = colliderA->GetVelocity();
 
-        float massA = colliderA->GetMass();
-        //TODO
         Vector3 resolveVectorA = distance * -2 * (velocityA).Dot(distance) / Square(distance.GetMagnitude());
 
         colliderA->AddVelocity(resolveVectorA);

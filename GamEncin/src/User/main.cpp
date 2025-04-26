@@ -20,42 +20,41 @@ void SceneBuilding()
 
     CameraController* camController = cameraObj.AddComponent<CameraController>();
 
-    Object& myPlane = scene.CreateObject();
-    myPlane.SetName("plane");
+    Object& mySphere1 = scene.CreateObject();
+    mySphere1.SetName("sphere");
 
-    Transform* myObjectTR = myPlane.GetTransform();
-    myObjectTR->AddPosition(Vector3(0, -5, 0));
-    myObjectTR->AddScale(Vector3(3, 3, 3));
+    Transform* myObjectTR1 = mySphere1.GetTransform();
+    myObjectTR1->AddPosition(Vector3(0, 5, 0));
 
-    Mesh* mesh = myPlane.AddComponent<Mesh>();
-    mesh->SetMeshData(MeshBuilder::CreatePlane());
-    mesh->SetMeshTexture(TextureManager::GetTexture("GamEncin/Resources/test3.jpg"));
-    Renderer::AddMesh(mesh);
+    Mesh* mesh1 = mySphere1.AddComponent<Mesh>();
+    mesh1->SetMeshData(MeshBuilder::CreateSphere(1.0f));
+    mesh1->SetMeshTexture(TextureManager::GetTexture("GamEncin/Resources/test.jpg"));
+    Renderer::AddMesh(mesh1);
 
-    RigidBody* rb1 = myPlane.AddComponent<RigidBody>();
+    RigidBody* rb1 = mySphere1.AddComponent<RigidBody>();
     RigidBodyManager::AddRigidBody(rb1);
     rb1->SetDynamic(true);
     rb1->AddVelocity(Vector3(2, 0, 0));
-    camController->planeRB = rb1;
-    rb1->SetColliderRadius(3.0f);
-    rb1->SetGravityScale(-1.0f);
 
-    Object& mySphere = scene.CreateObject();
-    mySphere.SetName("sphere");
+    /////////
 
-    Transform* myObjectTR1 = mySphere.GetTransform();
-    myObjectTR1->AddPosition(Vector3(0, 5, 0));
+    Object& mySphere2 = scene.CreateObject();
+    mySphere2.SetName("sphere2");
 
-    Mesh* mesh2 = mySphere.AddComponent<Mesh>();
-    mesh2->SetMeshData(MeshBuilder::CreateSphere());
-    mesh2->SetMeshTexture(TextureManager::GetTexture("GamEncin/Resources/test.jpg"));
+    Transform* myObjectTR2 = mySphere2.GetTransform();
+    myObjectTR2->AddPosition(Vector3(0, -5, 0));
+
+    Mesh* mesh2 = mySphere2.AddComponent<Mesh>();
+    mesh2->SetMeshData(MeshBuilder::CreateSphere(3.0f));
+    mesh2->SetMeshTexture(TextureManager::GetTexture("GamEncin/Resources/test3.jpg"));
     Renderer::AddMesh(mesh2);
 
-    RigidBody* rb2 = mySphere.AddComponent<RigidBody>();
+    RigidBody* rb2 = mySphere2.AddComponent<RigidBody>();
     RigidBodyManager::AddRigidBody(rb2);
     rb2->SetDynamic(true);
+    rb2->SetColliderRadius(3.0f);
     rb2->AddVelocity(Vector3(2, 0, 0));
-    camController->sphereRB = rb2;
+    rb2->SetGravityScale(-1.0f);
 
     int totalVerticeCount = 0;
     int totalIndiceCount = 0;

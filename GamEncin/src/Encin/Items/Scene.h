@@ -10,7 +10,7 @@ namespace GamEncin
     class Scene
     {
     public:
-        Object* const FindFirstObjectWitTag(string tag);
+        Object* const FindFirstObjectWithTag(string tag);
         vector<Object*> const FindObjectsWithTag(string tag);
 
         Object& CreateObject(string name = "Object", string tag = "Default", Layer layer = Layer::Default);

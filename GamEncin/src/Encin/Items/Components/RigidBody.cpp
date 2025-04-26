@@ -36,7 +36,7 @@ namespace GamEncin
 
     void RigidBody::SetColliderRadius(float bodyRadius)
     {
-        this->colliderRadius = ClampMin(colliderRadius, 0);
+        this->colliderRadius = ClampMin(bodyRadius, 0);
     }
 
     bool const RigidBody::IsDynamic()
@@ -177,15 +177,11 @@ namespace GamEncin
 
     void RigidBody::FixUpdate()
     {
-    }
-
-    void RigidBody::Update()
-    {
-        for(RigidBody* collider : collisions)
+        for (RigidBody* collider : collisions)
         {
-            if(!collider) continue;
+            if (!collider) continue;
 
-            if(isTrigger)
+            if (isTrigger)
             {
                 object->OnTriggerStay(collider);
             }
@@ -195,9 +191,7 @@ namespace GamEncin
             }
         }
 
-        //TODO move to fix update
-
-        if(!isDynamic)
+        if (!isDynamic)
         {
             return;
         }
@@ -208,15 +202,15 @@ namespace GamEncin
 
         Vector3 gravity = Vector3(0, -GRAVITY, 0) * gravityScale;
 
-        velocity += (acceleration + gravity) * Application::GetDeltaTime();
-        object->GetTransform()->AddPosition(velocity * Application::GetDeltaTime());
+        velocity += (acceleration + gravity) * Application::GetFixedDeltaTime();
+        object->GetTransform()->AddPosition(velocity * Application::GetFixedDeltaTime());
 
         //angular drag acceleration
         //angularAcceleration -= angularVelocity.Normalized() * Square(angularVelocity.GetMagnitude()) * angularDrag / (0.4f * mass * Square(colliderRadius));
         angularAcceleration -= angularVelocity * angularDrag / (0.4f * mass * Square(colliderRadius));
 
-        angularVelocity += angularAcceleration * Application::GetDeltaTime();
-        object->GetTransform()->AddRotation(angularVelocity * Application::GetDeltaTime());
+        angularVelocity += angularAcceleration * Application::GetFixedDeltaTime();
+        object->GetTransform()->AddRotation(angularVelocity * Application::GetFixedDeltaTime());
 
         //printf("\nFixUpdate RigidBody, %s\n", object->GetName().c_str());
         //printf("velocity: %f, %f, %f\n", velocity.x, velocity.y, velocity.z);
@@ -228,5 +222,10 @@ namespace GamEncin
         //printf("gravityScale: %f\n", gravityScale);
         //printf("mass: %f\n", mass);
         //printf("pos : %f %f %f\n", object->GetTransform()->GetGlobalPosition().x, object->GetTransform()->GetGlobalPosition().y, object->GetTransform()->GetGlobalPosition().z);
+    }
+
+    void RigidBody::Update()
+    {
+
     }
 }

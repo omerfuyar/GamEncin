@@ -285,8 +285,8 @@ namespace GamEncin
 
     void Application::FixUpdate()
     {
-        RigidBodyManager::UpdateRigidBodies();
         currentScene->FixUpdate();
+        RigidBodyManager::UpdateRigidBodies();
         RigidBodyManager::ResolveCollisions();
     }
 

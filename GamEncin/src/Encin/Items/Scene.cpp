@@ -3,7 +3,7 @@
 namespace GamEncin
 {
 
-    Object* const Scene::FindFirstObjectWitTag(string tag)
+    Object* const Scene::FindFirstObjectWithTag(string tag)
     {
         for(Object* object : objects)
         {
