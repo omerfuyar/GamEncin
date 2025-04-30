@@ -80,12 +80,12 @@ namespace GamEncin
         return parent;
     }
 
-    Vector3 const Transform::GetLocalPosition()
+    Vector3 Transform::GetLocalPosition()
     {
         return localPosition;
     }
 
-    Vector3 const Transform::GetGlobalPosition()
+    Vector3 Transform::GetGlobalPosition()
     {
         position = parent ? parent->GetGlobalPosition() + localPosition : localPosition;
 
@@ -94,12 +94,12 @@ namespace GamEncin
         return position;
     }
 
-    Vector3 const Transform::GetLocalRotation()
+    Vector3 Transform::GetLocalRotation()
     {
         return localRotation;
     }
 
-    Vector3 const Transform::GetGlobalRotation()
+    Vector3 Transform::GetGlobalRotation()
     {
         rotation = parent ? parent->GetGlobalRotation() + localRotation : localRotation;
 
@@ -114,12 +114,12 @@ namespace GamEncin
         return rotation;
     }
 
-    Vector3 const Transform::GetLocalScale()
+    Vector3 Transform::GetLocalScale()
     {
         return localScale;
     }
 
-    Vector3 const Transform::GetGlobalScale()
+    Vector3 Transform::GetGlobalScale()
     {
         scale = parent ? parent->GetGlobalScale() * localScale : localScale;
 
@@ -132,7 +132,7 @@ namespace GamEncin
         return scale;
     }
 
-    Vector3 const Transform::GetDirection()
+    Vector3 Transform::GetDirection()
     {
         //direction = glm::normalize(glm::vec3(GetModelMatrix()[2]));
 
@@ -152,7 +152,7 @@ namespace GamEncin
         return direction;
     }
 
-    Matrix4 const Transform::GetModelMatrix()
+    Matrix4 Transform::GetModelMatrix()
     {
         Vector3 tempPos = GetGlobalPosition();
         Vector3 tempRot = GetGlobalRotation();

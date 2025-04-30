@@ -19,17 +19,17 @@ namespace GamEncin
         static void SetCurrentScene(Scene* scene);
 
         //Returns the interval between fixed updates in seconds
-        static float const GetFixedDeltaTime();
+        static float GetFixedDeltaTime();
         //Returns the duration of the last frame in seconds
-        static float const GetDeltaTime();
+        static float GetDeltaTime();
         //Returns the time has passed since the last fixed update in seconds
-        static float const GetAccumulatedTime();
+        static float GetAccumulatedTime();
         //Returns the time has passed since the start of the program in seconds
-        static float const GetSecondsPastFromStart();
+        static float GetSecondsPastFromStart();
         //Returns whether the program is running or not
-        static bool const IsRunning();
+        static bool IsRunning();
         //Returns the name of the application
-        static string const GetProgramName();
+        static string GetProgramName();
         //Returns the application's currently active scene
         static Scene* const GetCurrentScene();
 

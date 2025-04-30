@@ -28,17 +28,17 @@ namespace GamEncin
         // Set body's collider radius, min radius is 0
         void SetColliderRadius(float colliderRadius);
 
-        bool const IsDynamic();
-        bool const IsTrigger();
-        float const GetMass();
-        float const GetDrag();
-        float const GetAngularDrag();
-        float const GetGravityScale();
-        float const GetRigidBodyRadius();
-        Vector3 const GetVelocity();
-        Vector3 const GetAngularVelocity();
-        Vector3 const GetAcceleration();
-        Vector3 const GetAngularAcceleration();
+        bool IsDynamic();
+        bool IsTrigger();
+        float GetMass();
+        float GetDrag();
+        float GetAngularDrag();
+        float GetGravityScale();
+        float GetRigidBodyRadius();
+        Vector3 GetVelocity();
+        Vector3 GetAngularVelocity();
+        Vector3 GetAcceleration();
+        Vector3 GetAngularAcceleration();
         vector<RigidBody*> GetCollisions();
 
         // shouldn't be used by user

@@ -41,7 +41,7 @@ namespace GamEncin
         this->layer = layer;
     }
 
-    bool const Object::HasComponent(std::type_index componentType)
+    bool Object::HasComponent(std::type_index componentType)
     {
         for(Component* component : components)
         {
@@ -57,17 +57,17 @@ namespace GamEncin
         return false;
     }
 
-    string const Object::GetName()
+    string Object::GetName()
     {
         return name;
     }
 
-    string const Object::GetTag()
+    string Object::GetTag()
     {
         return tag;
     }
 
-    Layer const Object::GetLayer()
+    Layer Object::GetLayer()
     {
         return layer;
     }

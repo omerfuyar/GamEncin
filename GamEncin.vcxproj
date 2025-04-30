@@ -87,7 +87,7 @@
   <ItemGroup>
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="GamEncin\src\Encin\Items\Components\Collider.cpp" />
-    <ClCompile Include="GamEncin\src\Encin\Items\RigidBodyManager.cpp" />
+    <ClCompile Include="GamEncin\src\Encin\Items\PhysicsManager.cpp" />
     <ClCompile Include="Dependencies\GLAD\glad.c" />
     <ClCompile Include="GamEncin\src\Encin\Items\Components\Camera.cpp" />
     <ClCompile Include="GamEncin\src\Encin\Items\Components\Component.cpp" />
@@ -110,7 +110,7 @@
   <ItemGroup>
     <ClInclude Include="Collider.h" />
     <ClInclude Include="GamEncin\src\Encin\Items\Components\Collider.h" />
-    <ClInclude Include="GamEncin\src\Encin\Items\RigidBodyManager.h" />
+    <ClInclude Include="GamEncin\src\Encin\Items\PhysicsManager.h" />
     <ClInclude Include="Dependencies\GLAD\glad.h" />
     <ClInclude Include="Dependencies\GLAD\khrplatform.h" />
     <ClInclude Include="Dependencies\STB\stb_image.h" />

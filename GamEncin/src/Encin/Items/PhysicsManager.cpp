@@ -2,9 +2,9 @@
 
 namespace GamEncin
 {
-    vector<RigidBody*> RigidBodyManager::colliders;
+    vector<RigidBody*> PhysicsManager::colliders;
 
-    void RigidBodyManager::AddRigidBody(RigidBody* collider)
+    void PhysicsManager::AddRigidBody(RigidBody* collider)
     {
         if(!collider)
         {
@@ -23,7 +23,7 @@ namespace GamEncin
         colliders.push_back(collider);
     }
 
-    void RigidBodyManager::RemoveRigidBody(RigidBody* collider)
+    void PhysicsManager::RemoveRigidBody(RigidBody* collider)
     {
         if(!collider)
         {
@@ -42,12 +42,12 @@ namespace GamEncin
         colliders.erase(obj);
     }
 
-    void RigidBodyManager::RemoveAllRigidBodies()
+    void PhysicsManager::RemoveAllRigidBodies()
     {
         colliders.clear();
     }
 
-    void RigidBodyManager::UpdateRigidBodies()
+    void PhysicsManager::UpdateRigidBodies()
     {
         for(int i = 0; i < colliders.size(); i++)
         {
@@ -65,7 +65,7 @@ namespace GamEncin
         }
     }
 
-    void RigidBodyManager::ResolveCollisions()
+    void PhysicsManager::ResolveCollisions()
     {
         for(RigidBody* body : colliders)
         {
@@ -91,7 +91,7 @@ namespace GamEncin
         }
     }
 
-    bool RigidBodyManager::CheckForCollision(RigidBody* colliderA, RigidBody* colliderB)
+    bool PhysicsManager::CheckForCollision(RigidBody* colliderA, RigidBody* colliderB)
     {
         if(!colliderA || !colliderB)
         {
@@ -102,14 +102,14 @@ namespace GamEncin
         return (colliderA->GetOwnerObject()->GetTransform()->GetGlobalPosition() - colliderB->GetOwnerObject()->GetTransform()->GetGlobalPosition()).GetMagnitude() < (colliderA->GetRigidBodyRadius() + colliderB->GetRigidBodyRadius());
     }
 
-    void RigidBodyManager::ResolveDynamicVsDynamic(RigidBody* colliderA, RigidBody* colliderB)
+    void PhysicsManager::ResolveDynamicVsDynamic(RigidBody* colliderA, RigidBody* colliderB)
     {
         Vector3 distance = colliderB->GetOwnerObject()->GetTransform()->GetGlobalPosition() - colliderA->GetOwnerObject()->GetTransform()->GetGlobalPosition();
 
         float overlap = (colliderA->GetRigidBodyRadius() + colliderB->GetRigidBodyRadius()) - distance.GetMagnitude();
-        
-        colliderA->GetOwnerObject()->GetTransform()->AddPosition(distance.Normalized() * -overlap/2);
-        colliderB->GetOwnerObject()->GetTransform()->AddPosition(distance.Normalized() * overlap/2);
+
+        colliderA->GetOwnerObject()->GetTransform()->AddPosition(distance.Normalized() * -overlap / 2);
+        colliderB->GetOwnerObject()->GetTransform()->AddPosition(distance.Normalized() * overlap / 2);
 
         distance = colliderB->GetOwnerObject()->GetTransform()->GetGlobalPosition() - colliderA->GetOwnerObject()->GetTransform()->GetGlobalPosition();
 
@@ -131,7 +131,7 @@ namespace GamEncin
         colliderB->RemoveCollision(colliderA);
     }
 
-    void RigidBodyManager::ResolveDynamicVsStatic(RigidBody* colliderA, RigidBody* colliderB)
+    void PhysicsManager::ResolveDynamicVsStatic(RigidBody* colliderA, RigidBody* colliderB)
     {
         // TODO
         Vector3 distance = (colliderB->GetOwnerObject()->GetTransform()->GetGlobalPosition() - colliderA->GetOwnerObject()->GetTransform()->GetGlobalPosition());

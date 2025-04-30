@@ -6,7 +6,7 @@ namespace GamEncin
 {
     class RigidBody;
 
-    class RigidBodyManager
+    class PhysicsManager
     {
     public:
         static void AddRigidBody(RigidBody* collider);
@@ -19,9 +19,9 @@ namespace GamEncin
     private:
         static vector<RigidBody*> colliders;
 
-        RigidBodyManager() = delete;
-        RigidBodyManager(const RigidBodyManager&) = delete;
-        void operator=(const RigidBodyManager&) = delete;
+        PhysicsManager() = delete;
+        PhysicsManager(const PhysicsManager&) = delete;
+        void operator=(const PhysicsManager&) = delete;
 
         static bool CheckForCollision(RigidBody* colliderA, RigidBody* colliderB);
         static void ResolveDynamicVsDynamic(RigidBody* colliderA, RigidBody* colliderB);

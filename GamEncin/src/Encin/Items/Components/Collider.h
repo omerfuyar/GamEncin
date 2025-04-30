@@ -9,11 +9,12 @@ namespace GamEncin
 
         void SetTrigger(bool isTrigger);
 
-        bool const IsTrigger();
+        bool IsTrigger();
         RigidBody* const GetRigidBody();
 
     private:
         bool isTrigger = false;
+
         RigidBody* rigidBody = nullptr;
     };
 
@@ -21,7 +22,8 @@ namespace GamEncin
     {
     public:
         SphereCollider(Object* obj);
-        float const GetRadius();
+
+        float GetRadius();
 
     private:
         float radius = 1.0f;
@@ -31,8 +33,11 @@ namespace GamEncin
     {
     public:
         BoxCollider(Object* obj);
-        Vector3 const GetSize();
+
         void SetSize(Vector3 size);
+
+        Vector3 GetSize();
+
     private:
         Vector3 size = Vector3::One();
     };

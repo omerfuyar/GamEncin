@@ -78,27 +78,22 @@ namespace GamEncin
         glfwSwapInterval(vSyncEnabled ? 1 : 0);
     }
 
-    bool const Renderer::GetWindowCloseInput()
+    bool Renderer::GetWindowCloseInput()
     {
         return windowCloseInput;
     }
 
-    bool const Renderer::IsFullScreen()
+    bool Renderer::IsFullScreen()
     {
         return isFullScreen;
     }
 
-    bool const Renderer::IsVSyncEnabled()
+    bool Renderer::IsVSyncEnabled()
     {
         return vSyncEnabled;
     }
 
-    GLFWwindow* const Renderer::GetMainWindow()
-    {
-        return window;
-    }
-
-    Vector2Int const Renderer::GetMainWindowSize()
+    Vector2Int Renderer::GetMainWindowSize()
     {
         if(isFullScreen)
         {
@@ -110,6 +105,11 @@ namespace GamEncin
         {
             return windowSize;
         }
+    }
+
+    GLFWwindow* const Renderer::GetMainWindow()
+    {
+        return window;
     }
 
     void Renderer::AddMesh(Mesh* mesh)
@@ -241,8 +241,8 @@ namespace GamEncin
         mainVAO = new GLArrayObject(sizeof(RawVertex));
         modelVertexBO = new GLBufferObject<RawVertex>(GL_ARRAY_BUFFER, GL_STATIC_DRAW);
         modelIndexBO = new GLBufferObject<unsigned int>(GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
-        modelMatrixSSBO = new GLShaderStorageBufferObject<Matrix4>(SSBO_MODEL_MATRICES_BINDING, GL_STATIC_DRAW);
-        modelTextureHandlesSSBO = new GLShaderStorageBufferObject<unsigned long long>(SSBO_TEXTURE_HANDLES_BINDING, GL_STATIC_DRAW);
+        modelMatrixSSBO = new GLShaderStorageBufferObject<Matrix4>(GE_SSBO_MODEL_MATRICES_BINDING, GL_STATIC_DRAW);
+        modelTextureHandlesSSBO = new GLShaderStorageBufferObject<unsigned long long>(GE_SSBO_TEXTURE_HANDLES_BINDING, GL_STATIC_DRAW);
 
         LinkAttributes();
 
@@ -327,13 +327,13 @@ namespace GamEncin
         modelTextureHandlesSSBO->Bind();
 
         unsigned int offset = 0;
-        mainVAO->LinkIntegerAttribute(VBO_OBJECT_ID_LAYOUT, 1, GL_UNSIGNED_INT, 0); //unsigned int
+        mainVAO->LinkIntegerAttribute(GE_VBO_OBJECT_ID_LAYOUT, 1, GL_UNSIGNED_INT, 0); //unsigned int
         offset += sizeof(unsigned int);
-        mainVAO->LinkAttribute(VBO_POSITION_LAYOUT, 3, GL_FLOAT, offset); //Vector3
+        mainVAO->LinkAttribute(GE_VBO_POSITION_LAYOUT, 3, GL_FLOAT, offset); //Vector3
         offset += sizeof(Vector3);
-        mainVAO->LinkAttribute(VBO_NORMAL_LAYOUT, 3, GL_FLOAT, offset); //Vector3
+        mainVAO->LinkAttribute(GE_VBO_NORMAL_LAYOUT, 3, GL_FLOAT, offset); //Vector3
         offset += sizeof(Vector3);
-        mainVAO->LinkAttribute(VBO_UV_LAYOUT, 2, GL_FLOAT, offset); //Vector2
+        mainVAO->LinkAttribute(GE_VBO_UV_LAYOUT, 2, GL_FLOAT, offset); //Vector2
         offset += sizeof(Vector2);
     }
 

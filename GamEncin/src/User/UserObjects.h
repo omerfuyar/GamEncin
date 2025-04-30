@@ -1,12 +1,18 @@
 #pragma once 
 #include "GamEncin.h"
 
-class MyComponent : public Component
+class PlayerController : public Component
 {
 public:
     float rotSpeed = 25;
+    Transform* playerTR = nullptr;
 
-    MyComponent(Object* obj) : Component(obj) {}
+    PlayerController(Object* obj) : Component(obj) {}
+
+    void Awake() override
+    {
+        playerTR = object->GetTransform();
+    }
 
     void StartOfSecond() override
     {
@@ -47,12 +53,8 @@ public:
 
     void Update() override
     {
-        object->GetTransform()->AddRotation(Vector3(1, 3, 1) * Application::GetDeltaTime());
-
-        if(Input::GetKey(Press, C))
-        {
-            object->GetTransform()->AddRotation(RandomVector3Direction());
-        }
+        Vector3 input = Input::GetMovementVector();
+        playerTR->AddPosition((Vector2) input * Application::GetDeltaTime());
     }
 };
 
@@ -66,8 +68,6 @@ public:
     Transform* cameraTR = nullptr;
     Camera* camera = nullptr;
     GLFWwindow* window = nullptr;
-    RigidBody* sphereRB = nullptr;
-    RigidBody* planeRB = nullptr;
 
     CameraController(Object* obj) : Component(obj) {}
 
@@ -140,8 +140,6 @@ public:
 
         if(Input::GetKey(Down, T))
         {
-            sphereRB->SetDynamic(!sphereRB->IsDynamic());
-            planeRB->SetDynamic(!planeRB->IsDynamic());
         }
 
         if(Input::GetKey(Down, Y))
@@ -167,6 +165,7 @@ public:
         float tempSpeed = Input::GetKey(Press, LeftShift) ? camMoveSpeed * shiftMultiplier : camMoveSpeed;
 
         camera->AddCameraFOV(-Input::GetMouseScrollDelta());
+        camera->AddOrthographicSize(-Input::GetMouseScrollDelta());
 
         Vector3 camPos = cameraTR->GetLocalPosition();
         Vector3 camDir = cameraTR->GetDirection();
@@ -177,14 +176,5 @@ public:
 
         cameraTR->AddRotation(Vector3(-mouseDelta.y, mouseDelta.x, 0) * camRotateSpeed * Application::GetDeltaTime());
         cameraTR->SetLocalRotation(Vector3(Clamp(cameraTR->GetGlobalRotation().x, -89.0f, 89.0f), cameraTR->GetLocalRotation().y, cameraTR->GetLocalRotation().z));
-
-        if(Input::GetKey(Down, B))
-        {
-            sphereRB->GetOwnerObject()->GetTransform()->AddScale(Vector3::One() / 4.0f);
-        }
-        if(Input::GetKey(Down, V))
-        {
-            sphereRB->GetOwnerObject()->GetTransform()->AddScale(Vector3::One() / -4.0f);
-        }
     }
 };

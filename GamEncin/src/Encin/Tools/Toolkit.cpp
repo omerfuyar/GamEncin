@@ -144,12 +144,6 @@ namespace GamEncin
 
 #pragma region RawVertex
 
-        RawVertex::RawVertex(Vector3 position, Vector4 temp)
-        {
-            this->position = position;
-            this->uv = Vector2(temp.x, temp.y);
-        }
-
         RawVertex::RawVertex(Vector3 position, Vector2 texture)
         {
             this->position = position;

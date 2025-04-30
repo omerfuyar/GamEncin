@@ -166,7 +166,7 @@ namespace GamEncin
         Vector2::Vector2(float x, float y) : x(x), y(y) {}
         Vector2::Vector2(const glm::vec2& vec) : x(vec.x), y(vec.y) {}
 
-        Vector2 Vector2::operator + (const Vector2& other) const
+        Vector2 Vector2::operator + (const Vector2& other)
         {
             return Vector2(x + other.x, y + other.y);
         }
@@ -178,7 +178,7 @@ namespace GamEncin
             return *this;
         }
 
-        Vector2 Vector2::operator - (const Vector2& other) const
+        Vector2 Vector2::operator - (const Vector2& other)
         {
             return Vector2(x - other.x, y - other.y);
         }
@@ -190,7 +190,7 @@ namespace GamEncin
             return *this;
         }
 
-        Vector2 Vector2::operator * (const float other) const
+        Vector2 Vector2::operator * (const float other)
         {
             return Vector2(x * other, y * other);
         }
@@ -202,7 +202,7 @@ namespace GamEncin
             return *this;
         }
 
-        Vector2 Vector2::operator * (const Vector2& other) const
+        Vector2 Vector2::operator * (const Vector2& other)
         {
             return Vector2(x * other.x, y * other.y);
         }
@@ -214,7 +214,7 @@ namespace GamEncin
             return *this;
         }
 
-        Vector2 Vector2::operator / (const float other) const
+        Vector2 Vector2::operator / (const float other)
         {
             return Vector2(x / other, y / other);
         }
@@ -236,7 +236,7 @@ namespace GamEncin
             return x != other.x || y != other.y;
         }
 
-        float Vector2::GetMagnitude() const
+        float Vector2::GetMagnitude()
         {
             return SquareRoot(x * x + y * y);
         }
@@ -249,7 +249,7 @@ namespace GamEncin
             return *this;
         }
 
-        Vector2 Vector2::Normalized() const
+        Vector2 Vector2::Normalized()
         {
             Vector2 result = *this;
             result.Normalize();
@@ -277,7 +277,7 @@ namespace GamEncin
         Vector3::Vector3(const Vector2& vec) : x(vec.x), y(vec.y), z(0) {}
         Vector3::Vector3(const Vector2& vec, float z) : x(vec.x), y(vec.y), z(z) {}
 
-        Vector3 Vector3::operator + (const Vector3& other) const
+        Vector3 Vector3::operator + (const Vector3& other)
         {
             return Vector3(x + other.x, y + other.y, z + other.z);
         }
@@ -290,7 +290,7 @@ namespace GamEncin
             return *this;
         }
 
-        Vector3 Vector3::operator - (const Vector3& other) const
+        Vector3 Vector3::operator - (const Vector3& other)
         {
             return Vector3(x - other.x, y - other.y, z - other.z);
         }
@@ -303,7 +303,7 @@ namespace GamEncin
             return *this;
         }
 
-        Vector3 Vector3::operator * (float other) const
+        Vector3 Vector3::operator * (float other)
         {
             return Vector3(x * other, y * other, z * other);
         }
@@ -316,7 +316,7 @@ namespace GamEncin
             return *this;
         }
 
-        Vector3 Vector3::operator * (const Vector3& other) const
+        Vector3 Vector3::operator * (const Vector3& other)
         {
             return Vector3(x * other.x, y * other.y, z * other.z);
         }
@@ -329,7 +329,7 @@ namespace GamEncin
             return *this;
         }
 
-        Vector3 Vector3::operator / (float other) const
+        Vector3 Vector3::operator / (float other)
         {
             return Vector3(x / other, y / other, z / other);
         }
@@ -342,7 +342,7 @@ namespace GamEncin
             return *this;
         }
 
-        Vector3 Vector3::operator * (const Matrix4 other) const
+        Vector3 Vector3::operator * (const Matrix4 other)
         {
             glm::vec3 result = other * glm::vec4(x, y, z, 1);
             return Vector3(result.x, result.y, result.z);
@@ -358,7 +358,12 @@ namespace GamEncin
             return x != other.x || y != other.y || z != other.z;
         }
 
-        float Vector3::GetMagnitude() const
+        Vector3::operator Vector2()
+        {
+            return Vector2(x, y);
+        }
+
+        float Vector3::GetMagnitude()
         {
             return SquareRoot(x * x + y * y + z * z);
         }
@@ -379,14 +384,14 @@ namespace GamEncin
             return *this;
         }
 
-        Vector3 const Vector3::Normalized() const
+        Vector3 Vector3::Normalized()
         {
             Vector3 result = *this;
             result.Normalize();
             return result;
         }
 
-        Vector3 const Vector3::Cross(const Vector3& otherVec)
+        Vector3 Vector3::Cross(const Vector3& otherVec)
         {
             return Vector3(
                 y * otherVec.z - z * otherVec.y,
@@ -395,12 +400,12 @@ namespace GamEncin
             ).Normalize();
         }
 
-        float const Vector3::Dot(const Vector3& otherVec)
+        float Vector3::Dot(const Vector3& otherVec)
         {
             return x * otherVec.x + y * otherVec.y + z * otherVec.z;
         }
 
-        glm::vec3 const Vector3::ToGLMvec3() const
+        glm::vec3 Vector3::ToGLMvec3()
         {
             return glm::vec3(x, y, z);
         }
@@ -423,6 +428,16 @@ namespace GamEncin
         Vector4::Vector4(const Vector2& vec) : x(vec.x), y(vec.y), z(0), w(1) {}
         Vector4::Vector4(const Vector3& vec) : x(vec.x), y(vec.y), z(vec.z), w(1) {}
 
+        Vector4::operator Vector2()
+        {
+            return Vector2(x, y);
+        }
+
+        Vector4::operator Vector3()
+        {
+            return Vector3(x, y, z);
+        }
+
         Vector4 Vector4::Zero() { return Vector4(0, 0, 0, 0); }
         Vector4 Vector4::One() { return Vector4(1, 1, 1, 1); }
 
@@ -434,7 +449,7 @@ namespace GamEncin
         Vector2Int::Vector2Int(const glm::ivec2& vec) : x(vec.x), y(vec.y) {}
         Vector2Int::Vector2Int(const Vector2& vec) : x((int) vec.x), y((int) vec.y) {}
 
-        Vector2Int Vector2Int::operator + (const Vector2Int& other) const
+        Vector2Int Vector2Int::operator + (const Vector2Int& other)
         {
             return Vector2Int(x + other.x, y + other.y);
         }
@@ -446,7 +461,7 @@ namespace GamEncin
             return *this;
         }
 
-        Vector2Int Vector2Int::operator - (const Vector2Int& other) const
+        Vector2Int Vector2Int::operator - (const Vector2Int& other)
         {
             return Vector2Int(x - other.x, y - other.y);
         }
@@ -458,7 +473,7 @@ namespace GamEncin
             return *this;
         }
 
-        Vector2Int Vector2Int::operator * (int other) const
+        Vector2Int Vector2Int::operator * (int other)
         {
             return Vector2Int(x * other, y * other);
         }
@@ -470,7 +485,7 @@ namespace GamEncin
             return *this;
         }
 
-        Vector2Int Vector2Int::operator * (const Vector2Int& other) const
+        Vector2Int Vector2Int::operator * (const Vector2Int& other)
         {
             return Vector2Int(x * other.x, y * other.y);
         }
@@ -482,7 +497,7 @@ namespace GamEncin
             return *this;
         }
 
-        Vector2Int Vector2Int::operator / (int other) const
+        Vector2Int Vector2Int::operator / (int other)
         {
             return Vector2Int(x / other, y / other);
         }
@@ -504,7 +519,7 @@ namespace GamEncin
             return x != other.x || y != other.y;
         }
 
-        float Vector2Int::GetMagnitude() const
+        float Vector2Int::GetMagnitude()
         {
             return SquareRoot((float) (x * x + y * y));
         }
@@ -516,14 +531,14 @@ namespace GamEncin
             return *this;
         }
 
-        Vector2Int Vector2Int::EightDirectioned() const
+        Vector2Int Vector2Int::EightDirectioned()
         {
             Vector2Int result = *this;
             result.EightDirection();
             return result;
         }
 
-        Vector2 Vector2Int::Normalized() const
+        Vector2 Vector2Int::Normalized()
         {
             Vector2 result = Vector2((float) x, (float) y);
             result.Normalize();

@@ -35,17 +35,17 @@ namespace GamEncin
         farClipPlane = farClip;
     }
 
-    bool const Camera::IsPerspective()
+    bool Camera::IsPerspective()
     {
         return isPerspective;
     }
 
-    float const Camera::GetCameraFOV()
+    float Camera::GetCameraFOV()
     {
         return cameraFOV;
     }
 
-    float const Camera::GetOrthographicSize()
+    float Camera::GetOrthographicSize()
     {
         return orthographicSize;
     }

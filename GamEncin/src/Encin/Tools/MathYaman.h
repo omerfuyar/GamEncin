@@ -140,25 +140,25 @@ namespace GamEncin
             Vector2(float x = 0, float y = 0);
             Vector2(const glm::vec2& vec);
 
-            Vector2 operator + (const Vector2& other) const;
+            Vector2 operator + (const Vector2& other);
             Vector2& operator += (const Vector2& other);
-            Vector2 operator - (const Vector2& other) const;
+            Vector2 operator - (const Vector2& other);
             Vector2& operator -= (const Vector2& other);
-            Vector2 operator * (const float other) const;
+            Vector2 operator * (const float other);
             Vector2& operator *= (const float other);
-            Vector2 operator * (const Vector2& other) const;
+            Vector2 operator * (const Vector2& other);
             Vector2& operator *= (const Vector2& other);
-            Vector2 operator / (const float other) const;
+            Vector2 operator / (const float other);
             Vector2& operator /= (const float other);
             bool operator == (const Vector2& other);
             bool operator != (const Vector2& other);
 
             // Returns the magnitude of the Vector2
-            float GetMagnitude() const;
+            float GetMagnitude();
             // Scales the Vector2 to magnitude of 1 and returns it
             Vector2& Normalize();
             // Returns the normalized version of the Vector2
-            Vector2 Normalized() const;
+            Vector2 Normalized();
             // Returns the glm vec2 version of the Vector2
             glm::vec2 ToGLMVec2();
 
@@ -186,40 +186,41 @@ namespace GamEncin
             Vector3(const Vector2& vec);
             Vector3(const Vector2& vec, float z);
 
-            Vector3 operator + (const Vector3& other) const;
+            Vector3 operator + (const Vector3& other);
             Vector3& operator += (const Vector3& other);
-            Vector3 operator - (const Vector3& other) const;
+            Vector3 operator - (const Vector3& other);
             Vector3& operator -= (const Vector3& other);
-            Vector3 operator * (const float other) const;
+            Vector3 operator * (const float other);
             Vector3& operator *= (const float other);
-            Vector3 operator * (const Vector3& other) const;
+            Vector3 operator * (const Vector3& other);
             Vector3& operator *= (const Vector3& other);
-            Vector3 operator / (const float other) const;
+            Vector3 operator / (const float other);
             Vector3& operator /= (const float other);
-            Vector3 operator * (const Matrix4 other) const;
+            Vector3 operator * (const Matrix4 other);
             bool operator==(const Vector3& other);
             bool operator!=(const Vector3& other);
+            operator Vector2();
 
             // Returns the magnitude of the Vector3
-            float GetMagnitude() const;
+            float GetMagnitude();
 
             // Scales and returns the Vector3 magnitude of 1
             Vector3& Normalize();
 
             // Returns the normalized version of the Vector3
-            Vector3 const Normalized() const;
+            Vector3 Normalized();
 
             /// <summary>
             /// Returns the cross product of two Vector3
             /// </summary>
             /// <param name="otherVec: ">Vector to take cross</param>
-            Vector3 const Cross(const Vector3& otherVec);
+            Vector3 Cross(const Vector3& otherVec);
 
             // Returns the dot product of two Vector3
-            float const Dot(const Vector3& otherVec);
+            float Dot(const Vector3& otherVec);
 
             // Returns the glm vec3 version of the Vector3
-            glm::vec3 const ToGLMvec3() const;
+            glm::vec3 ToGLMvec3();
 
             // Returns a Vector3(0, 0, 0)
             static Vector3 Zero();
@@ -249,6 +250,9 @@ namespace GamEncin
             Vector4(const Vector2& vec);
             Vector4(const Vector3& vec);
 
+            operator Vector2();
+            operator Vector3();
+
             // Returns a Vector4(0, 0, 0, 0)
             static Vector4 Zero();
             // Returns a Vector4(1, 1, 1, 1)
@@ -264,27 +268,27 @@ namespace GamEncin
             Vector2Int(const Vector2& vec);
 
             // Operators
-            Vector2Int operator + (const Vector2Int& other) const;
+            Vector2Int operator + (const Vector2Int& other);
             Vector2Int& operator += (const Vector2Int& other);
-            Vector2Int operator - (const Vector2Int& other) const;
+            Vector2Int operator - (const Vector2Int& other);
             Vector2Int& operator -= (const Vector2Int& other);
-            Vector2Int operator * (int other) const;
+            Vector2Int operator * (int other);
             Vector2Int& operator *= (int other);
-            Vector2Int operator * (const Vector2Int& other) const;
+            Vector2Int operator * (const Vector2Int& other);
             Vector2Int& operator *= (const Vector2Int& other);
-            Vector2Int operator / (int other) const;
+            Vector2Int operator / (int other);
             Vector2Int& operator /= (int other);
             bool operator == (const Vector2Int& other);
             bool operator != (const Vector2Int& other);
 
             // Returns the magnitude of the Vector2Int
-            float GetMagnitude() const;
+            float GetMagnitude();
             // Scales the Vector2Int to 8 direction
             Vector2Int& EightDirection();
             // Returns the 8 direction version of the Vector2Int
-            Vector2Int EightDirectioned() const;
+            Vector2Int EightDirectioned();
             // Returns the normalized version of the Vector2Int
-            Vector2 Normalized() const;
+            Vector2 Normalized();
 
             // Returns a Vector2Int(0, 0)
             static Vector2Int Zero();

@@ -39,57 +39,57 @@ namespace GamEncin
         this->colliderRadius = ClampMin(bodyRadius, 0);
     }
 
-    bool const RigidBody::IsDynamic()
+    bool RigidBody::IsDynamic()
     {
         return isDynamic;
     }
 
-    bool const RigidBody::IsTrigger()
+    bool RigidBody::IsTrigger()
     {
         return isTrigger;
     }
 
-    float const RigidBody::GetMass()
+    float RigidBody::GetMass()
     {
         return mass;
     }
 
-    float const RigidBody::GetDrag()
+    float RigidBody::GetDrag()
     {
         return drag;
     }
 
-    float const RigidBody::GetAngularDrag()
+    float RigidBody::GetAngularDrag()
     {
         return angularDrag;
     }
 
-    float const RigidBody::GetGravityScale()
+    float RigidBody::GetGravityScale()
     {
         return gravityScale;
     }
 
-    float const RigidBody::GetRigidBodyRadius()
+    float RigidBody::GetRigidBodyRadius()
     {
         return colliderRadius;
     }
 
-    Vector3 const RigidBody::GetVelocity()
+    Vector3 RigidBody::GetVelocity()
     {
         return velocity;
     }
 
-    Vector3 const RigidBody::GetAngularVelocity()
+    Vector3 RigidBody::GetAngularVelocity()
     {
         return angularVelocity;
     }
 
-    Vector3 const RigidBody::GetAcceleration()
+    Vector3 RigidBody::GetAcceleration()
     {
         return acceleration;
     }
 
-    Vector3 const RigidBody::GetAngularAcceleration()
+    Vector3 RigidBody::GetAngularAcceleration()
     {
         return angularAcceleration;
     }
@@ -177,11 +177,11 @@ namespace GamEncin
 
     void RigidBody::FixUpdate()
     {
-        for (RigidBody* collider : collisions)
+        for(RigidBody* collider : collisions)
         {
-            if (!collider) continue;
+            if(!collider) continue;
 
-            if (isTrigger)
+            if(isTrigger)
             {
                 object->OnTriggerStay(collider);
             }
@@ -191,7 +191,7 @@ namespace GamEncin
             }
         }
 
-        if (!isDynamic)
+        if(!isDynamic)
         {
             return;
         }

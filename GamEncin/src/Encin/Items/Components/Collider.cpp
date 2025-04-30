@@ -2,6 +2,8 @@
 
 namespace GamEncin
 {
+#pragma region Collider
+
     Collider::Collider(Object* obj) : Component(obj)
     {
 
@@ -12,7 +14,7 @@ namespace GamEncin
         this->isTrigger = isTrigger;
     }
 
-    bool const Collider::IsTrigger()
+    bool Collider::IsTrigger()
     {
         return isTrigger;
     }
@@ -22,25 +24,29 @@ namespace GamEncin
         return rigidBody;
     }
 
-    ///
+#pragma endregion
+
+#pragma region SphereCollider
 
     SphereCollider::SphereCollider(Object* obj) : Collider(obj)
     {
 
     }
 
-    float const SphereCollider::GetRadius()
+    float SphereCollider::GetRadius()
     {
         return radius;
     }
 
-    /////
+#pragma endregion
+
+#pragma region BoxCollider
 
     BoxCollider::BoxCollider(Object* obj) : Collider(obj)
     {
     }
 
-    Vector3 const BoxCollider::GetSize()
+    Vector3 BoxCollider::GetSize()
     {
         return size;
     }
@@ -49,4 +55,6 @@ namespace GamEncin
     {
         this->size = size;
     }
+
+#pragma endregion
 }

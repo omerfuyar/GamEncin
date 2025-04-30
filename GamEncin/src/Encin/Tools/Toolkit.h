@@ -108,7 +108,6 @@ namespace GamEncin
             //TODO order matters due to shader layout
             //TODO dont forget to link attributes
 
-            RawVertex(Vector3 position, Vector4 temp);
             RawVertex(Vector3 position, Vector2 texture);
             void SetObjectId(unsigned int objectId);
             void AddNormal(Vector3 normal);

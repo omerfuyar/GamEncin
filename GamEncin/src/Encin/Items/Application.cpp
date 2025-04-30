@@ -57,32 +57,32 @@ namespace GamEncin
         currentScene = scene;
     }
 
-    float const Application::GetFixedDeltaTime()
+    float Application::GetFixedDeltaTime()
     {
         return fixedDeltaTime;
     }
 
-    float const Application::GetDeltaTime()
+    float Application::GetDeltaTime()
     {
         return deltaTime;
     }
 
-    float const Application::GetAccumulatedTime()
+    float Application::GetAccumulatedTime()
     {
         return accumulatedTime;
     }
 
-    float const Application::GetSecondsPastFromStart()
+    float Application::GetSecondsPastFromStart()
     {
         return secondsPastFromStart;
     }
 
-    bool const Application::IsRunning()
+    bool Application::IsRunning()
     {
         return isRunning;
     }
 
-    string const Application::GetProgramName()
+    string Application::GetProgramName()
     {
         return programName;
     }
@@ -286,8 +286,8 @@ namespace GamEncin
     void Application::FixUpdate()
     {
         currentScene->FixUpdate();
-        RigidBodyManager::UpdateRigidBodies();
-        RigidBodyManager::ResolveCollisions();
+        PhysicsManager::UpdateRigidBodies();
+        PhysicsManager::ResolveCollisions();
     }
 
     void Application::StartOfSecond()

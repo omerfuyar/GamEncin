@@ -17,11 +17,11 @@ namespace GamEncin
         static void SetFullScreen(bool value);
         static void SetVSync(bool value);
 
-        static  bool const GetWindowCloseInput();
-        static  bool const IsFullScreen();
-        static  bool const IsVSyncEnabled();
-        static  GLFWwindow* const GetMainWindow();
-        static  Vector2Int const GetMainWindowSize();
+        static bool GetWindowCloseInput();
+        static bool IsFullScreen();
+        static bool IsVSyncEnabled();
+        static Vector2Int GetMainWindowSize();
+        static GLFWwindow* const GetMainWindow();
 
         static void AddMesh(Mesh* mesh);
         static void RemoveMesh(Mesh* mesh);

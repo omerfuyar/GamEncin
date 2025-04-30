@@ -15,9 +15,9 @@ namespace GamEncin
         void SetPerspective(bool value);
         void SetClipPlanes(float nearClip, float farClip);
 
-        bool const IsPerspective();
-        float const GetCameraFOV();
-        float const GetOrthographicSize();
+        bool IsPerspective();
+        float GetCameraFOV();
+        float GetOrthographicSize();
 
         void UseCamera(unsigned int& viewMatrixVarId, unsigned int& projectionMatrixVarId);
 

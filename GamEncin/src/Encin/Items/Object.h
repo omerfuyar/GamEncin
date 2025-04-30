@@ -37,15 +37,16 @@ namespace GamEncin
             Application::PrintLog(NullPointerErr, "Component couldn't found in the object");
             return nullptr;
         }
-        bool const HasComponent(std::type_index componentType);
-        string const GetName();
-        string const GetTag();
-        Layer const GetLayer();
+        //use it with built in typeid() function
+        bool HasComponent(std::type_index componentType);
+        string GetName();
+        string GetTag();
+        Layer GetLayer();
         Transform* const GetTransform();
         Scene* const GetScene();
 
         template <typename T>
-        T* AddComponent()
+        T* const AddComponent()
         {
             auto obj = std::find_if(components.begin(), components.end(), [](Component* component) { return dynamic_cast<T*>(component); });
 
