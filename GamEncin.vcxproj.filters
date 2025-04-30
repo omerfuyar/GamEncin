@@ -72,6 +72,12 @@
     <ClCompile Include="GamEncin\src\Encin\Items\RigidBodyManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Collider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GamEncin\src\Encin\Items\Components\Collider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GamEncin\src\User\GamEncin.h">
@@ -1008,6 +1014,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GamEncin\src\Encin\Items\RigidBodyManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GamEncin\src\Encin\Items\Components\Collider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

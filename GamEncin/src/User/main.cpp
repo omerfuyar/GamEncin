@@ -34,7 +34,8 @@ void SceneBuilding()
     RigidBody* rb1 = mySphere1.AddComponent<RigidBody>();
     RigidBodyManager::AddRigidBody(rb1);
     rb1->SetDynamic(true);
-    rb1->AddVelocity(Vector3(2, 0, 0));
+    rb1->SetGravityScale(0);
+    rb1->AddVelocity(Vector3(0, RandomRangeFloat(-15, 0), 0));
 
     /////////
 
@@ -46,19 +47,54 @@ void SceneBuilding()
 
     Mesh* mesh2 = mySphere2.AddComponent<Mesh>();
     mesh2->SetMeshData(MeshBuilder::CreateSphere(3.0f));
-    mesh2->SetMeshTexture(TextureManager::GetTexture("GamEncin/Resources/test3.jpg"));
+    mesh2->SetMeshTexture(TextureManager::GetTexture("GamEncin/Resources/test.jpg"));
     Renderer::AddMesh(mesh2);
 
     RigidBody* rb2 = mySphere2.AddComponent<RigidBody>();
     RigidBodyManager::AddRigidBody(rb2);
     rb2->SetDynamic(true);
     rb2->SetColliderRadius(3.0f);
-    rb2->AddVelocity(Vector3(2, 0, 0));
-    rb2->SetGravityScale(-1.0f);
+    rb2->SetGravityScale(0);
+    rb2->SetMass(3.0f);
+    rb2->AddVelocity(Vector3(0, RandomRangeFloat(0, 15), 0));
 
     int totalVerticeCount = 0;
     int totalIndiceCount = 0;
     int totalObjectCount = 0;
+
+    ////////////////////////
+
+    Object& mySphere3 = scene.CreateObject();
+    mySphere3.SetName("sphere3");
+
+    Transform* TR3 = mySphere3.GetTransform();
+    TR3->AddPosition(Vector3(0, 10, 0));
+
+    Mesh* mesh3 = mySphere3.AddComponent<Mesh>();
+    mesh3->SetMeshData(MeshBuilder::CreateSphere(5.0f));
+    mesh3->SetMeshTexture(TextureManager::GetTexture("GamEncin/Resources/test3.jpg"));
+    Renderer::AddMesh(mesh3);
+
+    RigidBody* rb3 = mySphere3.AddComponent<RigidBody>();
+    RigidBodyManager::AddRigidBody(rb3);
+    rb3->SetDynamic(false);
+    rb3->SetColliderRadius(5.0f);
+
+    Object& mySphere4 = scene.CreateObject();
+    mySphere4.SetName("sphere4");
+
+    Transform* TR4 = mySphere4.GetTransform();
+    TR4->AddPosition(Vector3(0, -20, 0));
+
+    Mesh* mesh4 = mySphere4.AddComponent<Mesh>();
+    mesh4->SetMeshData(MeshBuilder::CreateSphere(5.0f));
+    mesh4->SetMeshTexture(TextureManager::GetTexture("GamEncin/Resources/test3.jpg"));
+    Renderer::AddMesh(mesh4);
+
+    RigidBody* rb4 = mySphere4.AddComponent<RigidBody>();
+    RigidBodyManager::AddRigidBody(rb4);
+    rb4->SetDynamic(false);
+    rb4->SetColliderRadius(5.0f);
 
     // int side = 10;
     // float gap = 0.01f;
