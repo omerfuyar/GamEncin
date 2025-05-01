@@ -87,6 +87,7 @@
   <ItemGroup>
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="GamEncin\src\Encin\Items\Components\Collider.cpp" />
+    <ClCompile Include="GamEncin\src\Encin\Items\Components\Text.cpp" />
     <ClCompile Include="GamEncin\src\Encin\Items\PhysicsManager.cpp" />
     <ClCompile Include="Dependencies\GLAD\glad.c" />
     <ClCompile Include="GamEncin\src\Encin\Items\Components\Camera.cpp" />
@@ -110,6 +111,7 @@
   <ItemGroup>
     <ClInclude Include="Collider.h" />
     <ClInclude Include="GamEncin\src\Encin\Items\Components\Collider.h" />
+    <ClInclude Include="GamEncin\src\Encin\Items\Components\Text.h" />
     <ClInclude Include="GamEncin\src\Encin\Items\PhysicsManager.h" />
     <ClInclude Include="Dependencies\GLAD\glad.h" />
     <ClInclude Include="Dependencies\GLAD\khrplatform.h" />
@@ -569,6 +571,51 @@
     <None Include="Dependencies\GLM\gtx\vector_angle.inl" />
     <None Include="Dependencies\GLM\gtx\vector_query.inl" />
     <None Include="Dependencies\GLM\gtx\wrap.inl" />
+    <None Include="GamEncin\Resources\Fonts\Garamond\fonts.alias" />
+    <None Include="GamEncin\Resources\Fonts\Garamond\fonts.dir" />
+    <None Include="GamEncin\Resources\Fonts\Garamond\garabol2.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Garamond\garabold.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Garamond\garaita2.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Garamond\garaital.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Garamond\garamon2.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Garamond\garamond.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Garamond\README" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\fonts.dir" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\Powerline10x20.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\Powerline5x9.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\Powerline6x12.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\Powerline7x13.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\Powerline7x14.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\Powerline8x15.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\Powerline8x16.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\Tamzen10x20b.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\Tamzen10x20r.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\Tamzen5x9b.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\Tamzen5x9r.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\Tamzen6x12b.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\Tamzen6x12r.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\Tamzen7x13b.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\Tamzen7x13r.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\Tamzen7x14b.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\Tamzen7x14r.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\Tamzen8x15b.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\Tamzen8x15r.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\Tamzen8x16b.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\Tamzen8x16r.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\TamzenForPowerline10x20b.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\TamzenForPowerline10x20r.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\TamzenForPowerline5x9b.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\TamzenForPowerline5x9r.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\TamzenForPowerline6x12b.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\TamzenForPowerline6x12r.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\TamzenForPowerline7x13b.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\TamzenForPowerline7x13r.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\TamzenForPowerline7x14b.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\TamzenForPowerline7x14r.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\TamzenForPowerline8x15b.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\TamzenForPowerline8x15r.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\TamzenForPowerline8x16b.bdf" />
+    <None Include="GamEncin\Resources\Fonts\Tamzen\TamzenForPowerline8x16r.bdf" />
     <None Include="GamEncin\src\Encin\Shaders\frag.glsl" />
     <None Include="GamEncin\src\Encin\Shaders\vert.glsl" />
     <None Include="Notes.md" />
@@ -583,8 +630,9 @@
     <Library Include="Dependencies\GLFW\glfw3.lib" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="GamEncin\Resources\test.jpg" />
-    <Image Include="GamEncin\Resources\test3.jpg" />
+    <Image Include="GamEncin\Resources\Fonts\myFont.png" />
+    <Image Include="GamEncin\Resources\Textures\test.jpg" />
+    <Image Include="GamEncin\Resources\Textures\test3.jpg" />
     <Image Include="GamEncin\src\Resources\test.jpg" />
     <Image Include="GamEncin\src\Resources\test2.jpg" />
     <Image Include="GamEncin\src\Resources\test3.jpg" />

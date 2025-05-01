@@ -1,0 +1,33 @@
+
+This is Bitmap Garamond, a 14-pixel-tall serifed font in BDF format
+for use with the X Window System.  It comes in two encodings
+(ISO-8859-1 Western Europe and ISO-8859-2 Eastern Europe), in medium,
+bold and italic variants (but not bold italic), and in one size only.
+
+This archive should contain nine files:
+
+	README		This file.
+	garamond.bdf	Bitmap Garamond 14px medium roman ISO-8859-1
+	garamon2.bdf	Bitmap Garamond 14px medium roman ISO-8859-2
+	garabold.bdf	Bitmap Garamond 14px bold roman ISO-8859-1
+	garabol2.bdf	Bitmap Garamond 14px bold roman ISO-8859-2
+	garaital.bdf	Bitmap Garamond 14px italic roman ISO-8859-1
+	garaita2.bdf	Bitmap Garamond 14px italic roman ISO-8859-2
+	fonts.dir	XLFD name mappings for the Bitmap Garamonds
+	fonts.alias	Example mappings pretending other sizes exist
+			  and mapping them to other fonts (for use in
+			  titles etc).
+
+These fonts are copyright 1997 Chris Cannam.  You may copy, edit and
+redistribute Bitmap Garamond, provided that the complete archive
+including this README file is made available with each distribution,
+that the original copyright is preserved, and that any alterations are
+documented in this file.
+
+For the original or latest distribution of Bitmap Garamond, see
+
+	http://www.all-day-breakfast.com/cannam/garamond.html
+
+
+Chris Cannam
+cannam@all-day-breakfast.com

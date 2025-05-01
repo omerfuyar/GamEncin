@@ -519,6 +519,11 @@ namespace GamEncin
             return x != other.x || y != other.y;
         }
 
+        Vector2Int::operator Vector2()
+        {
+            return Vector2((float) x, (float) y);
+        }
+
         float Vector2Int::GetMagnitude()
         {
             return SquareRoot((float) (x * x + y * y));

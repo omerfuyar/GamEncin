@@ -19,13 +19,19 @@ void SceneBuilding()
     cameraTR = nullptr;
 
     CameraController* camController = cameraObj.AddComponent<CameraController>();
+    camController->LockMovement(true);
+
+    ////////////////
+
+    Texture* fontTex = TextureManager::GetTexture("GamEncin/Resources/Fonts/myFont.png");
+    Font* myFont = FontManager::GetFont("GamEncin/Resources/Fonts/Garamond/garamond.bdf");
 
     /////////////////
 
     Object& sphere1 = scene.CreateObject();
     Mesh* sphereMesh1 = sphere1.AddComponent<Mesh>();
     sphereMesh1->SetMeshData(MeshBuilder::CreateSphere(1.0f));
-    sphereMesh1->SetMeshTexture(TextureManager::GetTexture("GamEncin/Resources/test.jpg"));
+    sphereMesh1->SetMeshTexture(TextureManager::GetTexture("GamEncin/Resources/Textures/test.jpg"));
     Renderer::AddMesh(sphereMesh1);
 
     RigidBody* sphereRB1 = sphere1.AddComponent<RigidBody>();
@@ -33,12 +39,17 @@ void SceneBuilding()
     sphereRB1->SetDynamic(false);
     sphereRB1->SetGravityScale(0);
 
+    //Text* text1 = sphere1.AddComponent<Text>();
+    //text1->SetFont(myFont);
+    //text1->SetText("Static");
+    //Renderer::AddText(text1);
+
     /////////////////
 
     Object& sphere2 = scene.CreateObject();
     Mesh* sphereMesh2 = sphere2.AddComponent<Mesh>();
     sphereMesh2->SetMeshData(MeshBuilder::CreateSphere(1.0f));
-    sphereMesh2->SetMeshTexture(TextureManager::GetTexture("GamEncin/Resources/test3.jpg"));
+    sphereMesh2->SetMeshTexture(TextureManager::GetTexture("GamEncin/Resources/Textures/test3.jpg"));
     Renderer::AddMesh(sphereMesh2);
 
     RigidBody* sphereRB2 = sphere2.AddComponent<RigidBody>();
@@ -48,6 +59,11 @@ void SceneBuilding()
 
     Transform* sphereTR2 = sphere2.GetTransform();
     sphereTR2->AddPosition(Vector3(0, 5, 0));
+
+    //Text* text2 = sphere2.AddComponent<Text>();
+    //text2->SetFont(myFont);
+    //text2->SetText("Static");
+    //Renderer::AddText(text2);
 
     sphere2.AddComponent<PlayerController>();
 

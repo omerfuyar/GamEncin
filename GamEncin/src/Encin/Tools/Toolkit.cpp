@@ -6,7 +6,7 @@ namespace GamEncin
 {
     namespace Toolkit
     {
-#pragma region Textures
+#pragma region Texture
 
         Texture::Texture(unsigned int id, unsigned int bitsPerPixel, unsigned char* data, unsigned long long handle, Vector2Int size, string filePath)
         {
@@ -47,12 +47,6 @@ namespace GamEncin
             //printf("Texture %s data size: %d\n", filePath.c_str(), size.x * size.y * (bitsPerPixel / 8));
         }
 
-        void Texture::Delete()
-        {
-            glMakeTextureHandleNonResidentARB(handle);
-            glDeleteTextures(1, &id);
-        }
-
         vector<Texture*> TextureManager::loadedTextures;
 
         Texture* TextureManager::GetTexture(string textureFilePath)
@@ -75,7 +69,6 @@ namespace GamEncin
                 return nullptr;
             }
 
-
             Texture* texture = new Texture(0, imageChannels * 8, imageData, 0, Vector2Int(imageWidth, imageHeight), textureFilePath);
 
             if(Application::IsRunning())
@@ -86,25 +79,6 @@ namespace GamEncin
             loadedTextures.push_back(texture);
 
             return texture;
-        }
-
-        void TextureManager::AddTexture(Texture* texture)
-        {
-            if(!texture)
-            {
-                Application::PrintLog(NullPointerErr, "Texture trying to add is null");
-                return;
-            }
-
-            auto obj = std::find(loadedTextures.begin(), loadedTextures.end(), texture);
-
-            if(obj != loadedTextures.end())
-            {
-                Application::PrintLog(ElementDuplicationErr, "Texture already exists in the renderer");
-                return;
-            }
-
-            loadedTextures.push_back(texture);
         }
 
         void TextureManager::DeleteTexture(Texture* textureToDelete)
@@ -119,11 +93,12 @@ namespace GamEncin
 
             if(obj == loadedTextures.end())
             {
-                Application::PrintLog(ElementCouldNotFoundErr, "Couldn't found texture to delete");
+                Application::PrintLog(ElementCouldNotFoundErr, "Texture to delete couldn't find");
                 return;
             }
 
-            textureToDelete->Delete();
+            glMakeTextureHandleNonResidentARB((*obj)->handle);
+            glDeleteTextures(1, &(*obj)->id);
 
             loadedTextures.erase(obj);
         }
@@ -134,6 +109,59 @@ namespace GamEncin
             {
                 texture->Initialize();
             }
+        }
+
+#pragma endregion
+
+#pragma region Text
+
+        Font::Font(string name, string fontFileToImport, Texture* sourceImage)
+        {
+            this->name = name;
+            this->texture = sourceImage;
+            this->bdfFilePath = fontFileToImport;
+
+            for(int i = 0; ; i++)
+            {
+
+            }
+        }
+
+        vector<Font*> FontManager::loadedFonts;
+
+        Font* FontManager::GetFont(string bdfFilePath)
+        {
+            auto obj = std::find_if(loadedFonts.begin(), loadedFonts.end(), [&bdfFilePath](Font* font)
+                                    {
+                                        return font->bdfFilePath == bdfFilePath;
+                                    });
+
+            if(obj != loadedFonts.end())
+            {
+                return *obj;
+            }
+
+            //bdf to font struct
+            //font struct will include texture and decoded, ready to use char data
+        }
+
+        void FontManager::DeleteFont(Font* fontToDelete)
+        {
+            if(!fontToDelete)
+            {
+                Application::PrintLog(NullPointerErr, "Font trying to delete is null");
+                return;
+            }
+
+            auto obj = std::find(loadedFonts.begin(), loadedFonts.end(), fontToDelete);
+
+            if(obj == loadedFonts.end())
+            {
+                Application::PrintLog(ElementCouldNotFoundErr, "Font to delete couldn't find");
+                return;
+            }
+
+            loadedFonts.erase(obj);
         }
 
 #pragma endregion
@@ -281,7 +309,7 @@ namespace GamEncin
             }
         }
 
-        vector<unsigned int> MeshData::GetIndiceArray()
+        vector<unsigned int> MeshData::GetModelIndexArray()
         {
             vector<unsigned int> indices;
 
@@ -295,7 +323,7 @@ namespace GamEncin
             return indices;
         }
 
-        vector<RawVertex> MeshData::GetRawVertexArray()
+        vector<RawVertex> MeshData::GetModelRawVertexArray()
         {
             vector<RawVertex> rawVertices;
 

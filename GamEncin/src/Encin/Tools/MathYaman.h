@@ -280,6 +280,7 @@ namespace GamEncin
             Vector2Int& operator /= (int other);
             bool operator == (const Vector2Int& other);
             bool operator != (const Vector2Int& other);
+            operator Vector2();
 
             // Returns the magnitude of the Vector2Int
             float GetMagnitude();

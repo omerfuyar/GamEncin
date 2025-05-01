@@ -4,6 +4,7 @@
 #include "Encin/Items/Components/Component.h"
 #include "Encin/Items/Components/Mesh.h"
 #include "Encin/Items/Components/RigidBody.h"
+#include "Encin/Items/Components/Text.h"
 #include "Encin/Items/Components/Transform.h"
 
 #include "Encin/Items/Application.h"

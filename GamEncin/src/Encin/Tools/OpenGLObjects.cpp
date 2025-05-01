@@ -46,7 +46,6 @@ namespace GamEncin
 
 #pragma endregion
 
-
 #pragma region Shader
 
     Shader::Shader(const char* vertexFile, const char* fragmentFile)

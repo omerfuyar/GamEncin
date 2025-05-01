@@ -161,8 +161,10 @@ namespace GamEncin
 
             //Should use GamepadButtonCode enum as key
             map<int, KeyButtonStatus> buttons;
+
             float leftTrigger = 0.0,
                 rightTrigger = 0.0;
+
             Vector2 leftStick = Vector2::Zero(),
                 rightStick = Vector2::Zero();
 
@@ -173,18 +175,6 @@ namespace GamEncin
 
         class Input
         {
-        private:
-            static GLFWwindow* window;
-            static Mouse mouse;
-            static KeyBoard keyboard;
-            static unordered_map<int, Gamepad*> gamepads;
-
-            Input() = delete;
-            Input(const Input&) = delete;
-            void operator = (const Input&) = delete;
-
-            static void GamepadCallBack(int gamepadId, int event);
-
         public:
             //shouldn't be used by the user
             static void Initialize(GLFWwindow* window);
@@ -248,7 +238,23 @@ namespace GamEncin
             /// <returns>A string that contains all file data</returns>
             static string GetFileContents(const char* fileName);
 
+            /// <summary>
+            /// Gets the file path that the executable is running from
+            /// </summary>
+            /// <returns>A string that contains current executable's file path</returns>
             static string GetExeFilePath();
+
+        private:
+            static GLFWwindow* window;
+            static Mouse mouse;
+            static KeyBoard keyboard;
+            static unordered_map<int, Gamepad*> gamepads;
+
+            Input() = delete;
+            Input(const Input&) = delete;
+            void operator = (const Input&) = delete;
+
+            static void GamepadCallBack(int gamepadId, int event);
         };
     }
 }

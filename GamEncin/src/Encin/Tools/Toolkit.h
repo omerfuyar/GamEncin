@@ -76,19 +76,53 @@ namespace GamEncin
             Texture(unsigned int id, unsigned int bitsPerPixel, unsigned char* data, unsigned long long handle, Vector2Int size, string filePath);
 
             void Initialize();
-            void Delete();
         };
 
         class TextureManager
         {
         public:
-            static Texture* GetTexture(string textFilePath);
-            static void AddTexture(Texture* texture);
+            static Texture* GetTexture(string textureFilePath);
             static void DeleteTexture(Texture* textureToDelete);
             static void InitializeTextures();
 
         private:
             static vector<Texture*> loadedTextures;
+        };
+
+#pragma endregion
+
+#pragma region Text
+
+        struct Font
+        {
+        public:
+            string name = "";
+            Texture* texture = nullptr;
+            unordered_map<char, Vector2Int> charUVs;
+            Vector2Int sizePerChar = Vector2Int::Zero();
+            string bdfFilePath = "";
+
+            Font(string name, string bdfFilePath, Texture* sourceImage);
+        };
+
+        class FontManager
+        {
+        public:
+            /// <summary>
+            /// Gets the .bdf font file from the given path and creates a font object.
+            /// </summary>
+            /// <param name="fontFilePath:">File path of the .bdf font file</param>
+            /// <returns>Returns the already created font if the font in file path is already created. Otherwise creates the font and returns it.</returns>
+            static Font* GetFont(string bdfFilePath);
+
+            /// <summary>
+            /// Deletes the font object.
+            /// </summary>
+            /// <param name="fontToDelete"></param>
+            static void DeleteFont(Font* fontToDelete);
+
+        private:
+            static vector<Font*> loadedFonts;
         };
 
 #pragma endregion
@@ -100,6 +134,7 @@ namespace GamEncin
 
         struct RawVertex
         {
+        public:
             unsigned int objectId = 0;
 
             Vector3 position = Vector3::Zero();
@@ -116,6 +151,7 @@ namespace GamEncin
 
         struct Vertex : RawVertex
         {
+        public:
             unsigned int id = 0;
 
             vector<Face*> faces;
@@ -130,6 +166,7 @@ namespace GamEncin
 
         struct Edge
         {
+        public:
             unsigned int id = 0;
 
             Vertex* startVertex = nullptr;
@@ -143,6 +180,7 @@ namespace GamEncin
 
         struct Face
         {
+        public:
             unsigned int id = 0;
 
             array<Vertex*, 3> vertices = {nullptr, nullptr, nullptr};
@@ -155,6 +193,8 @@ namespace GamEncin
 
         struct MeshData
         {
+            //TODO make getters and setters
+        public:
             unsigned int id = 0;
             unsigned int batchVertexOffset = 0;
             unsigned int batchIndexOffset = 0;
@@ -165,8 +205,8 @@ namespace GamEncin
 
             MeshData(vector<Vertex*> vertices, unordered_map<unsigned int, Edge*> edges, vector<Face*> faces);
 
-            vector<unsigned int> GetIndiceArray();
-            vector<RawVertex> GetRawVertexArray();
+            vector<unsigned int> GetModelIndexArray();
+            vector<RawVertex> GetModelRawVertexArray();
 
             void SetForBatch(unsigned int id, unsigned int batchVertexOffset, unsigned int batchIndexOffset);
 

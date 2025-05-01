@@ -64,6 +64,7 @@ public:
     float camMoveSpeed = 5;
     float camRotateSpeed = 30;
     float shiftMultiplier = 5;
+    bool lockMovement = false;
 
     Transform* cameraTR = nullptr;
     Camera* camera = nullptr;
@@ -114,6 +115,11 @@ public:
         window = Renderer::GetMainWindow();
     }
 
+    void LockMovement(bool value)
+    {
+        lockMovement = value;
+    }
+
     void Update() override
     {
 
@@ -138,18 +144,22 @@ public:
             cameraTR->SetLocalPosition(Vector3(0, 0, 0));
         }
 
-        if(Input::GetKey(Down, T))
+        if(Input::GetKey(Down, L))
         {
+            lockMovement = !lockMovement;
         }
 
         if(Input::GetKey(Down, Y))
         {
+
         }
 
         if(Input::GetKey(Down, O))
         {
             camera->SetPerspective(!camera->IsPerspective());
         }
+
+        if(lockMovement) return;
 
         if(!Input::GetMouseButton(Press, Left))
         {

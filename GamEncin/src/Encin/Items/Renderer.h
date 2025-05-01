@@ -23,8 +23,12 @@ namespace GamEncin
         static Vector2Int GetMainWindowSize();
         static GLFWwindow* const GetMainWindow();
 
+        static void UpdateMeshes();
         static void AddMesh(Mesh* mesh);
         static void RemoveMesh(Mesh* mesh);
+        static void UpdateTexts();
+        static void AddText(Text* text);
+        static void RemoveText(Text* text);
         static void InitialRender();
         static void RenderFrame();
         static void FrameBufferSizeCallback(GLFWwindow* window, int width, int height);
@@ -39,6 +43,7 @@ namespace GamEncin
         static Vector4 clearColor;
 
         static vector<Mesh*> meshes;
+        static vector<Text*> texts;
         static Shader* shaderProgram;
         static Camera* mainCamera;
         static GLFWwindow* window;
@@ -49,10 +54,16 @@ namespace GamEncin
         static GLShaderStorageBufferObject<Matrix4>* modelMatrixSSBO;
         static GLShaderStorageBufferObject<unsigned long long>* modelTextureHandlesSSBO;
 
-        static vector<RawVertex> batchedVertices;
-        static vector<unsigned int> batchedIndices;
+        static vector<RawVertex> batchedModelVertices;
+        static vector<unsigned int> batchedModelIndices;
         static vector<Matrix4> batchedModelMatrices;
         static vector<unsigned long long> batchedTextureHandles;
+
+        static GLBufferObject<RawVertex>* textVertexBO;
+        static GLBufferObject<unsigned int>* textIndexBO;
+
+        static vector<RawVertex> batchedTextVertices;
+        static vector<unsigned int> batchedTextIndices;
 
         Renderer() = delete;
         Renderer(const Renderer&) = delete;
@@ -60,6 +71,7 @@ namespace GamEncin
 
         static void UpdateSSBOs();
         static void DrawBatchedMeshes();
+        static void DrawTexts();
         static void ClearColor(Vector4 clearColor);
         static void LinkAttributes();
         static void GLSendUniformMatrix4(unsigned int& location, Matrix4 matrix4);
