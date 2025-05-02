@@ -23,39 +23,8 @@ namespace GamEncin
         // all end types, exit codes that can be used in the game
         enum LogType
         {
-            Safe, GLFWErr, GLADErr, ShaderCompilationErr, ShaderLinkingErr, ElementCouldNotFoundErr, TypeMismachErr, IOErr, IODeviceWarn, ProgramDuplicationErr, NullPointerErr, ElementDuplicationErr, IndexOutOfRangeErr, idoiterr, ComponentRequirementErr
+            Safe, GLFWErr, GLADErr, ShaderCompilationErr, ShaderLinkingErr, ElementCouldNotFoundErr, TypeMismatchErr, IOErr, IODeviceWarn, ProgramDuplicationErr, NullPointerErr, ElementDuplicationErr, IndexOutOfRangeErr, idoiterr, ComponentRequirementErr
         };
-
-#pragma endregion
-
-#pragma region BinaryTree
-
-        //TODO
-        //template <typename T>
-        //struct BinaryTreeNode
-        //{
-        //    BinaryTreeNode(T data) : data(data) {}
-        //
-        //    T data;
-        //    BinaryTreeNode* left = nullptr;
-        //    BinaryTreeNode* right = nullptr;
-        //};
-        //
-        //template <typename T>
-        //struct BinaryTree
-        //{
-        //public:
-        //    BinaryTree() = default;
-        //
-        //    BinaryTreeNode<T>* GetRoot() const { return root; }
-        //
-        //    void AddNode(T data);
-        //    void DeleteNode(T data);
-        //    void Clear();
-        //
-        //private:
-        //    BinaryTreeNode<T>* root = nullptr;
-        //};
 
 #pragma endregion
 
@@ -93,16 +62,26 @@ namespace GamEncin
 
 #pragma region Text
 
+        struct Character
+        {
+            char character;
+            Vector2 uv = Vector2::Zero();
+            Vector2 size = Vector2::Zero();
+            Vector2 offset = Vector2::Zero();
+
+            Character() = default;
+            Character(char character, Vector2 uv, Vector2 size, Vector2 offset);
+        };
+
         struct Font
         {
         public:
             string name = "";
             Texture* texture = nullptr;
-            unordered_map<char, Vector2Int> charUVs;
-            Vector2Int sizePerChar = Vector2Int::Zero();
+            unordered_map<char, Character> chars;
             string bdfFilePath = "";
 
-            Font(string name, string bdfFilePath, Texture* sourceImage);
+            Font(string name, Texture* sourceImage, unordered_map<char, Character> chars, string bdfFilePath);
         };
 
         class FontManager
@@ -112,7 +91,7 @@ namespace GamEncin
             /// Gets the .bdf font file from the given path and creates a font object.
             /// </summary>
             /// <param name="fontFilePath:">File path of the .bdf font file</param>
-            /// <returns>Returns the already created font if the font in file path is already created. Otherwise creates the font and returns it.</returns>
+            /// <returns>The already created font if the font in the file path is already created. Otherwise creates the font and returns it.</returns>
             static Font* GetFont(string bdfFilePath);
 
             /// <summary>
@@ -120,6 +99,13 @@ namespace GamEncin
             /// </summary>
             /// <param name="fontToDelete"></param>
             static void DeleteFont(Font* fontToDelete);
+
+            /// <summary>
+            /// Creates a font object and a texture image from given .bdf file.
+            /// </summary>
+            /// <param name="bdfFilePath:">.bdf font file to import</param>
+            /// <returns>The created ready to use font object.</returns>
+            static Font* const CreateFontFromBDF(string bdfFilePath);
 
         private:
             static vector<Font*> loadedFonts;
@@ -203,14 +189,20 @@ namespace GamEncin
             unordered_map<unsigned int, Edge*> edges;
             vector<Face*> faces;
 
-            MeshData(vector<Vertex*> vertices, unordered_map<unsigned int, Edge*> edges, vector<Face*> faces);
+            MeshData(Texture* texture, Matrix4* modelMatrix, vector<Vertex*> vertices, unordered_map<unsigned int, Edge*> edges, vector<Face*> faces);
 
-            vector<unsigned int> GetModelIndexArray();
-            vector<RawVertex> GetModelRawVertexArray();
+            vector<RawVertex> GetRawVertexArray();
+            vector<unsigned int> GetIndexArray();
+            Texture* const GetTexture();
+            Matrix4* const GetModelMatrix();
 
             void SetForBatch(unsigned int id, unsigned int batchVertexOffset, unsigned int batchIndexOffset);
 
             void DeleteData();
+
+        private:
+            Texture* texture = nullptr;
+            Matrix4* modelMatrix = nullptr;
         };
 
         class MeshBuilder
@@ -221,16 +213,16 @@ namespace GamEncin
             void operator = (const MeshBuilder&) = delete;
 
         public:
-            static MeshData* CreateMeshData(const vector<RawVertex> vertices, const vector<unsigned int> indices);
+            static MeshData* CreateMeshData(Texture* const texture, Matrix4* const modelMatrix, const vector<RawVertex> vertices, const vector<unsigned int> indices);
 
-            static MeshData* CreateCube(float sideLength = 1.0f);
-            static MeshData* CreatePlane(float sideLength = 1.0f);
-            static MeshData* CreateCircle(float halfRadius = 0.5f, int resolution = 20);
-            static MeshData* CreateCylinder(float height = 1.0f, float halfRadius = 0.5f, int resolution = 20);
-            static MeshData* CreateSphere(float halfRadius = 0.5f, int resolution = 20);
-            static MeshData* CreatePyramid(float height = 1.0f, float baseLength = 1.0f);
-            static MeshData* CreateCone(float height = 1.0f, float halfRadius = 0.5f, int resolution = 20);
-            static MeshData* CreateSimit(float halfRadius = 0.5f, float halfThickness = 0.25f, int resolution = 20);
+            static MeshData* CreateCuboid(Texture* const texture, Matrix4* const modelMatrix, Vector3 size = Vector3::One());
+            static MeshData* CreatePlane(Texture* const texture, Matrix4* const modelMatrix, Vector2 size = Vector2::One());
+            static MeshData* CreateCircle(Texture* const texture, Matrix4* const modelMatrix, float radius = 0.5f, int resolution = 20);
+            static MeshData* CreateCylinder(Texture* const texture, Matrix4* const modelMatrix, float height = 1.0f, float radius = 0.5f, int resolution = 20);
+            static MeshData* CreateSphere(Texture* const texture, Matrix4* const modelMatrix, float radius = 0.5f, int resolution = 20);
+            static MeshData* CreatePyramid(Texture* const texture, Matrix4* const modelMatrix, float height = 1.0f, float baseLength = 1.0f);
+            static MeshData* CreateCone(Texture* const texture, Matrix4* const modelMatrix, float height = 1.0f, float radius = 0.5f, int resolution = 20);
+            static MeshData* CreateSimit(Texture* const texture, Matrix4* const modelMatrix, float radius = 0.5f, float halfThickness = 0.25f, int resolution = 20);
             //works until 2^10 vertices
             static unsigned int GenerateFaceId(Vertex* vertex1, Vertex* vertex2, Vertex* vertex3);
             //works until 2^16 vertices

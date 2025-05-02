@@ -25,7 +25,7 @@ namespace GamEncin
         Vector3 GetGlobalScale();
         Vector3 GetDirection();
 
-        Matrix4 GetModelMatrix();
+        Matrix4* const GetModelMatrix();
 
     private:
         Transform* parent = nullptr;

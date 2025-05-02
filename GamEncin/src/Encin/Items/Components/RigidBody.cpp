@@ -16,7 +16,7 @@ namespace GamEncin
 
     void RigidBody::SetMass(float mass)
     {
-        this->mass = ClampMin(mass, MIN_RIGIDBODY_MASS);
+        this->mass = Max(mass, MIN_RIGIDBODY_MASS);
     }
 
     void RigidBody::SetDrag(float drag)
@@ -36,7 +36,7 @@ namespace GamEncin
 
     void RigidBody::SetColliderRadius(float bodyRadius)
     {
-        this->colliderRadius = ClampMin(bodyRadius, 0);
+        this->colliderRadius = Max(bodyRadius, 0);
     }
 
     bool RigidBody::IsDynamic()
@@ -222,10 +222,5 @@ namespace GamEncin
         //printf("gravityScale: %f\n", gravityScale);
         //printf("mass: %f\n", mass);
         //printf("pos : %f %f %f\n", object->GetTransform()->GetGlobalPosition().x, object->GetTransform()->GetGlobalPosition().y, object->GetTransform()->GetGlobalPosition().z);
-    }
-
-    void RigidBody::Update()
-    {
-
     }
 }

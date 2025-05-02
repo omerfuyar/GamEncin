@@ -1,11 +1,15 @@
 #include "Encin/Encin.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include <STB/stb_image.h>
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include <STB/stb_image_write.h>
 
 namespace GamEncin
 {
     namespace Toolkit
     {
+#pragma region Texture Tools
+
 #pragma region Texture
 
         Texture::Texture(unsigned int id, unsigned int bitsPerPixel, unsigned char* data, unsigned long long handle, Vector2Int size, string filePath)
@@ -23,9 +27,9 @@ namespace GamEncin
             glGenTextures(1, &id);
             glBindTexture(GL_TEXTURE_2D, id);
 
-            unsigned int imageFormat = (bitsPerPixel / 8 == 4) ? GL_RGBA :
-                (bitsPerPixel / 8 == 3) ? GL_RGB :
-                (bitsPerPixel / 8 == 2) ? GL_RG : GL_RED;
+            unsigned int imageFormat = (bitsPerPixel / 8 == 4) ? GL_RGBA : (bitsPerPixel / 8 == 3) ? GL_RGB
+                : (bitsPerPixel / 8 == 2) ? GL_RG
+                : GL_RED;
 
             glTexImage2D(GL_TEXTURE_2D, 0, imageFormat, size.x, size.y, 0, imageFormat, GL_UNSIGNED_BYTE, data);
             glGenerateMipmap(GL_TEXTURE_2D);
@@ -40,21 +44,23 @@ namespace GamEncin
 
             stbi_image_free(data);
 
-            //printf("Texture %s loaded with id: %u\n", filePath.c_str(), id);
-            //printf("Texture %s handle: %llu\n", filePath.c_str(), handle);
-            //printf("Texture %s size: %d x %d\n", filePath.c_str(), size.x, size.y);
-            //printf("Texture %s bits per pixel: %u\n", filePath.c_str(), bitsPerPixel);
-            //printf("Texture %s data size: %d\n", filePath.c_str(), size.x * size.y * (bitsPerPixel / 8));
+            // printf("Texture %s loaded with id: %u\n", filePath.c_str(), id);
+            // printf("Texture %s handle: %llu\n", filePath.c_str(), handle);
+            // printf("Texture %s size: %d x %d\n", filePath.c_str(), size.x, size.y);
+            // printf("Texture %s bits per pixel: %u\n", filePath.c_str(), bitsPerPixel);
+            // printf("Texture %s data size: %d\n", filePath.c_str(), size.x * size.y * (bitsPerPixel / 8));
         }
+
+#pragma endregion
+
+#pragma region TextureManager
 
         vector<Texture*> TextureManager::loadedTextures;
 
         Texture* TextureManager::GetTexture(string textureFilePath)
         {
             auto obj = std::find_if(loadedTextures.begin(), loadedTextures.end(), [&textureFilePath](Texture* texture)
-                                    {
-                                        return texture->filePath == textureFilePath;
-                                    });
+                                    { return texture->filePath == textureFilePath; });
 
             if(obj != loadedTextures.end())
             {
@@ -113,36 +119,53 @@ namespace GamEncin
 
 #pragma endregion
 
-#pragma region Text
+#pragma endregion
 
-        Font::Font(string name, string fontFileToImport, Texture* sourceImage)
+#pragma region Text Tools
+
+#pragma region Character
+
+        Character::Character(char character, Vector2 uv, Vector2 size, Vector2 offset)
+        {
+            this->character = character;
+            this->uv = uv;
+            this->size = size;
+            this->offset = offset;
+        }
+
+#pragma endregion
+
+#pragma region Font
+
+        Font::Font(string name, Texture* sourceImage, unordered_map<char, Character> chars, string bdfFilePath)
         {
             this->name = name;
             this->texture = sourceImage;
-            this->bdfFilePath = fontFileToImport;
-
-            for(int i = 0; ; i++)
-            {
-
-            }
+            this->chars = chars;
+            this->bdfFilePath = bdfFilePath;
         }
+
+#pragma endregion
+
+#pragma region FontManager
 
         vector<Font*> FontManager::loadedFonts;
 
         Font* FontManager::GetFont(string bdfFilePath)
         {
             auto obj = std::find_if(loadedFonts.begin(), loadedFonts.end(), [&bdfFilePath](Font* font)
-                                    {
-                                        return font->bdfFilePath == bdfFilePath;
-                                    });
+                                    { return font->bdfFilePath == bdfFilePath; });
 
             if(obj != loadedFonts.end())
             {
                 return *obj;
             }
 
-            //bdf to font struct
-            //font struct will include texture and decoded, ready to use char data
+            Font* createdFont = CreateFontFromBDF(bdfFilePath);
+
+            loadedFonts.push_back(createdFont);
+
+            return createdFont;
         }
 
         void FontManager::DeleteFont(Font* fontToDelete)
@@ -163,6 +186,125 @@ namespace GamEncin
 
             loadedFonts.erase(obj);
         }
+
+        Font* const FontManager::CreateFontFromBDF(string bdfFilePath)
+        {
+            string fontName = "";
+            unordered_map<char, Character> fontChars;
+
+            int atlasWidth = 255, atlasHeight = 255;
+            vector<unsigned char> atlasData(atlasWidth * atlasHeight, 0); // 1-channel monochrome
+            Vector2Int cursor;
+            int rowHeight = 0;
+
+            string bdf = Input::GetFileContents(bdfFilePath.c_str());
+            vector<string> lines = SplitString(bdf, "\n");
+
+            vector<string> words = SplitString(lines[1], " ");
+            vector<string> tokens = SplitString(words[1], "-");
+            fontName = tokens[1] + "_" + tokens[2] + "_" + tokens[3];
+
+            int i = 0;
+            while(i < lines.size()) // per line
+            {
+                if(lines[i].rfind("STARTCHAR", 0) == 0) // per char
+                {
+                    char character = '?';
+                    int dwidth = 0;
+                    Vector2Int bbxSize;
+                    Vector2Int bbxOffset;
+                    vector<string> bitmapLines;
+
+                    while(lines[i] != "ENDCHAR")
+                    {
+                        if(lines[i].rfind("ENCODING", 0) == 0)
+                        {
+                            character = (char) StringToInt(SplitString(lines[i], " ")[1]);
+                        }
+                        else if(lines[i].rfind("DWIDTH", 0) == 0)
+                        {
+                            dwidth = StringToInt(SplitString(lines[i], " ")[1]);
+                        }
+                        else if(lines[i].rfind("BBX", 0) == 0)
+                        {
+                            vector<string> words = SplitString(lines[i], " ");
+                            //bbxSize.x = dwidth;
+                            bbxSize.x = StringToInt(words[1]);
+                            bbxSize.y = StringToInt(words[2]);
+                            bbxOffset.x = StringToInt(words[3]);
+                            bbxOffset.y = StringToInt(words[4]);
+                        }
+                        else if(lines[i] == "BITMAP")
+                        {
+                            i++;
+
+                            while(i < lines.size() && lines[i] != "ENDCHAR")
+                            {
+                                bitmapLines.push_back(lines[i]);
+                                i++;
+                            }
+
+                            break;
+                        }
+
+                        i++;
+                    }
+
+                    for(int y = 0; y < bbxSize.y; y++)
+                    {
+                        if(y >= bitmapLines.size())
+                        {
+                            break;
+                        }
+
+                        unsigned int rowBits = std::stoul(bitmapLines[y], nullptr, 16);
+
+                        for(int x = 0; x < bbxSize.x; x++)
+                        {
+                            if((rowBits >> (bbxSize.x - 1 - x)) & 1)
+                            {
+                                atlasData[(cursor.y + y) * atlasWidth + (cursor.x + x)] = 255;
+                            }
+                        }
+                    }
+
+                    Vector2 uv = Vector2((float) cursor.x / atlasWidth, (float) cursor.y / atlasHeight);
+                    Vector2 size = Vector2((float) bbxSize.x / atlasWidth, (float) bbxSize.y / atlasHeight);
+                    Vector2 offset = Vector2((float) bbxOffset.x / atlasWidth, (float) bbxOffset.y / atlasHeight);
+
+                    fontChars[character] = Character(character, uv, size, offset);
+
+                    rowHeight = Max(rowHeight, bbxSize.y);
+                    cursor.x += bbxSize.x + 1;
+
+                    if(cursor.x + bbxSize.x >= atlasWidth)
+                    {
+                        cursor.x = 0;
+                        cursor.y += rowHeight + 1;
+                        rowHeight = 0;
+                    }
+                }
+
+                i++;
+            }
+
+            string outputImagePath = "GamEncin/Resources/Fonts/" + fontName + "_font_atlas.png";
+
+            if(!stbi_write_png(outputImagePath.c_str(), atlasWidth, atlasHeight, 1, atlasData.data(), atlasWidth))
+            {
+                Application::PrintLog(IOErr, "Failed to write font atlas image.");
+            }
+            else
+            {
+                Application::PrintLog(LogType::Safe, "Font atlas written to: " + outputImagePath + "\n");
+            }
+
+            Texture* texture = TextureManager::GetTexture(outputImagePath);
+
+            return new Font(fontName, texture, fontChars, bdfFilePath);
+        }
+
+#pragma endregion
 
 #pragma endregion
 
@@ -290,8 +432,10 @@ namespace GamEncin
 
 #pragma region MeshData
 
-        MeshData::MeshData(vector<Vertex*> vertices, unordered_map<unsigned int, Edge*> edges, vector<Face*> faces)
+        MeshData::MeshData(Texture* texture, Matrix4* modelMatrix, vector<Vertex*> vertices, unordered_map<unsigned int, Edge*> edges, vector<Face*> faces)
         {
+            this->texture = texture;
+            this->modelMatrix = modelMatrix;
             this->vertices = vertices;
             this->edges = edges;
             this->faces = faces;
@@ -309,7 +453,19 @@ namespace GamEncin
             }
         }
 
-        vector<unsigned int> MeshData::GetModelIndexArray()
+        vector<RawVertex> MeshData::GetRawVertexArray()
+        {
+            vector<RawVertex> rawVertices;
+
+            for(RawVertex* rawVertex : vertices)
+            {
+                rawVertices.push_back(*rawVertex);
+            }
+
+            return rawVertices;
+        }
+
+        vector<unsigned int> MeshData::GetIndexArray()
         {
             vector<unsigned int> indices;
 
@@ -323,16 +479,14 @@ namespace GamEncin
             return indices;
         }
 
-        vector<RawVertex> MeshData::GetModelRawVertexArray()
+        Texture* const MeshData::GetTexture()
         {
-            vector<RawVertex> rawVertices;
+            return texture;
+        }
 
-            for(RawVertex* rawVertex : vertices)
-            {
-                rawVertices.push_back(*rawVertex);
-            }
-
-            return rawVertices;
+        Matrix4* const MeshData::GetModelMatrix()
+        {
+            return modelMatrix;
         }
 
         void MeshData::DeleteData()
@@ -362,12 +516,13 @@ namespace GamEncin
 
 #pragma region MeshBuilder
 
-        MeshData* MeshBuilder::CreateMeshData(const vector<RawVertex> vertices, const vector<unsigned int> indices)
+        MeshData* MeshBuilder::CreateMeshData(Texture* const texture, Matrix4* const modelMatrix, const vector<RawVertex> vertices, const vector<unsigned int> indices)
         {
             vector<Vertex*> tempVertices;
-            tempVertices.resize(vertices.size());
             unordered_map<unsigned int, Edge*> tempEdges;
             vector<Face*> tempFaces;
+
+            tempVertices.resize(vertices.size());
 
             int vertexCount = vertices.size();
             for(int i = 0; i < vertexCount; i++)
@@ -376,16 +531,16 @@ namespace GamEncin
             }
 
             int triangleCount = indices.size() / 3;
-            for(int i = 0; i < triangleCount; i++) //for triangles
+            for(int i = 0; i < triangleCount; i++) // for triangles
             {
                 Vertex* faceVertices[3] = {tempVertices[indices[i * 3]],
                                            tempVertices[indices[i * 3 + 1]],
                                            tempVertices[indices[i * 3 + 2]]};
 
                 Face* face = new Face(faceVertices[0], faceVertices[1], faceVertices[2]);
-                //edges of face is empty
+                // edges of face is empty
 
-                for(int i = 0; i < 3; i++) //for face edges
+                for(int i = 0; i < 3; i++) // for face edges
                 {
                     Vertex* startVert = faceVertices[i];
                     Vertex* endVert = faceVertices[(i + 1) % 3];
@@ -398,7 +553,7 @@ namespace GamEncin
                     {
                         edge->rightFace = face;
                     }
-                    else //if null
+                    else // if null
                     {
                         edge = new Edge(startVert, endVert);
                         edge->leftFace = face;
@@ -407,10 +562,10 @@ namespace GamEncin
 
                     face->edges[i] = edge;
                 }
-                //edges of face and meshData is set
+                // edges of face and meshData is set
 
                 tempFaces.push_back(face);
-                //face of meshData is set
+                // face of meshData is set
             }
 
             for(Vertex* vertex : tempVertices)
@@ -418,8 +573,7 @@ namespace GamEncin
                 vertex->NormalizeNormal();
             }
 
-
-            return new MeshData(tempVertices, tempEdges, tempFaces);
+            return new MeshData(texture, modelMatrix, tempVertices, tempEdges, tempFaces);
         }
 
         unsigned int MeshBuilder::GenerateFaceId(Vertex* vertex1, Vertex* vertex2, Vertex* vertex3)
@@ -438,28 +592,26 @@ namespace GamEncin
 
 #pragma region Primitive Creators
 
-        MeshData* MeshBuilder::CreatePlane(float sideLength)
+        MeshData* MeshBuilder::CreatePlane(Texture* const texture, Matrix4* const modelMatrix, Vector2 size)
         {
-            float xzCoord = sideLength / 2;
-
             vector<RawVertex> vertices =
             {
-                RawVertex(Vector3(1, 0, 1) * xzCoord, Vector3(1, 0, 1) * xzCoord * 255),
-                RawVertex(Vector3(1, 0, -1) * xzCoord, Vector3(1, 0, -1) * xzCoord * 255),
-                RawVertex(Vector3(-1, 0, -1) * xzCoord, Vector3(-1, 0, -1) * xzCoord * 255),
-                RawVertex(Vector3(-1, 0, 1) * xzCoord, Vector3(-1, 0, 1) * xzCoord * 255)
+                RawVertex(Vector3(-1, -1, 0) * size, Vector2(0, 0)),
+                RawVertex(Vector3(1, -1, 0) * size, Vector2(1, 0)),
+                RawVertex(Vector3(1, 1, 0) * size, Vector2(1, 1)),
+                RawVertex(Vector3(-1, 1, 0) * size, Vector2(0, 1)),
             };
 
             vector<unsigned int> indices = {0, 1, 2, 2, 3, 0};
 
-            return CreateMeshData(vertices, indices);
+            return CreateMeshData(texture, modelMatrix, vertices, indices);
         }
 
-        MeshData* MeshBuilder::CreateCircle(float radius, int resolution)
+        MeshData* MeshBuilder::CreateCircle(Texture* const texture, Matrix4* const modelMatrix, float radius, int resolution)
         {
             if(resolution < 3)
             {
-                Application::PrintLog(TypeMismachErr, "Resolution can not be smaller then 3, value set to 3.");
+                Application::PrintLog(TypeMismatchErr, "Resolution can not be smaller then 3, value set to 3.");
                 resolution = 3;
             }
 
@@ -467,7 +619,7 @@ namespace GamEncin
             vector<unsigned int> indices;
 
             float x, z;
-            float sectorStep = 2 * PI / resolution; //radian
+            float sectorStep = 2 * PI / resolution; // radian
             float currSectorAngle;
 
             vertices.push_back(RawVertex(Vector3(0, 0, 0), Vector3(0, 0, 0) * 255));
@@ -485,64 +637,39 @@ namespace GamEncin
 
             for(int i = 0; i < resolution; i++)
             {
-                indices.push_back(0); //center
+                indices.push_back(0); // center
                 indices.push_back(i + 1);
                 indices.push_back((i + 1) % resolution + 1);
             }
 
-            return CreateMeshData(vertices, indices);
+            return CreateMeshData(texture, modelMatrix, vertices, indices);
         }
 
-        MeshData* MeshBuilder::CreateCube(float sideLength)
+        MeshData* MeshBuilder::CreateCuboid(Texture* const texture, Matrix4* const modelMatrix, Vector3 size)
         {
-            float xyzCoord = sideLength / 2;
-
             vector<RawVertex> vertices =
             {
-                RawVertex(Vector3(-1, -1, -1) * xyzCoord, Vector2(0, 0)),
-                RawVertex(Vector3(1, -1, -1) * xyzCoord, Vector2(1, 0)),
-                RawVertex(Vector3(1, -1, 1) * xyzCoord, Vector2(1, 1)),
-                RawVertex(Vector3(-1, -1, 1) * xyzCoord, Vector2(0, 1)),
-
-                RawVertex(Vector3(-1, 1, -1) * xyzCoord, Vector2(0, 0)),
-                RawVertex(Vector3(1, 1, -1) * xyzCoord, Vector2(1, 0)),
-                RawVertex(Vector3(1, 1, 1) * xyzCoord, Vector2(1, 1)),
-                RawVertex(Vector3(-1, 1, 1) * xyzCoord, Vector2(0, 1)),
-
-                RawVertex(Vector3(-1, -1, 1) * xyzCoord, Vector2(0, 0)),
-                RawVertex(Vector3(1, -1, 1) * xyzCoord, Vector2(1, 0)),
-                RawVertex(Vector3(1, 1, 1) * xyzCoord, Vector2(1, 1)),
-                RawVertex(Vector3(-1, 1, 1) * xyzCoord, Vector2(0, 1)),
-
-                RawVertex(Vector3(-1, -1, -1) * xyzCoord, Vector2(0, 0)),
-                RawVertex(Vector3(1, -1, -1) * xyzCoord, Vector2(1, 0)),
-                RawVertex(Vector3(1, 1, -1) * xyzCoord, Vector2(1, 1)),
-                RawVertex(Vector3(-1, 1, -1) * xyzCoord, Vector2(0, 1)),
-
-                RawVertex(Vector3(-1, -1, -1) * xyzCoord, Vector2(0, 0)),
-                RawVertex(Vector3(-1, -1, 1) * xyzCoord, Vector2(1, 0)),
-                RawVertex(Vector3(-1, 1, 1) * xyzCoord, Vector2(1, 1)),
-                RawVertex(Vector3(-1, 1, -1) * xyzCoord, Vector2(0, 1)),
-
-                RawVertex(Vector3(1, -1, -1) * xyzCoord, Vector2(0, 0)),
-                RawVertex(Vector3(1, -1, 1) * xyzCoord, Vector2(1, 0)),
-                RawVertex(Vector3(1, 1, 1) * xyzCoord, Vector2(1, 1)),
-                RawVertex(Vector3(1, 1, -1) * xyzCoord, Vector2(0, 1)),
-            };
+                RawVertex(Vector3(-1, -1, -1) * size, Vector2(0, 0)),
+                RawVertex(Vector3(1, -1, -1) * size, Vector2(1, 0)),
+                RawVertex(Vector3(1, 1, -1) * size, Vector2(1, 1)),
+                RawVertex(Vector3(-1, 1, -1) * size, Vector2(0, 1)),
+                RawVertex(Vector3(-1, -1, 1) * size, Vector2(0, 0)),
+                RawVertex(Vector3(1, -1, 1) * size, Vector2(1, 0)),
+                RawVertex(Vector3(1, 1, 1) * size, Vector2(1, 1)),
+                RawVertex(Vector3(-1, 1, 1) * size, Vector2(0, 1))};
 
             vector<unsigned int> indices = {
                 0, 1, 2, 2, 3, 0,
                 4, 5, 6, 6, 7, 4,
-                8, 9, 10, 10, 11, 8,
-                12, 13, 14, 14, 15, 12,
-                16, 17, 18, 18, 19, 16,
-                20, 21, 22, 22, 23, 20
-            };
+                0, 1, 5, 5, 4, 0,
+                1, 2, 6, 6, 5, 1,
+                2, 3, 7, 7, 6, 2,
+                3, 0, 4, 4, 7, 3};
 
-            return CreateMeshData(vertices, indices);
+            return CreateMeshData(texture, modelMatrix, vertices, indices);
         }
 
-        MeshData* MeshBuilder::CreatePyramid(float height, float baseLength)
+        MeshData* MeshBuilder::CreatePyramid(Texture* const texture, Matrix4* const modelMatrix, float height, float baseLength)
         {
             float xzCoord = baseLength / 2;
             float yQuarter = height / 4;
@@ -553,23 +680,21 @@ namespace GamEncin
                 RawVertex(Vector3(-xzCoord, -yQuarter, xzCoord), Vector3(0, 255, 0)),
                 RawVertex(Vector3(xzCoord, -yQuarter, xzCoord), Vector3(0, 0, 255)),
                 RawVertex(Vector3(xzCoord, -yQuarter, -xzCoord), Vector3(255, 255, 0)),
-                RawVertex(Vector3(-xzCoord, -yQuarter, -xzCoord), Vector3(0, 255, 255))
-            };
+                RawVertex(Vector3(-xzCoord, -yQuarter, -xzCoord), Vector3(0, 255, 255))};
 
             vector<unsigned int> indices = {
                 0, 1, 2, 0, 2, 3,
                 0, 3, 4, 0, 4, 1,
-                1, 2, 3, 3, 4, 1
-            };
+                1, 2, 3, 3, 4, 1};
 
-            return CreateMeshData(vertices, indices);
+            return CreateMeshData(texture, modelMatrix, vertices, indices);
         }
 
-        MeshData* MeshBuilder::CreateCylinder(float height, float radius, int resolution)
+        MeshData* MeshBuilder::CreateCylinder(Texture* const texture, Matrix4* const modelMatrix, float height, float radius, int resolution)
         {
             if(resolution < 3)
             {
-                Application::PrintLog(TypeMismachErr, "Resolution can not be smaller then 3, value set to 3.");
+                Application::PrintLog(TypeMismatchErr, "Resolution can not be smaller then 3, value set to 3.");
                 resolution = 3;
             }
 
@@ -577,7 +702,7 @@ namespace GamEncin
             vector<unsigned int> indices;
 
             float x, y, z;
-            float sectorStep = 2 * PI / resolution; //radian
+            float sectorStep = 2 * PI / resolution; // radian
             float currSectorAngle;
 
             for(int i = -1; i < 2; i += 2)
@@ -601,15 +726,15 @@ namespace GamEncin
             int center2 = resolution + 1;
             for(int i = 0; i < resolution; ++i)
             {
-                //circles
-                indices.push_back(0); //center1
+                // circles
+                indices.push_back(0); // center1
                 indices.push_back(i + 1);
                 indices.push_back((i + 1) % resolution + 1);
-                indices.push_back(center2); //center2
+                indices.push_back(center2); // center2
                 indices.push_back(center2 + i + 1);
                 indices.push_back(center2 + (i + 1) % resolution + 1);
 
-                //sides
+                // sides
                 indices.push_back(i + 1);
                 indices.push_back((i + 1) % resolution + 1);
                 indices.push_back(i + resolution + 2);
@@ -618,38 +743,38 @@ namespace GamEncin
                 indices.push_back((i + 1) % resolution + resolution + 2);
             }
 
-            return CreateMeshData(vertices, indices);
+            return CreateMeshData(texture, modelMatrix, vertices, indices);
         }
 
-        MeshData* MeshBuilder::CreateSphere(float radius, int resolution)
+        MeshData* MeshBuilder::CreateSphere(Texture* const texture, Matrix4* const modelMatrix, float radius, int resolution)
         {
             if(resolution < 3)
             {
-                Application::PrintLog(TypeMismachErr, "Resolution can not be smaller then 3, value set to 3.");
+                Application::PrintLog(TypeMismatchErr, "Resolution can not be smaller then 3, value set to 3.");
                 resolution = 3;
             }
 
             vector<RawVertex> vertices;
             vector<unsigned int> indices;
 
-            //TODO this is not compatible with shaders and normals
-            //this sphere is rendering from top to bottom,
+            // TODO this is not compatible with shaders and normals
+            // this sphere is rendering from top to bottom,
 
             float x, y, z, xz;
-            float stackStep = PI / resolution; //radian
-            float sectorStep = 2 * PI / resolution; //radian
+            float stackStep = PI / resolution;      // radian
+            float sectorStep = 2 * PI / resolution; // radian
             float currStackAngle, currSectorAngle;
 
             for(int i = 0; i <= resolution; ++i)
             {
-                currStackAngle = PI / 2 - i * stackStep; //from pi/2 to -pi/2 inclusive
+                currStackAngle = PI / 2 - i * stackStep; // from pi/2 to -pi/2 inclusive
 
                 xz = radius * CosRad(currStackAngle);
                 y = radius * SinRad(currStackAngle);
 
                 for(int j = 0; j <= resolution; ++j)
                 {
-                    currSectorAngle = j * sectorStep; //from 0 to 2pi inclusive
+                    currSectorAngle = j * sectorStep; // from 0 to 2pi inclusive
 
                     x = xz * CosRad(currSectorAngle);
                     z = xz * SinRad(currSectorAngle);
@@ -663,8 +788,8 @@ namespace GamEncin
             int k1, k2;
             for(int i = 0; i < resolution; ++i)
             {
-                k1 = i * (resolution + 1);     // beginning of current stack
-                k2 = k1 + resolution + 1;      // beginning of next stack
+                k1 = i * (resolution + 1); // beginning of current stack
+                k2 = k1 + resolution + 1;  // beginning of next stack
 
                 for(int j = 0; j < resolution; ++j, ++k1, ++k2)
                 {
@@ -687,14 +812,14 @@ namespace GamEncin
                 }
             }
 
-            return CreateMeshData(vertices, indices);
+            return CreateMeshData(texture, modelMatrix, vertices, indices);
         }
 
-        MeshData* MeshBuilder::CreateCone(float height, float radius, int resolution)
+        MeshData* MeshBuilder::CreateCone(Texture* const texture, Matrix4* const modelMatrix, float height, float radius, int resolution)
         {
             if(resolution < 3)
             {
-                Application::PrintLog(TypeMismachErr, "Resolution can not be smaller then 3, value set to 3.");
+                Application::PrintLog(TypeMismatchErr, "Resolution can not be smaller then 3, value set to 3.");
                 resolution = 3;
             }
 
@@ -703,14 +828,14 @@ namespace GamEncin
 
             float x, z;
             float yQuarter = (float) height / 4.0f;
-            float sectorStep = 2.0f * PI / (float) resolution; //radian
+            float sectorStep = 2.0f * PI / (float) resolution; // radian
             float currSectorAngle;
 
             Vector3 vec = Vector3(0, -yQuarter, 0);
-            vertices.push_back(RawVertex(vec, vec * 255)); //bottom center
+            vertices.push_back(RawVertex(vec, vec * 255)); // bottom center
 
             vec = Vector3(0, yQuarter * 3, 0);
-            vertices.push_back(RawVertex(vec, vec * 255)); //top center
+            vertices.push_back(RawVertex(vec, vec * 255)); // top center
 
             for(int i = 0; i < resolution; ++i)
             {
@@ -740,14 +865,14 @@ namespace GamEncin
                 indices.push_back(nextIndex);
             }
 
-            return CreateMeshData(vertices, indices);
+            return CreateMeshData(texture, modelMatrix, vertices, indices);
         }
 
-        MeshData* MeshBuilder::CreateSimit(float radius, float halfThickness, int resolution)
+        MeshData* MeshBuilder::CreateSimit(Texture* const texture, Matrix4* const modelMatrix, float radius, float halfThickness, int resolution)
         {
             if(resolution < 3)
             {
-                Application::PrintLog(TypeMismachErr, "Resolution can not be smaller then 3, value set to 3.");
+                Application::PrintLog(TypeMismatchErr, "Resolution can not be smaller then 3, value set to 3.");
                 resolution = 3;
             }
 
@@ -755,7 +880,7 @@ namespace GamEncin
             vector<unsigned int> indices;
 
             float x, y, z;
-            float sectorSteps = 2 * PI / (float) resolution; //radian
+            float sectorSteps = 2 * PI / (float) resolution; // radian
             float currMajorAngle, currMinorAngle;
 
             for(int i = 0; i < resolution; ++i)
@@ -769,18 +894,17 @@ namespace GamEncin
                     y = halfThickness * SinRad(currMinorAngle);
                     z = (radius + halfThickness * CosRad(currMinorAngle)) * SinRad(currMajorAngle);
 
-
                     Vector3 vec = Vector3(x, y, z);
                     vertices.push_back(RawVertex(vec, vec * 255));
                 }
             }
 
-            for(int i = 0; i < resolution; i++) //major
+            for(int i = 0; i < resolution; i++) // major
             {
                 int currMajorIndex = (i % resolution) * resolution;
                 int nextMajorIndex = ((i + 1) % resolution) * resolution;
 
-                for(int j = 0; j < resolution; j++) //minor
+                for(int j = 0; j < resolution; j++) // minor
                 {
                     indices.push_back(currMajorIndex + j);
                     indices.push_back(nextMajorIndex + j);
@@ -791,7 +915,7 @@ namespace GamEncin
                 }
             }
 
-            return CreateMeshData(vertices, indices);
+            return CreateMeshData(texture, modelMatrix, vertices, indices);
         }
 
 #pragma endregion

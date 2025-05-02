@@ -9,8 +9,8 @@ namespace GamEncin
     Vector2Int Renderer::windowSize = Vector2Int(1080, 1080);
     Vector4 Renderer::clearColor = Vector4(0.2f, 0.3f, 0.3f, 1.0f);
 
-    vector<Mesh*> Renderer::meshes;
-    vector<Text*> Renderer::texts;
+    vector<MeshData*> Renderer::meshes;
+
     Shader* Renderer::shaderProgram = nullptr;
     Camera* Renderer::mainCamera = nullptr;
     GLFWwindow* Renderer::window = nullptr;
@@ -18,19 +18,15 @@ namespace GamEncin
     GLArrayObject* Renderer::mainVAO = nullptr;
     GLBufferObject<RawVertex>* Renderer::modelVertexBO = nullptr;
     GLBufferObject<unsigned int>* Renderer::modelIndexBO = nullptr;
+
     GLShaderStorageBufferObject<Matrix4>* Renderer::modelMatrixSSBO = nullptr;
     GLShaderStorageBufferObject<unsigned long long>* Renderer::modelTextureHandlesSSBO = nullptr;
 
     vector<RawVertex> Renderer::batchedModelVertices;
     vector<unsigned int> Renderer::batchedModelIndices;
+
     vector<Matrix4> Renderer::batchedModelMatrices;
     vector<unsigned long long> Renderer::batchedTextureHandles;
-
-    GLBufferObject<RawVertex>* Renderer::textVertexBO = nullptr;
-    GLBufferObject<unsigned int>* Renderer::textIndexBO = nullptr;
-
-    vector<RawVertex> Renderer::batchedTextVertices;
-    vector<unsigned int> Renderer::batchedTextIndices;
 
     void Renderer::SetWindowProperties(bool newIsFullScreen, bool newVSyncEnabled, Vector2Int newWindowSize, Vector4 newClearColor)
     {
@@ -119,20 +115,7 @@ namespace GamEncin
         return window;
     }
 
-    void Renderer::UpdateMeshes()
-    {
-        for(Mesh* mesh : meshes)
-        {
-            if(!mesh->HasChanged()) continue;
-            //TODO probably remove and readd them
-            //mesh->GetMeshData()->SetForBatch(meshes.size(), batchedModelVertices.size(), batchedModelIndices.size());
-            //mesh->GetOwnerObject()->GetTransform()->UpdateModelMatrix();
-            //batchedModelMatrices.push_back(mesh->GetOwnerObject()->GetTransform()->GetModelMatrix());
-            //mesh->SetChanged(false);
-        }
-    }
-
-    void Renderer::AddMesh(Mesh* mesh)
+    void Renderer::AddMesh(MeshData* mesh)
     {
         if(!mesh)
         {
@@ -148,20 +131,20 @@ namespace GamEncin
             return;
         }
 
-        mesh->GetMeshData()->SetForBatch(meshes.size(), batchedModelVertices.size(), batchedModelIndices.size());
-        vector<RawVertex> tempVertices = mesh->GetMeshData()->GetModelRawVertexArray();
-        vector<unsigned int> tempIndices = mesh->GetMeshData()->GetModelIndexArray();
+        mesh->SetForBatch(meshes.size(), batchedModelVertices.size(), batchedModelIndices.size());
+        vector<RawVertex> tempVertices = mesh->GetRawVertexArray();
+        vector<unsigned int> tempIndices = mesh->GetIndexArray();
 
         batchedModelVertices.insert(batchedModelVertices.end(), tempVertices.begin(), tempVertices.end());
         batchedModelIndices.insert(batchedModelIndices.end(), tempIndices.begin(), tempIndices.end());
 
-        batchedModelMatrices.push_back(mesh->GetOwnerObject()->GetTransform()->GetModelMatrix());
-        batchedTextureHandles.push_back(mesh->GetMeshTexture()->handle);
+        batchedModelMatrices.push_back(*mesh->GetModelMatrix());
+        batchedTextureHandles.push_back(mesh->GetTexture()->handle);
 
         meshes.push_back(mesh);
     }
 
-    void Renderer::RemoveMesh(Mesh* mesh)
+    void Renderer::RemoveMesh(MeshData* mesh)
     {
         if(!mesh)
         {
@@ -177,7 +160,7 @@ namespace GamEncin
             return;
         }
 
-        MeshData& meshData = *mesh->GetMeshData();
+        MeshData& meshData = *mesh;
 
         auto vertexBeginIt = batchedModelVertices.begin() + meshData.batchVertexOffset;
         auto vertexEndIt = vertexBeginIt + meshData.vertices.size();
@@ -195,12 +178,12 @@ namespace GamEncin
 
         for(int i = meshData.id + 1; i < meshes.size(); i++)
         {
-            Mesh* tempMesh = meshes[i];
+            MeshData* tempMesh = meshes[i];
 
-            tempMesh->GetMeshData()->SetForBatch(
+            tempMesh->SetForBatch(
                 i - 1,
-                tempMesh->GetMeshData()->batchVertexOffset - meshData.vertices.size(),
-                tempMesh->GetMeshData()->batchIndexOffset - (meshData.faces.size() * 3)
+                tempMesh->batchVertexOffset - meshData.vertices.size(),
+                tempMesh->batchIndexOffset - (meshData.faces.size() * 3)
             );
         }
 
@@ -215,64 +198,6 @@ namespace GamEncin
         }
 
         meshes.erase(obj);
-    }
-
-    void Renderer::UpdateTexts()
-    {
-        for(Text* text : texts)
-        {
-            if(!text->HasChanged()) continue;
-            //TODO probably remove and readd them
-            //vector<RawVertex> tempVertices = text->GetTextRawVertexArray();
-            //vector<unsigned int> tempIndices = text->GetTextIndexArray();
-            //batchedTextVertices.insert(batchedTextVertices.end(), tempVertices.begin(), tempVertices.end());
-            //batchedTextIndices.insert(batchedTextIndices.end(), tempIndices.begin(), tempIndices.end());
-            //text->SetChanged(false);
-        }
-    }
-
-    void Renderer::AddText(Text* text)
-    {
-        if(!text)
-        {
-            Application::PrintLog(NullPointerErr, "Text trying to add is null");
-            return;
-        }
-
-        auto obj = std::find(texts.begin(), texts.end(), text);
-
-        if(obj != texts.end())
-        {
-            Application::PrintLog(ElementDuplicationErr, "Text already exists in the renderer");
-            return;
-        }
-
-        vector<RawVertex> tempVertices = text->GetTextRawVertexArray();
-        vector<unsigned int> tempIndices = text->GetTextIndexArray();
-
-        batchedTextVertices.insert(batchedModelVertices.end(), tempVertices.begin(), tempVertices.end());
-        batchedTextIndices.insert(batchedModelIndices.end(), tempIndices.begin(), tempIndices.end());
-
-        batchedModelMatrices.push_back(text->GetOwnerObject()->GetTransform()->GetModelMatrix());
-        batchedTextureHandles.push_back(text->GetFont()->texture->handle);
-
-        texts.push_back(text);
-    }
-
-    void Renderer::RemoveText(Text* text)
-    {
-        if(!text)
-        {
-            Application::PrintLog(NullPointerErr, "Text trying to remove is null");
-            return;
-        }
-        auto obj = std::find(texts.begin(), texts.end(), text);
-        if(obj == texts.end())
-        {
-            Application::PrintLog(ElementCouldNotFoundErr, "Couldn't found text to remove");
-            return;
-        }
-        texts.erase(obj);
     }
 
     void Renderer::InitialRender()
@@ -294,10 +219,7 @@ namespace GamEncin
 
         glfwSetFramebufferSizeCallback(window, FrameBufferSizeCallback);
 
-        if(!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
-            Application::Stop(GLADErr);
-
-        if(!gladLoadGL())
+        if(!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress) || !gladLoadGL())
             Application::Stop(GLADErr);
 
         SetFullScreen(isFullScreen);
@@ -324,9 +246,6 @@ namespace GamEncin
         modelMatrixSSBO = new GLShaderStorageBufferObject<Matrix4>(GE_SSBO_MODEL_MATRICES_BINDING, GL_STATIC_DRAW);
         modelTextureHandlesSSBO = new GLShaderStorageBufferObject<unsigned long long>(GE_SSBO_TEXTURE_HANDLES_BINDING, GL_STATIC_DRAW);
 
-        textVertexBO = new GLBufferObject<RawVertex>(GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW);
-        textIndexBO = new GLBufferObject<unsigned int>(GL_ELEMENT_ARRAY_BUFFER, GL_DYNAMIC_DRAW);
-
         LinkAttributes();
 
         TextureManager::InitializeTextures();
@@ -340,11 +259,9 @@ namespace GamEncin
 
         mainCamera->UseCamera(shaderProgram->viewMatrixVarId, shaderProgram->projectionMatrixVarId);
 
-        UpdateSSBOs();
+        UpdatePerMeshDatas();
 
         DrawBatchedMeshes();
-
-        DrawTexts();
 
         glfwSwapBuffers(window);
 
@@ -373,20 +290,18 @@ namespace GamEncin
         glfwTerminate();
     }
 
-    void Renderer::UpdateSSBOs()
+    void Renderer::UpdatePerMeshDatas()
     {
-        for(Mesh* mesh : meshes)
+        for(MeshData* mesh : meshes)
         {
-            int index = mesh->GetMeshData()->id;
-            batchedModelMatrices[index] = mesh->GetOwnerObject()->GetTransform()->GetModelMatrix();
-            batchedTextureHandles[index] = mesh->GetMeshTexture() ? mesh->GetMeshTexture()->handle : 0;
+            int index = mesh->id;
+            batchedModelMatrices[index] = mesh->GetModelMatrix() ? *mesh->GetModelMatrix() : Matrix4(1.0f);
+            batchedTextureHandles[index] = mesh->GetTexture() ? mesh->GetTexture()->handle : 0;
         }
     }
 
     void Renderer::DrawBatchedMeshes()
     {
-        UpdateMeshes();
-
         mainVAO->Bind();
 
         modelVertexBO->Update(batchedModelVertices);
@@ -396,19 +311,6 @@ namespace GamEncin
         modelTextureHandlesSSBO->Update(batchedTextureHandles);
 
         glDrawElements(GL_TRIANGLES, batchedModelIndices.size(), GL_UNSIGNED_INT, 0);
-    }
-
-    void Renderer::DrawTexts()
-    {
-        UpdateTexts();
-
-        mainVAO->Bind();
-
-        textVertexBO->Update(batchedTextVertices);
-
-        textIndexBO->Update(batchedTextIndices);
-
-
     }
 
     void Renderer::ClearColor(Vector4 clearColor)

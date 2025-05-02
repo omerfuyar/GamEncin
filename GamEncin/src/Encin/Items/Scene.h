@@ -28,5 +28,7 @@ namespace GamEncin
 
     private:
         vector<Object*> objects;
+
+        void UpdateTransforms();
     };
 }

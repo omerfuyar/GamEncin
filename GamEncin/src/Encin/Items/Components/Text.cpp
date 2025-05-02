@@ -8,7 +8,7 @@ namespace GamEncin
 
     Text::~Text()
     {
-        Renderer::RemoveText(this);
+        Renderer::RemoveMesh(textMeshData);
     }
 
     void Text::SetChanged(bool value)
@@ -16,9 +16,22 @@ namespace GamEncin
         hasChanged = value;
     }
 
+    void Text::SetCharDistance(float distance)
+    {
+        this->charDistance = distance;
+        SetChanged(true);
+    }
+
+    void Text::SetLineDistance(float distance)
+    {
+        this->lineDistance = distance;
+        SetChanged(true);
+    }
+
     void Text::SetText(string text)
     {
         this->text = text;
+        SetChanged(true);
     }
 
     void Text::SetTextSize(Vector2 textSize)
@@ -38,6 +51,16 @@ namespace GamEncin
         return hasChanged;
     }
 
+    float Text::GetCharDistance()
+    {
+        return charDistance;
+    }
+
+    float Text::GetLineDistance()
+    {
+        return lineDistance;
+    }
+
     string Text::GetText()
     {
         return text;
@@ -53,28 +76,44 @@ namespace GamEncin
         return font;
     }
 
-    vector<RawVertex> Text::GetTextRawVertexArray()
+    MeshData* const Text::GetTextMeshData()
     {
-        vector<RawVertex> vertices;
-
-        for(char c : text)
-        {
-            Vector2Int charUV = font->charUVs[c];
-            Vector2Int charSize = font->sizePerChar;
-
-            //todo pixel to texture ratio conversion
-
-            vertices.push_back(RawVertex(Vector3(0, 0), charUV));
-            vertices.push_back(RawVertex(Vector3(charSize.x, 0), charUV));
-            vertices.push_back(RawVertex(Vector3(charSize.x, charSize.y), charUV));
-            vertices.push_back(RawVertex(Vector3(0, charSize.y), charUV));
-        }
-
-        return vertices;
+        return textMeshData;
     }
 
-    vector<unsigned int> Text::GetTextIndexArray()
+    void Text::UpdateTextMeshData()
     {
+        if(!font)
+        {
+            Application::PrintLog(NullPointerErr, "Font is null");
+            return;
+        }
+
+        vector<RawVertex> vertices;
+
+        int totalLines = SplitString(text, "\n").size();
+        int lineCount = 0;
+        for(int i = 0; i < text.length(); i++)
+        {
+            if(text[i] == '\n')
+            {
+                lineCount++;
+                continue;
+            }
+
+            Character character = font->chars[text[i]];
+            Vector2 charUV = character.uv;
+            Vector2 charSize = character.size;
+            Vector2 charOffset = character.offset;
+
+            Vector2 charPosition = Vector2(((float) text.length() / -2 + i) * charDistance, ((float) totalLines / -2 + lineCount)) * textSize;
+
+            vertices.push_back(RawVertex(charPosition - charSize / 2, charUV));
+            vertices.push_back(RawVertex(Vector2(charPosition.x + charSize.x / 2, charPosition.y - charSize.y / 2), Vector2(charUV.x + charSize.x, charUV.y)));
+            vertices.push_back(RawVertex(charPosition + charSize / 2, charUV + charSize));
+            vertices.push_back(RawVertex(Vector2(charPosition.x - charSize.x / 2, charPosition.y + charSize.y / 2), Vector2(charUV.x, charUV.y + charSize.x)));
+        }
+
         vector<unsigned int> indices;
 
         for(int i = 0; i < text.length(); i++)
@@ -87,6 +126,24 @@ namespace GamEncin
             indices.push_back(i * 4);
         }
 
-        return indices;
+        if(textMeshData)
+        {
+            Renderer::RemoveMesh(textMeshData);
+            printf("Text GetTextMeshData remove: %p\n", textMeshData);
+        }
+
+        textMeshData = MeshBuilder::CreateMeshData(font->texture, object->GetTransform()->GetModelMatrix(), vertices, indices);
+        printf("Text GetTextMeshData add: %p\n", textMeshData);
+        Renderer::AddMesh(textMeshData);
+
+        SetChanged(false);
+    }
+
+    void Text::Update()
+    {
+        if(HasChanged())
+        {
+            UpdateTextMeshData();
+        }
     }
 }

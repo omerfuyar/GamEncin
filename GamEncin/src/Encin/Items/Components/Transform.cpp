@@ -2,7 +2,7 @@
 
 namespace GamEncin
 {
-    Transform::Transform(Object* obj) :Component(obj) {}
+    Transform::Transform(Object* obj) : Component(obj) {}
 
     void Transform::SetParent(Transform* newParent)
     {
@@ -152,7 +152,7 @@ namespace GamEncin
         return direction;
     }
 
-    Matrix4 Transform::GetModelMatrix()
+    Matrix4* const Transform::GetModelMatrix()
     {
         Vector3 tempPos = GetGlobalPosition();
         Vector3 tempRot = GetGlobalRotation();
@@ -171,9 +171,9 @@ namespace GamEncin
 
         if(parent)
         {
-            modelMatrix = parent->GetModelMatrix() * modelMatrix;
+            modelMatrix = *parent->GetModelMatrix() * modelMatrix;
         }
 
-        return modelMatrix;
+        return &modelMatrix;
     }
 }

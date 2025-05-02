@@ -73,6 +73,5 @@ namespace GamEncin
         vector<RigidBody*> collisions;
 
         void FixUpdate() override;
-        void Update() override;
     };
 }

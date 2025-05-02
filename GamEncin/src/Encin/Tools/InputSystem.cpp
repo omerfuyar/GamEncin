@@ -30,6 +30,8 @@ namespace GamEncin
 
 #pragma endregion
 
+#pragma region Devices
+
 #pragma region Mouse
 
         unordered_map<int, KeyButtonStatus> Mouse::buttons;
@@ -58,6 +60,7 @@ namespace GamEncin
             positionDelta = position - temp;
 
             scrollDelta = 0;
+
             for(auto& button : buttons)
             {
                 switch(button.second)
@@ -184,6 +187,8 @@ namespace GamEncin
                 }
             }
         }
+
+#pragma endregion
 
 #pragma endregion
 
@@ -370,31 +375,31 @@ namespace GamEncin
             return axis;
         }
 
-        string Input::GetFileContents(const char* fileName)
+        string Input::GetFileContents(const char* filePath)
         {
-            std::ifstream in(fileName, std::ios::binary);
+            std::ifstream input = std::ifstream(filePath, std::ios::binary);
 
-            if(in)
+            if(!input)
             {
-                string contents;
-                in.seekg(0, std::ios::end);
-                contents.resize(in.tellg());
-                in.seekg(0, std::ios::beg);
-                in.read(&contents[0], contents.size());
-                in.close();
-                return (contents);
+                Application::Stop(IOErr);
+                return "";
             }
 
-            Application::Stop(IOErr);
+            string fileContents;
+            input.seekg(0, std::ios::end);
+            fileContents.resize(input.tellg());
+            input.seekg(0, std::ios::beg);
+            input.read(&fileContents[0], fileContents.size());
+            input.close();
 
-            return "";
+            return fileContents;
         }
 
         string Input::GetExeFilePath()
         {
             char buffer[MAX_PATH];
             GetModuleFileNameA(NULL, buffer, MAX_PATH);
-            std::filesystem::path exePath(buffer);
+            std::filesystem::path exePath = std::filesystem::path(buffer);
 
             string result = exePath.parent_path().string();
 

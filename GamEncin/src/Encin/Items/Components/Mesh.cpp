@@ -11,7 +11,7 @@ namespace GamEncin
 
     Mesh::~Mesh()
     {
-        Renderer::RemoveMesh(this);
+        Renderer::RemoveMesh(this->meshData);
     }
 
     void Mesh::SetChanged(bool value)
@@ -32,19 +32,6 @@ namespace GamEncin
         SetChanged(true);
     }
 
-    void Mesh::SetMeshTexture(Texture* texture)
-    {
-        if(!texture)
-        {
-            Application::PrintLog(NullPointerErr, "Mesh texture trying to set is null");
-            return;
-        }
-
-        meshTexture = texture;
-
-        SetChanged(true);
-    }
-
     bool Mesh::HasChanged()
     {
         return hasChanged;
@@ -53,10 +40,5 @@ namespace GamEncin
     MeshData* const Mesh::GetMeshData()
     {
         return meshData;
-    }
-
-    Texture* const Mesh::GetMeshTexture()
-    {
-        return meshTexture;
     }
 }

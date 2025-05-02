@@ -4,7 +4,7 @@
 class PlayerController : public Component
 {
 public:
-    float rotSpeed = 25;
+    float moveSpeed = 2;
     Transform* playerTR = nullptr;
 
     PlayerController(Object* obj) : Component(obj) {}
@@ -16,45 +16,12 @@ public:
 
     void StartOfSecond() override
     {
-        return;
-
-        printf("myComponent StartOfSecond : id : %d, \n", object->GetComponent<Mesh>()->GetMeshData()->id);
-
-        Vector3 tempVec = object->GetTransform()->GetLocalPosition();
-        printf("\nmyObject localPosition: %f %f %f\n", tempVec.x, tempVec.y, tempVec.z);
-        tempVec = object->GetTransform()->GetLocalRotation();
-        printf("myObject localRotation: %f %f %f\n", tempVec.x, tempVec.y, tempVec.z);
-        tempVec = object->GetTransform()->GetLocalScale();
-        printf("myObject localScale: %f %f %f\n\n", tempVec.x, tempVec.y, tempVec.z);
-
-        tempVec = object->GetTransform()->GetGlobalPosition();
-        printf("myObject globalPosition: %f %f %f\n", tempVec.x, tempVec.y, tempVec.z);
-        tempVec = object->GetTransform()->GetGlobalRotation();
-        printf("myObject globalRotation: %f %f %f\n", tempVec.x, tempVec.y, tempVec.z);
-        tempVec = object->GetTransform()->GetGlobalScale();
-        printf("myObject globalScale: %f %f %f\n", tempVec.x, tempVec.y, tempVec.z);
-
-        tempVec = object->GetTransform()->GetDirection();
-        printf("\nmyObject direction: %f %f %f\n", tempVec.x, tempVec.y, tempVec.z);
-
-        Matrix4 modelMatrix = object->GetTransform()->GetModelMatrix();
-
-        printf("\nmyObject model matrix\n");
-        for(int i = 0; i < 4; ++i)
-        {
-            for(int j = 0; j < 4; ++j)
-            {
-                printf("%f ", modelMatrix[i][j]);
-            }
-            printf("\n");
-        }
-        printf("\n\n");
     }
 
     void Update() override
     {
         Vector3 input = Input::GetMovementVector();
-        playerTR->AddPosition((Vector2) input * Application::GetDeltaTime());
+        playerTR->AddPosition((Vector2) input * moveSpeed * Application::GetDeltaTime());
     }
 };
 
@@ -74,38 +41,6 @@ public:
 
     void StartOfSecond() override
     {
-        return;
-
-        Vector3 tempVec = cameraTR->GetLocalPosition();
-        printf("\ncamera localPosition: %f %f %f\n", tempVec.x, tempVec.y, tempVec.z);
-        tempVec = cameraTR->GetLocalRotation();
-        printf("camera localRotation: %f %f %f\n", tempVec.x, tempVec.y, tempVec.z);
-        tempVec = cameraTR->GetLocalScale();
-        printf("camera localScale: %f %f %f\n\n", tempVec.x, tempVec.y, tempVec.z);
-
-        tempVec = cameraTR->GetGlobalPosition();
-        printf("camera globalPosition: %f %f %f\n", tempVec.x, tempVec.y, tempVec.z);
-        tempVec = cameraTR->GetGlobalRotation();
-        printf("camera globalRotation: %f %f %f\n", tempVec.x, tempVec.y, tempVec.z);
-        tempVec = cameraTR->GetGlobalScale();
-        printf("camera globalScale: %f %f %f\n", tempVec.x, tempVec.y, tempVec.z);
-
-        tempVec = cameraTR->GetDirection();
-        printf("\ncamera direction: %f %f %f\n", tempVec.x, tempVec.y, tempVec.z);
-
-        Matrix4 modelMatrix = cameraTR->GetModelMatrix();
-
-        printf("\ncam model matrix\n");
-        for(int i = 0; i < 4; ++i)
-        {
-            for(int j = 0; j < 4; ++j)
-            {
-                printf("%f ", modelMatrix[i][j]);
-            }
-            printf("\n");
-        }
-        printf("\n\n");
-
     }
 
     void Start() override

@@ -7,7 +7,6 @@
 #include <algorithm>
 #include <array>
 #include <cmath>
-#include <cstdlib>
 #include <map>
 #include <string>
 #include <typeinfo>
@@ -377,22 +376,6 @@ namespace GamEncin
         float Clamp(float value, float min, float max);
 
         /// <summary>
-        /// Sets the value to min if it is smaller than min
-        /// </summary>
-        /// <param name="value">Value to clamp</param>
-        /// <param name="min">Min value</param>
-        /// <returns></returns>
-        float ClampMin(float value, float min);
-
-        /// <summary>
-        /// Sets the value to max if it is greater than max
-        /// </summary>
-        /// <param name="value">Value to clamp</param>
-        /// <param name="max">Max value</param>
-        /// <returns></returns>
-        float ClampMax(float value, float max);
-
-        /// <summary>
         /// Clamps the Vector2 magnitude between 0 and max value
         /// </summary>
         /// <param name="value:">Vector to clamp</param>
@@ -458,6 +441,27 @@ namespace GamEncin
         /// <param name="string2"></param>
         /// <returns></returns>
         bool IsSubString(const char* string1, const char* string2);
+
+        /// <summary>
+        /// Splits a string into a vector of strings using the given delimiter.
+        /// </summary>
+        /// <param name="string">String to split</param>
+        /// <param name="delimiter">Delimeter to use</param>
+        /// <returns>A vector of strings split with delimeter</returns>
+        vector<string> SplitString(const string& stringToSplit, const string& delimiter);
+
+        /// <summary>
+        /// Converts a string to an integer.
+        /// </summary>
+        /// <param name="stringToConvert">String to convert, should include only integers and - sign on start</param>
+        /// <returns>Integer in the string</returns>
+        int StringToInt(const string& stringToConvert);
+
+        /// <summary>
+        /// Prints the matrix in a readable format to console. Uses printf.
+        /// </summary>
+        /// <param name="matrix"></param>
+        void PrintMatrix4(const Matrix4& matrix, string name = "");
 
 #pragma endregion
     }

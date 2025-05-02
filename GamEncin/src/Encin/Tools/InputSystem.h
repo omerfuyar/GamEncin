@@ -11,6 +11,8 @@ namespace GamEncin
 {
     namespace InputSystem
     {
+#pragma region Enums
+
         //TODO be careful while adding new inputs, add them also in InputSystem.cpp arrays. they should be identical !!!
 
         enum KeyCode
@@ -124,6 +126,10 @@ namespace GamEncin
             Release, Press, Down, Up
         };
 
+#pragma endregion
+
+#pragma region Devices
+
         //shouldn't be used by the user
         struct Mouse
         {
@@ -155,23 +161,25 @@ namespace GamEncin
         struct Gamepad
         {
         public:
-            GLFWgamepadstate state = GLFWgamepadstate();
-            string name;
             int id;
+            string name;
+            GLFWgamepadstate state = GLFWgamepadstate();
 
             //Should use GamepadButtonCode enum as key
             map<int, KeyButtonStatus> buttons;
 
-            float leftTrigger = 0.0,
-                rightTrigger = 0.0;
+            float leftTrigger = 0.0;
+            float rightTrigger = 0.0;
 
-            Vector2 leftStick = Vector2::Zero(),
-                rightStick = Vector2::Zero();
+            Vector2 leftStick = Vector2::Zero();
+            Vector2 rightStick = Vector2::Zero();
 
             Gamepad(int id);
             void Initialize(GLFWwindow* window);
             void Update(GLFWwindow* window);
         };
+
+#pragma endregion
 
         class Input
         {
@@ -234,9 +242,9 @@ namespace GamEncin
             /// <summary>
             /// Gets the file contents of the file
             /// </summary>
-            /// <param name="fileName:">Direction and name of the intended file</param>
+            /// <param name="filePath:">File path of the target file.</param>
             /// <returns>A string that contains all file data</returns>
-            static string GetFileContents(const char* fileName);
+            static string GetFileContents(const char* filePath);
 
             /// <summary>
             /// Gets the file path that the executable is running from

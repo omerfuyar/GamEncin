@@ -121,6 +121,8 @@ namespace GamEncin
         {
             object->LateUpdate();
         }
+
+        UpdateTransforms();
     }
 
     void Scene::FixUpdate()
@@ -136,6 +138,14 @@ namespace GamEncin
         for(Object* object : objects)
         {
             object->StartOfSecond();
+        }
+    }
+
+    void Scene::UpdateTransforms()
+    {
+        for(Object* object : objects)
+        {
+            object->GetTransform()->GetModelMatrix();
         }
     }
 }

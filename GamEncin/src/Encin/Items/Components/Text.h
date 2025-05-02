@@ -12,22 +12,33 @@ namespace GamEncin
         ~Text();
 
         void SetChanged(bool value);
+        void SetCharDistance(float distance);
+        void SetLineDistance(float distance);
         void SetText(string text);
         void SetTextSize(Vector2 textSize);
         void SetFont(Font* font);
 
         bool HasChanged();
+        float GetCharDistance();
+        float GetLineDistance();
         string GetText();
         Vector2 GetTextSize();
         Font* const GetFont();
-        vector<RawVertex> GetTextRawVertexArray();
-        vector<unsigned int> GetTextIndexArray();
+        MeshData* const GetTextMeshData();
+
+        void UpdateTextMeshData();
 
     private:
         bool hasChanged = true;
-        string text = "";
-        Vector2 textSize = Vector2(0, 0);
+        float charDistance = 1.0f;
+        float lineDistance = 1.0f;
 
+        string text = "";
+        Vector2 textSize = Vector2::One();
+
+        MeshData* textMeshData = nullptr;
         Font* font = nullptr;
+
+        void Update() override;
     };
 }

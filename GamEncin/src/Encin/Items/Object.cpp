@@ -120,6 +120,13 @@ namespace GamEncin
         components.erase(obj);
     }
 
+    Object& Object::CreateChildObject()
+    {
+        Object& obj = scene->CreateObject();
+        obj.GetTransform()->SetParent(transform);
+        return obj;
+    }
+
     void Object::OnTriggerEnter(const RigidBody* enteredRigidBody)
     {
         for(Component* component : components)

@@ -1,11 +1,11 @@
 #pragma once
 #include "Encin/Tools/MathYaman.h"
 #include "Encin/Tools/OpenGLObjects.h"
+#include "Encin/Tools/Toolkit.h"
 
 namespace GamEncin
 {
     class Camera;
-    class Mesh;
     struct Shader;
 
     class Renderer
@@ -23,12 +23,8 @@ namespace GamEncin
         static Vector2Int GetMainWindowSize();
         static GLFWwindow* const GetMainWindow();
 
-        static void UpdateMeshes();
-        static void AddMesh(Mesh* mesh);
-        static void RemoveMesh(Mesh* mesh);
-        static void UpdateTexts();
-        static void AddText(Text* text);
-        static void RemoveText(Text* text);
+        static void AddMesh(MeshData* mesh);
+        static void RemoveMesh(MeshData* mesh);
         static void InitialRender();
         static void RenderFrame();
         static void FrameBufferSizeCallback(GLFWwindow* window, int width, int height);
@@ -42,36 +38,31 @@ namespace GamEncin
         static Vector2Int windowSize;
         static Vector4 clearColor;
 
-        static vector<Mesh*> meshes;
-        static vector<Text*> texts;
+        static vector<MeshData*> meshes;
         static Shader* shaderProgram;
         static Camera* mainCamera;
         static GLFWwindow* window;
 
         static GLArrayObject* mainVAO;
+
         static GLBufferObject<RawVertex>* modelVertexBO;
         static GLBufferObject<unsigned int>* modelIndexBO;
+
         static GLShaderStorageBufferObject<Matrix4>* modelMatrixSSBO;
         static GLShaderStorageBufferObject<unsigned long long>* modelTextureHandlesSSBO;
 
         static vector<RawVertex> batchedModelVertices;
         static vector<unsigned int> batchedModelIndices;
+
         static vector<Matrix4> batchedModelMatrices;
         static vector<unsigned long long> batchedTextureHandles;
-
-        static GLBufferObject<RawVertex>* textVertexBO;
-        static GLBufferObject<unsigned int>* textIndexBO;
-
-        static vector<RawVertex> batchedTextVertices;
-        static vector<unsigned int> batchedTextIndices;
 
         Renderer() = delete;
         Renderer(const Renderer&) = delete;
         void operator=(const Renderer&) = delete;
 
-        static void UpdateSSBOs();
+        static void UpdatePerMeshDatas();
         static void DrawBatchedMeshes();
-        static void DrawTexts();
         static void ClearColor(Vector4 clearColor);
         static void LinkAttributes();
         static void GLSendUniformMatrix4(unsigned int& location, Matrix4 matrix4);

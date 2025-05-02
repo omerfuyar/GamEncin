@@ -85,7 +85,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Collider.cpp" />
     <ClCompile Include="GamEncin\src\Encin\Items\Components\Collider.cpp" />
     <ClCompile Include="GamEncin\src\Encin\Items\Components\Text.cpp" />
     <ClCompile Include="GamEncin\src\Encin\Items\PhysicsManager.cpp" />
@@ -109,7 +108,7 @@
     <ClCompile Include="GamEncin\src\Encin\Tools\Time.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Collider.h" />
+    <ClInclude Include="Dependencies\STB\stb_image_write.h" />
     <ClInclude Include="GamEncin\src\Encin\Items\Components\Collider.h" />
     <ClInclude Include="GamEncin\src\Encin\Items\Components\Text.h" />
     <ClInclude Include="GamEncin\src\Encin\Items\PhysicsManager.h" />
