@@ -1,7 +1,5 @@
 #pragma once
 #include "Encin/Items/Components/Component.h"
-#include "Encin/Tools/OpenGLObjects.h"
-#include "Encin/Tools/Toolkit.h"
 
 namespace GamEncin
 {
@@ -9,17 +7,17 @@ namespace GamEncin
     {
     public:
         Mesh(Object* obj);
-        ~Mesh();
 
-        void SetChanged(bool value);
-        void SetMeshData(MeshData* data);
+        void SetMeshData(MeshData* meshData);
+        void SetTexture(Texture* texture);
 
-        bool HasChanged();
         MeshData* const GetMeshData();
+        Texture* const GetTexture();
+        Matrix4* const GetModelMatrix();
 
-    private:
-        bool hasChanged = true;
-
+    protected:
         MeshData* meshData = nullptr;
+        Texture* texture = nullptr;
+        Matrix4* modelMatrix = nullptr;
     };
 }

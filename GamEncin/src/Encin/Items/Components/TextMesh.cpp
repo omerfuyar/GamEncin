@@ -2,86 +2,67 @@
 
 namespace GamEncin
 {
-    Text::Text(Object* obj) : Component(obj)
+    TextMesh::TextMesh(Object* obj) : Mesh(obj)
     {
     }
 
-    Text::~Text()
+    TextMesh::~TextMesh()
     {
-        Renderer::RemoveMesh(textMeshData);
+        Renderer::RemoveMesh(this);
     }
 
-    void Text::SetChanged(bool value)
-    {
-        hasChanged = value;
-    }
-
-    void Text::SetCharDistance(float distance)
+    void TextMesh::SetCharDistance(float distance)
     {
         this->charDistance = distance;
-        SetChanged(true);
     }
 
-    void Text::SetLineDistance(float distance)
+    void TextMesh::SetLineDistance(float distance)
     {
         this->lineDistance = distance;
-        SetChanged(true);
     }
 
-    void Text::SetText(string text)
+    void TextMesh::SetText(string text)
     {
         this->text = text;
-        SetChanged(true);
+        UpdateTextMeshData();
     }
 
-    void Text::SetTextSize(Vector2 textSize)
+    void TextMesh::SetTextSize(Vector2 textSize)
     {
         this->textSize = textSize;
-        SetChanged(true);
     }
 
-    void Text::SetFont(Font* font)
+    void TextMesh::SetFont(Font* font)
     {
         this->font = font;
-        SetChanged(true);
     }
 
-    bool Text::HasChanged()
-    {
-        return hasChanged;
-    }
-
-    float Text::GetCharDistance()
+    float TextMesh::GetCharDistance()
     {
         return charDistance;
     }
 
-    float Text::GetLineDistance()
+    float TextMesh::GetLineDistance()
     {
         return lineDistance;
     }
 
-    string Text::GetText()
+    string TextMesh::GetText()
     {
         return text;
     }
 
-    Vector2 Text::GetTextSize()
+    Vector2 TextMesh::GetTextSize()
     {
         return textSize;
     }
 
-    Font* const Text::GetFont()
+    Font* const TextMesh::GetFont()
     {
         return font;
     }
 
-    MeshData* const Text::GetTextMeshData()
-    {
-        return textMeshData;
-    }
-
-    void Text::UpdateTextMeshData()
+    void TextMesh::UpdateTextMeshData()
     {
         if(!font)
         {
@@ -126,24 +107,19 @@ namespace GamEncin
             indices.push_back(i * 4);
         }
 
-        if(textMeshData)
+        if(meshData)
         {
-            Renderer::RemoveMesh(textMeshData);
-            printf("Text GetTextMeshData remove: %p\n", textMeshData);
+            Renderer::RemoveMesh(this);
+            printf("Text GetTextMeshData remove: %p\n", meshData);
         }
 
-        textMeshData = MeshBuilder::CreateMeshData(font->texture, object->GetTransform()->GetModelMatrix(), vertices, indices);
-        printf("Text GetTextMeshData add: %p\n", textMeshData);
-        Renderer::AddMesh(textMeshData);
-
-        SetChanged(false);
+        meshData = MeshBuilder::CreateMeshData(vertices, indices);
+        printf("Text GetTextMeshData add: %p\n", meshData);
+        Renderer::AddMesh(this);
     }
 
-    void Text::Update()
+    void TextMesh::Update()
     {
-        if(HasChanged())
-        {
-            UpdateTextMeshData();
-        }
+        UpdateTextMeshData();
     }
 }

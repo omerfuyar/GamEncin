@@ -4,6 +4,32 @@ namespace GamEncin
 {
     vector<RigidBody*> PhysicsManager::colliders;
 
+    void PhysicsManager::AddRigidBodiesInScene(Scene* scene)
+    {
+        if(!scene)
+        {
+            Application::PrintLog(NullPointerErr, "Scene trying to add colliders is null.");
+            return;
+        }
+
+        vector<RigidBody* > tempColliders = scene->FindComponentsByType<RigidBody>();
+
+        for(auto& obj : tempColliders)
+        {
+            AddRigidBody(obj);
+        }
+    }
+
+    void PhysicsManager::ClearRigidBodies()
+    {
+        for(RigidBody* collider : colliders)
+        {
+            collider->ClearCollisions();
+        }
+
+        colliders.clear();
+    }
+
     void PhysicsManager::AddRigidBody(RigidBody* collider)
     {
         if(!collider)
@@ -35,7 +61,7 @@ namespace GamEncin
 
         if(obj == colliders.end())
         {
-            Application::PrintLog(ElementCouldNotFoundErr, "RigidBody couldn't find in the collider manager.");
+            Application::PrintLog(ElementCouldNotFindErr, "RigidBody couldn't find in the collider manager.");
             return;
         }
 
@@ -60,6 +86,16 @@ namespace GamEncin
                 {
                     colliderA->AddCollision(colliderB);
                     colliderB->AddCollision(colliderA);
+                }
+                else if(CheckForTrigger(colliderA, colliderB))
+                {
+                    colliderA->AddCollision(colliderB);
+                    colliderB->AddCollision(colliderA);
+                }
+                else
+                {
+                    colliderA->RemoveCollision(colliderB);
+                    colliderB->RemoveCollision(colliderA);
                 }
             }
         }
@@ -92,6 +128,19 @@ namespace GamEncin
     }
 
     bool PhysicsManager::CheckForCollision(RigidBody* colliderA, RigidBody* colliderB)
+    {
+        if(!colliderA || !colliderB)
+        {
+            Application::PrintLog(NullPointerErr, "RigidBody trying to check is null.");
+            return false;
+        }
+
+        if(colliderA->IsTrigger() || colliderB->IsTrigger()) return false;
+
+        return (colliderA->GetOwnerObject()->GetTransform()->GetGlobalPosition() - colliderB->GetOwnerObject()->GetTransform()->GetGlobalPosition()).GetMagnitude() < (colliderA->GetRigidBodyRadius() + colliderB->GetRigidBodyRadius());
+    }
+
+    bool PhysicsManager::CheckForTrigger(RigidBody* colliderA, RigidBody* colliderB)
     {
         if(!colliderA || !colliderB)
         {

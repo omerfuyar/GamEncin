@@ -6,6 +6,8 @@
 namespace GamEncin
 {
     class Camera;
+    class Scene;
+    class Mesh;
     struct Shader;
 
     class Renderer
@@ -23,8 +25,10 @@ namespace GamEncin
         static Vector2Int GetMainWindowSize();
         static GLFWwindow* const GetMainWindow();
 
-        static void AddMesh(MeshData* mesh);
-        static void RemoveMesh(MeshData* mesh);
+        static void AddMeshesInScene(Scene* scene);
+        static void ClearMeshes();
+        static void AddMesh(Mesh* mesh);
+        static void RemoveMesh(Mesh* mesh);
         static void InitialRender();
         static void RenderFrame();
         static void FrameBufferSizeCallback(GLFWwindow* window, int width, int height);
@@ -38,7 +42,7 @@ namespace GamEncin
         static Vector2Int windowSize;
         static Vector4 clearColor;
 
-        static vector<MeshData*> meshes;
+        static vector<Mesh*> meshes;
         static Shader* shaderProgram;
         static Camera* mainCamera;
         static GLFWwindow* window;

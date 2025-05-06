@@ -24,7 +24,7 @@ namespace GamEncin
         //    }
         //    else
         //    {
-        //        Application::PrintLog(ElementCouldNotFoundErr, "Transform trying to remove parent is not in children");
+        //        Application::PrintLog(ElementCouldNotFindErr, "Transform trying to remove parent is not in children");
         //    }
         //}
         //

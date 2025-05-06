@@ -99,7 +99,7 @@ namespace GamEncin
 
             if(obj == loadedTextures.end())
             {
-                Application::PrintLog(ElementCouldNotFoundErr, "Texture to delete couldn't find");
+                Application::PrintLog(ElementCouldNotFindErr, "Texture to delete couldn't find");
                 return;
             }
 
@@ -121,7 +121,7 @@ namespace GamEncin
 
 #pragma endregion
 
-#pragma region Text Tools
+#pragma region TextMesh Tools
 
 #pragma region Character
 
@@ -180,7 +180,7 @@ namespace GamEncin
 
             if(obj == loadedFonts.end())
             {
-                Application::PrintLog(ElementCouldNotFoundErr, "Font to delete couldn't find");
+                Application::PrintLog(ElementCouldNotFindErr, "Font to delete couldn't find");
                 return;
             }
 
@@ -430,27 +430,13 @@ namespace GamEncin
 
 #pragma endregion
 
-#pragma region MeshData
+#pragma region
 
-        MeshData::MeshData(Texture* texture, Matrix4* modelMatrix, vector<Vertex*> vertices, unordered_map<unsigned int, Edge*> edges, vector<Face*> faces)
+        MeshData::MeshData(vector<Vertex*> vertices, unordered_map<unsigned int, Edge*> edges, vector<Face*> faces)
         {
-            this->texture = texture;
-            this->modelMatrix = modelMatrix;
             this->vertices = vertices;
             this->edges = edges;
             this->faces = faces;
-        }
-
-        void MeshData::SetForBatch(unsigned int id, unsigned int batchVertexOffset, unsigned int batchIndexOffset)
-        {
-            this->id = id;
-            this->batchVertexOffset = batchVertexOffset;
-            this->batchIndexOffset = batchIndexOffset;
-
-            for(Vertex* vertex : vertices)
-            {
-                vertex->SetObjectId(id);
-            }
         }
 
         vector<RawVertex> MeshData::GetRawVertexArray()
@@ -479,14 +465,16 @@ namespace GamEncin
             return indices;
         }
 
-        Texture* const MeshData::GetTexture()
+        void MeshData::SetForBatch(unsigned int id, unsigned int batchVertexOffset, unsigned int batchIndexOffset)
         {
-            return texture;
-        }
+            this->id = id;
+            this->batchVertexOffset = batchVertexOffset;
+            this->batchIndexOffset = batchIndexOffset;
 
-        Matrix4* const MeshData::GetModelMatrix()
-        {
-            return modelMatrix;
+            for(Vertex* vertex : vertices)
+            {
+                vertex->SetObjectId(id);
+            }
         }
 
         void MeshData::DeleteData()
@@ -516,7 +504,7 @@ namespace GamEncin
 
 #pragma region MeshBuilder
 
-        MeshData* MeshBuilder::CreateMeshData(Texture* const texture, Matrix4* const modelMatrix, const vector<RawVertex> vertices, const vector<unsigned int> indices)
+        MeshData* MeshBuilder::CreateMeshData(const vector<RawVertex> vertices, const vector<unsigned int> indices)
         {
             vector<Vertex*> tempVertices;
             unordered_map<unsigned int, Edge*> tempEdges;
@@ -573,7 +561,7 @@ namespace GamEncin
                 vertex->NormalizeNormal();
             }
 
-            return new MeshData(texture, modelMatrix, tempVertices, tempEdges, tempFaces);
+            return new MeshData(tempVertices, tempEdges, tempFaces);
         }
 
         unsigned int MeshBuilder::GenerateFaceId(Vertex* vertex1, Vertex* vertex2, Vertex* vertex3)
@@ -592,7 +580,7 @@ namespace GamEncin
 
 #pragma region Primitive Creators
 
-        MeshData* MeshBuilder::CreatePlane(Texture* const texture, Matrix4* const modelMatrix, Vector2 size)
+        MeshData* MeshBuilder::CreatePlane(Vector2 size)
         {
             vector<RawVertex> vertices =
             {
@@ -604,10 +592,10 @@ namespace GamEncin
 
             vector<unsigned int> indices = {0, 1, 2, 2, 3, 0};
 
-            return CreateMeshData(texture, modelMatrix, vertices, indices);
+            return CreateMeshData(vertices, indices);
         }
 
-        MeshData* MeshBuilder::CreateCircle(Texture* const texture, Matrix4* const modelMatrix, float radius, int resolution)
+        MeshData* MeshBuilder::CreateCircle(float radius, int resolution)
         {
             if(resolution < 3)
             {
@@ -642,10 +630,10 @@ namespace GamEncin
                 indices.push_back((i + 1) % resolution + 1);
             }
 
-            return CreateMeshData(texture, modelMatrix, vertices, indices);
+            return CreateMeshData(vertices, indices);
         }
 
-        MeshData* MeshBuilder::CreateCuboid(Texture* const texture, Matrix4* const modelMatrix, Vector3 size)
+        MeshData* MeshBuilder::CreateCuboid(Vector3 size)
         {
             vector<RawVertex> vertices =
             {
@@ -666,10 +654,10 @@ namespace GamEncin
                 2, 3, 7, 7, 6, 2,
                 3, 0, 4, 4, 7, 3};
 
-            return CreateMeshData(texture, modelMatrix, vertices, indices);
+            return CreateMeshData(vertices, indices);
         }
 
-        MeshData* MeshBuilder::CreatePyramid(Texture* const texture, Matrix4* const modelMatrix, float height, float baseLength)
+        MeshData* MeshBuilder::CreatePyramid(float height, float baseLength)
         {
             float xzCoord = baseLength / 2;
             float yQuarter = height / 4;
@@ -687,10 +675,10 @@ namespace GamEncin
                 0, 3, 4, 0, 4, 1,
                 1, 2, 3, 3, 4, 1};
 
-            return CreateMeshData(texture, modelMatrix, vertices, indices);
+            return CreateMeshData(vertices, indices);
         }
 
-        MeshData* MeshBuilder::CreateCylinder(Texture* const texture, Matrix4* const modelMatrix, float height, float radius, int resolution)
+        MeshData* MeshBuilder::CreateCylinder(float height, float radius, int resolution)
         {
             if(resolution < 3)
             {
@@ -743,10 +731,10 @@ namespace GamEncin
                 indices.push_back((i + 1) % resolution + resolution + 2);
             }
 
-            return CreateMeshData(texture, modelMatrix, vertices, indices);
+            return CreateMeshData(vertices, indices);
         }
 
-        MeshData* MeshBuilder::CreateSphere(Texture* const texture, Matrix4* const modelMatrix, float radius, int resolution)
+        MeshData* MeshBuilder::CreateSphere(float radius, int resolution)
         {
             if(resolution < 3)
             {
@@ -812,10 +800,10 @@ namespace GamEncin
                 }
             }
 
-            return CreateMeshData(texture, modelMatrix, vertices, indices);
+            return CreateMeshData(vertices, indices);
         }
 
-        MeshData* MeshBuilder::CreateCone(Texture* const texture, Matrix4* const modelMatrix, float height, float radius, int resolution)
+        MeshData* MeshBuilder::CreateCone(float height, float radius, int resolution)
         {
             if(resolution < 3)
             {
@@ -865,10 +853,10 @@ namespace GamEncin
                 indices.push_back(nextIndex);
             }
 
-            return CreateMeshData(texture, modelMatrix, vertices, indices);
+            return CreateMeshData(vertices, indices);
         }
 
-        MeshData* MeshBuilder::CreateSimit(Texture* const texture, Matrix4* const modelMatrix, float radius, float halfThickness, int resolution)
+        MeshData* MeshBuilder::CreateSimit(float radius, float halfThickness, int resolution)
         {
             if(resolution < 3)
             {
@@ -915,7 +903,7 @@ namespace GamEncin
                 }
             }
 
-            return CreateMeshData(texture, modelMatrix, vertices, indices);
+            return CreateMeshData(vertices, indices);
         }
 
 #pragma endregion

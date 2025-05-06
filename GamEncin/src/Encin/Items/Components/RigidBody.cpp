@@ -119,6 +119,16 @@ namespace GamEncin
         this->angularVelocity += angularVelocity;
     }
 
+    void RigidBody::ClearCollisions()
+    {
+        for(RigidBody* collider : collisions)
+        {
+            RemoveCollision(collider);
+        }
+
+        collisions.clear();
+    }
+
     void RigidBody::AddCollision(RigidBody* body)
     {
         if(!body)
@@ -159,7 +169,7 @@ namespace GamEncin
 
         if(obj == collisions.end())
         {
-            Application::PrintLog(ElementCouldNotFoundErr, "RigidBody couldn't find in collisions.");
+            Application::PrintLog(ElementCouldNotFindErr, "RigidBody couldn't find in collisions.");
             return;
         }
 

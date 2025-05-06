@@ -1,5 +1,6 @@
 #pragma once
 #include "Encin/Tools/MathYaman.h"
+#include "Encin/Tools/OpenGLObjects.h"
 #include "Encin/Tools/Toolkit.h"
 
 namespace GamEncin
@@ -20,13 +21,13 @@ namespace GamEncin
         //Set the object that owns this component
         void SetObject(Object* obj);
 
-        virtual void OnTriggerEnter(const RigidBody* enteredRigidBody) {};
-        virtual void OnTriggerStay(const RigidBody* stayingRigidBody) {};
-        virtual void OnTriggerExit(const RigidBody* exitedRigidBody) {};
+        virtual void OnTriggerEnter(RigidBody* enteredRigidBody) {};
+        virtual void OnTriggerStay(RigidBody* stayingRigidBody) {};
+        virtual void OnTriggerExit(RigidBody* exitedRigidBody) {};
 
-        virtual void OnCollisionEnter(const RigidBody* enteredRigidBody) {};
-        virtual void OnCollisionStay(const RigidBody* stayingRigidBody) {};
-        virtual void OnCollisionExit(const RigidBody* exitedRigidBody) {};
+        virtual void OnCollisionEnter(RigidBody* enteredRigidBody) {};
+        virtual void OnCollisionStay(RigidBody* stayingRigidBody) {};
+        virtual void OnCollisionExit(RigidBody* exitedRigidBody) {};
 
         virtual void OnEnable() {}
         virtual void OnDisable() {}

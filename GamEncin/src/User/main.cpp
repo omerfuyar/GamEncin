@@ -18,7 +18,6 @@ void SceneBuilding()
     Transform* cameraTR = cameraObj.GetTransform();
     cameraTR->AddRotation(Vector3(0, -90, 0));
     cameraTR->AddPosition(Vector3(0, 0, 5));
-    cameraTR = nullptr;
 
     CameraController* camController = cameraObj.AddComponent<CameraController>();
     camController->LockMovement(true);
@@ -32,28 +31,26 @@ void SceneBuilding()
     ///////////////// static sphere
 
     Object& sphere1 = scene.CreateObject();
-    Mesh* sphereMesh1 = sphere1.AddComponent<Mesh>();
-    sphereMesh1->SetMeshData(MeshBuilder::CreateSphere(texture1, sphere1.GetTransform()->GetModelMatrix(), 1.0f));
-    Renderer::AddMesh(sphereMesh1->GetMeshData());
+    sphere1.SetName("Static Sphere");
+    ModelMesh* sphereMesh1 = sphere1.AddComponent<ModelMesh>();
+    sphereMesh1->SetMeshData(MeshBuilder::CreateSphere(1.0f));
+    sphereMesh1->SetTexture(texture1);
 
     RigidBody* sphereRB1 = sphere1.AddComponent<RigidBody>();
-    PhysicsManager::AddRigidBody(sphereRB1);
     sphereRB1->SetDynamic(false);
     sphereRB1->SetGravityScale(0);
-    sphereRB1->SetDrag(0.1f);
 
     ///////////////// player sphere
 
     Object& sphere2 = scene.CreateObject();
-    Mesh* sphereMesh2 = sphere2.AddComponent<Mesh>();
-    sphereMesh2->SetMeshData(MeshBuilder::CreateSphere(texture2, sphere2.GetTransform()->GetModelMatrix(), 1.0f));
-    Renderer::AddMesh(sphereMesh2->GetMeshData());
+    sphere2.SetName("Player Sphere");
+    ModelMesh* sphereMesh2 = sphere2.AddComponent<ModelMesh>();
+    sphereMesh2->SetMeshData(MeshBuilder::CreateSphere(1.0f));
+    sphereMesh2->SetTexture(texture2);
 
     RigidBody* sphereRB2 = sphere2.AddComponent<RigidBody>();
-    PhysicsManager::AddRigidBody(sphereRB2);
     sphereRB2->SetDynamic(true);
     sphereRB2->SetGravityScale(0);
-    sphereRB2->SetDrag(0.1f);
 
     Transform* sphereTR2 = sphere2.GetTransform();
     sphereTR2->AddPosition(Vector3(2.5f, 0, 0));
@@ -63,30 +60,30 @@ void SceneBuilding()
     ///////////////// dynamic test sphere
 
     Object& sphere3 = scene.CreateObject();
-    Mesh* sphereMesh3 = sphere3.AddComponent<Mesh>();
-    sphereMesh3->SetMeshData(MeshBuilder::CreateSphere(texture1, sphere3.GetTransform()->GetModelMatrix(), 1.0f));
-    Renderer::AddMesh(sphereMesh3->GetMeshData());
+    sphere3.SetName("Dynamic Sphere");
+    ModelMesh* sphereMesh3 = sphere3.AddComponent<ModelMesh>();
+    sphereMesh3->SetMeshData(MeshBuilder::CreateSphere(1.0f));
+    sphereMesh3->SetTexture(texture1);
 
     RigidBody* sphereRB3 = sphere3.AddComponent<RigidBody>();
-    PhysicsManager::AddRigidBody(sphereRB3);
     sphereRB3->SetDynamic(true);
     sphereRB3->SetGravityScale(1.0f);
-    sphereRB3->SetDrag(0.1f);
 
     Transform* sphereTR3 = sphere3.GetTransform();
     sphereTR3->AddPosition(Vector3(0, 2.5f, 0));
 
     ///////////////// text
 
-    Object& textObj1 = sphere2.CreateChildObject();
-    textObj1.GetTransform()->AddPosition(Vector3(0, 0, 2));
-    Text* text1 = textObj1.AddComponent<Text>();
-    text1->SetFont(myFont);
-    text1->SetCharDistance(0.01f);
-    text1->SetTextSize(Vector2(3, 3));
-    text1->SetText("Dynamic");
-    printf("Text GetTextMeshData main: %p\n", text1->GetTextMeshData());
-    Renderer::AddMesh(text1->GetTextMeshData());
+    //Object& textObj1 = sphere2.CreateChildObject();
+    //textObj1.GetTransform()->AddPosition(Vector3(0, 0, 2));
+    //TextMesh* text1 = textObj1.AddComponent<TextMesh>();
+    //text1->SetFont(myFont);
+    //text1->SetCharDistance(0.01f);
+    //text1->SetTextSize(Vector2(3, 3));
+    //text1->SetText("Dynamic");
+
+    Renderer::AddMeshesInScene(&scene);
+    PhysicsManager::AddRigidBodiesInScene(&scene);
 }
 
 void SetVariables()

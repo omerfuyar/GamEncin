@@ -9,7 +9,7 @@ namespace GamEncin
     Vector2Int Renderer::windowSize = Vector2Int(1080, 1080);
     Vector4 Renderer::clearColor = Vector4(0.2f, 0.3f, 0.3f, 1.0f);
 
-    vector<MeshData*> Renderer::meshes;
+    vector<Mesh*> Renderer::meshes;
 
     Shader* Renderer::shaderProgram = nullptr;
     Camera* Renderer::mainCamera = nullptr;
@@ -115,7 +115,32 @@ namespace GamEncin
         return window;
     }
 
-    void Renderer::AddMesh(MeshData* mesh)
+    void Renderer::AddMeshesInScene(Scene* scene)
+    {
+        if(!scene)
+        {
+            Application::PrintLog(NullPointerErr, "Scene trying to add meshes is null");
+            return;
+        }
+
+        vector<Mesh* > tempMeshes = scene->FindComponentsByType<Mesh>();
+
+        for(auto& obj : tempMeshes)
+        {
+            AddMesh(obj);
+        }
+    }
+
+    void Renderer::ClearMeshes()
+    {
+        meshes.clear();
+        batchedModelVertices.clear();
+        batchedModelIndices.clear();
+        batchedModelMatrices.clear();
+        batchedTextureHandles.clear();
+    }
+
+    void Renderer::AddMesh(Mesh* mesh)
     {
         if(!mesh)
         {
@@ -131,20 +156,24 @@ namespace GamEncin
             return;
         }
 
-        mesh->SetForBatch(meshes.size(), batchedModelVertices.size(), batchedModelIndices.size());
-        vector<RawVertex> tempVertices = mesh->GetRawVertexArray();
-        vector<unsigned int> tempIndices = mesh->GetIndexArray();
+        MeshData& meshData = *mesh->GetMeshData();
+        Matrix4& matrix = *mesh->GetModelMatrix();
+        unsigned long long textureHandle = mesh->GetTexture() ? mesh->GetTexture()->handle : 0;
+
+        meshData.SetForBatch(meshes.size(), batchedModelVertices.size(), batchedModelIndices.size());
+        vector<RawVertex> tempVertices = meshData.GetRawVertexArray();
+        vector<unsigned int> tempIndices = meshData.GetIndexArray();
 
         batchedModelVertices.insert(batchedModelVertices.end(), tempVertices.begin(), tempVertices.end());
         batchedModelIndices.insert(batchedModelIndices.end(), tempIndices.begin(), tempIndices.end());
 
-        batchedModelMatrices.push_back(*mesh->GetModelMatrix());
-        batchedTextureHandles.push_back(mesh->GetTexture()->handle);
+        batchedModelMatrices.push_back(matrix);
+        batchedTextureHandles.push_back(textureHandle);
 
         meshes.push_back(mesh);
     }
 
-    void Renderer::RemoveMesh(MeshData* mesh)
+    void Renderer::RemoveMesh(Mesh* mesh)
     {
         if(!mesh)
         {
@@ -156,11 +185,11 @@ namespace GamEncin
 
         if(obj == meshes.end())
         {
-            Application::PrintLog(ElementCouldNotFoundErr, "Couldn't found mesh to remove");
+            Application::PrintLog(ElementCouldNotFindErr, "Couldn't found mesh to remove");
             return;
         }
 
-        MeshData& meshData = *mesh;
+        MeshData& meshData = *mesh->GetMeshData();
 
         auto vertexBeginIt = batchedModelVertices.begin() + meshData.batchVertexOffset;
         auto vertexEndIt = vertexBeginIt + meshData.vertices.size();
@@ -178,12 +207,12 @@ namespace GamEncin
 
         for(int i = meshData.id + 1; i < meshes.size(); i++)
         {
-            MeshData* tempMesh = meshes[i];
+            MeshData& tempMesh = *meshes[i]->GetMeshData();
 
-            tempMesh->SetForBatch(
+            tempMesh.SetForBatch(
                 i - 1,
-                tempMesh->batchVertexOffset - meshData.vertices.size(),
-                tempMesh->batchIndexOffset - (meshData.faces.size() * 3)
+                tempMesh.batchVertexOffset - meshData.vertices.size(),
+                tempMesh.batchIndexOffset - (meshData.faces.size() * 3)
             );
         }
 
@@ -292,9 +321,9 @@ namespace GamEncin
 
     void Renderer::UpdatePerMeshDatas()
     {
-        for(MeshData* mesh : meshes)
+        for(Mesh* mesh : meshes)
         {
-            int index = mesh->id;
+            int index = mesh->GetMeshData()->id;
             batchedModelMatrices[index] = mesh->GetModelMatrix() ? *mesh->GetModelMatrix() : Matrix4(1.0f);
             batchedTextureHandles[index] = mesh->GetTexture() ? mesh->GetTexture()->handle : 0;
         }

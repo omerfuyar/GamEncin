@@ -13,14 +13,14 @@ namespace GamEncin
             }
         }
 
-        Application::PrintLog(ElementCouldNotFoundErr, "Couldn't found object with the tag");
+        Application::PrintLog(ElementCouldNotFindErr, "Couldn't found object with the tag");
 
         return nullptr;
     }
 
-    vector<Object*> const Scene::FindObjectsWithTag(string tag)
+    vector<Object* > Scene::FindObjectsWithTag(string tag)
     {
-        vector<Object*> foundObjects;
+        vector<Object* > foundObjects;
 
         for(Object* object : objects)
         {
@@ -79,7 +79,7 @@ namespace GamEncin
 
         if(obj == objects.end())
         {
-            Application::PrintLog(ElementCouldNotFoundErr, "Couldn't found object to remove");
+            Application::PrintLog(ElementCouldNotFindErr, "Couldn't found object to remove");
             return;
         }
 

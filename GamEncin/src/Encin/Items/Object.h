@@ -13,28 +13,28 @@ namespace GamEncin
     class Object
     {
     public:
-        Object(Scene *scene = nullptr, string name = "Object", string tag = "Default", Layer layer = Layer::Default);
+        Object(Scene* scene = nullptr, string name = "Object", string tag = "Default", Layer layer = Layer::Default);
         ~Object();
 
-        void SetScene(Scene *scene);
+        void SetScene(Scene* scene);
         void SetName(string name);
         void SetTag(string tag);
         void SetLayer(Layer layer);
 
         template <typename T>
-        T *const GetComponent()
+        T* const GetComponent()
         {
-            for (Component *component : components)
+            for(Component* component : components)
             {
-                T *castedComponent = dynamic_cast<T *>(component);
+                T* castedComponent = dynamic_cast<T*>(component);
 
-                if (castedComponent)
+                if(castedComponent)
                 {
                     return castedComponent;
                 }
             }
 
-            Application::PrintLog(NullPointerErr, "Component couldn't found in the object");
+            Application::PrintLog(ElementCouldNotFindErr, "Component couldn't find in the object");
             return nullptr;
         }
         // use it with built in typeid() function
@@ -42,24 +42,24 @@ namespace GamEncin
         string GetName();
         string GetTag();
         Layer GetLayer();
-        Transform *const GetTransform();
-        Scene *const GetScene();
+        Transform* const GetTransform();
+        Scene* const GetScene();
 
         template <typename T>
-        T *const AddComponent()
+        T* const AddComponent()
         {
-            auto obj = std::find_if(components.begin(), components.end(), [](Component *component)
-                                    { return dynamic_cast<T *>(component); });
+            auto obj = std::find_if(components.begin(), components.end(), [](Component* component)
+                                    { return dynamic_cast<T*>(component); });
 
-            if (obj != components.end())
+            if(obj != components.end())
             {
                 Application::PrintLog(ElementDuplicationErr, "Component trying to add is already in the object");
                 return nullptr;
             }
 
-            T *component = new T(this);
+            T* component = new T(this);
 
-            if (dynamic_cast<Component *>(component))
+            if(dynamic_cast<Component*>(component))
             {
                 components.push_back(component);
             }
@@ -70,32 +70,32 @@ namespace GamEncin
 
             return component;
         }
-        void AddComponent(Component *component);
+        void AddComponent(Component* component);
         template <typename T>
         void RemoveComponent()
         {
-            auto obj = std::find_if(components.begin(), components.end(), [](Component *component)
-                                    { return dynamic_cast<T *>(component); });
+            auto obj = std::find_if(components.begin(), components.end(), [](Component* component)
+                                    { return dynamic_cast<T*>(component); });
 
-            if (obj != components.end())
+            if(obj != components.end())
             {
-                Application::PrintLog(ElementCouldNotFoundErr, "Couldn't found component to remove");
+                Application::PrintLog(ElementCouldNotFindErr, "Couldn't found component to remove");
                 return;
             }
 
             components.erase(obj);
-            delete *obj;
+            delete* obj;
         }
-        void RemoveComponent(Component *component);
-        Object &CreateChildObject();
+        void RemoveComponent(Component* component);
+        Object& CreateChildObject();
 
-        void OnTriggerEnter(const RigidBody *enteredRigidBody);
-        void OnTriggerStay(const RigidBody *stayingRigidBody);
-        void OnTriggerExit(const RigidBody *exitedRigidBody);
+        void OnTriggerEnter(RigidBody* enteredRigidBody);
+        void OnTriggerStay(RigidBody* stayingRigidBody);
+        void OnTriggerExit(RigidBody* exitedRigidBody);
 
-        void OnCollisionEnter(const RigidBody *enteredRigidBody);
-        void OnCollisionStay(const RigidBody *stayingRigidBody);
-        void OnCollisionExit(const RigidBody *exitedRigidBody);
+        void OnCollisionEnter(RigidBody* enteredRigidBody);
+        void OnCollisionStay(RigidBody* stayingRigidBody);
+        void OnCollisionExit(RigidBody* exitedRigidBody);
 
         void Awake();
         void Start();
@@ -105,15 +105,15 @@ namespace GamEncin
         void StartOfSecond();
 
     private:
-        Scene *scene = nullptr;
+        Scene* scene = nullptr;
 
         string name = "Object",
-               tag = "Default";
+            tag = "Default";
 
         Layer layer;
 
-        Transform *transform = AddComponent<Transform>();
+        Transform* transform = AddComponent<Transform>();
 
-        vector<Component *> components;
+        vector<Component*> components;
     };
 }

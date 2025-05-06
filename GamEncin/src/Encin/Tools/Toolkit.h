@@ -23,7 +23,7 @@ namespace GamEncin
         // all end types, exit codes that can be used in the game
         enum LogType
         {
-            Safe, GLFWErr, GLADErr, ShaderCompilationErr, ShaderLinkingErr, ElementCouldNotFoundErr, TypeMismatchErr, IOErr, IODeviceWarn, ProgramDuplicationErr, NullPointerErr, ElementDuplicationErr, IndexOutOfRangeErr, idoiterr, ComponentRequirementErr
+            Safe, GLFWErr, GLADErr, ShaderCompilationErr, ShaderLinkingErr, ElementCouldNotFindErr, TypeMismatchErr, IOErr, IODeviceWarn, ProgramDuplicationErr, NullPointerErr, ElementDuplicationErr, IndexOutOfRangeErr, idoiterr, ComponentRequirementErr
         };
 
 #pragma endregion
@@ -60,7 +60,7 @@ namespace GamEncin
 
 #pragma endregion
 
-#pragma region Text
+#pragma region TextMesh
 
         struct Character
         {
@@ -179,8 +179,10 @@ namespace GamEncin
 
         struct MeshData
         {
-            //TODO make getters and setters
         public:
+            MeshData() = default;
+            MeshData(vector<Vertex*> vertices, unordered_map<unsigned int, Edge*> edges, vector<Face*> faces);
+
             unsigned int id = 0;
             unsigned int batchVertexOffset = 0;
             unsigned int batchIndexOffset = 0;
@@ -189,20 +191,11 @@ namespace GamEncin
             unordered_map<unsigned int, Edge*> edges;
             vector<Face*> faces;
 
-            MeshData(Texture* texture, Matrix4* modelMatrix, vector<Vertex*> vertices, unordered_map<unsigned int, Edge*> edges, vector<Face*> faces);
-
             vector<RawVertex> GetRawVertexArray();
             vector<unsigned int> GetIndexArray();
-            Texture* const GetTexture();
-            Matrix4* const GetModelMatrix();
 
             void SetForBatch(unsigned int id, unsigned int batchVertexOffset, unsigned int batchIndexOffset);
-
             void DeleteData();
-
-        private:
-            Texture* texture = nullptr;
-            Matrix4* modelMatrix = nullptr;
         };
 
         class MeshBuilder
@@ -213,16 +206,16 @@ namespace GamEncin
             void operator = (const MeshBuilder&) = delete;
 
         public:
-            static MeshData* CreateMeshData(Texture* const texture, Matrix4* const modelMatrix, const vector<RawVertex> vertices, const vector<unsigned int> indices);
+            static MeshData* CreateMeshData(const vector<RawVertex> vertices, const vector<unsigned int> indices);
 
-            static MeshData* CreateCuboid(Texture* const texture, Matrix4* const modelMatrix, Vector3 size = Vector3::One());
-            static MeshData* CreatePlane(Texture* const texture, Matrix4* const modelMatrix, Vector2 size = Vector2::One());
-            static MeshData* CreateCircle(Texture* const texture, Matrix4* const modelMatrix, float radius = 0.5f, int resolution = 20);
-            static MeshData* CreateCylinder(Texture* const texture, Matrix4* const modelMatrix, float height = 1.0f, float radius = 0.5f, int resolution = 20);
-            static MeshData* CreateSphere(Texture* const texture, Matrix4* const modelMatrix, float radius = 0.5f, int resolution = 20);
-            static MeshData* CreatePyramid(Texture* const texture, Matrix4* const modelMatrix, float height = 1.0f, float baseLength = 1.0f);
-            static MeshData* CreateCone(Texture* const texture, Matrix4* const modelMatrix, float height = 1.0f, float radius = 0.5f, int resolution = 20);
-            static MeshData* CreateSimit(Texture* const texture, Matrix4* const modelMatrix, float radius = 0.5f, float halfThickness = 0.25f, int resolution = 20);
+            static MeshData* CreateCuboid(Vector3 size = Vector3::One());
+            static MeshData* CreatePlane(Vector2 size = Vector2::One());
+            static MeshData* CreateCircle(float radius = 0.5f, int resolution = 20);
+            static MeshData* CreateCylinder(float height = 1.0f, float radius = 0.5f, int resolution = 20);
+            static MeshData* CreateSphere(float radius = 0.5f, int resolution = 20);
+            static MeshData* CreatePyramid(float height = 1.0f, float baseLength = 1.0f);
+            static MeshData* CreateCone(float height = 1.0f, float radius = 0.5f, int resolution = 20);
+            static MeshData* CreateSimit(float radius = 0.5f, float halfThickness = 0.25f, int resolution = 20);
             //works until 2^10 vertices
             static unsigned int GenerateFaceId(Vertex* vertex1, Vertex* vertex2, Vertex* vertex3);
             //works until 2^16 vertices

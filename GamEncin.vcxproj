@@ -86,7 +86,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GamEncin\src\Encin\Items\Components\Collider.cpp" />
-    <ClCompile Include="GamEncin\src\Encin\Items\Components\Text.cpp" />
+    <ClCompile Include="GamEncin\src\Encin\Items\Components\ModelMesh.cpp" />
+    <ClCompile Include="GamEncin\src\Encin\Items\Components\TextMesh.cpp" />
     <ClCompile Include="GamEncin\src\Encin\Items\PhysicsManager.cpp" />
     <ClCompile Include="Dependencies\GLAD\glad.c" />
     <ClCompile Include="GamEncin\src\Encin\Items\Components\Camera.cpp" />
@@ -110,7 +111,8 @@
   <ItemGroup>
     <ClInclude Include="Dependencies\STB\stb_image_write.h" />
     <ClInclude Include="GamEncin\src\Encin\Items\Components\Collider.h" />
-    <ClInclude Include="GamEncin\src\Encin\Items\Components\Text.h" />
+    <ClInclude Include="GamEncin\src\Encin\Items\Components\ModelMesh.h" />
+    <ClInclude Include="GamEncin\src\Encin\Items\Components\TextMesh.h" />
     <ClInclude Include="GamEncin\src\Encin\Items\PhysicsManager.h" />
     <ClInclude Include="Dependencies\GLAD\glad.h" />
     <ClInclude Include="Dependencies\GLAD\khrplatform.h" />

@@ -6,12 +6,14 @@ class PlayerController : public Component
 public:
     float moveSpeed = 2;
     Transform* playerTR = nullptr;
+    RigidBody* playerRB = nullptr;
 
     PlayerController(Object* obj) : Component(obj) {}
 
     void Awake() override
     {
         playerTR = object->GetTransform();
+        playerRB = object->GetComponent<RigidBody>();
     }
 
     void StartOfSecond() override
@@ -22,6 +24,41 @@ public:
     {
         Vector3 input = Input::GetMovementVector();
         playerTR->AddPosition((Vector2) input * moveSpeed * Application::GetDeltaTime());
+
+        if(Input::GetKey(Down, T))
+        {
+            playerRB->SetTrigger(!playerRB->IsTrigger());
+        }
+    }
+
+    void OnCollisionEnter(RigidBody* rb) override
+    {
+        printf("Collision Enter: %s\n", rb->GetOwnerObject()->GetName().c_str());
+    }
+
+    void OnCollisionStay(RigidBody* rb) override
+    {
+        printf("Collision Stay: %s\n", rb->GetOwnerObject()->GetName().c_str());
+    }
+
+    void OnCollisionExit(RigidBody* rb) override
+    {
+        printf("Collision Exit: %s\n", rb->GetOwnerObject()->GetName().c_str());
+    }
+
+    void OnTriggerEnter(RigidBody* rb) override
+    {
+        printf("Trigger Enter: %s\n", rb->GetOwnerObject()->GetName().c_str());
+    }
+
+    void OnTriggerStay(RigidBody* rb) override
+    {
+        printf("Trigger Stay: %s\n", rb->GetOwnerObject()->GetName().c_str());
+    }
+
+    void OnTriggerExit(RigidBody* rb) override
+    {
+        printf("Trigger Exit: %s\n", rb->GetOwnerObject()->GetName().c_str());
     }
 };
 
@@ -60,7 +97,7 @@ public:
 
         if(Input::GetKey(Press, KeyCode::Escape) || Input::GetKey(Press, Q))
         {
-            Application::Stop(Safe);
+            Application::Stop(Safe, "Application ended by user.");
             return;
         }
 

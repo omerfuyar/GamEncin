@@ -42,6 +42,8 @@ namespace GamEncin
         vector<RigidBody*> GetCollisions();
 
         // shouldn't be used by user
+        void ClearCollisions();
+        // shouldn't be used by user
         void AddCollision(RigidBody* collider);
         // shouldn't be used by user
         void RemoveCollision(RigidBody* collider);

@@ -2,43 +2,33 @@
 
 namespace GamEncin
 {
-
-#pragma region Primitives 
-
     Mesh::Mesh(Object* obj) : Component(obj)
     {
+        modelMatrix = object->GetTransform()->GetModelMatrix();
     }
 
-    Mesh::~Mesh()
+    void Mesh::SetMeshData(MeshData* meshData)
     {
-        Renderer::RemoveMesh(this->meshData);
+        this->meshData = meshData;
     }
 
-    void Mesh::SetChanged(bool value)
+    void Mesh::SetTexture(Texture* texture)
     {
-        hasChanged = value;
-    }
-
-    void Mesh::SetMeshData(MeshData* data)
-    {
-        if(!data)
-        {
-            Application::PrintLog(NullPointerErr, "Mesh data trying to set is null");
-            return;
-        }
-
-        meshData = data;
-
-        SetChanged(true);
-    }
-
-    bool Mesh::HasChanged()
-    {
-        return hasChanged;
+        this->texture = texture;
     }
 
     MeshData* const Mesh::GetMeshData()
     {
         return meshData;
+    }
+
+    Texture* const Mesh::GetTexture()
+    {
+        return texture;
+    }
+
+    Matrix4* const Mesh::GetModelMatrix()
+    {
+        return modelMatrix;
     }
 }

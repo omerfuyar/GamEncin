@@ -10,8 +10,24 @@ namespace GamEncin
     class Scene
     {
     public:
+        template<typename T>
+        vector<T*> FindComponentsByType()
+        {
+            vector<T*> result;
+
+            for(Object* object : objects)
+            {
+                T* component = object->GetComponent<T>();
+                if(component)
+                {
+                    result.push_back(component);
+                }
+            }
+
+            return result;
+        }
         Object* const FindFirstObjectWithTag(string tag);
-        vector<Object*> const FindObjectsWithTag(string tag);
+        vector<Object* > FindObjectsWithTag(string tag);
 
         Object& CreateObject(string name = "Object", string tag = "Default", Layer layer = Layer::Default);
         Object& CreateAndUseCameraObject();

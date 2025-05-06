@@ -75,7 +75,10 @@
     <ClCompile Include="GamEncin\src\Encin\Items\PhysicsManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GamEncin\src\Encin\Items\Components\Text.cpp">
+    <ClCompile Include="GamEncin\src\Encin\Items\Components\TextMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GamEncin\src\Encin\Items\Components\ModelMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1019,10 +1022,13 @@
     <ClInclude Include="GamEncin\src\Encin\Items\PhysicsManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GamEncin\src\Encin\Items\Components\Text.h">
+    <ClInclude Include="GamEncin\src\Encin\Items\Components\TextMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\STB\stb_image_write.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GamEncin\src\Encin\Items\Components\ModelMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
