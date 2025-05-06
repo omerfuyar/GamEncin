@@ -1,6 +1,29 @@
 #pragma once 
 #include "GamEncin.h"
 
+class TestComponent : public Component
+{
+public:
+    TestComponent(Object* obj) : Component(obj) {}
+
+    void Awake() override
+    {
+        printf("TestComponent Awake\n");
+    }
+
+    void Start() override
+    {
+        printf("TestComponent Start\n");
+    }
+
+    void Update() override
+    {
+        Vector3 pos = object->GetTransform()->GetGlobalPosition();
+        //printf("name : %s, global pos : %f %f %f\n", object->GetName().c_str(), pos.x, pos.y, pos.z);
+        object->GetTransform()->AddRotation(Vector3::Up() * Application::GetDeltaTime() * 90);
+    }
+};
+
 class PlayerController : public Component
 {
 public:
@@ -31,35 +54,35 @@ public:
         }
     }
 
-    void OnCollisionEnter(RigidBody* rb) override
-    {
-        printf("Collision Enter: %s\n", rb->GetOwnerObject()->GetName().c_str());
-    }
-
-    void OnCollisionStay(RigidBody* rb) override
-    {
-        printf("Collision Stay: %s\n", rb->GetOwnerObject()->GetName().c_str());
-    }
-
-    void OnCollisionExit(RigidBody* rb) override
-    {
-        printf("Collision Exit: %s\n", rb->GetOwnerObject()->GetName().c_str());
-    }
-
-    void OnTriggerEnter(RigidBody* rb) override
-    {
-        printf("Trigger Enter: %s\n", rb->GetOwnerObject()->GetName().c_str());
-    }
-
-    void OnTriggerStay(RigidBody* rb) override
-    {
-        printf("Trigger Stay: %s\n", rb->GetOwnerObject()->GetName().c_str());
-    }
-
-    void OnTriggerExit(RigidBody* rb) override
-    {
-        printf("Trigger Exit: %s\n", rb->GetOwnerObject()->GetName().c_str());
-    }
+    //void OnCollisionEnter(RigidBody* rb) override
+    //{
+    //    printf("Collision Enter: %s\n", rb->GetOwnerObject()->GetName().c_str());
+    //}
+    //
+    //void OnCollisionStay(RigidBody* rb) override
+    //{
+    //    printf("Collision Stay: %s\n", rb->GetOwnerObject()->GetName().c_str());
+    //}
+    //
+    //void OnCollisionExit(RigidBody* rb) override
+    //{
+    //    printf("Collision Exit: %s\n", rb->GetOwnerObject()->GetName().c_str());
+    //}
+    //
+    //void OnTriggerEnter(RigidBody* rb) override
+    //{
+    //    printf("Trigger Enter: %s\n", rb->GetOwnerObject()->GetName().c_str());
+    //}
+    //
+    //void OnTriggerStay(RigidBody* rb) override
+    //{
+    //    printf("Trigger Stay: %s\n", rb->GetOwnerObject()->GetName().c_str());
+    //}
+    //
+    //void OnTriggerExit(RigidBody* rb) override
+    //{
+    //    printf("Trigger Exit: %s\n", rb->GetOwnerObject()->GetName().c_str());
+    //}
 };
 
 class CameraController : public Component
@@ -147,7 +170,7 @@ public:
         float tempSpeed = Input::GetKey(Press, LeftShift) ? camMoveSpeed * shiftMultiplier : camMoveSpeed;
 
         camera->AddCameraFOV(-Input::GetMouseScrollDelta());
-        camera->AddOrthographicSize(-Input::GetMouseScrollDelta());
+        //camera->AddOrthographicSize(-Input::GetMouseScrollDelta());
 
         Vector3 camPos = cameraTR->GetLocalPosition();
         Vector3 camDir = cameraTR->GetDirection();

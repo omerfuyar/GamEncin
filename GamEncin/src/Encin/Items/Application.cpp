@@ -261,7 +261,8 @@ namespace GamEncin
     void Application::Awake()
     {
         srand(time(NULL));
-        Renderer::InitialRender(); // TODO
+        Renderer::InitialRender();
+        TextureManager::InitializeTextures();
         Input::Initialize(Renderer::GetMainWindow());
         currentScene->Awake();
     }

@@ -12,7 +12,7 @@ namespace GamEncin
             return;
         }
 
-        newParent = parent;
+        parent = newParent;
 
         //if(parent)
         //{
@@ -70,9 +70,9 @@ namespace GamEncin
         localScale = newLocalScale;
     }
 
-    void Transform::AddScale(Vector3 scaleToAdd)
+    void Transform::AddScale(Vector3 scaleToMult)
     {
-        SetLocalScale(localScale + scaleToAdd);
+        SetLocalScale(localScale * scaleToMult);
     }
 
     Transform* const Transform::GetParent()
@@ -154,25 +154,18 @@ namespace GamEncin
 
     Matrix4* const Transform::GetModelMatrix()
     {
-        Vector3 tempPos = GetGlobalPosition();
-        Vector3 tempRot = GetGlobalRotation();
-        Vector3 tempScale = GetGlobalScale();
+        Matrix4 localTranslateMatrix = glm::translate(localPosition.ToGLMvec3());
 
-        Matrix4 Translate = glm::translate(tempPos.ToGLMvec3());
+        Matrix4 localRotateMatrixX = glm::rotate(Deg2Rad(localRotation.x), glm::vec3(1, 0, 0));
+        Matrix4 localRotateMatrixY = glm::rotate(Deg2Rad(localRotation.y), glm::vec3(0, 1, 0));
+        Matrix4 localRotateMatrixZ = glm::rotate(Deg2Rad(localRotation.z), glm::vec3(0, 0, 1));
+        Matrix4 localRotateMatrix = localRotateMatrixZ * localRotateMatrixY * localRotateMatrixX;
 
-        Matrix4 RotateX = glm::rotate(Deg2Rad(tempRot.x), glm::vec3(1, 0, 0));
-        Matrix4 RotateY = glm::rotate(Deg2Rad(tempRot.y), glm::vec3(0, 1, 0));
-        Matrix4 RotateZ = glm::rotate(Deg2Rad(tempRot.z), glm::vec3(0, 0, 1));
-        Matrix4 Rotate = RotateZ * RotateY * RotateX;
+        Matrix4 localScaleMatrix = glm::scale(localScale.ToGLMvec3());
 
-        Matrix4 Scale = glm::scale(tempScale.ToGLMvec3());
+        Matrix4 localModelMatrix = localTranslateMatrix * localRotateMatrix * localScaleMatrix;
 
-        modelMatrix = Translate * Rotate * Scale;
-
-        if(parent)
-        {
-            modelMatrix = *parent->GetModelMatrix() * modelMatrix;
-        }
+        modelMatrix = parent ? *(parent->GetModelMatrix()) * localModelMatrix : localModelMatrix;
 
         return &modelMatrix;
     }

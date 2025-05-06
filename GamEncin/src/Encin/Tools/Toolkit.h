@@ -40,10 +40,15 @@ namespace GamEncin
             unsigned long long handle = 0;
             Vector2Int size = Vector2Int::Zero();
             string filePath = "";
+            int wrapModeS = GL_REPEAT;
+            int wrapModeT = GL_REPEAT;
+            int minFilter = GL_LINEAR_MIPMAP_LINEAR;
+            int magFilter = GL_LINEAR;
 
             Texture() = default;
             Texture(unsigned int id, unsigned int bitsPerPixel, unsigned char* data, unsigned long long handle, Vector2Int size, string filePath);
 
+            void SetWrapAndFilter(int wrapModeS, int wrapModeT, int minFilter, int magFilter);
             void Initialize();
         };
 
@@ -64,7 +69,7 @@ namespace GamEncin
 
         struct Character
         {
-            char character;
+            char character = '?';
             Vector2 uv = Vector2::Zero();
             Vector2 size = Vector2::Zero();
             Vector2 offset = Vector2::Zero();

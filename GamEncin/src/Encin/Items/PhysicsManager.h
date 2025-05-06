@@ -29,7 +29,6 @@ namespace GamEncin
         void operator=(const PhysicsManager&) = delete;
 
         static bool CheckForCollision(RigidBody* colliderA, RigidBody* colliderB);
-        static bool CheckForTrigger(RigidBody* colliderA, RigidBody* colliderB);
         static void ResolveDynamicVsDynamic(RigidBody* colliderA, RigidBody* colliderB);
         static void ResolveDynamicVsStatic(RigidBody* colliderA, RigidBody* colliderB);
     };

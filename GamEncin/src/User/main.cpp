@@ -24,7 +24,8 @@ void SceneBuilding()
 
     //////////////// resources
 
-    Font* myFont = FontManager::GetFont("GamEncin/Resources/Fonts/Garamond/garamond.bdf");
+    Font* myFont1 = FontManager::GetFont("GamEncin/Resources/Fonts/Garamond/garamond.bdf");
+    Font* myFont2 = FontManager::GetFont("GamEncin/Resources/Fonts/Tamzen/Tamzen10x20b.bdf");
     Texture* texture1 = TextureManager::GetTexture("GamEncin/Resources/Textures/test.jpg");
     Texture* texture2 = TextureManager::GetTexture("GamEncin/Resources/Textures/test3.jpg");
 
@@ -40,22 +41,24 @@ void SceneBuilding()
     sphereRB1->SetDynamic(false);
     sphereRB1->SetGravityScale(0);
 
+    sphere1.AddComponent<TestComponent>();
+
     ///////////////// player sphere
 
-    Object& sphere2 = scene.CreateObject();
-    sphere2.SetName("Player Sphere");
-    ModelMesh* sphereMesh2 = sphere2.AddComponent<ModelMesh>();
+    Object& playerObj = scene.CreateObject();
+    playerObj.SetName("Player Sphere");
+    ModelMesh* sphereMesh2 = playerObj.AddComponent<ModelMesh>();
     sphereMesh2->SetMeshData(MeshBuilder::CreateSphere(1.0f));
     sphereMesh2->SetTexture(texture2);
 
-    RigidBody* sphereRB2 = sphere2.AddComponent<RigidBody>();
-    sphereRB2->SetDynamic(true);
-    sphereRB2->SetGravityScale(0);
+    RigidBody* playerRB = playerObj.AddComponent<RigidBody>();
+    playerRB->SetDynamic(true);
+    playerRB->SetGravityScale(0);
 
-    Transform* sphereTR2 = sphere2.GetTransform();
-    sphereTR2->AddPosition(Vector3(2.5f, 0, 0));
+    Transform* playerTR = playerObj.GetTransform();
+    playerTR->AddPosition(Vector3(2.5f, 0, 0));
 
-    PlayerController* playerController = sphere2.AddComponent<PlayerController>();
+    PlayerController* playerController = playerObj.AddComponent<PlayerController>();
 
     ///////////////// dynamic test sphere
 
@@ -74,13 +77,32 @@ void SceneBuilding()
 
     ///////////////// text
 
-    //Object& textObj1 = sphere2.CreateChildObject();
-    //textObj1.GetTransform()->AddPosition(Vector3(0, 0, 2));
-    //TextMesh* text1 = textObj1.AddComponent<TextMesh>();
-    //text1->SetFont(myFont);
-    //text1->SetCharDistance(0.01f);
-    //text1->SetTextSize(Vector2(3, 3));
-    //text1->SetText("Dynamic");
+    Object& textObj1 = playerObj.CreateChildObject();
+    textObj1.SetName("Player Text");
+    textObj1.GetTransform()->SetLocalPosition(Vector3(0, 0, 2));
+    TextMesh* text1 = textObj1.AddComponent<TextMesh>();
+    text1->SetFont(myFont1);
+    text1->SetCharDistance(1.5f);
+    text1->SetTextSize(Vector2(5, 5));
+    text1->SetText("Player");
+
+    Object& textObj2 = sphere1.CreateChildObject();
+    textObj2.SetName("Static Text");
+    textObj2.GetTransform()->SetLocalPosition(Vector3(0, 0, 2));
+    TextMesh* text2 = textObj2.AddComponent<TextMesh>();
+    text2->SetFont(myFont2);
+    text2->SetCharDistance(1.5f);
+    text2->SetTextSize(Vector2(5, 5));
+    text2->SetText("Ne Diyo\nLaa");
+
+    Object& textObj3 = sphere3.CreateChildObject();
+    textObj3.SetName("Dynamic Text");
+    textObj3.GetTransform()->SetLocalPosition(Vector3(0, 0, 2));
+    TextMesh* text3 = textObj3.AddComponent<TextMesh>();
+    text3->SetFont(myFont2);
+    text3->SetCharDistance(1.5f);
+    text3->SetTextSize(Vector2(5, 5));
+    text3->SetText("OOO 0000 OOOluum");
 
     Renderer::AddMeshesInScene(&scene);
     PhysicsManager::AddRigidBodiesInScene(&scene);

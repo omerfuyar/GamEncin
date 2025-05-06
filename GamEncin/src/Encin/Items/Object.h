@@ -34,7 +34,8 @@ namespace GamEncin
                 }
             }
 
-            Application::PrintLog(ElementCouldNotFindErr, "Component couldn't find in the object");
+            string buffer = "Component couldn't find in the object\nlooking for: " + string(typeid(T).name()) + "\nobject name: " + name;
+            Application::PrintLog(ElementCouldNotFindErr, buffer);
             return nullptr;
         }
         // use it with built in typeid() function

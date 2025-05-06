@@ -14,7 +14,7 @@ namespace GamEncin
         void SetLocalRotation(Vector3 newLocalRotation);
         void AddRotation(Vector3 rotationToAdd);
         void SetLocalScale(Vector3 newLocalScale);
-        void AddScale(Vector3 scaleToAdd);
+        void AddScale(Vector3 scaleToMult);
 
         Transform* const GetParent();
         Vector3 GetLocalPosition();

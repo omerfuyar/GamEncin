@@ -14,11 +14,13 @@ namespace GamEncin
     void TextMesh::SetCharDistance(float distance)
     {
         this->charDistance = distance;
+        UpdateTextMeshData();
     }
 
     void TextMesh::SetLineDistance(float distance)
     {
         this->lineDistance = distance;
+        UpdateTextMeshData();
     }
 
     void TextMesh::SetText(string text)
@@ -30,11 +32,14 @@ namespace GamEncin
     void TextMesh::SetTextSize(Vector2 textSize)
     {
         this->textSize = textSize;
+        UpdateTextMeshData();
     }
 
     void TextMesh::SetFont(Font* font)
     {
         this->font = font;
+        texture = font->texture;
+        UpdateTextMeshData();
     }
 
     float TextMesh::GetCharDistance()
@@ -71,33 +76,83 @@ namespace GamEncin
         }
 
         vector<RawVertex> vertices;
+        string currentText = this->text;
 
-        int totalLines = SplitString(text, "\n").size();
-        int lineCount = 0;
-        for(int i = 0; i < text.length(); i++)
+        if(meshData)
         {
-            if(text[i] == '\n')
+            // Renderer::RemoveMesh(this); // Assuming AddMesh/RemoveMesh is handled elsewhere or if meshData is rebuilt
+            delete meshData;
+            meshData = nullptr;
+        }
+
+        if(currentText.empty())
+        {
+            meshData = MeshBuilder::CreateMeshData({}, {});
+            // Renderer::AddMesh(this); // Assuming AddMesh/RemoveMesh is handled elsewhere
+            return;
+        }
+
+        unsigned int totalLines = 1;
+        for(char c : currentText)
+        {
+            if(c == '\n')
+            {
+                totalLines++;
+            }
+        }
+
+        unsigned int lineCount = 0;
+        unsigned int quadCount = 0;
+        unsigned int charIndexOnLine = 0;
+
+        for(int i = 0; i < currentText.length(); i++)
+        {
+            if(currentText[i] == '\n')
             {
                 lineCount++;
+                charIndexOnLine = 0;
                 continue;
             }
 
-            Character character = font->chars[text[i]];
-            Vector2 charUV = character.uv;
-            Vector2 charSize = character.size;
-            Vector2 charOffset = character.offset;
+            Character character = font->chars[currentText[i]];
 
-            Vector2 charPosition = Vector2(((float) text.length() / -2 + i) * charDistance, ((float) totalLines / -2 + lineCount)) * textSize;
+            Vector2 charUVTopLeftOrigin = character.uv;
+            Vector2 charAtlasSize = character.size;
+            Vector2 charAtlasOffset = character.offset;
 
-            vertices.push_back(RawVertex(charPosition - charSize / 2, charUV));
-            vertices.push_back(RawVertex(Vector2(charPosition.x + charSize.x / 2, charPosition.y - charSize.y / 2), Vector2(charUV.x + charSize.x, charUV.y)));
-            vertices.push_back(RawVertex(charPosition + charSize / 2, charUV + charSize));
-            vertices.push_back(RawVertex(Vector2(charPosition.x - charSize.x / 2, charPosition.y + charSize.y / 2), Vector2(charUV.x, charUV.y + charSize.x)));
+            Vector2 displayCharSize = charAtlasSize * textSize;
+
+            Vector2 charCenterPosition =
+                Vector2(
+                (((float) currentText.length() / -2.0f) + charIndexOnLine) * (charDistance / 50.0f),
+                (((float) totalLines / -2.0f) - lineCount) * (lineDistance / 15.0f)) *
+                textSize + charAtlasOffset;
+            printf("font : %s\n", font->name.c_str());
+            printf("char : %c", character.character);
+            printf("charoffset : %f %f\n", charAtlasOffset.x, charAtlasOffset.y);
+
+            Vector2 posBottomLeft = Vector2(charCenterPosition.x - displayCharSize.x / 2.0f, charCenterPosition.y - displayCharSize.y / 2.0f);
+            Vector2 posBottomRight = Vector2(charCenterPosition.x + displayCharSize.x / 2.0f, charCenterPosition.y - displayCharSize.y / 2.0f);
+            Vector2 posTopRight = Vector2(charCenterPosition.x + displayCharSize.x / 2.0f, charCenterPosition.y + displayCharSize.y / 2.0f);
+            Vector2 posTopLeft = Vector2(charCenterPosition.x - displayCharSize.x / 2.0f, charCenterPosition.y + displayCharSize.y / 2.0f);
+
+            Vector2 uvTopLeft = charUVTopLeftOrigin;
+            Vector2 uvTopRight = Vector2(charUVTopLeftOrigin.x + charAtlasSize.x, charUVTopLeftOrigin.y);
+            Vector2 uvBottomLeft = Vector2(charUVTopLeftOrigin.x, charUVTopLeftOrigin.y + charAtlasSize.y);
+            Vector2 uvBottomRight = Vector2(charUVTopLeftOrigin.x + charAtlasSize.x, charUVTopLeftOrigin.y + charAtlasSize.y);
+
+            vertices.push_back(RawVertex(posBottomLeft, uvBottomLeft));
+            vertices.push_back(RawVertex(posBottomRight, uvBottomRight));
+            vertices.push_back(RawVertex(posTopRight, uvTopRight));
+            vertices.push_back(RawVertex(posTopLeft, uvTopLeft));
+
+            charIndexOnLine++;
+            quadCount++;
         }
 
         vector<unsigned int> indices;
 
-        for(int i = 0; i < text.length(); i++)
+        for(int i = 0; i < quadCount; i++)
         {
             indices.push_back(i * 4);
             indices.push_back(i * 4 + 1);
@@ -107,19 +162,12 @@ namespace GamEncin
             indices.push_back(i * 4);
         }
 
-        if(meshData)
-        {
-            Renderer::RemoveMesh(this);
-            printf("Text GetTextMeshData remove: %p\n", meshData);
-        }
-
         meshData = MeshBuilder::CreateMeshData(vertices, indices);
-        printf("Text GetTextMeshData add: %p\n", meshData);
-        Renderer::AddMesh(this);
+        // Renderer::AddMesh(this);
     }
 
     void TextMesh::Update()
     {
-        UpdateTextMeshData();
+        // UpdateTextMeshData();
     }
 }

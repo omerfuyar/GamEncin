@@ -87,11 +87,6 @@ namespace GamEncin
                     colliderA->AddCollision(colliderB);
                     colliderB->AddCollision(colliderA);
                 }
-                else if(CheckForTrigger(colliderA, colliderB))
-                {
-                    colliderA->AddCollision(colliderB);
-                    colliderB->AddCollision(colliderA);
-                }
                 else
                 {
                     colliderA->RemoveCollision(colliderB);
@@ -135,18 +130,7 @@ namespace GamEncin
             return false;
         }
 
-        if(colliderA->IsTrigger() || colliderB->IsTrigger()) return false;
-
-        return (colliderA->GetOwnerObject()->GetTransform()->GetGlobalPosition() - colliderB->GetOwnerObject()->GetTransform()->GetGlobalPosition()).GetMagnitude() < (colliderA->GetRigidBodyRadius() + colliderB->GetRigidBodyRadius());
-    }
-
-    bool PhysicsManager::CheckForTrigger(RigidBody* colliderA, RigidBody* colliderB)
-    {
-        if(!colliderA || !colliderB)
-        {
-            Application::PrintLog(NullPointerErr, "RigidBody trying to check is null.");
-            return false;
-        }
+        //if(colliderA->IsTrigger() || colliderB->IsTrigger()) return false;
 
         return (colliderA->GetOwnerObject()->GetTransform()->GetGlobalPosition() - colliderB->GetOwnerObject()->GetTransform()->GetGlobalPosition()).GetMagnitude() < (colliderA->GetRigidBodyRadius() + colliderB->GetRigidBodyRadius());
     }
@@ -182,7 +166,6 @@ namespace GamEncin
 
     void PhysicsManager::ResolveDynamicVsStatic(RigidBody* colliderA, RigidBody* colliderB)
     {
-        // TODO
         Vector3 distance = (colliderB->GetOwnerObject()->GetTransform()->GetGlobalPosition() - colliderA->GetOwnerObject()->GetTransform()->GetGlobalPosition());
 
         float overlap = colliderA->GetRigidBodyRadius() + colliderB->GetRigidBodyRadius() - distance.GetMagnitude();

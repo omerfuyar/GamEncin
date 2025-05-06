@@ -22,22 +22,37 @@ namespace GamEncin
             this->filePath = filePath;
         }
 
+        void Texture::SetWrapAndFilter(int wrapModeS, int wrapModeT, int minFilter, int magFilter)
+        {
+            this->wrapModeS = wrapModeS;
+            this->wrapModeT = wrapModeT;
+            this->minFilter = minFilter;
+            this->magFilter = magFilter;
+
+            if(!Application::IsRunning()) return;
+
+            glBindTexture(GL_TEXTURE_2D, id);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapModeS);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapModeT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter);
+        }
+
         void Texture::Initialize()
         {
             glGenTextures(1, &id);
             glBindTexture(GL_TEXTURE_2D, id);
 
-            unsigned int imageFormat = (bitsPerPixel / 8 == 4) ? GL_RGBA : (bitsPerPixel / 8 == 3) ? GL_RGB
+            unsigned int imageFormat =
+                (bitsPerPixel / 8 == 4) ? GL_RGBA
+                : (bitsPerPixel / 8 == 3) ? GL_RGB
                 : (bitsPerPixel / 8 == 2) ? GL_RG
                 : GL_RED;
 
             glTexImage2D(GL_TEXTURE_2D, 0, imageFormat, size.x, size.y, 0, imageFormat, GL_UNSIGNED_BYTE, data);
             glGenerateMipmap(GL_TEXTURE_2D);
 
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            SetWrapAndFilter(wrapModeS, wrapModeT, minFilter, magFilter);
 
             handle = glGetTextureHandleARB(id);
             glMakeTextureHandleResidentARB(handle);
@@ -143,6 +158,8 @@ namespace GamEncin
             this->texture = sourceImage;
             this->chars = chars;
             this->bdfFilePath = bdfFilePath;
+
+            texture->SetWrapAndFilter(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_NEAREST, GL_NEAREST);
         }
 
 #pragma endregion
@@ -189,54 +206,68 @@ namespace GamEncin
 
         Font* const FontManager::CreateFontFromBDF(string bdfFilePath)
         {
-            string fontName = "";
+            string fontName = "Default Font";
             unordered_map<char, Character> fontChars;
 
-            int atlasWidth = 255, atlasHeight = 255;
-            vector<unsigned char> atlasData(atlasWidth * atlasHeight, 0); // 1-channel monochrome
-            Vector2Int cursor;
+            int atlasWidth = 256, atlasHeight = 256;//todo move this to somewhere right
+            vector<unsigned char> atlasData = vector<unsigned char>(atlasWidth * atlasHeight, 0);
+            Vector2Int cursor = Vector2Int(0, 0);
             int rowHeight = 0;
 
             string bdf = Input::GetFileContents(bdfFilePath.c_str());
+
+            if(bdf.empty())
+            {
+                Application::PrintLog(IOErr, "Could not read BDF file or file is empty: " + bdfFilePath);
+                return nullptr;
+            }
+
             vector<string> lines = SplitString(bdf, "\n");
 
-            vector<string> words = SplitString(lines[1], " ");
-            vector<string> tokens = SplitString(words[1], "-");
-            fontName = tokens[1] + "_" + tokens[2] + "_" + tokens[3];
+            // Find font name in the BDF file and set the name of the font
+            for(const string& line : lines)
+            {
+                if(line.rfind("FONT ", 0) == 0)
+                {
+                    vector<string> parts = SplitString(line, " ");
+                    string xlfdName = parts[1];
+                    vector<string> tokens = SplitString(xlfdName, "-");
+                    fontName = tokens[1] + "_" + tokens[2] + "_" + tokens[3]; // Family_Weight_Slant
+                    break;
+                }
+            }
 
             int i = 0;
             while(i < lines.size()) // per line
             {
                 if(lines[i].rfind("STARTCHAR", 0) == 0) // per char
                 {
-                    char character = '?';
-                    int dwidth = 0;
+                    char currentChar = '?';
                     Vector2Int bbxSize;
                     Vector2Int bbxOffset;
                     vector<string> bitmapLines;
+                    string charNameStr = SplitString(lines[i], " ")[1];
 
-                    while(lines[i] != "ENDCHAR")
+                    int startCharLine = i;
+
+                    while(i < lines.size() && lines[i] != "ENDCHAR")
                     {
                         if(lines[i].rfind("ENCODING", 0) == 0)
                         {
-                            character = (char) StringToInt(SplitString(lines[i], " ")[1]);
-                        }
-                        else if(lines[i].rfind("DWIDTH", 0) == 0)
-                        {
-                            dwidth = StringToInt(SplitString(lines[i], " ")[1]);
+                            currentChar = (char) StringToInt(SplitString(lines[i], " ")[1]);
                         }
                         else if(lines[i].rfind("BBX", 0) == 0)
                         {
-                            vector<string> words = SplitString(lines[i], " ");
-                            //bbxSize.x = dwidth;
-                            bbxSize.x = StringToInt(words[1]);
-                            bbxSize.y = StringToInt(words[2]);
-                            bbxOffset.x = StringToInt(words[3]);
-                            bbxOffset.y = StringToInt(words[4]);
+                            vector<string> bbxWords = SplitString(lines[i], " ");
+
+                            bbxSize.x = StringToInt(bbxWords[1]);
+                            bbxSize.y = StringToInt(bbxWords[2]);
+                            bbxOffset.x = StringToInt(bbxWords[3]);
+                            bbxOffset.y = StringToInt(bbxWords[4]);
                         }
                         else if(lines[i] == "BITMAP")
                         {
-                            i++;
+                            i++; // Move to first line of bitmap data
 
                             while(i < lines.size() && lines[i] != "ENDCHAR")
                             {
@@ -244,62 +275,96 @@ namespace GamEncin
                                 i++;
                             }
 
+                            // process bitmap data after all bitmap lines of the char collected
+                            if(bbxSize.x > 0 && bbxSize.y > 0) //chars with bitmap data
+                            {
+                                // atlas packing 
+                                if(cursor.x + bbxSize.x > atlasWidth)
+                                {
+                                    cursor.x = 0;
+                                    cursor.y += rowHeight + 1; // Move to next row (1px padding)
+                                    rowHeight = 0;
+                                }
+
+                                if(cursor.y + bbxSize.y > atlasHeight) // no vertical space, todo this can be removed
+                                {
+                                    Application::Stop(IOErr, "Font atlas full. Character '" + charNameStr + "' (Encoding: " + currentChar + ") for font: " + fontName + ". Increase the atlas resolution to be able to output atlas texture.");
+                                }
+
+                                // Write bitmap data to atlas
+                                for(int dataY = 0; dataY < bbxSize.y && dataY < bitmapLines.size(); dataY++)
+                                {
+                                    int bytesPerRow = (bbxSize.x + 7) / 8;
+                                    string hexRow = bitmapLines[dataY];
+                                    unsigned long long rowBits = 0;
+
+                                    try
+                                    {
+                                        rowBits = std::stoull(hexRow, nullptr, 16);
+                                    }
+                                    catch(const std::invalid_argument& ia)
+                                    {
+                                        Application::PrintLog(TypeMismatchErr, "Invalid hex in BDF bitmap for char " + charNameStr + ": " + hexRow);
+                                        continue; // Skip this row or char
+                                    }
+
+                                    for(int dataX = 0; dataX < bbxSize.x; dataX++)
+                                    {
+                                        int bitPosition = (bytesPerRow * 8) - 1 - dataX;
+                                        if(bbxSize.x <= 64 && (rowBits >> bitPosition) & 1)
+                                        {
+                                            atlasData[(cursor.y + dataY) * atlasWidth + (cursor.x + dataX)] = 255;
+                                        }
+                                    }
+                                }
+
+                                Vector2 uv = Vector2((float) cursor.x / atlasWidth, (float) cursor.y / atlasHeight);
+                                Vector2 size = Vector2((float) bbxSize.x / atlasWidth, (float) bbxSize.y / atlasHeight);
+                                Vector2 offset = Vector2((float) bbxOffset.x / atlasWidth, (float) bbxOffset.y / atlasHeight);
+                                //Vector2 offset = Vector2((float) bbxOffset.x, (float) bbxOffset.y);
+
+                                fontChars[currentChar] = Character(currentChar, uv, size, offset);
+
+                                cursor.x += bbxSize.x + 1; // Advance cursor (1px padding)
+                                rowHeight = Max(rowHeight, bbxSize.y);
+                            }
+                            else //chars with no bitmap data : ' ' etc.
+                            {
+                            }
+
                             break;
                         }
 
                         i++;
                     }
-
-                    for(int y = 0; y < bbxSize.y; y++)
-                    {
-                        if(y >= bitmapLines.size())
-                        {
-                            break;
-                        }
-
-                        unsigned int rowBits = std::stoul(bitmapLines[y], nullptr, 16);
-
-                        for(int x = 0; x < bbxSize.x; x++)
-                        {
-                            if((rowBits >> (bbxSize.x - 1 - x)) & 1)
-                            {
-                                atlasData[(cursor.y + y) * atlasWidth + (cursor.x + x)] = 255;
-                            }
-                        }
-                    }
-
-                    Vector2 uv = Vector2((float) cursor.x / atlasWidth, (float) cursor.y / atlasHeight);
-                    Vector2 size = Vector2((float) bbxSize.x / atlasWidth, (float) bbxSize.y / atlasHeight);
-                    Vector2 offset = Vector2((float) bbxOffset.x / atlasWidth, (float) bbxOffset.y / atlasHeight);
-
-                    fontChars[character] = Character(character, uv, size, offset);
-
-                    rowHeight = Max(rowHeight, bbxSize.y);
-                    cursor.x += bbxSize.x + 1;
-
-                    if(cursor.x + bbxSize.x >= atlasWidth)
-                    {
-                        cursor.x = 0;
-                        cursor.y += rowHeight + 1;
-                        rowHeight = 0;
-                    }
                 }
 
-                i++;
+                i++; // Next line in BDF
             }
 
-            string outputImagePath = "GamEncin/Resources/Fonts/" + fontName + "_font_atlas.png";
+            string outputDir = "GamEncin/Resources/Fonts/";
+            // TODO: Add directory creation if it doesn't exist.
+            // For Windows: #include <direct.h> _mkdir(outputDir.c_str());
+            // For Linux/macOS: #include <sys/stat.h> mkdir(outputDir.c_str(), 0755);
+            string outputImagePath = outputDir + fontName + "_atlas.png";
 
             if(!stbi_write_png(outputImagePath.c_str(), atlasWidth, atlasHeight, 1, atlasData.data(), atlasWidth))
             {
-                Application::PrintLog(IOErr, "Failed to write font atlas image.");
+                Application::PrintLog(IOErr, "Failed to write font atlas image: " + outputImagePath);
+                return nullptr;
             }
             else
             {
-                Application::PrintLog(LogType::Safe, "Font atlas written to: " + outputImagePath + "\n");
+                Application::PrintLog(LogType::Safe, "Font atlas written to: " + outputImagePath);
             }
 
             Texture* texture = TextureManager::GetTexture(outputImagePath);
+            if(!texture)
+            {
+                Application::PrintLog(TypeMismatchErr, "Failed to load font atlas texture after writing: " + outputImagePath);
+                // Optionally, attempt to delete the problematic PNG: std::remove(outputImagePath.c_str());
+                return nullptr;
+            }
 
             return new Font(fontName, texture, fontChars, bdfFilePath);
         }

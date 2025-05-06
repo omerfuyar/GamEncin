@@ -127,6 +127,7 @@ namespace GamEncin
 
         for(auto& obj : tempMeshes)
         {
+            printf("Adding mesh %s\n", obj->GetOwnerObject()->GetName().c_str());
             AddMesh(obj);
         }
     }
@@ -276,8 +277,6 @@ namespace GamEncin
         modelTextureHandlesSSBO = new GLShaderStorageBufferObject<unsigned long long>(GE_SSBO_TEXTURE_HANDLES_BINDING, GL_STATIC_DRAW);
 
         LinkAttributes();
-
-        TextureManager::InitializeTextures();
     }
 
     void Renderer::RenderFrame()
@@ -324,8 +323,10 @@ namespace GamEncin
         for(Mesh* mesh : meshes)
         {
             int index = mesh->GetMeshData()->id;
-            batchedModelMatrices[index] = mesh->GetModelMatrix() ? *mesh->GetModelMatrix() : Matrix4(1.0f);
-            batchedTextureHandles[index] = mesh->GetTexture() ? mesh->GetTexture()->handle : 0;
+            Matrix4* matrix = mesh->GetModelMatrix();
+            Texture* texture = mesh->GetTexture();
+            batchedModelMatrices[index] = matrix ? *matrix : Matrix4(1.0f);
+            batchedTextureHandles[index] = texture ? texture->handle : 0;
         }
     }
 

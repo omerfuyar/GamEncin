@@ -141,7 +141,7 @@ namespace GamEncin
 
         if(obj != collisions.end())
         {
-            Application::PrintLog(ElementDuplicationErr, "RigidBody already exists in collisions.");
+            //Application::PrintLog(ElementDuplicationErr, "RigidBody already exists in collisions.");
             return;
         }
 
@@ -169,7 +169,7 @@ namespace GamEncin
 
         if(obj == collisions.end())
         {
-            Application::PrintLog(ElementCouldNotFindErr, "RigidBody couldn't find in collisions.");
+            //Application::PrintLog(ElementCouldNotFindErr, "RigidBody couldn't find in collisions.");
             return;
         }
 

@@ -131,7 +131,7 @@ namespace GamEncin
     {
         for(Component* component : components)
         {
-            component->OnCollisionExit(exitedRigidBody);
+            component->OnTriggerEnter(exitedRigidBody);
         }
     }
 
@@ -139,7 +139,7 @@ namespace GamEncin
     {
         for(Component* component : components)
         {
-            component->OnCollisionStay(exitedRigidBody);
+            component->OnTriggerStay(exitedRigidBody);
         }
     }
 
@@ -147,7 +147,7 @@ namespace GamEncin
     {
         for(Component* component : components)
         {
-            component->OnCollisionEnter(exitedRigidBody);
+            component->OnTriggerExit(exitedRigidBody);
         }
     }
 
@@ -155,7 +155,7 @@ namespace GamEncin
     {
         for(Component* component : components)
         {
-            component->OnCollisionExit(exitedRigidBody);
+            component->OnCollisionEnter(exitedRigidBody);
         }
     }
 
@@ -171,7 +171,7 @@ namespace GamEncin
     {
         for(Component* component : components)
         {
-            component->OnCollisionEnter(exitedRigidBody);
+            component->OnCollisionExit(exitedRigidBody);
         }
     }
 
