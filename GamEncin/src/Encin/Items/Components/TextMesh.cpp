@@ -127,9 +127,6 @@ namespace GamEncin
                 (((float) currentText.length() / -2.0f) + charIndexOnLine) * (charDistance / 50.0f),
                 (((float) totalLines / -2.0f) - lineCount) * (lineDistance / 15.0f)) *
                 textSize + charAtlasOffset;
-            printf("font : %s\n", font->name.c_str());
-            printf("char : %c", character.character);
-            printf("charoffset : %f %f\n", charAtlasOffset.x, charAtlasOffset.y);
 
             Vector2 posBottomLeft = Vector2(charCenterPosition.x - displayCharSize.x / 2.0f, charCenterPosition.y - displayCharSize.y / 2.0f);
             Vector2 posBottomRight = Vector2(charCenterPosition.x + displayCharSize.x / 2.0f, charCenterPosition.y - displayCharSize.y / 2.0f);

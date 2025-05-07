@@ -304,6 +304,47 @@ namespace GamEncin
             static Vector2Int Left();
         };
 
+        struct Vector4Int
+        {
+            int x, y, z, w;
+
+            Vector4Int(int x = 0, int y = 0, int z = 0, int w = 1);
+            Vector4Int(const glm::ivec4& vec);
+            Vector4Int(const Vector2Int& vec);
+            Vector4Int(const Vector4& vec);
+
+            // Operators
+            Vector4Int operator + (const Vector4Int& other);
+            Vector4Int& operator += (const Vector4Int& other);
+            Vector4Int operator - (const Vector4Int& other);
+            Vector4Int& operator -= (const Vector4Int& other);
+            Vector4Int operator * (int other);
+            Vector4Int& operator *= (int other);
+            Vector4Int operator * (const Vector4Int& other);
+            Vector4Int& operator *= (const Vector4Int& other);
+            Vector4Int operator / (int other);
+            Vector4Int& operator /= (int other);
+            bool operator == (const Vector4Int& other);
+            bool operator != (const Vector4Int& other);
+
+            operator Vector2Int();
+            operator Vector4();
+
+            // Returns the magnitude of the Vector2Int
+            float GetMagnitude();
+            // Scales the Vector2Int to 8 direction
+            Vector2Int& EightDirection();
+            // Returns the 8 direction version of the Vector2Int
+            Vector2Int EightDirectioned();
+            // Returns the normalized version of the Vector2Int
+            Vector2 Normalized();
+
+            // Returns a Vector4(0, 0, 0, 0)
+            static Vector4Int Zero();
+            // Returns a Vector4(1, 1, 1, 1)
+            static Vector4Int One();
+        };
+
 #pragma endregion
 
 #pragma region Advenced Functions

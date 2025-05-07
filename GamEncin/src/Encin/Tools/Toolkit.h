@@ -39,14 +39,14 @@ namespace GamEncin
             unsigned char* data = nullptr;
             unsigned long long handle = 0;
             Vector2Int size = Vector2Int::Zero();
-            string filePath = "";
+            string sourceFilePath = "";
             int wrapModeS = GL_REPEAT;
             int wrapModeT = GL_REPEAT;
             int minFilter = GL_LINEAR_MIPMAP_LINEAR;
             int magFilter = GL_LINEAR;
 
             Texture() = default;
-            Texture(unsigned int id, unsigned int bitsPerPixel, unsigned char* data, unsigned long long handle, Vector2Int size, string filePath);
+            Texture(unsigned int id, unsigned int bitsPerPixel, unsigned char* data, unsigned long long handle, Vector2Int size, string sourceFilePath);
 
             void SetWrapAndFilter(int wrapModeS, int wrapModeT, int minFilter, int magFilter);
             void Initialize();
@@ -112,8 +112,15 @@ namespace GamEncin
             /// <returns>The created ready to use font object.</returns>
             static Font* const CreateFontFromBDF(string bdfFilePath);
 
+            /// <summary>
+            /// Sets the atlas size of the font texture importer. Affects font atlases.
+            /// </summary>
+            /// <param name="atlasSize"></param>
+            static void SetAtlasSize(Vector2Int atlasSize);
+
         private:
             static vector<Font*> loadedFonts;
+            static Vector2Int atlasSize;
         };
 
 #pragma endregion

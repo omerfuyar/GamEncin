@@ -1031,6 +1031,9 @@
     <ClInclude Include="GamEncin\src\Encin\Items\Components\ModelMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GamEncin\src\User\UserScenes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="LICENSE.txt" />

@@ -12,14 +12,14 @@ namespace GamEncin
 
 #pragma region Texture
 
-        Texture::Texture(unsigned int id, unsigned int bitsPerPixel, unsigned char* data, unsigned long long handle, Vector2Int size, string filePath)
+        Texture::Texture(unsigned int id, unsigned int bitsPerPixel, unsigned char* data, unsigned long long handle, Vector2Int size, string sourceFilePath)
         {
             this->id = id;
             this->bitsPerPixel = bitsPerPixel;
             this->data = data;
             this->size = size;
             this->handle = handle;
-            this->filePath = filePath;
+            this->sourceFilePath = sourceFilePath;
         }
 
         void Texture::SetWrapAndFilter(int wrapModeS, int wrapModeT, int minFilter, int magFilter)
@@ -59,11 +59,7 @@ namespace GamEncin
 
             stbi_image_free(data);
 
-            // printf("Texture %s loaded with id: %u\n", filePath.c_str(), id);
-            // printf("Texture %s handle: %llu\n", filePath.c_str(), handle);
-            // printf("Texture %s size: %d x %d\n", filePath.c_str(), size.x, size.y);
-            // printf("Texture %s bits per pixel: %u\n", filePath.c_str(), bitsPerPixel);
-            // printf("Texture %s data size: %d\n", filePath.c_str(), size.x * size.y * (bitsPerPixel / 8));
+            Application::PrintLog(LogType::Safe, "\nTexture successfuly loaded: " + sourceFilePath);
         }
 
 #pragma endregion
@@ -75,7 +71,7 @@ namespace GamEncin
         Texture* TextureManager::GetTexture(string textureFilePath)
         {
             auto obj = std::find_if(loadedTextures.begin(), loadedTextures.end(), [&textureFilePath](Texture* texture)
-                                    { return texture->filePath == textureFilePath; });
+                                    { return texture->sourceFilePath == textureFilePath; });
 
             if(obj != loadedTextures.end())
             {
@@ -160,6 +156,8 @@ namespace GamEncin
             this->bdfFilePath = bdfFilePath;
 
             texture->SetWrapAndFilter(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_NEAREST, GL_NEAREST);
+
+            Application::PrintLog(LogType::Safe, "\nFont successfuly loaded: " + bdfFilePath);
         }
 
 #pragma endregion
@@ -167,6 +165,7 @@ namespace GamEncin
 #pragma region FontManager
 
         vector<Font*> FontManager::loadedFonts;
+        Vector2Int FontManager::atlasSize = Vector2Int(256, 256);
 
         Font* FontManager::GetFont(string bdfFilePath)
         {
@@ -179,6 +178,12 @@ namespace GamEncin
             }
 
             Font* createdFont = CreateFontFromBDF(bdfFilePath);
+
+            if(!createdFont)
+            {
+                Application::PrintLog(IOErr, "Couldn't create font from file: " + bdfFilePath);
+                return nullptr;
+            }
 
             loadedFonts.push_back(createdFont);
 
@@ -209,8 +214,7 @@ namespace GamEncin
             string fontName = "Default Font";
             unordered_map<char, Character> fontChars;
 
-            int atlasWidth = 256, atlasHeight = 256;//todo move this to somewhere right
-            vector<unsigned char> atlasData = vector<unsigned char>(atlasWidth * atlasHeight, 0);
+            vector<unsigned char> atlasData = vector<unsigned char>(atlasSize.x * atlasSize.y * 4, 0);
             Vector2Int cursor = Vector2Int(0, 0);
             int rowHeight = 0;
 
@@ -279,14 +283,14 @@ namespace GamEncin
                             if(bbxSize.x > 0 && bbxSize.y > 0) //chars with bitmap data
                             {
                                 // atlas packing 
-                                if(cursor.x + bbxSize.x > atlasWidth)
+                                if(cursor.x + bbxSize.x > atlasSize.x)
                                 {
                                     cursor.x = 0;
                                     cursor.y += rowHeight + 1; // Move to next row (1px padding)
                                     rowHeight = 0;
                                 }
 
-                                if(cursor.y + bbxSize.y > atlasHeight) // no vertical space, todo this can be removed
+                                if(cursor.y + bbxSize.y > atlasSize.y) // no vertical space, todo this can be removed
                                 {
                                     Application::Stop(IOErr, "Font atlas full. Character '" + charNameStr + "' (Encoding: " + currentChar + ") for font: " + fontName + ". Increase the atlas resolution to be able to output atlas texture.");
                                 }
@@ -313,14 +317,22 @@ namespace GamEncin
                                         int bitPosition = (bytesPerRow * 8) - 1 - dataX;
                                         if(bbxSize.x <= 64 && (rowBits >> bitPosition) & 1)
                                         {
-                                            atlasData[(cursor.y + dataY) * atlasWidth + (cursor.x + dataX)] = 255;
+                                            int pixelBaseIndex = ((cursor.y + dataY) * atlasSize.x + (cursor.x + dataX)) * 4;
+
+                                            if(pixelBaseIndex + 3 < atlasData.size())
+                                            {
+                                                atlasData[pixelBaseIndex + 0] = 255; // R
+                                                atlasData[pixelBaseIndex + 1] = 255; // G
+                                                atlasData[pixelBaseIndex + 2] = 255; // B
+                                                atlasData[pixelBaseIndex + 3] = 255; // A
+                                            }
                                         }
                                     }
                                 }
 
-                                Vector2 uv = Vector2((float) cursor.x / atlasWidth, (float) cursor.y / atlasHeight);
-                                Vector2 size = Vector2((float) bbxSize.x / atlasWidth, (float) bbxSize.y / atlasHeight);
-                                Vector2 offset = Vector2((float) bbxOffset.x / atlasWidth, (float) bbxOffset.y / atlasHeight);
+                                Vector2 uv = Vector2((float) cursor.x / atlasSize.x, (float) cursor.y / atlasSize.y);
+                                Vector2 size = Vector2((float) bbxSize.x / atlasSize.x, (float) bbxSize.y / atlasSize.y);
+                                Vector2 offset = Vector2((float) bbxOffset.x / atlasSize.x, (float) bbxOffset.y / atlasSize.y); //todo maybe dont make this normalized, but use the bbxSize instead
                                 //Vector2 offset = Vector2((float) bbxOffset.x, (float) bbxOffset.y);
 
                                 fontChars[currentChar] = Character(currentChar, uv, size, offset);
@@ -330,6 +342,8 @@ namespace GamEncin
                             }
                             else //chars with no bitmap data : ' ' etc.
                             {
+                                Vector2 offset = Vector2((float) bbxOffset.x / atlasSize.x, (float) bbxOffset.y / atlasSize.y); //todo maybe dont make this normalized, but use the bbxSize instead
+                                fontChars[currentChar] = Character(currentChar, Vector2(0, 0), Vector2(0, 0), offset);
                             }
 
                             break;
@@ -343,22 +357,18 @@ namespace GamEncin
             }
 
             string outputDir = "GamEncin/Resources/Fonts/";
-            // TODO: Add directory creation if it doesn't exist.
-            // For Windows: #include <direct.h> _mkdir(outputDir.c_str());
-            // For Linux/macOS: #include <sys/stat.h> mkdir(outputDir.c_str(), 0755);
             string outputImagePath = outputDir + fontName + "_atlas.png";
 
-            if(!stbi_write_png(outputImagePath.c_str(), atlasWidth, atlasHeight, 1, atlasData.data(), atlasWidth))
+            if(!stbi_write_png(outputImagePath.c_str(), atlasSize.x, atlasSize.y, 4, atlasData.data(), atlasSize.x * 4))
             {
                 Application::PrintLog(IOErr, "Failed to write font atlas image: " + outputImagePath);
                 return nullptr;
             }
-            else
-            {
-                Application::PrintLog(LogType::Safe, "Font atlas written to: " + outputImagePath);
-            }
+
+            Application::PrintLog(LogType::Safe, "\nFont atlas successfuly written to: " + outputImagePath);
 
             Texture* texture = TextureManager::GetTexture(outputImagePath);
+
             if(!texture)
             {
                 Application::PrintLog(TypeMismatchErr, "Failed to load font atlas texture after writing: " + outputImagePath);
@@ -367,6 +377,12 @@ namespace GamEncin
             }
 
             return new Font(fontName, texture, fontChars, bdfFilePath);
+        }
+
+        void FontManager::SetAtlasSize(Vector2Int atlasSize)
+        {
+            FontManager::atlasSize.x = Abs(atlasSize.x);
+            FontManager::atlasSize.y = Abs(atlasSize.y);
         }
 
 #pragma endregion

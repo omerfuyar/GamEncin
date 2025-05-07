@@ -38,7 +38,7 @@ namespace GamEncin
         programName = name;
     }
 
-    void Application::SetCurrentScene(Scene* scene)
+    void Application::LoadScene(Scene* scene)
     {
         if(!scene)
         {
@@ -50,11 +50,41 @@ namespace GamEncin
 
         if(obj == scenes.end())
         {
-            PrintLog(ElementDuplicationErr, "Scene trying to set current does not exist in application scenes");
-            return;
+            PrintLog(ElementDuplicationErr, "Scene trying to set current does not exist in application scenes. Adding it.");
+            AddScene(scene);
         }
 
         currentScene = scene;
+
+        currentScene->Awake();
+        currentScene->Start();
+
+        Renderer::ClearMeshes();
+        PhysicsManager::ClearRigidBodies();
+
+        Renderer::AddMeshesInScene(currentScene);
+        PhysicsManager::AddRigidBodiesInScene(currentScene);
+
+        PrintLog(Safe, "Scene successfuly loaded: " + currentScene->GetName());
+    }
+
+    void Application::LoadNextScene()
+    {
+        auto obj = std::find(scenes.begin(), scenes.end(), currentScene);
+
+        if(obj == scenes.end())
+        {
+            PrintLog(ElementDuplicationErr, "Current scene does not exist in application scenes");
+            return;
+        }
+
+        if(obj + 1 == scenes.end())
+        {
+            PrintLog(IndexOutOfRangeErr, "Last scene reached. No next scene to load.");
+            return;
+        }
+
+        LoadScene(*(obj + 1));
     }
 
     float Application::GetFixedDeltaTime()
@@ -92,20 +122,6 @@ namespace GamEncin
         return currentScene;
     }
 
-    Scene& Application::CreateScene()
-    {
-        Scene* scene = new Scene();
-        AddScene(scene);
-        return *scene;
-    }
-
-    Scene& Application::CreateAndUseScene()
-    {
-        Scene* scene = &CreateScene();
-        SetCurrentScene(scene);
-        return *scene;
-    }
-
     void Application::AddScene(Scene* scene)
     {
         if(!scene)
@@ -134,7 +150,7 @@ namespace GamEncin
         }
         else
         {
-            PrintLog(ProgramDuplicationErr, "Application is already working");
+            PrintLog(ProgramDuplicationErr, "Application is already running");
         }
     }
 
@@ -145,7 +161,7 @@ namespace GamEncin
         switch(logType)
         {
             case Safe:
-                fprintf(stdout, "INFO: log is safe");
+                fprintf(stdout, "INFO: ");
                 break;
             case IODeviceWarn:
                 fprintf(stdout, "WARNING: Warning occurred in Input / Output device(s)");
@@ -264,12 +280,10 @@ namespace GamEncin
         Renderer::InitialRender();
         TextureManager::InitializeTextures();
         Input::Initialize(Renderer::GetMainWindow());
-        currentScene->Awake();
     }
 
     void Application::Start()
     {
-        currentScene->Start();
     }
 
     void Application::Update()

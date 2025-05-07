@@ -2,6 +2,20 @@
 
 namespace GamEncin
 {
+    Scene::Scene(string name)
+    {
+        SetName(name);
+    }
+
+    void Scene::SetName(string name)
+    {
+        this->name = name;
+    }
+
+    string Scene::GetName()
+    {
+        return name;
+    }
 
     Object* const Scene::FindFirstObjectWithTag(string tag)
     {
@@ -93,6 +107,9 @@ namespace GamEncin
 
     void Scene::Awake()
     {
+        printf("Building scene: %s\n", name.c_str());
+        BuildScene();
+
         for(Object* object : objects)
         {
             object->Awake();

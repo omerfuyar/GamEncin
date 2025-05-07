@@ -561,6 +561,109 @@ namespace GamEncin
 
 #pragma endregion
 
+#pragma region Vector4Int
+
+        Vector4Int::Vector4Int(int x, int y, int z, int w) : x(x), y(y), z(z), w(w) {}
+        Vector4Int::Vector4Int(const glm::ivec4& vec) : x(vec.x), y(vec.y), z(vec.z), w(vec.w) {}
+        Vector4Int::Vector4Int(const Vector2Int& vec) : x(vec.x), y(vec.y), z(0), w(1) {}
+        Vector4Int::Vector4Int(const Vector4& vec) : x((int) vec.x), y((int) vec.y), z((int) vec.z), w((int) vec.w) {}
+
+        Vector4Int Vector4Int::operator+(const Vector4Int& other)
+        {
+            return Vector4Int(x + other.x, y + other.y, z + other.z, w + other.w);
+        }
+
+        Vector4Int& Vector4Int::operator+=(const Vector4Int& other)
+        {
+            x += other.x;
+            y += other.y;
+            z += other.z;
+            w += other.w;
+            return *this;
+        }
+
+        Vector4Int Vector4Int::operator-(const Vector4Int& other)
+        {
+            return Vector4Int(x - other.x, y - other.y, z - other.z, w - other.w);
+        }
+
+        Vector4Int& Vector4Int::operator-=(const Vector4Int& other)
+        {
+            x -= other.x;
+            y -= other.y;
+            z -= other.z;
+            w -= other.w;
+            return *this;
+        }
+
+        Vector4Int Vector4Int::operator*(int other)
+        {
+            return Vector4Int(x * other, y * other, z * other, w * other);
+        }
+
+        Vector4Int& Vector4Int::operator*=(int other)
+        {
+            x *= other;
+            y *= other;
+            z *= other;
+            w *= other;
+            return *this;
+        }
+
+        Vector4Int Vector4Int::operator*(const Vector4Int& other)
+        {
+            return Vector4Int(x * other.x, y * other.y, z * other.z, w * other.w);
+        }
+
+        Vector4Int& Vector4Int::operator*=(const Vector4Int& other)
+        {
+            x *= other.x;
+            y *= other.y;
+            z *= other.z;
+            w *= other.w;
+            return *this;
+        }
+
+        Vector4Int Vector4Int::operator/(int other)
+        {
+            return Vector4Int(x / other, y / other, z / other, w / other);
+        }
+
+        Vector4Int& Vector4Int::operator/=(int other)
+        {
+            x /= other;
+            y /= other;
+            z /= other;
+            w /= other;
+            return *this;
+        }
+
+        bool Vector4Int::operator==(const Vector4Int& other)
+        {
+            return x == other.x && y == other.y && z == other.z && w == other.w;
+        }
+
+        bool Vector4Int::operator!=(const Vector4Int& other)
+        {
+            return x != other.x || y != other.y || z != other.z || w != other.w;
+        }
+
+        Vector4Int::operator Vector2Int()
+        {
+            return Vector2Int(x, y);
+        }
+
+        Vector4Int::operator Vector4()
+        {
+            return Vector4((float) x, (float) y, (float) z, (float) w);
+        }
+
+        Vector4Int Vector4Int::Zero() { return Vector4Int(0, 0, 0, 0); }
+
+        Vector4Int Vector4Int::One() { return Vector4Int(1, 1, 1, 1); }
+
+#pragma endregion
+
 #pragma endregion
 
 #pragma region Advanced Functions

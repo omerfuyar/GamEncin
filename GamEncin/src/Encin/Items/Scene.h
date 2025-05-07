@@ -10,6 +10,12 @@ namespace GamEncin
     class Scene
     {
     public:
+        Scene(string name);
+
+        void SetName(string name);
+
+        string GetName();
+
         template<typename T>
         vector<T*> FindComponentsByType()
         {
@@ -42,8 +48,11 @@ namespace GamEncin
         void FixUpdate();
         void StartOfSecond();
 
-    private:
+    protected:
+        string name = "Default Scene";
         vector<Object*> objects;
+
+        virtual void BuildScene() {};
 
         void UpdateTransforms();
     };

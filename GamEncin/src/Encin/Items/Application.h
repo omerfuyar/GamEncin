@@ -16,7 +16,9 @@ namespace GamEncin
         //Changes the name of the application and also window title
         static void SetProgramName(string name);
         //Sets the application's currently active scene
-        static void SetCurrentScene(Scene* scene);
+        static void LoadScene(Scene* scene);
+        //Loads the next scene in the scenes vector
+        static void LoadNextScene();
 
         //Returns the interval between fixed updates in seconds
         static float GetFixedDeltaTime();
@@ -33,8 +35,6 @@ namespace GamEncin
         //Returns the application's currently active scene
         static Scene* const GetCurrentScene();
 
-        static Scene& CreateScene();
-        static Scene& CreateAndUseScene();
         static void AddScene(Scene* scene);
         static void Run();
         static void PrintLog(LogType endType, string addMessage = "");

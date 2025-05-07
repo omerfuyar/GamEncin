@@ -6,16 +6,6 @@ class TestComponent : public Component
 public:
     TestComponent(Object* obj) : Component(obj) {}
 
-    void Awake() override
-    {
-        printf("TestComponent Awake\n");
-    }
-
-    void Start() override
-    {
-        printf("TestComponent Start\n");
-    }
-
     void Update() override
     {
         Vector3 pos = object->GetTransform()->GetGlobalPosition();
@@ -146,7 +136,7 @@ public:
 
         if(Input::GetKey(Down, Y))
         {
-
+            Application::LoadNextScene();
         }
 
         if(Input::GetKey(Down, O))
@@ -158,11 +148,11 @@ public:
 
         if(!Input::GetMouseButton(Press, Left))
         {
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            glfwSetInputMode(Renderer::GetMainWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             return;
         }
 
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        glfwSetInputMode(Renderer::GetMainWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
         Vector3 movement = Input::GetMovementVector();
         Vector2 mouseDelta = Input::GetMousePositionDelta();

@@ -425,6 +425,7 @@
     <ClInclude Include="GamEncin\src\Encin\Items\Components\RigidBody.h" />
     <ClInclude Include="GamEncin\src\Encin\Items\Components\Transform.h" />
     <ClInclude Include="GamEncin\src\Encin\Tools\Time.h" />
+    <ClInclude Include="GamEncin\src\User\UserScenes.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="LICENSE.txt" />
