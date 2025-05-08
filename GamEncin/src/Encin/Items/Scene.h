@@ -16,15 +16,29 @@ namespace GamEncin
 
         string GetName();
 
-        template<typename T>
-        vector<T*> FindComponentsByType()
+        template <typename T>
+        T *const FindFirstComponentByType()
         {
-            vector<T*> result;
-
-            for(Object* object : objects)
+            for (Object *object : objects)
             {
-                T* component = object->GetComponent<T>();
-                if(component)
+                T *component = object->GetComponent<T>();
+                if (component)
+                {
+                    return component;
+                }
+            }
+
+            return nullptr;
+        }
+        template <typename T>
+        vector<T *> FindComponentsByType()
+        {
+            vector<T *> result;
+
+            for (Object *object : objects)
+            {
+                T *component = object->GetComponent<T>();
+                if (component)
                 {
                     result.push_back(component);
                 }
@@ -32,13 +46,13 @@ namespace GamEncin
 
             return result;
         }
-        Object* const FindFirstObjectWithTag(string tag);
-        vector<Object* > FindObjectsWithTag(string tag);
+        Object *const FindFirstObjectWithTag(string tag);
+        vector<Object *> FindObjectsWithTag(string tag);
 
-        Object& CreateObject(string name = "Object", string tag = "Default", Layer layer = Layer::Default);
-        Object& CreateAndUseCameraObject();
-        void AddObject(Object* object);
-        void RemoveObject(Object* object);
+        Object &CreateObject(string name = "Object", string tag = "Default", Layer layer = Layer::Default);
+        Object &CreateAndUseCameraObject();
+        void AddObject(Object *object);
+        void RemoveObject(Object *object);
         void ClearScene();
 
         void Awake();
@@ -50,7 +64,7 @@ namespace GamEncin
 
     protected:
         string name = "Default Scene";
-        vector<Object*> objects;
+        vector<Object *> objects;
 
         virtual void BuildScene() {};
 

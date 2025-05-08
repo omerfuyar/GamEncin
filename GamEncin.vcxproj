@@ -107,6 +107,8 @@
     <ClCompile Include="GamEncin\src\Encin\Items\Components\RigidBody.cpp" />
     <ClCompile Include="GamEncin\src\Encin\Items\Components\Transform.cpp" />
     <ClCompile Include="GamEncin\src\Encin\Tools\Time.cpp" />
+    <ClCompile Include="GamEncin\src\User\UserComponents.cpp" />
+    <ClCompile Include="GamEncin\src\User\UserScenes.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\STB\stb_image_write.h" />
@@ -417,6 +419,7 @@
     <ClInclude Include="GamEncin\src\Encin\Tools\MathYaman.h" />
     <ClInclude Include="GamEncin\src\Encin\Tools\Toolkit.h" />
     <ClInclude Include="GamEncin\src\User\GamEncin.h" />
+    <ClInclude Include="GamEncin\src\User\UserComponents.h" />
     <ClInclude Include="GamEncin\src\User\UserObjects.h" />
     <ClInclude Include="GamEncin\src\Encin\Items\Scene.h" />
     <ClInclude Include="GamEncin\src\Encin\Items\Renderer.h" />
@@ -635,6 +638,12 @@
     <Image Include="GamEncin\Resources\Fonts\myFont.png" />
     <Image Include="GamEncin\Resources\Textures\test.jpg" />
     <Image Include="GamEncin\Resources\Textures\test3.jpg" />
+    <Image Include="GamEncin\Resources\Textures\UI\AnswerPanel1.png" />
+    <Image Include="GamEncin\Resources\Textures\UI\AnswerPanel2.png" />
+    <Image Include="GamEncin\Resources\Textures\UI\AnswerPanel3.png" />
+    <Image Include="GamEncin\Resources\Textures\UI\DialoguePanel.png" />
+    <Image Include="GamEncin\Resources\Textures\Oracle.png" />
+    <Image Include="GamEncin\Resources\Textures\Player.png" />
     <Image Include="GamEncin\src\Resources\test.jpg" />
     <Image Include="GamEncin\src\Resources\test2.jpg" />
     <Image Include="GamEncin\src\Resources\test3.jpg" />

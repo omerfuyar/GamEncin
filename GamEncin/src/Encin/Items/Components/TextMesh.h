@@ -6,20 +6,19 @@ namespace GamEncin
     class TextMesh : public Mesh
     {
     public:
-        TextMesh(Object* obj);
-        ~TextMesh();
+        TextMesh(Object *obj);
 
         void SetCharDistance(float distance);
         void SetLineDistance(float distance);
         void SetText(string text);
         void SetTextSize(Vector2 textSize);
-        void SetFont(Font* font);
+        void SetFont(Font *font);
 
         float GetCharDistance();
         float GetLineDistance();
         string GetText();
         Vector2 GetTextSize();
-        Font* const GetFont();
+        Font *const GetFont();
 
         void UpdateTextMeshData();
 
@@ -29,7 +28,7 @@ namespace GamEncin
 
         string text = "";
         Vector2 textSize = Vector2::One();
-        Font* font = nullptr;
+        Font *font = nullptr;
 
         void Update() override;
     };

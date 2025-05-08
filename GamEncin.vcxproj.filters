@@ -81,6 +81,12 @@
     <ClCompile Include="GamEncin\src\Encin\Items\Components\ModelMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GamEncin\src\User\UserComponents.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GamEncin\src\User\UserScenes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GamEncin\src\User\GamEncin.h">
@@ -1034,6 +1040,9 @@
     <ClInclude Include="GamEncin\src\User\UserScenes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GamEncin\src\User\UserComponents.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="LICENSE.txt" />
@@ -1534,6 +1543,24 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="GamEncin\Resources\Fonts\myFont.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="GamEncin\Resources\Textures\UI\AnswerPanel1.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="GamEncin\Resources\Textures\UI\AnswerPanel2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="GamEncin\Resources\Textures\UI\AnswerPanel3.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="GamEncin\Resources\Textures\UI\DialoguePanel.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="GamEncin\Resources\Textures\Oracle.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="GamEncin\Resources\Textures\Player.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

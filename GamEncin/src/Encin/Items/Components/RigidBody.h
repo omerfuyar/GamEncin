@@ -11,7 +11,8 @@ namespace GamEncin
     class RigidBody : public Component
     {
     public:
-        RigidBody(Object* obj);
+        RigidBody(Object *obj);
+        ~RigidBody();
 
         // Set the body to be dynamic or static
         void SetDynamic(bool isDynamic);
@@ -39,19 +40,19 @@ namespace GamEncin
         Vector3 GetAngularVelocity();
         Vector3 GetAcceleration();
         Vector3 GetAngularAcceleration();
-        vector<RigidBody*> GetCollisions();
+        vector<RigidBody *> GetCollisions();
 
         // shouldn't be used by user
         void ClearCollisions();
         // shouldn't be used by user
-        void AddCollision(RigidBody* collider);
+        void AddCollision(RigidBody *collider);
         // shouldn't be used by user
-        void RemoveCollision(RigidBody* collider);
+        void RemoveCollision(RigidBody *collider);
         // Add force to the body. Relative to it's mass
         void AddForce(Vector3 force);
         // Add torque to the body. Relative to it's moment of inertia
         void AddTorque(Vector3 torque);
-        // Add velocity to the body. 
+        // Add velocity to the body.
         void AddVelocity(Vector3 velocity);
         // Add angular velocity to the body.
         void AddAngularVelocity(Vector3 angularVelocity);
@@ -72,7 +73,7 @@ namespace GamEncin
         Vector3 acceleration = Vector3::Zero();
         Vector3 angularAcceleration = Vector3::Zero();
 
-        vector<RigidBody*> collisions;
+        vector<RigidBody *> collisions;
 
         void FixUpdate() override;
     };

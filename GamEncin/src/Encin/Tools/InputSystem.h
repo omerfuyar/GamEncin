@@ -13,7 +13,7 @@ namespace GamEncin
     {
 #pragma region Enums
 
-        //TODO be careful while adding new inputs, add them also in InputSystem.cpp arrays. they should be identical !!!
+        // TODO be careful while adding new inputs, add them also in InputSystem.cpp arrays. they should be identical !!!
 
         enum KeyCode
         {
@@ -123,41 +123,44 @@ namespace GamEncin
 
         enum KeyButtonStatus
         {
-            Release, Press, Down, Up
+            Release,
+            Press,
+            Down,
+            Up
         };
 
 #pragma endregion
 
 #pragma region Devices
 
-        //shouldn't be used by the user
+        // shouldn't be used by the user
         struct Mouse
         {
         public:
-            //Should use MouseButtonCode enum as key
+            // Should use MouseButtonCode enum as key
             static unordered_map<int, KeyButtonStatus> buttons;
             static Vector2 position, positionDelta;
             static float scrollDelta;
 
-            static void Initialize(GLFWwindow* window);
-            static void Update(GLFWwindow* window);
-            static void MouseScrollCallBack(GLFWwindow* window, double offsetX, double offsetY);
-            static void MouseButtonCallBack(GLFWwindow* window, int button, int action, int mods);
+            static void Initialize(GLFWwindow *window);
+            static void Update(GLFWwindow *window);
+            static void MouseScrollCallBack(GLFWwindow *window, double offsetX, double offsetY);
+            static void MouseButtonCallBack(GLFWwindow *window, int button, int action, int mods);
         };
 
-        //shouldn't be used by the user
+        // shouldn't be used by the user
         struct KeyBoard
         {
         public:
-            //Should use KeyCode enum as key
+            // Should use KeyCode enum as key
             static unordered_map<int, KeyButtonStatus> keys;
 
-            static void Initialize(GLFWwindow* window);
-            static void Update(GLFWwindow* window);
-            static void KeyCallBack(GLFWwindow* window, int key, int scanCode, int action, int mods);
+            static void Initialize(GLFWwindow *window);
+            static void Update(GLFWwindow *window);
+            static void KeyCallBack(GLFWwindow *window, int key, int scanCode, int action, int mods);
         };
 
-        //shouldn't be used by the user
+        // shouldn't be used by the user
         struct Gamepad
         {
         public:
@@ -165,7 +168,7 @@ namespace GamEncin
             string name;
             GLFWgamepadstate state = GLFWgamepadstate();
 
-            //Should use GamepadButtonCode enum as key
+            // Should use GamepadButtonCode enum as key
             map<int, KeyButtonStatus> buttons;
 
             float leftTrigger = 0.0;
@@ -175,8 +178,8 @@ namespace GamEncin
             Vector2 rightStick = Vector2::Zero();
 
             Gamepad(int id);
-            void Initialize(GLFWwindow* window);
-            void Update(GLFWwindow* window);
+            void Initialize(GLFWwindow *window);
+            void Update(GLFWwindow *window);
         };
 
 #pragma endregion
@@ -184,13 +187,13 @@ namespace GamEncin
         class Input
         {
         public:
-            //shouldn't be used by the user
-            static void Initialize(GLFWwindow* window);
-            //shouldn't be used by the user
+            // shouldn't be used by the user
+            static void Initialize(GLFWwindow *window);
+            // shouldn't be used by the user
             static void UpdateInputs();
-            //shouldn't be used by the user
+            // shouldn't be used by the user
             static void ConnectGamepad(int gamepadId);
-            //shouldn't be used by the user
+            // shouldn't be used by the user
             static void DisconnectGamepad(int gamepadId);
 
             /// <summary>
@@ -222,15 +225,15 @@ namespace GamEncin
             /// <param name="button:">Button ID with GamepadButtonCode enum</param>
             /// <returns>True if the button is in that status</returns>
             static bool GetGamepadButton(int gamepadId, KeyButtonStatus status, GamepadButtonCode button);
-            //Returns the float value of the left trigger of given gamepad. 0 is not pressed, 1 is fully pressed
+            // Returns the float value of the left trigger of given gamepad. 0 is not pressed, 1 is fully pressed
             static float GetGamepadLeftTrigger(int gamepadId);
-            //Returns the float value of the right trigger of given gamepad. 0 is not pressed, 1 is fully pressed
+            // Returns the float value of the right trigger of given gamepad. 0 is not pressed, 1 is fully pressed
             static float GetGamepadRightTrigger(int gamepadId);
-            //Returns the Vector2 value of the left stick of given gamepad.
+            // Returns the Vector2 value of the left stick of given gamepad.
             static Vector2 GetGamepadLeftStick(int gamepadId);
-            //Returns the Vector2 of the right stick of given gamepad.
+            // Returns the Vector2 of the right stick of given gamepad.
             static Vector2 GetGamepadRightStick(int gamepadId);
-            //Returns true if the gamepad is connected
+            // Returns true if the gamepad is connected
             static bool IsGamepadConnected(int gamepadId);
 
             /// <summary>
@@ -244,7 +247,7 @@ namespace GamEncin
             /// </summary>
             /// <param name="filePath:">File path of the target file.</param>
             /// <returns>A string that contains all file data</returns>
-            static string GetFileContents(const char* filePath);
+            static string GetFileContents(const char *filePath);
 
             /// <summary>
             /// Gets the file path that the executable is running from
@@ -253,14 +256,14 @@ namespace GamEncin
             static string GetExeFilePath();
 
         private:
-            static GLFWwindow* window;
+            static GLFWwindow *window;
             static Mouse mouse;
             static KeyBoard keyboard;
-            static unordered_map<int, Gamepad*> gamepads;
+            static unordered_map<int, Gamepad *> gamepads;
 
             Input() = delete;
-            Input(const Input&) = delete;
-            void operator = (const Input&) = delete;
+            Input(const Input &) = delete;
+            void operator=(const Input &) = delete;
 
             static void GamepadCallBack(int gamepadId, int event);
         };

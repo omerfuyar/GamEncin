@@ -9,12 +9,33 @@ namespace GamEncin
         this->name = name;
         this->tag = tag;
         this->layer = layer;
+
+        this->transform = AddComponent<Transform>();
     }
 
     Object::~Object()
     {
+        printf("Object destructor called for %p, name %s\n", this, name.c_str()); // Debug print
+
+        Transform* tr = GetTransform()->GetParent();
+        if(tr)
+        {
+            tr->RemoveChild(this->GetTransform());
+        }
+
+        if(GetScene())
+        {
+            GetScene()->RemoveObject(this);
+        }
+
         for(Component* component : components)
         {
+            if(!component)
+            {
+                Application::PrintLog(NullPointerErr, "Component trying to delete is null");
+                continue;
+            }
+
             delete component;
         }
 
@@ -45,9 +66,6 @@ namespace GamEncin
     {
         for(Component* component : components)
         {
-            printf("Component Type : %s\n", typeid(*component).name());
-            printf("Component Type : %s\n", componentType.name());
-            printf("%d\n", componentType == typeid(*component));
             if(componentType == typeid(component))
             {
                 return true;
@@ -127,98 +145,110 @@ namespace GamEncin
         return obj;
     }
 
-    void Object::OnTriggerEnter(RigidBody* exitedRigidBody)
+    void Object::OnTriggerEnter(RigidBody* enteredRigidBody)
     {
-        for(Component* component : components)
+        for(int i = components.size() - 1; i >= 0; i--)
         {
-            component->OnTriggerEnter(exitedRigidBody);
+            Component* component = components[i];
+            component->OnTriggerEnter(enteredRigidBody);
         }
     }
 
-    void Object::OnTriggerStay(RigidBody* exitedRigidBody)
+    void Object::OnTriggerStay(RigidBody* stayingRigidBody)
     {
-        for(Component* component : components)
+        for(int i = components.size() - 1; i >= 0; i--)
         {
-            component->OnTriggerStay(exitedRigidBody);
+            Component* component = components[i];
+            component->OnTriggerStay(stayingRigidBody);
         }
     }
 
     void Object::OnTriggerExit(RigidBody* exitedRigidBody)
     {
-        for(Component* component : components)
+        for(int i = components.size() - 1; i >= 0; i--)
         {
+            Component* component = components[i];
             component->OnTriggerExit(exitedRigidBody);
         }
     }
 
-    void Object::OnCollisionEnter(RigidBody* exitedRigidBody)
+    void Object::OnCollisionEnter(RigidBody* enteredRigidBody)
     {
-        for(Component* component : components)
+        for(int i = components.size() - 1; i >= 0; i--)
         {
-            component->OnCollisionEnter(exitedRigidBody);
+            Component* component = components[i];
+            component->OnCollisionEnter(enteredRigidBody);
         }
     }
 
-    void Object::OnCollisionStay(RigidBody* exitedRigidBody)
+    void Object::OnCollisionStay(RigidBody* stayingRigidBody)
     {
-        for(Component* component : components)
+        for(int i = components.size() - 1; i >= 0; i--)
         {
-            component->OnCollisionStay(exitedRigidBody);
+            Component* component = components[i];
+            component->OnCollisionStay(stayingRigidBody);
         }
     }
 
     void Object::OnCollisionExit(RigidBody* exitedRigidBody)
     {
-        for(Component* component : components)
+        for(int i = components.size() - 1; i >= 0; i--)
         {
+            Component* component = components[i];
             component->OnCollisionExit(exitedRigidBody);
         }
     }
 
     void Object::Awake()
     {
-        for(Component* component : components)
+        for(int i = components.size() - 1; i >= 0; i--)
         {
+            Component* component = components[i];
             component->Awake();
         }
     }
 
     void Object::Start()
     {
-        for(Component* component : components)
+        for(int i = components.size() - 1; i >= 0; i--)
         {
+            Component* component = components[i];
             component->Start();
         }
     }
 
     void Object::Update()
     {
-        for(Component* component : components)
+        for(int i = components.size() - 1; i >= 0; i--)
         {
+            Component* component = components[i];
             component->Update();
         }
     }
 
     void Object::LateUpdate()
     {
-        for(Component* component : components)
+        for(int i = components.size() - 1; i >= 0; i--)
         {
+            Component* component = components[i];
             component->LateUpdate();
         }
     }
 
     void Object::FixUpdate()
     {
-        for(Component* component : components)
+        for(int i = components.size() - 1; i >= 0; i--)
         {
+            Component* component = components[i];
             component->FixUpdate();
         }
     }
 
     void Object::StartOfSecond()
     {
-        for(Component* component : components)
+        for(int i = components.size() - 1; i >= 0; i--)
         {
+            Component* component = components[i];
             component->StartOfSecond();
         }
     }

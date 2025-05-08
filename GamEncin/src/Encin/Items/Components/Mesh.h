@@ -6,18 +6,19 @@ namespace GamEncin
     class Mesh : public Component
     {
     public:
-        Mesh(Object* obj);
+        Mesh(Object *obj);
+        ~Mesh();
 
-        void SetMeshData(MeshData* meshData);
-        void SetTexture(Texture* texture);
+        void SetMeshData(MeshData *meshData);
+        void SetTexture(Texture *texture);
 
-        MeshData* const GetMeshData();
-        Texture* const GetTexture();
-        Matrix4* const GetModelMatrix();
+        MeshData *const GetMeshData();
+        Texture *const GetTexture();
+        Matrix4 *const GetModelMatrix();
 
     protected:
-        MeshData* meshData = nullptr;
-        Texture* texture = nullptr;
-        Matrix4* modelMatrix = nullptr;
+        MeshData *meshData = MeshBuilder::CreateMeshData({}, {});
+        Texture *texture = nullptr;
+        Matrix4 *modelMatrix = nullptr;
     };
 }

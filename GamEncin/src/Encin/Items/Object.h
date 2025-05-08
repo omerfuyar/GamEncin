@@ -34,8 +34,7 @@ namespace GamEncin
                 }
             }
 
-            string buffer = "Component couldn't find in the object\nlooking for: " + string(typeid(T).name()) + "\nobject name: " + name;
-            Application::PrintLog(ElementCouldNotFindErr, buffer);
+            // Application::PrintLog(ElementCouldNotFindErr, "Component couldn't find in the object\nlooking for: " + string(typeid(T).name()) + "\nobject name: " + name);
             return nullptr;
         }
         // use it with built in typeid() function
@@ -85,6 +84,7 @@ namespace GamEncin
             }
 
             components.erase(obj);
+
             delete* obj;
         }
         void RemoveComponent(Component* component);
@@ -113,7 +113,7 @@ namespace GamEncin
 
         Layer layer;
 
-        Transform* transform = AddComponent<Transform>();
+        Transform* transform = nullptr;
 
         vector<Component*> components;
     };

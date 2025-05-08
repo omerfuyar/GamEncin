@@ -32,9 +32,9 @@ namespace GamEncin
         return nullptr;
     }
 
-    vector<Object* > Scene::FindObjectsWithTag(string tag)
+    vector<Object*> Scene::FindObjectsWithTag(string tag)
     {
-        vector<Object* > foundObjects;
+        vector<Object*> foundObjects;
 
         for(Object* object : objects)
         {
@@ -93,7 +93,7 @@ namespace GamEncin
 
         if(obj == objects.end())
         {
-            Application::PrintLog(ElementCouldNotFindErr, "Couldn't found object to remove");
+            Application::PrintLog(ElementCouldNotFindErr, "Couldn't found object to remove in objects");
             return;
         }
 
@@ -107,60 +107,92 @@ namespace GamEncin
 
     void Scene::Awake()
     {
-        printf("Building scene: %s\n", name.c_str());
         BuildScene();
 
-        for(Object* object : objects)
+        for(int i = objects.size() - 1; i >= 0; --i)
         {
-            object->Awake();
+            Object* object = objects[i];
+
+            if(object)
+            {
+                object->Awake();
+            }
         }
     }
 
     void Scene::Start()
     {
-        for(Object* object : objects)
+        for(int i = objects.size() - 1; i >= 0; --i)
         {
-            object->Start();
+            Object* object = objects[i];
+
+            if(object)
+            {
+                object->Start();
+            }
         }
     }
+}
 
-    void Scene::Update()
+void Scene::Update()
+{
+    for(int i = objects.size() - 1; i >= 0; --i)
     {
-        for(Object* object : objects)
+        Object* object = objects[i];
+
+        if(object)
         {
             object->Update();
         }
     }
+}
 
-    void Scene::LateUpdate()
+void Scene::LateUpdate()
+{
+    for(int i = objects.size() - 1; i >= 0; --i)
     {
-        for(Object* object : objects)
+        Object* object = objects[i];
+
+        if(object)
         {
             object->LateUpdate();
         }
-
-        UpdateTransforms();
     }
 
-    void Scene::FixUpdate()
+    UpdateTransforms();
+}
+
+void Scene::FixUpdate()
+{
+    for(int i = objects.size() - 1; i >= 0; --i)
     {
-        for(Object* object : objects)
+        Object* object = objects[i];
+
+        if(object)
         {
             object->FixUpdate();
         }
     }
+}
 
-    void Scene::StartOfSecond()
+void Scene::StartOfSecond()
+{
+    for(int i = objects.size() - 1; i >= 0; --i)
     {
-        for(Object* object : objects)
+        Object* object = objects[i];
+
+        if(object)
         {
             object->StartOfSecond();
         }
     }
+}
 
-    void Scene::UpdateTransforms()
+void Scene::UpdateTransforms()
+{
+    for(Object* object : objects)
     {
-        for(Object* object : objects)
+        if(object)
         {
             object->GetTransform()->GetModelMatrix();
         }

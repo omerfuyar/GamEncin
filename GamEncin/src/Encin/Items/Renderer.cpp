@@ -115,6 +115,11 @@ namespace GamEncin
         return window;
     }
 
+    Camera* const Renderer::GetMainCamera()
+    {
+        return mainCamera;
+    }
+
     void Renderer::AddMeshesInScene(Scene* scene)
     {
         if(!scene)
@@ -123,7 +128,7 @@ namespace GamEncin
             return;
         }
 
-        vector<Mesh* > tempMeshes = scene->FindComponentsByType<Mesh>();
+        vector<Mesh*> tempMeshes = scene->FindComponentsByType<Mesh>();
 
         for(auto& obj : tempMeshes)
         {
@@ -213,8 +218,7 @@ namespace GamEncin
             tempMesh.SetForBatch(
                 i - 1,
                 tempMesh.batchVertexOffset - meshData.vertices.size(),
-                tempMesh.batchIndexOffset - (meshData.faces.size() * 3)
-            );
+                tempMesh.batchIndexOffset - (meshData.faces.size() * 3));
         }
 
         for(int i = meshData.batchVertexOffset; i < batchedModelVertices.size(); i++)
@@ -261,12 +265,12 @@ namespace GamEncin
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        //TODO for release, works
-        //string exePath = Input::GetExeFilePath();
-        //string vertShaderPath = exePath + "/vert.glsl";
-        //string fragShaderPath = exePath + "/frag.glsl";
+        // TODO for release, works
+        // string exePath = Input::GetExeFilePath();
+        // string vertShaderPath = exePath + "/vert.glsl";
+        // string fragShaderPath = exePath + "/frag.glsl";
         //
-        //shaderProgram = new Shader(vertShaderPath.c_str(), fragShaderPath.c_str());
+        // shaderProgram = new Shader(vertShaderPath.c_str(), fragShaderPath.c_str());
 
         shaderProgram = new Shader("GamEncin/src/Encin/Shaders/vert.glsl", "GamEncin/src/Encin/Shaders/frag.glsl");
 
@@ -287,6 +291,11 @@ namespace GamEncin
 
         shaderProgram->Use();
 
+        if(!mainCamera)
+        {
+            Application::Stop(NullPointerErr, "Main camera is null, set a main camera to play");
+            return;
+        }
         mainCamera->UseCamera(shaderProgram->viewMatrixVarId, shaderProgram->projectionMatrixVarId);
 
         UpdatePerMeshDatas();
@@ -297,7 +306,7 @@ namespace GamEncin
 
         windowCloseInput = glfwWindowShouldClose(window);
 
-        //glFlush();
+        // glFlush();
     }
 
     void Renderer::FrameBufferSizeCallback(GLFWwindow* window, int width, int height)
@@ -361,13 +370,13 @@ namespace GamEncin
         modelTextureHandlesSSBO->Bind();
 
         unsigned int offset = 0;
-        mainVAO->LinkIntegerAttribute(GE_VBO_OBJECT_ID_LAYOUT, 1, GL_UNSIGNED_INT, 0); //unsigned int
+        mainVAO->LinkIntegerAttribute(GE_VBO_OBJECT_ID_LAYOUT, 1, GL_UNSIGNED_INT, 0); // unsigned int
         offset += sizeof(unsigned int);
-        mainVAO->LinkAttribute(GE_VBO_POSITION_LAYOUT, 3, GL_FLOAT, offset); //Vector3
+        mainVAO->LinkAttribute(GE_VBO_POSITION_LAYOUT, 3, GL_FLOAT, offset); // Vector3
         offset += sizeof(Vector3);
-        mainVAO->LinkAttribute(GE_VBO_NORMAL_LAYOUT, 3, GL_FLOAT, offset); //Vector3
+        mainVAO->LinkAttribute(GE_VBO_NORMAL_LAYOUT, 3, GL_FLOAT, offset); // Vector3
         offset += sizeof(Vector3);
-        mainVAO->LinkAttribute(GE_VBO_UV_LAYOUT, 2, GL_FLOAT, offset); //Vector2
+        mainVAO->LinkAttribute(GE_VBO_UV_LAYOUT, 2, GL_FLOAT, offset); // Vector2
         offset += sizeof(Vector2);
     }
 

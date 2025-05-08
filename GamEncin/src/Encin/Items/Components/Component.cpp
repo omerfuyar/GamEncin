@@ -2,9 +2,9 @@
 
 namespace GamEncin
 {
-    Component::Component(Object* obj)
+    Component::Component(Object *obj)
     {
-        if(!obj)
+        if (!obj)
         {
             Application::PrintLog(NullPointerErr, "Object trying to set to component is null");
             return;
@@ -17,22 +17,19 @@ namespace GamEncin
 
     Component::~Component()
     {
-        OnDisable();
+        printf("Component destructor called for %p, name %s\n", this, object->GetName().c_str()); // Debug print
 
-        if(object)
-        {
-            object->RemoveComponent(this);
-        }
+        OnDisable();
     }
 
-    Object* const Component::GetOwnerObject()
+    Object *const Component::GetOwnerObject()
     {
         return object;
     }
 
-    void Component::SetObject(Object* obj)
+    void Component::SetObject(Object *obj)
     {
-        if(!obj)
+        if (!obj)
         {
             Application::PrintLog(NullPointerErr, "Object trying to set to component is null");
             return;
@@ -41,4 +38,3 @@ namespace GamEncin
         object = obj;
     }
 }
-
