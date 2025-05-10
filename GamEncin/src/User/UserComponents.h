@@ -7,6 +7,8 @@ struct Dialogue;
 class DialoguePanelController;
 class PlayerController;
 class NPC;
+class Enemy;
+class AreaTrigger;
 class CameraController;
 class TestComponent;
 
@@ -15,9 +17,9 @@ enum class PlayerDialogueState
     Start,
     AfterFirstAreaTrigger,
     AfterOracleAwakens,
-    ChoseStrength,
-    ChoseWisdom,
-    ChoseGrace,
+    AfterChoseStrength,
+    AfterChoseWisdom,
+    AfterChoseGrace,
     AfterChallengeComplete,
     End,
     Null
@@ -74,19 +76,27 @@ public:
 
     void ActivatePanel();
     void DeactivatePanel();
+    void SetEnvironmentObj(Object *obj);
+    void AddEnemy(Enemy *obj);
+    void EnemyKilled(Enemy *enemy);
 
 private:
+    int enemiesToSpawn = 3;
+    int killedEnemies = 0;
+    PlayerController *player = nullptr;
     Vector2 panelSize = Vector2(2.0f, 1.0f);
     TextMesh *textMesh = nullptr;
     ModelMesh *textPanel = nullptr;
     ModelMesh *answerPanel = nullptr;
     array<TextMesh *, 3> optionPlaces = {nullptr, nullptr, nullptr};
     vector<DialogueOption *> currentOptions;
+    Object *environmentObj = nullptr;
+    vector<Enemy *> enemies;
 
     void LaunchCombatChallenge();
-    void StartPuzzleRiddle();
     void ActivateTrapZone();
     void Update() override;
+    void Start() override;
 };
 
 #pragma endregion
@@ -100,8 +110,10 @@ public:
 
     void StartDialogue(Dialogue *dialogue);
     void EndDialogue();
+    void SetDialogueState(PlayerDialogueState state);
 
 private:
+    int health = 3;
     bool isInDialogue = false;
     float movementSpeed = 2;
     PlayerDialogueState currentDialogueState = PlayerDialogueState::Start;
@@ -109,6 +121,9 @@ private:
     Transform *playerTR = nullptr;
     RigidBody *playerRB = nullptr;
     NPC *currentNPC = nullptr;
+    Enemy *currentEnemy = nullptr;
+
+    void TakeDamage(int damage);
 
     void OnCollisionEnter(RigidBody *enteredRigidBody) override;
     void OnCollisionExit(RigidBody *exitedRigidBody) override;
@@ -133,6 +148,26 @@ public:
 private:
     Dialogue *unavailableDialogue = nullptr;
     unordered_map<int, Dialogue *> dialogues;
+};
+
+class Enemy : public Component
+{
+public:
+    Enemy(Object *obj);
+    void SetIsFollowing(bool isFollowing);
+    void Die();
+    bool IsKillable();
+
+private:
+    bool isFollowing;
+    bool canMove = true;
+    float speed = 5.0f;
+    Transform *player = nullptr;
+    Vector2 target;
+    Vector2 direction;
+
+    void Start() override;
+    void Update() override;
 };
 
 class CameraController : public Component

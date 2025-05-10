@@ -66,7 +66,7 @@ namespace GamEncin
         float angularDrag = 0.0f;
         float gravityScale = 1.0f;
 
-        float colliderRadius = 1.0f;
+        float colliderRadius = 0.5f;
 
         Vector3 velocity = Vector3::Zero();
         Vector3 angularVelocity = Vector3::Zero();

@@ -1563,5 +1563,11 @@
     <Image Include="GamEncin\Resources\Textures\Player.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="GamEncin\Resources\Textures\Enemy.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="GamEncin\Resources\Textures\Wall.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

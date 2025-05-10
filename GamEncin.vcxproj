@@ -636,6 +636,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="GamEncin\Resources\Fonts\myFont.png" />
+    <Image Include="GamEncin\Resources\Textures\Enemy.png" />
     <Image Include="GamEncin\Resources\Textures\test.jpg" />
     <Image Include="GamEncin\Resources\Textures\test3.jpg" />
     <Image Include="GamEncin\Resources\Textures\UI\AnswerPanel1.png" />
@@ -644,6 +645,7 @@
     <Image Include="GamEncin\Resources\Textures\UI\DialoguePanel.png" />
     <Image Include="GamEncin\Resources\Textures\Oracle.png" />
     <Image Include="GamEncin\Resources\Textures\Player.png" />
+    <Image Include="GamEncin\Resources\Textures\Wall.png" />
     <Image Include="GamEncin\src\Resources\test.jpg" />
     <Image Include="GamEncin\src\Resources\test2.jpg" />
     <Image Include="GamEncin\src\Resources\test3.jpg" />

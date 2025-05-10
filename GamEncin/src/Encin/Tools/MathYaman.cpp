@@ -17,9 +17,9 @@ namespace GamEncin
 
         int Factorial(int n)
         {
-            if(n < 0)
+            if (n < 0)
                 return -1;
-            if(n == 0 || n == 1)
+            if (n == 0 || n == 1)
                 return 1;
             return n * Factorial(n - 1);
         }
@@ -36,7 +36,7 @@ namespace GamEncin
 
         int Round(float value)
         {
-            return (int) (value + 0.5);
+            return (int)(value + 0.5);
         }
 
         float Root(float value, float root)
@@ -166,26 +166,26 @@ namespace GamEncin
 #pragma region Vector2
 
         Vector2::Vector2(float x, float y) : x(x), y(y) {}
-        Vector2::Vector2(const glm::vec2& vec) : x(vec.x), y(vec.y) {}
+        Vector2::Vector2(const glm::vec2 &vec) : x(vec.x), y(vec.y) {}
 
-        Vector2 Vector2::operator+(const Vector2& other)
+        Vector2 Vector2::operator+(const Vector2 &other)
         {
             return Vector2(x + other.x, y + other.y);
         }
 
-        Vector2& Vector2::operator+=(const Vector2& other)
+        Vector2 &Vector2::operator+=(const Vector2 &other)
         {
             x += other.x;
             y += other.y;
             return *this;
         }
 
-        Vector2 Vector2::operator-(const Vector2& other)
+        Vector2 Vector2::operator-(const Vector2 &other)
         {
             return Vector2(x - other.x, y - other.y);
         }
 
-        Vector2& Vector2::operator-=(const Vector2& other)
+        Vector2 &Vector2::operator-=(const Vector2 &other)
         {
             x -= other.x;
             y -= other.y;
@@ -197,19 +197,19 @@ namespace GamEncin
             return Vector2(x * other, y * other);
         }
 
-        Vector2& Vector2::operator*=(const float other)
+        Vector2 &Vector2::operator*=(const float other)
         {
             x *= other;
             y *= other;
             return *this;
         }
 
-        Vector2 Vector2::operator*(const Vector2& other)
+        Vector2 Vector2::operator*(const Vector2 &other)
         {
             return Vector2(x * other.x, y * other.y);
         }
 
-        Vector2& Vector2::operator*=(const Vector2& other)
+        Vector2 &Vector2::operator*=(const Vector2 &other)
         {
             x *= other.x;
             y *= other.y;
@@ -221,19 +221,19 @@ namespace GamEncin
             return Vector2(x / other, y / other);
         }
 
-        Vector2& Vector2::operator/=(const float other)
+        Vector2 &Vector2::operator/=(const float other)
         {
             x /= other;
             y /= other;
             return *this;
         }
 
-        bool Vector2::operator==(const Vector2& other)
+        bool Vector2::operator==(const Vector2 &other)
         {
             return x == other.x && y == other.y;
         }
 
-        bool Vector2::operator!=(const Vector2& other)
+        bool Vector2::operator!=(const Vector2 &other)
         {
             return x != other.x || y != other.y;
         }
@@ -243,7 +243,7 @@ namespace GamEncin
             return SquareRoot(x * x + y * y);
         }
 
-        Vector2& Vector2::Normalize()
+        Vector2 &Vector2::Normalize()
         {
             float magnitude = GetMagnitude();
             x /= magnitude;
@@ -275,16 +275,16 @@ namespace GamEncin
 #pragma region Vector3
 
         Vector3::Vector3(float x, float y, float z) : x(x), y(y), z(z) {}
-        Vector3::Vector3(const glm::vec3& vec) : x(vec.x), y(vec.y), z(vec.z) {}
-        Vector3::Vector3(const Vector2& vec) : x(vec.x), y(vec.y), z(0) {}
-        Vector3::Vector3(const Vector2& vec, float z) : x(vec.x), y(vec.y), z(z) {}
+        Vector3::Vector3(const glm::vec3 &vec) : x(vec.x), y(vec.y), z(vec.z) {}
+        Vector3::Vector3(const Vector2 &vec) : x(vec.x), y(vec.y), z(0) {}
+        Vector3::Vector3(const Vector2 &vec, float z) : x(vec.x), y(vec.y), z(z) {}
 
-        Vector3 Vector3::operator+(const Vector3& other)
+        Vector3 Vector3::operator+(const Vector3 &other)
         {
             return Vector3(x + other.x, y + other.y, z + other.z);
         }
 
-        Vector3& Vector3::operator+=(const Vector3& other)
+        Vector3 &Vector3::operator+=(const Vector3 &other)
         {
             x += other.x;
             y += other.y;
@@ -292,12 +292,12 @@ namespace GamEncin
             return *this;
         }
 
-        Vector3 Vector3::operator-(const Vector3& other)
+        Vector3 Vector3::operator-(const Vector3 &other)
         {
             return Vector3(x - other.x, y - other.y, z - other.z);
         }
 
-        Vector3& Vector3::operator-=(const Vector3& other)
+        Vector3 &Vector3::operator-=(const Vector3 &other)
         {
             x -= other.x;
             y -= other.y;
@@ -310,7 +310,7 @@ namespace GamEncin
             return Vector3(x * other, y * other, z * other);
         }
 
-        Vector3& Vector3::operator*=(float other)
+        Vector3 &Vector3::operator*=(float other)
         {
             x *= other;
             y *= other;
@@ -318,12 +318,12 @@ namespace GamEncin
             return *this;
         }
 
-        Vector3 Vector3::operator*(const Vector3& other)
+        Vector3 Vector3::operator*(const Vector3 &other)
         {
             return Vector3(x * other.x, y * other.y, z * other.z);
         }
 
-        Vector3& Vector3::operator*=(const Vector3& other)
+        Vector3 &Vector3::operator*=(const Vector3 &other)
         {
             x *= other.x;
             y *= other.y;
@@ -336,7 +336,7 @@ namespace GamEncin
             return Vector3(x / other, y / other, z / other);
         }
 
-        Vector3& Vector3::operator/=(float other)
+        Vector3 &Vector3::operator/=(float other)
         {
             x /= other;
             y /= other;
@@ -350,12 +350,12 @@ namespace GamEncin
             return Vector3(result.x, result.y, result.z);
         }
 
-        bool Vector3::operator==(const Vector3& other)
+        bool Vector3::operator==(const Vector3 &other)
         {
             return x == other.x && y == other.y && z == other.z;
         }
 
-        bool Vector3::operator!=(const Vector3& other)
+        bool Vector3::operator!=(const Vector3 &other)
         {
             return x != other.x || y != other.y || z != other.z;
         }
@@ -370,11 +370,11 @@ namespace GamEncin
             return SquareRoot(x * x + y * y + z * z);
         }
 
-        Vector3& Vector3::Normalize()
+        Vector3 &Vector3::Normalize()
         {
             float magnitude = GetMagnitude();
 
-            if(magnitude == 0)
+            if (magnitude == 0)
             {
                 return *this;
             }
@@ -393,16 +393,16 @@ namespace GamEncin
             return result;
         }
 
-        Vector3 Vector3::Cross(const Vector3& otherVec)
+        Vector3 Vector3::Cross(const Vector3 &otherVec)
         {
             return Vector3(
-                y * otherVec.z - z * otherVec.y,
-                z * otherVec.x - x * otherVec.z,
-                x * otherVec.y - y * otherVec.x)
+                       y * otherVec.z - z * otherVec.y,
+                       z * otherVec.x - x * otherVec.z,
+                       x * otherVec.y - y * otherVec.x)
                 .Normalize();
         }
 
-        float Vector3::Dot(const Vector3& otherVec)
+        float Vector3::Dot(const Vector3 &otherVec)
         {
             return x * otherVec.x + y * otherVec.y + z * otherVec.z;
         }
@@ -426,9 +426,9 @@ namespace GamEncin
 #pragma region Vector4
 
         Vector4::Vector4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
-        Vector4::Vector4(const glm::vec4& vec) : x(vec.x), y(vec.y), z(vec.z), w(vec.w) {}
-        Vector4::Vector4(const Vector2& vec) : x(vec.x), y(vec.y), z(0), w(1) {}
-        Vector4::Vector4(const Vector3& vec) : x(vec.x), y(vec.y), z(vec.z), w(1) {}
+        Vector4::Vector4(const glm::vec4 &vec) : x(vec.x), y(vec.y), z(vec.z), w(vec.w) {}
+        Vector4::Vector4(const Vector2 &vec) : x(vec.x), y(vec.y), z(0), w(1) {}
+        Vector4::Vector4(const Vector3 &vec) : x(vec.x), y(vec.y), z(vec.z), w(1) {}
 
         Vector4::operator Vector2()
         {
@@ -448,27 +448,27 @@ namespace GamEncin
 #pragma region Vector2Int
 
         Vector2Int::Vector2Int(int x, int y) : x(x), y(y) {}
-        Vector2Int::Vector2Int(const glm::ivec2& vec) : x(vec.x), y(vec.y) {}
-        Vector2Int::Vector2Int(const Vector2& vec) : x((int) vec.x), y((int) vec.y) {}
+        Vector2Int::Vector2Int(const glm::ivec2 &vec) : x(vec.x), y(vec.y) {}
+        Vector2Int::Vector2Int(const Vector2 &vec) : x((int)vec.x), y((int)vec.y) {}
 
-        Vector2Int Vector2Int::operator+(const Vector2Int& other)
+        Vector2Int Vector2Int::operator+(const Vector2Int &other)
         {
             return Vector2Int(x + other.x, y + other.y);
         }
 
-        Vector2Int& Vector2Int::operator+=(const Vector2Int& other)
+        Vector2Int &Vector2Int::operator+=(const Vector2Int &other)
         {
             x += other.x;
             y += other.y;
             return *this;
         }
 
-        Vector2Int Vector2Int::operator-(const Vector2Int& other)
+        Vector2Int Vector2Int::operator-(const Vector2Int &other)
         {
             return Vector2Int(x - other.x, y - other.y);
         }
 
-        Vector2Int& Vector2Int::operator-=(const Vector2Int& other)
+        Vector2Int &Vector2Int::operator-=(const Vector2Int &other)
         {
             x -= other.x;
             y -= other.y;
@@ -480,19 +480,19 @@ namespace GamEncin
             return Vector2Int(x * other, y * other);
         }
 
-        Vector2Int& Vector2Int::operator*=(int other)
+        Vector2Int &Vector2Int::operator*=(int other)
         {
             x *= other;
             y *= other;
             return *this;
         }
 
-        Vector2Int Vector2Int::operator*(const Vector2Int& other)
+        Vector2Int Vector2Int::operator*(const Vector2Int &other)
         {
             return Vector2Int(x * other.x, y * other.y);
         }
 
-        Vector2Int& Vector2Int::operator*=(const Vector2Int& other)
+        Vector2Int &Vector2Int::operator*=(const Vector2Int &other)
         {
             x *= other.x;
             y *= other.y;
@@ -504,37 +504,37 @@ namespace GamEncin
             return Vector2Int(x / other, y / other);
         }
 
-        Vector2Int& Vector2Int::operator/=(int other)
+        Vector2Int &Vector2Int::operator/=(int other)
         {
             x /= other;
             y /= other;
             return *this;
         }
 
-        bool Vector2Int::operator==(const Vector2Int& other)
+        bool Vector2Int::operator==(const Vector2Int &other)
         {
             return x == other.x && y == other.y;
         }
 
-        bool Vector2Int::operator!=(const Vector2Int& other)
+        bool Vector2Int::operator!=(const Vector2Int &other)
         {
             return x != other.x || y != other.y;
         }
 
         Vector2Int::operator Vector2()
         {
-            return Vector2((float) x, (float) y);
+            return Vector2((float)x, (float)y);
         }
 
         float Vector2Int::GetMagnitude()
         {
-            return SquareRoot((float) (x * x + y * y));
+            return SquareRoot((float)(x * x + y * y));
         }
 
-        Vector2Int& Vector2Int::EightDirection()
+        Vector2Int &Vector2Int::EightDirection()
         {
-            x /= (int) Abs((float) x);
-            y /= (int) Abs((float) y);
+            x /= (int)Abs((float)x);
+            y /= (int)Abs((float)y);
             return *this;
         }
 
@@ -547,7 +547,7 @@ namespace GamEncin
 
         Vector2 Vector2Int::Normalized()
         {
-            Vector2 result = Vector2((float) x, (float) y);
+            Vector2 result = Vector2((float)x, (float)y);
             result.Normalize();
             return result;
         }
@@ -564,16 +564,16 @@ namespace GamEncin
 #pragma region Vector4Int
 
         Vector4Int::Vector4Int(int x, int y, int z, int w) : x(x), y(y), z(z), w(w) {}
-        Vector4Int::Vector4Int(const glm::ivec4& vec) : x(vec.x), y(vec.y), z(vec.z), w(vec.w) {}
-        Vector4Int::Vector4Int(const Vector2Int& vec) : x(vec.x), y(vec.y), z(0), w(1) {}
-        Vector4Int::Vector4Int(const Vector4& vec) : x((int) vec.x), y((int) vec.y), z((int) vec.z), w((int) vec.w) {}
+        Vector4Int::Vector4Int(const glm::ivec4 &vec) : x(vec.x), y(vec.y), z(vec.z), w(vec.w) {}
+        Vector4Int::Vector4Int(const Vector2Int &vec) : x(vec.x), y(vec.y), z(0), w(1) {}
+        Vector4Int::Vector4Int(const Vector4 &vec) : x((int)vec.x), y((int)vec.y), z((int)vec.z), w((int)vec.w) {}
 
-        Vector4Int Vector4Int::operator+(const Vector4Int& other)
+        Vector4Int Vector4Int::operator+(const Vector4Int &other)
         {
             return Vector4Int(x + other.x, y + other.y, z + other.z, w + other.w);
         }
 
-        Vector4Int& Vector4Int::operator+=(const Vector4Int& other)
+        Vector4Int &Vector4Int::operator+=(const Vector4Int &other)
         {
             x += other.x;
             y += other.y;
@@ -582,12 +582,12 @@ namespace GamEncin
             return *this;
         }
 
-        Vector4Int Vector4Int::operator-(const Vector4Int& other)
+        Vector4Int Vector4Int::operator-(const Vector4Int &other)
         {
             return Vector4Int(x - other.x, y - other.y, z - other.z, w - other.w);
         }
 
-        Vector4Int& Vector4Int::operator-=(const Vector4Int& other)
+        Vector4Int &Vector4Int::operator-=(const Vector4Int &other)
         {
             x -= other.x;
             y -= other.y;
@@ -601,7 +601,7 @@ namespace GamEncin
             return Vector4Int(x * other, y * other, z * other, w * other);
         }
 
-        Vector4Int& Vector4Int::operator*=(int other)
+        Vector4Int &Vector4Int::operator*=(int other)
         {
             x *= other;
             y *= other;
@@ -610,12 +610,12 @@ namespace GamEncin
             return *this;
         }
 
-        Vector4Int Vector4Int::operator*(const Vector4Int& other)
+        Vector4Int Vector4Int::operator*(const Vector4Int &other)
         {
             return Vector4Int(x * other.x, y * other.y, z * other.z, w * other.w);
         }
 
-        Vector4Int& Vector4Int::operator*=(const Vector4Int& other)
+        Vector4Int &Vector4Int::operator*=(const Vector4Int &other)
         {
             x *= other.x;
             y *= other.y;
@@ -629,7 +629,7 @@ namespace GamEncin
             return Vector4Int(x / other, y / other, z / other, w / other);
         }
 
-        Vector4Int& Vector4Int::operator/=(int other)
+        Vector4Int &Vector4Int::operator/=(int other)
         {
             x /= other;
             y /= other;
@@ -638,12 +638,12 @@ namespace GamEncin
             return *this;
         }
 
-        bool Vector4Int::operator==(const Vector4Int& other)
+        bool Vector4Int::operator==(const Vector4Int &other)
         {
             return x == other.x && y == other.y && z == other.z && w == other.w;
         }
 
-        bool Vector4Int::operator!=(const Vector4Int& other)
+        bool Vector4Int::operator!=(const Vector4Int &other)
         {
             return x != other.x || y != other.y || z != other.z || w != other.w;
         }
@@ -655,7 +655,7 @@ namespace GamEncin
 
         Vector4Int::operator Vector4()
         {
-            return Vector4((float) x, (float) y, (float) z, (float) w);
+            return Vector4((float)x, (float)y, (float)z, (float)w);
         }
 
         Vector4Int Vector4Int::Zero() { return Vector4Int(0, 0, 0, 0); }
@@ -675,7 +675,7 @@ namespace GamEncin
 
         int RandomRangeInteger(int min, int max)
         {
-            if(min > max)
+            if (min > max)
             {
                 int temp = min;
                 min = max;
@@ -737,7 +737,8 @@ namespace GamEncin
 
         float Clamp(float value, float min, float max)
         {
-            return value < min ? min : value > max ? max : value;
+            return value < min ? min : value > max ? max
+                                                   : value;
         }
 
         Vector2 ClampVectorMagnitude(Vector2 vector, float max)
@@ -767,6 +768,33 @@ namespace GamEncin
             return startVec + (endVec - startVec) * Clamp(t, 0, 1);
         }
 
+        float MoveTowards(float current, float target, float maxDelta)
+        {
+            if (Abs(target - current) <= maxDelta)
+            {
+                return target;
+            }
+
+            return current + (target > current ? maxDelta : -maxDelta);
+        }
+
+        Vector2 MoveTowards(Vector2 current, Vector2 target, float maxDeltaMagnitude)
+        {
+            if ((target - current).GetMagnitude() <= maxDeltaMagnitude)
+            {
+                return target;
+            }
+
+            return current + (target - current).Normalize() * maxDeltaMagnitude;
+        }
+
+        Vector3 MoveTowards(Vector3 current, Vector3 target, float maxDeltaMagnitude)
+        {
+            if ((target - current).GetMagnitude() <= maxDeltaMagnitude)
+                return target;
+            return current + (target - current).Normalize() * maxDeltaMagnitude;
+        }
+
         float Distance(Vector2 a, Vector2 b)
         {
             return (b - a).GetMagnitude();
@@ -777,29 +805,29 @@ namespace GamEncin
             return (b - a).GetMagnitude();
         }
 
-        bool IsSubString(const char* str, const char* subStr)
+        bool IsSubString(const char *str, const char *subStr)
         {
-            if(!str || !subStr)
+            if (!str || !subStr)
                 return false;
             int strLen = strlen(str);
             int subStrLen = strlen(subStr);
-            if(strLen < subStrLen)
+            if (strLen < subStrLen)
                 return false;
-            for(int i = 0; i <= strLen - subStrLen; ++i)
+            for (int i = 0; i <= strLen - subStrLen; ++i)
             {
-                if(strncmp(&str[i], subStr, subStrLen) == 0)
+                if (strncmp(&str[i], subStr, subStrLen) == 0)
                     return true;
             }
             return false;
         }
 
-        vector<string> SplitString(const string& stringToSplit, const string& delimiter)
+        vector<string> SplitString(const string &stringToSplit, const string &delimiter)
         {
             vector<string> result;
             size_t pos = 0;
             size_t delimiterPos = stringToSplit.find(delimiter);
 
-            while(delimiterPos != string::npos)
+            while (delimiterPos != string::npos)
             {
                 result.push_back(stringToSplit.substr(pos, delimiterPos - pos));
                 pos = delimiterPos + delimiter.length();
@@ -811,21 +839,21 @@ namespace GamEncin
             return result;
         }
 
-        int StringToInt(const string& stringToConvert)
+        int StringToInt(const string &stringToConvert)
         {
             int result = 0;
 
-            if(stringToConvert.empty())
+            if (stringToConvert.empty())
             {
                 Application::PrintLog(TypeMismatchErr, "String to convert is empty");
                 return 0;
             }
 
-            if(stringToConvert[0] == '-')
+            if (stringToConvert[0] == '-')
             {
-                for(int i = 1; i < stringToConvert.length(); i++)
+                for (int i = 1; i < stringToConvert.length(); i++)
                 {
-                    if(stringToConvert[i] < '0' || stringToConvert[i] > '9')
+                    if (stringToConvert[i] < '0' || stringToConvert[i] > '9')
                     {
                         Application::PrintLog(TypeMismatchErr, "String to convert is not a valid integer");
                         return 0;
@@ -838,9 +866,9 @@ namespace GamEncin
             }
             else
             {
-                for(int i = 0; i < stringToConvert.length(); i++)
+                for (int i = 0; i < stringToConvert.length(); i++)
                 {
-                    if(stringToConvert[i] < '0' || stringToConvert[i] > '9')
+                    if (stringToConvert[i] < '0' || stringToConvert[i] > '9')
                     {
                         Application::PrintLog(TypeMismatchErr, "String to convert is not a valid integer");
                         return 0;
@@ -853,16 +881,16 @@ namespace GamEncin
             return result;
         }
 
-        void PrintMatrix4(const Matrix4& matrix, string name)
+        void PrintMatrix4(const Matrix4 &matrix, string name)
         {
-            if(name != "")
+            if (name != "")
                 printf("%s:\n", name.c_str());
             else
                 printf("Matrix4:\n");
 
-            for(int i = 0; i < 4; ++i)
+            for (int i = 0; i < 4; ++i)
             {
-                for(int j = 0; j < 4; ++j)
+                for (int j = 0; j < 4; ++j)
                 {
                     printf("%f ", matrix[i][j]);
                 }

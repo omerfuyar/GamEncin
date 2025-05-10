@@ -108,11 +108,35 @@ void DialoguePanelController::DeactivatePanel()
     object->GetTransform()->SetLocalPosition(Vector3(5, 0, 0));
 }
 
+void DialoguePanelController::SetEnvironmentObj(Object *obj)
+{
+    environmentObj = obj;
+}
+
+void DialoguePanelController::AddEnemy(Enemy *obj)
+{
+    enemies.push_back(obj);
+    obj->GetOwnerObject()->GetTransform()->SetLocalPosition(Vector3(0, 0, 10));
+}
+
+void DialoguePanelController::EnemyKilled(Enemy *enemy)
+{
+    killedEnemies++;
+
+    if (killedEnemies >= enemiesToSpawn)
+    {
+        environmentObj->GetTransform()->SetLocalPosition(Vector3(0, 0, 0));
+        player->SetDialogueState(PlayerDialogueState::AfterChallengeComplete);
+    }
+
+    enemy->GetOwnerObject()->GetTransform()->SetLocalPosition(Vector3(0, 0, 10));
+}
+
 void DialoguePanelController::BringPiece(DialoguePiece *piece)
 {
     if (!piece)
     {
-        object->GetScene()->FindFirstComponentByType<PlayerController>()->EndDialogue();
+        player->EndDialogue();
         return;
     }
 
@@ -122,6 +146,7 @@ void DialoguePanelController::BringPiece(DialoguePiece *piece)
     {
         optionPlaces[i]->SetText("");
     }
+
     currentOptions.clear();
 
     const auto &options = piece->GetOptions();
@@ -143,19 +168,14 @@ void DialoguePanelController::BringPiece(DialoguePiece *piece)
 void DialoguePanelController::SelectOption(DialogueOption *option)
 {
     string text = option->GetText();
+
     if (text == "Power (Strength)")
     {
         LaunchCombatChallenge();
     }
-    else if (text == "Wisdom (Intelligence)")
-    {
-        StartPuzzleRiddle();
-        return;
-    }
     else if (text == "Grace (Dexterity)")
     {
         ActivateTrapZone();
-        return;
     }
     else if (text == "..." || text == "What!!?!")
     {
@@ -168,17 +188,26 @@ void DialoguePanelController::SelectOption(DialogueOption *option)
 
 void DialoguePanelController::LaunchCombatChallenge()
 {
-    // Implement combat challenge logic here
-}
+    environmentObj->GetTransform()->SetLocalPosition(Vector3(0, 0, 10));
+    player->SetDialogueState(PlayerDialogueState::AfterChoseStrength);
 
-void DialoguePanelController::StartPuzzleRiddle()
-{
-    // Implement puzzle riddle logic here
+    for (Enemy *enemy : enemies)
+    {
+        enemy->GetOwnerObject()->GetTransform()->SetLocalPosition(Vector3(RandomVector2Direction() * 2.0f + RandomVector2(), 0));
+        enemy->SetIsFollowing(true);
+    }
 }
 
 void DialoguePanelController::ActivateTrapZone()
 {
-    // Implement trap zone logic here
+    environmentObj->GetTransform()->SetLocalPosition(Vector3(0, 0, 10));
+    player->SetDialogueState(PlayerDialogueState::AfterChoseGrace);
+
+    for (Enemy *enemy : enemies)
+    {
+        enemy->GetOwnerObject()->GetTransform()->SetLocalPosition(Vector3(RandomVector2Direction() * 2.0f + RandomVector2(), 0));
+        enemy->SetIsFollowing(false);
+    }
 }
 
 void DialoguePanelController::Update()
@@ -195,6 +224,11 @@ void DialoguePanelController::Update()
     {
         SelectOption(currentOptions[2]);
     }
+}
+
+void DialoguePanelController::Start()
+{
+    player = object->GetScene()->FindFirstComponentByType<PlayerController>();
 }
 
 #pragma endregion
@@ -217,7 +251,7 @@ void PlayerController::StartDialogue(Dialogue *dialogue)
 
     if (dialogue->GetNextState() != PlayerDialogueState::Null)
     {
-        currentDialogueState = dialogue->GetNextState();
+        SetDialogueState(dialogue->GetNextState());
     }
 }
 
@@ -227,18 +261,46 @@ void PlayerController::EndDialogue()
     isInDialogue = false;
 }
 
+void PlayerController::SetDialogueState(PlayerDialogueState state)
+{
+    currentDialogueState = state;
+}
+
+void PlayerController::TakeDamage(int damage)
+{
+    health -= damage;
+
+    if (health <= 0)
+    {
+        Application::Stop(Safe, "Application ended by user.");
+        return;
+    }
+}
+
 void PlayerController::OnCollisionEnter(RigidBody *enteredRigidBody)
 {
     NPC *npc = enteredRigidBody->GetOwnerObject()->GetComponent<NPC>();
     AreaTrigger *areaTrigger = enteredRigidBody->GetOwnerObject()->GetComponent<AreaTrigger>();
+    Enemy *enemy = enteredRigidBody->GetOwnerObject()->GetComponent<Enemy>();
 
     if (currentNPC == nullptr && npc != nullptr)
     {
         currentNPC = npc;
     }
-    else if (areaTrigger != nullptr && currentDialogueState == areaTrigger->GetStateToInteract())
+
+    if (areaTrigger != nullptr && currentDialogueState == areaTrigger->GetStateToInteract())
     {
         StartDialogue(areaTrigger->GetDialogueToShow());
+    }
+
+    if (enteredRigidBody->GetOwnerObject()->GetTag() == "EnemyCollider")
+    {
+        TakeDamage(1);
+    }
+
+    if (currentEnemy == nullptr && enemy != nullptr && enemy && enemy->IsKillable())
+    {
+        currentEnemy = enemy;
     }
 }
 
@@ -247,6 +309,11 @@ void PlayerController::OnCollisionExit(RigidBody *exitedRigidBody)
     if (currentNPC == exitedRigidBody->GetOwnerObject()->GetComponent<NPC>())
     {
         currentNPC = nullptr;
+    }
+
+    if (currentEnemy == exitedRigidBody->GetOwnerObject()->GetComponent<Enemy>())
+    {
+        currentEnemy = nullptr;
     }
 }
 
@@ -271,10 +338,16 @@ void PlayerController::Update()
     Vector3 input = Input::GetMovementVector();
     playerTR->AddPosition((Vector2)input * movementSpeed * Application::GetDeltaTime());
 
-    if (currentNPC != nullptr && Input::GetKey(Press, KeyCode::E))
+    if (currentNPC != nullptr && Input::GetKey(Down, KeyCode::E))
     {
         Dialogue *dialogue = currentNPC->GetDialogue(currentDialogueState);
         StartDialogue(dialogue);
+    }
+
+    if (currentEnemy != nullptr && Input::GetKey(Down, KeyCode::F))
+    {
+        currentEnemy->Die();
+        currentEnemy = nullptr;
     }
 }
 
@@ -306,6 +379,62 @@ Dialogue *NPC::GetDialogue(PlayerDialogueState state)
     return unavailableDialogue;
 }
 
+Enemy::Enemy(Object *obj) : Component(obj) {}
+
+void Enemy::SetIsFollowing(bool isFollowing)
+{
+    this->isFollowing = isFollowing;
+}
+
+void Enemy::Die()
+{
+    object->GetScene()->FindFirstComponentByType<DialoguePanelController>()->EnemyKilled(this);
+}
+
+bool Enemy::IsKillable()
+{
+    return isFollowing;
+}
+
+void Enemy::Start()
+{
+    player = object->GetScene()->FindFirstComponentByType<PlayerController>()->GetOwnerObject()->GetTransform();
+}
+
+void Enemy::Update()
+{
+    Vector2 pos = object->GetTransform()->GetGlobalPosition();
+    Vector2 playerPos = player->GetGlobalPosition();
+
+    printf("\nglobal pos : %f %f\n", object->GetTransform()->GetGlobalPosition().x, object->GetTransform()->GetGlobalPosition().y);
+    printf("pos : %f %f\n", pos.x, pos.y);
+    printf("this : %p\n", this);
+    printf("object : %p\n", object);
+    printf("transform : %p\n", object->GetTransform());
+
+    if (isFollowing)
+    {
+        direction = (playerPos - pos).Normalized();
+        object->GetTransform()->AddPosition(direction * speed * Application::GetDeltaTime());
+    }
+    else if (canMove)
+    {
+        direction = (pos - playerPos).Normalized();
+        target = pos + (direction * 2);
+        canMove = false;
+        object->GetTransform()->AddPosition(direction * speed * Application::GetDeltaTime());
+    }
+    else if (pos == target)
+    {
+        canMove = true;
+    }
+    else
+    {
+        Vector2 step = pos - MoveTowards(pos, target, speed * Application::GetDeltaTime());
+        object->GetTransform()->AddPosition(step);
+    }
+}
+
 CameraController::CameraController(Object *obj) : Component(obj) {}
 
 void CameraController::Start()
@@ -324,7 +453,7 @@ void CameraController::Update()
         return;
     }
 
-    if (Input::GetKey(Down, F))
+    if (Input::GetKey(Down, C))
     {
         Renderer::SetFullScreen(!Renderer::IsFullScreen());
     }
@@ -334,36 +463,36 @@ void CameraController::Update()
         Renderer::SetVSync(!Renderer::IsVSyncEnabled());
     }
 
-    if (Input::GetKey(Down, KeyCode::O))
-    {
-        camera->SetPerspective(!camera->IsPerspective());
-    }
-
-    if (!Input::GetMouseButton(Press, Left))
-    {
-        glfwSetInputMode(Renderer::GetMainWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-        return;
-    }
-
-    glfwSetInputMode(Renderer::GetMainWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-    Vector3 movement = Input::GetMovementVector();
-    Vector2 mouseDelta = Input::GetMousePositionDelta();
-
-    float tempSpeed = Input::GetKey(Press, LeftShift) ? 20.0f : 10.0f;
-
-    camera->AddCameraFOV(-Input::GetMouseScrollDelta());
-    // camera->AddOrthographicSize(-Input::GetMouseScrollDelta());
-
-    Vector3 camPos = cameraTR->GetLocalPosition();
-    Vector3 camDir = cameraTR->GetDirection();
-
-    cameraTR->AddPosition(camDir * tempSpeed * movement.y * Application::GetDeltaTime());
-    cameraTR->AddPosition(camDir.Cross(Vector3::Up()) * tempSpeed * movement.x * Application::GetDeltaTime());
-    cameraTR->AddPosition(Vector3::Up() * tempSpeed * movement.z * Application::GetDeltaTime());
-
-    cameraTR->AddRotation(Vector3(-mouseDelta.y, mouseDelta.x, 0) * 7.5f * Application::GetDeltaTime());
-    cameraTR->SetLocalRotation(Vector3(Clamp(cameraTR->GetGlobalRotation().x, -89.0f, 89.0f), cameraTR->GetLocalRotation().y, cameraTR->GetLocalRotation().z));
+    // if (Input::GetKey(Down, KeyCode::O))
+    //{
+    //     camera->SetPerspective(!camera->IsPerspective());
+    // }
+    //
+    // if (!Input::GetMouseButton(Press, Left))
+    //{
+    //    glfwSetInputMode(Renderer::GetMainWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    //    return;
+    //}
+    //
+    // glfwSetInputMode(Renderer::GetMainWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //
+    // Vector3 movement = Input::GetMovementVector();
+    // Vector2 mouseDelta = Input::GetMousePositionDelta();
+    //
+    // float tempSpeed = Input::GetKey(Press, LeftShift) ? 20.0f : 10.0f;
+    //
+    // camera->AddCameraFOV(-Input::GetMouseScrollDelta());
+    //// camera->AddOrthographicSize(-Input::GetMouseScrollDelta());
+    //
+    // Vector3 camPos = cameraTR->GetLocalPosition();
+    // Vector3 camDir = cameraTR->GetDirection();
+    //
+    // cameraTR->AddPosition(camDir * tempSpeed * movement.y * Application::GetDeltaTime());
+    // cameraTR->AddPosition(camDir.Cross(Vector3::Up()) * tempSpeed * movement.x * Application::GetDeltaTime());
+    // cameraTR->AddPosition(Vector3::Up() * tempSpeed * movement.z * Application::GetDeltaTime());
+    //
+    // cameraTR->AddRotation(Vector3(-mouseDelta.y, mouseDelta.x, 0) * 7.5f * Application::GetDeltaTime());
+    // cameraTR->SetLocalRotation(Vector3(Clamp(cameraTR->GetGlobalRotation().x, -89.0f, 89.0f), cameraTR->GetLocalRotation().y, cameraTR->GetLocalRotation().z));
 }
 
 TestComponent::TestComponent(Object *obj) : Component(obj) {}
