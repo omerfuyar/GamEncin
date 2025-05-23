@@ -93,7 +93,8 @@ private:
     Object *environmentObj = nullptr;
     vector<Enemy *> enemies;
 
-    void LaunchCombatChallenge();
+    void SpawnEnemies();
+    void FinishEnemiesChallenge();
     void ActivateTrapZone();
     void Update() override;
     void Start() override;
@@ -161,7 +162,8 @@ public:
 private:
     bool isFollowing;
     bool canMove = true;
-    float speed = 5.0f;
+    float speed = 1.5f;
+    float moveRange = 2.0f;
     Transform *player = nullptr;
     Vector2 target;
     Vector2 direction;

@@ -17,11 +17,17 @@ DialoguePiece *const DialogueOption::GetNextDialogue()
 DialoguePiece::DialoguePiece(string text, DialogueOption *option1, DialogueOption *option2, DialogueOption *option3) : text(text)
 {
     if (option1)
+    {
         options.push_back(option1);
+    }
     if (option2)
+    {
         options.push_back(option2);
+    }
     if (option3)
+    {
         options.push_back(option3);
+    }
 }
 
 string DialoguePiece::GetText()
@@ -125,11 +131,8 @@ void DialoguePanelController::EnemyKilled(Enemy *enemy)
 
     if (killedEnemies >= enemiesToSpawn)
     {
-        environmentObj->GetTransform()->SetLocalPosition(Vector3(0, 0, 0));
-        player->SetDialogueState(PlayerDialogueState::AfterChallengeComplete);
+        FinishEnemiesChallenge();
     }
-
-    enemy->GetOwnerObject()->GetTransform()->SetLocalPosition(Vector3(0, 0, 10));
 }
 
 void DialoguePanelController::BringPiece(DialoguePiece *piece)
@@ -171,7 +174,7 @@ void DialoguePanelController::SelectOption(DialogueOption *option)
 
     if (text == "Power (Strength)")
     {
-        LaunchCombatChallenge();
+        SpawnEnemies();
     }
     else if (text == "Grace (Dexterity)")
     {
@@ -186,7 +189,7 @@ void DialoguePanelController::SelectOption(DialogueOption *option)
     BringPiece(option->GetNextDialogue());
 }
 
-void DialoguePanelController::LaunchCombatChallenge()
+void DialoguePanelController::SpawnEnemies()
 {
     environmentObj->GetTransform()->SetLocalPosition(Vector3(0, 0, 10));
     player->SetDialogueState(PlayerDialogueState::AfterChoseStrength);
@@ -196,6 +199,12 @@ void DialoguePanelController::LaunchCombatChallenge()
         enemy->GetOwnerObject()->GetTransform()->SetLocalPosition(Vector3(RandomVector2Direction() * 2.0f + RandomVector2(), 0));
         enemy->SetIsFollowing(true);
     }
+}
+
+void DialoguePanelController::FinishEnemiesChallenge()
+{
+    environmentObj->GetTransform()->SetLocalPosition(Vector3(0, 0, 0));
+    player->SetDialogueState(PlayerDialogueState::AfterChallengeComplete);
 }
 
 void DialoguePanelController::ActivateTrapZone()
@@ -298,7 +307,7 @@ void PlayerController::OnCollisionEnter(RigidBody *enteredRigidBody)
         TakeDamage(1);
     }
 
-    if (currentEnemy == nullptr && enemy != nullptr && enemy && enemy->IsKillable())
+    if (currentEnemy == nullptr && enemy != nullptr && enemy->IsKillable())
     {
         currentEnemy = enemy;
     }
@@ -389,6 +398,7 @@ void Enemy::SetIsFollowing(bool isFollowing)
 void Enemy::Die()
 {
     object->GetScene()->FindFirstComponentByType<DialoguePanelController>()->EnemyKilled(this);
+    object->GetTransform()->SetLocalPosition(Vector3(0, 0, 10));
 }
 
 bool Enemy::IsKillable()
@@ -406,33 +416,24 @@ void Enemy::Update()
     Vector2 pos = object->GetTransform()->GetGlobalPosition();
     Vector2 playerPos = player->GetGlobalPosition();
 
-    printf("\nglobal pos : %f %f\n", object->GetTransform()->GetGlobalPosition().x, object->GetTransform()->GetGlobalPosition().y);
-    printf("pos : %f %f\n", pos.x, pos.y);
-    printf("this : %p\n", this);
-    printf("object : %p\n", object);
-    printf("transform : %p\n", object->GetTransform());
-
     if (isFollowing)
     {
         direction = (playerPos - pos).Normalized();
-        object->GetTransform()->AddPosition(direction * speed * Application::GetDeltaTime());
     }
     else if (canMove)
     {
         direction = (pos - playerPos).Normalized();
-        target = pos + (direction * 2);
+        target = pos + (direction * moveRange);
         canMove = false;
-        object->GetTransform()->AddPosition(direction * speed * Application::GetDeltaTime());
     }
     else if (pos == target)
     {
         canMove = true;
+        return;
     }
-    else
-    {
-        Vector2 step = pos - MoveTowards(pos, target, speed * Application::GetDeltaTime());
-        object->GetTransform()->AddPosition(step);
-    }
+
+    Vector2 step = pos - MoveTowards(pos, target, speed * Application::GetDeltaTime());
+    object->GetTransform()->AddPosition(step);
 }
 
 CameraController::CameraController(Object *obj) : Component(obj) {}

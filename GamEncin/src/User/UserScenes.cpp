@@ -119,6 +119,7 @@ void TestScene2::BuildScene()
     Texture *texPlayer = TextureManager::GetTexture("GamEncin/Resources/Textures/Player.png");
     Texture *texOracle = TextureManager::GetTexture("GamEncin/Resources/Textures/Oracle.png");
     Texture *texWall = TextureManager::GetTexture("GamEncin/Resources/Textures/Wall.png");
+
     texPlayer->SetWrapAndFilter(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_NEAREST, GL_NEAREST);
     texOracle->SetWrapAndFilter(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_NEAREST, GL_NEAREST);
     texWall->SetWrapAndFilter(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_NEAREST, GL_NEAREST);
@@ -425,7 +426,7 @@ void TestScene2::BuildScene()
     // - Grace: Enable timed trap zone
     // IMPLEMENTATION ACTION NEEDED:
     // In dialogue system, hook these continueDO options to:
-    // - LaunchCombatChallenge()
+    // - SpawnEnemies()
     // - StartPuzzleRiddle()
     // - ActivateTrapZone()
 
