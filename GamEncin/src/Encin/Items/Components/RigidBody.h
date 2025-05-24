@@ -1,7 +1,16 @@
 #pragma once
 #include "Encin/Items/Components/Component.h"
 
-#define MIN_RIGIDBODY_MASS 0.001f
+#define MIN_RIGIDBODY_MASS 0.1f
+#define MAX_RIGIDBODY_MASS 1000.0f
+#define MIN_RB_LINEAR_ACCELERATION 0.01f
+#define MAX_RB_LINEAR_ACCELERATION 10000.0f
+#define MIN_RB_ANGULAR_ACCELERATION 0.01f
+#define MAX_RB_ANGULAR_ACCELERATION 1000.0f
+#define MIN_RB_LINEAR_VELOCITY 0.0001f
+#define MAX_RB_LINEAR_VELOCITY 10000.0f
+#define MIN_RB_ANGULAR_VELOCITY 0.0001f
+#define MAX_RB_ANGULAR_VELOCITY 10000.0f
 
 namespace GamEncin
 {
@@ -52,8 +61,8 @@ namespace GamEncin
         void AddForce(Vector3 force);
         // Add torque to the body. Relative to it's moment of inertia
         void AddTorque(Vector3 torque);
-        // Add velocity to the body.
-        void AddVelocity(Vector3 velocity);
+        // Add linear velocity to the body.
+        void AddLinearVelocity(Vector3 linearVelocity);
         // Add angular velocity to the body.
         void AddAngularVelocity(Vector3 angularVelocity);
 
@@ -62,15 +71,15 @@ namespace GamEncin
         bool isTrigger = false;
 
         float mass = 1.0f;
-        float drag = 0.0f;
-        float angularDrag = 0.0f;
+        float dragMultiplier = 0.0f;
+        float angularDragMultiplier = 0.0f;
         float gravityScale = 1.0f;
 
         float colliderRadius = 0.5f;
 
-        Vector3 velocity = Vector3::Zero();
+        Vector3 linearVelocity = Vector3::Zero();
         Vector3 angularVelocity = Vector3::Zero();
-        Vector3 acceleration = Vector3::Zero();
+        Vector3 linearAcceleration = Vector3::Zero();
         Vector3 angularAcceleration = Vector3::Zero();
 
         vector<RigidBody *> collisions;

@@ -34,6 +34,16 @@ namespace GamEncin
             return value < 0 ? -value : value;
         }
 
+        float Sign(float value)
+        {
+            return value < 0 ? -1.0f : (value > 0 ? 1.0f : 0.0f);
+        }
+
+        int Sign(int value)
+        {
+            return value < 0 ? -1 : (value > 0 ? 1 : 0);
+        }
+
         int Round(float value)
         {
             return (int)(value + 0.5);
@@ -62,6 +72,31 @@ namespace GamEncin
         float Square(float value)
         {
             return value * value;
+        }
+
+        Vector2 Square(Vector2 vec)
+        {
+            return vec * vec;
+        }
+
+        Vector3 Square(Vector3 vec)
+        {
+            return vec * vec;
+        }
+
+        float Cube(float value)
+        {
+            return value * value * value;
+        }
+
+        Vector2 Cube(Vector2 vec)
+        {
+            return vec * vec * vec;
+        }
+
+        Vector3 Cube(Vector3 vec)
+        {
+            return vec * vec * vec;
         }
 
         float Log(float value, float base)
@@ -741,16 +776,34 @@ namespace GamEncin
                                                    : value;
         }
 
-        Vector2 ClampVectorMagnitude(Vector2 vector, float max)
+        Vector2 ClampVectorMagnitude(Vector2 vector, float min, float max)
         {
             float magnitude = vector.GetMagnitude();
-            return magnitude > max ? vector * (max / magnitude) : vector;
+
+            if (magnitude < min)
+            {
+                return vector.Normalized() * min;
+            }
+            else if (magnitude > max)
+            {
+                return vector.Normalized() * max;
+            }
+
+            return vector;
         }
 
-        Vector3 ClampVectorMagnitude(Vector3 vector, float max)
+        Vector3 ClampVectorMagnitude(Vector3 vector, float min, float max)
         {
             float magnitude = vector.GetMagnitude();
-            return magnitude > max ? vector * (max / magnitude) : vector;
+            if (magnitude < min)
+            {
+                return vector.Normalized() * min;
+            }
+            else if (magnitude > max)
+            {
+                return vector.Normalized() * max;
+            }
+            return vector;
         }
 
         float Lerp(float startVal, float endVal, float t)

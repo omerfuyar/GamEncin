@@ -164,8 +164,8 @@ namespace GamEncin
 
             leftTrigger = state.axes[GLFW_GAMEPAD_AXIS_LEFT_TRIGGER];
             rightTrigger = state.axes[GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER];
-            leftStick = ClampVectorMagnitude(Vector2(state.axes[GLFW_GAMEPAD_AXIS_LEFT_X], state.axes[GLFW_GAMEPAD_AXIS_LEFT_Y]), 1);
-            rightStick = ClampVectorMagnitude(Vector2(state.axes[GLFW_GAMEPAD_AXIS_RIGHT_X], state.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y]), 1);
+            leftStick = ClampVectorMagnitude(Vector2(state.axes[GLFW_GAMEPAD_AXIS_LEFT_X], state.axes[GLFW_GAMEPAD_AXIS_LEFT_Y]), 0.0f, 1.0f);
+            rightStick = ClampVectorMagnitude(Vector2(state.axes[GLFW_GAMEPAD_AXIS_RIGHT_X], state.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y]), 0.0f, 1.0f);
 
             for (auto &button : buttons)
             {

@@ -9,18 +9,18 @@ namespace GamEncin
     Vector2Int Renderer::windowSize = Vector2Int(1080, 1080);
     Vector4 Renderer::clearColor = Vector4(0.2f, 0.3f, 0.3f, 1.0f);
 
-    vector<Mesh*> Renderer::meshes;
+    vector<Mesh *> Renderer::meshes;
 
-    Shader* Renderer::shaderProgram = nullptr;
-    Camera* Renderer::mainCamera = nullptr;
-    GLFWwindow* Renderer::window = nullptr;
+    Shader *Renderer::shaderProgram = nullptr;
+    Camera *Renderer::mainCamera = nullptr;
+    GLFWwindow *Renderer::window = nullptr;
 
-    GLArrayObject* Renderer::mainVAO = nullptr;
-    GLBufferObject<RawVertex>* Renderer::modelVertexBO = nullptr;
-    GLBufferObject<unsigned int>* Renderer::modelIndexBO = nullptr;
+    GLArrayObject *Renderer::mainVAO = nullptr;
+    GLBufferObject<RawVertex> *Renderer::modelVertexBO = nullptr;
+    GLBufferObject<unsigned int> *Renderer::modelIndexBO = nullptr;
 
-    GLShaderStorageBufferObject<Matrix4>* Renderer::modelMatrixSSBO = nullptr;
-    GLShaderStorageBufferObject<unsigned long long>* Renderer::modelTextureHandlesSSBO = nullptr;
+    GLShaderStorageBufferObject<Matrix4> *Renderer::modelMatrixSSBO = nullptr;
+    GLShaderStorageBufferObject<unsigned long long> *Renderer::modelTextureHandlesSSBO = nullptr;
 
     vector<RawVertex> Renderer::batchedModelVertices;
     vector<unsigned int> Renderer::batchedModelIndices;
@@ -35,16 +35,16 @@ namespace GamEncin
         vSyncEnabled = newVSyncEnabled;
         windowSize = newWindowSize;
 
-        if(Application::IsRunning())
+        if (Application::IsRunning())
         {
             SetFullScreen(isFullScreen);
             SetVSync(vSyncEnabled);
         }
     }
 
-    void Renderer::SetMainCamera(Camera* camera)
+    void Renderer::SetMainCamera(Camera *camera)
     {
-        if(!camera)
+        if (!camera)
         {
             Application::PrintLog(NullPointerErr, "Camera trying to set as main is null");
             return;
@@ -63,10 +63,10 @@ namespace GamEncin
     {
         isFullScreen = value;
 
-        if(isFullScreen)
+        if (isFullScreen)
         {
-            GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-            const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+            GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+            const GLFWvidmode *mode = glfwGetVideoMode(monitor);
             glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
         }
         else
@@ -98,10 +98,10 @@ namespace GamEncin
 
     Vector2Int Renderer::GetMainWindowSize()
     {
-        if(isFullScreen)
+        if (isFullScreen)
         {
-            GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-            const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+            GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+            const GLFWvidmode *mode = glfwGetVideoMode(monitor);
             return Vector2Int(mode->width, mode->height);
         }
         else
@@ -110,27 +110,27 @@ namespace GamEncin
         }
     }
 
-    GLFWwindow* const Renderer::GetMainWindow()
+    GLFWwindow *const Renderer::GetMainWindow()
     {
         return window;
     }
 
-    Camera* const Renderer::GetMainCamera()
+    Camera *const Renderer::GetMainCamera()
     {
         return mainCamera;
     }
 
-    void Renderer::AddMeshesInScene(Scene* scene)
+    void Renderer::AddMeshesInScene(Scene *scene)
     {
-        if(!scene)
+        if (!scene)
         {
             Application::PrintLog(NullPointerErr, "Scene trying to add meshes is null");
             return;
         }
 
-        vector<Mesh*> tempMeshes = scene->FindComponentsByType<Mesh>();
+        vector<Mesh *> tempMeshes = scene->FindComponentsByType<Mesh>();
 
-        for(auto& obj : tempMeshes)
+        for (auto &obj : tempMeshes)
         {
             printf("Adding mesh %s\n", obj->GetOwnerObject()->GetName().c_str());
             AddMesh(obj);
@@ -146,9 +146,9 @@ namespace GamEncin
         batchedTextureHandles.clear();
     }
 
-    void Renderer::AddMesh(Mesh* mesh)
+    void Renderer::AddMesh(Mesh *mesh)
     {
-        if(!mesh)
+        if (!mesh)
         {
             Application::PrintLog(NullPointerErr, "Mesh trying to add is null");
             return;
@@ -156,14 +156,14 @@ namespace GamEncin
 
         auto obj = std::find(meshes.begin(), meshes.end(), mesh);
 
-        if(obj != meshes.end())
+        if (obj != meshes.end())
         {
             Application::PrintLog(ElementDuplicationErr, "Mesh already exists in the renderer");
             return;
         }
 
-        MeshData& meshData = *mesh->GetMeshData();
-        Matrix4& matrix = *mesh->GetModelMatrix();
+        MeshData &meshData = *mesh->GetMeshData();
+        Matrix4 &matrix = *mesh->GetModelMatrix();
         unsigned long long textureHandle = mesh->GetTexture() ? mesh->GetTexture()->handle : 0;
 
         meshData.SetForBatch(meshes.size(), batchedModelVertices.size(), batchedModelIndices.size());
@@ -179,9 +179,9 @@ namespace GamEncin
         meshes.push_back(mesh);
     }
 
-    void Renderer::RemoveMesh(Mesh* mesh)
+    void Renderer::RemoveMesh(Mesh *mesh)
     {
-        if(!mesh)
+        if (!mesh)
         {
             Application::PrintLog(NullPointerErr, "Mesh trying to remove is null");
             return;
@@ -189,13 +189,13 @@ namespace GamEncin
 
         auto obj = std::find(meshes.begin(), meshes.end(), mesh);
 
-        if(obj == meshes.end())
+        if (obj == meshes.end())
         {
             Application::PrintLog(ElementCouldNotFindErr, "Couldn't found mesh to remove");
             return;
         }
 
-        MeshData& meshData = *mesh->GetMeshData();
+        MeshData &meshData = *mesh->GetMeshData();
 
         auto vertexBeginIt = batchedModelVertices.begin() + meshData.batchVertexOffset;
         auto vertexEndIt = vertexBeginIt + meshData.vertices.size();
@@ -211,9 +211,9 @@ namespace GamEncin
         auto textureHandleIt = batchedTextureHandles.begin() + meshData.id;
         batchedTextureHandles.erase(textureHandleIt);
 
-        for(int i = meshData.id + 1; i < meshes.size(); i++)
+        for (int i = meshData.id + 1; i < meshes.size(); i++)
         {
-            MeshData& tempMesh = *meshes[i]->GetMeshData();
+            MeshData &tempMesh = *meshes[i]->GetMeshData();
 
             tempMesh.SetForBatch(
                 i - 1,
@@ -221,12 +221,12 @@ namespace GamEncin
                 tempMesh.batchIndexOffset - (meshData.faces.size() * 3));
         }
 
-        for(int i = meshData.batchVertexOffset; i < batchedModelVertices.size(); i++)
+        for (int i = meshData.batchVertexOffset; i < batchedModelVertices.size(); i++)
         {
             batchedModelVertices[i].objectId--;
         }
 
-        for(int i = meshData.batchIndexOffset; i < batchedModelIndices.size(); i++)
+        for (int i = meshData.batchIndexOffset; i < batchedModelIndices.size(); i++)
         {
             batchedModelIndices[i] -= meshData.vertices.size();
         }
@@ -236,7 +236,7 @@ namespace GamEncin
 
     void Renderer::InitialRender()
     {
-        if(glfwInit() == GLFW_FALSE)
+        if (glfwInit() == GLFW_FALSE)
             Application::Stop(GLFWErr);
 
         // OpenGL Version : 460 core
@@ -246,14 +246,14 @@ namespace GamEncin
 
         window = glfwCreateWindow(windowSize.x, windowSize.y, Application::GetProgramName().c_str(), NULL, NULL);
 
-        if(!window)
+        if (!window)
             Application::Stop(GLFWErr);
 
         glfwMakeContextCurrent(window);
 
         glfwSetFramebufferSizeCallback(window, FrameBufferSizeCallback);
 
-        if(!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress) || !gladLoadGL())
+        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress) || !gladLoadGL())
             Application::Stop(GLADErr);
 
         SetFullScreen(isFullScreen);
@@ -265,14 +265,11 @@ namespace GamEncin
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        // TODO for release, works
-        // string exePath = Input::GetExeFilePath();
-        // string vertShaderPath = exePath + "/vert.glsl";
-        // string fragShaderPath = exePath + "/frag.glsl";
-        //
-        // shaderProgram = new Shader(vertShaderPath.c_str(), fragShaderPath.c_str());
+        string exePath = Input::GetExeFilePath();
+        string vertShaderPath = exePath + "/Resources/Shaders/vert.glsl";
+        string fragShaderPath = exePath + "/Resources/Shaders/frag.glsl";
 
-        shaderProgram = new Shader("GamEncin/src/Encin/Shaders/vert.glsl", "GamEncin/src/Encin/Shaders/frag.glsl");
+        shaderProgram = new Shader(vertShaderPath.c_str(), fragShaderPath.c_str());
 
         mainVAO = new GLArrayObject(sizeof(RawVertex));
 
@@ -291,7 +288,7 @@ namespace GamEncin
 
         shaderProgram->Use();
 
-        if(!mainCamera)
+        if (!mainCamera)
         {
             Application::Stop(NullPointerErr, "Main camera is null, set a main camera to play");
             return;
@@ -309,12 +306,12 @@ namespace GamEncin
         // glFlush();
     }
 
-    void Renderer::FrameBufferSizeCallback(GLFWwindow* window, int width, int height)
+    void Renderer::FrameBufferSizeCallback(GLFWwindow *window, int width, int height)
     {
-        if(isFullScreen)
+        if (isFullScreen)
         {
-            GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-            const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+            GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+            const GLFWvidmode *mode = glfwGetVideoMode(monitor);
             glViewport(0, 0, mode->width, mode->height);
         }
         else
@@ -331,11 +328,11 @@ namespace GamEncin
 
     void Renderer::UpdatePerMeshDatas()
     {
-        for(Mesh* mesh : meshes)
+        for (Mesh *mesh : meshes)
         {
             int index = mesh->GetMeshData()->id;
-            Matrix4* matrix = mesh->GetModelMatrix();
-            Texture* texture = mesh->GetTexture();
+            Matrix4 *matrix = mesh->GetModelMatrix();
+            Texture *texture = mesh->GetTexture();
             batchedModelMatrices[index] = matrix ? *matrix : Matrix4(1.0f);
             batchedTextureHandles[index] = texture ? texture->handle : 0;
         }
@@ -380,7 +377,7 @@ namespace GamEncin
         offset += sizeof(Vector2);
     }
 
-    void Renderer::GLSendUniformMatrix4(unsigned int& location, Matrix4 matrix4)
+    void Renderer::GLSendUniformMatrix4(unsigned int &location, Matrix4 matrix4)
     {
         glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix4));
     }

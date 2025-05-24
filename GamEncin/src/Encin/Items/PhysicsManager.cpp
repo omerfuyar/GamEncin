@@ -2,19 +2,19 @@
 
 namespace GamEncin
 {
-    vector<RigidBody*> PhysicsManager::colliders;
+    vector<RigidBody *> PhysicsManager::colliders;
 
-    void PhysicsManager::AddRigidBodiesInScene(Scene* scene)
+    void PhysicsManager::AddRigidBodiesInScene(Scene *scene)
     {
-        if(!scene)
+        if (!scene)
         {
             Application::PrintLog(NullPointerErr, "Scene trying to add colliders is null.");
             return;
         }
 
-        vector<RigidBody* > tempColliders = scene->FindComponentsByType<RigidBody>();
+        vector<RigidBody *> tempColliders = scene->FindComponentsByType<RigidBody>();
 
-        for(auto& obj : tempColliders)
+        for (auto &obj : tempColliders)
         {
             AddRigidBody(obj);
         }
@@ -22,7 +22,7 @@ namespace GamEncin
 
     void PhysicsManager::ClearRigidBodies()
     {
-        for(RigidBody* collider : colliders)
+        for (RigidBody *collider : colliders)
         {
             collider->ClearCollisions();
         }
@@ -30,9 +30,9 @@ namespace GamEncin
         colliders.clear();
     }
 
-    void PhysicsManager::AddRigidBody(RigidBody* collider)
+    void PhysicsManager::AddRigidBody(RigidBody *collider)
     {
-        if(!collider)
+        if (!collider)
         {
             Application::PrintLog(NullPointerErr, "RigidBody trying to add is null.");
             return;
@@ -40,7 +40,7 @@ namespace GamEncin
 
         auto obj = std::find(colliders.begin(), colliders.end(), collider);
 
-        if(obj != colliders.end())
+        if (obj != colliders.end())
         {
             Application::PrintLog(ElementDuplicationErr, "RigidBody already exists in the collider manager.");
             return;
@@ -49,9 +49,9 @@ namespace GamEncin
         colliders.push_back(collider);
     }
 
-    void PhysicsManager::RemoveRigidBody(RigidBody* collider)
+    void PhysicsManager::RemoveRigidBody(RigidBody *collider)
     {
-        if(!collider)
+        if (!collider)
         {
             Application::PrintLog(NullPointerErr, "RigidBody trying to remove is null.");
             return;
@@ -59,7 +59,7 @@ namespace GamEncin
 
         auto obj = std::find(colliders.begin(), colliders.end(), collider);
 
-        if(obj == colliders.end())
+        if (obj == colliders.end())
         {
             Application::PrintLog(ElementCouldNotFindErr, "RigidBody couldn't find in the collider manager.");
             return;
@@ -75,14 +75,14 @@ namespace GamEncin
 
     void PhysicsManager::UpdateRigidBodies()
     {
-        for(int i = 0; i < colliders.size(); i++)
+        for (int i = 0; i < colliders.size(); i++)
         {
-            for(int j = i + 1; j < colliders.size(); j++)
+            for (int j = i + 1; j < colliders.size(); j++)
             {
-                RigidBody* colliderA = colliders[i];
-                RigidBody* colliderB = colliders[j];
+                RigidBody *colliderA = colliders[i];
+                RigidBody *colliderB = colliders[j];
 
-                if(CheckForCollision(colliderA, colliderB))
+                if (CheckForCollision(colliderA, colliderB))
                 {
                     colliderA->AddCollision(colliderB);
                     colliderB->AddCollision(colliderA);
@@ -98,23 +98,25 @@ namespace GamEncin
 
     void PhysicsManager::ResolveCollisions()
     {
-        for(RigidBody* body : colliders)
+        for (RigidBody *body : colliders)
         {
-            if(body->IsTrigger()) continue;
+            if (body->IsTrigger())
+                continue;
 
-            for(RigidBody* otherBody : body->GetCollisions())
+            for (RigidBody *otherBody : body->GetCollisions())
             {
-                if(otherBody->IsTrigger()) continue;
+                if (otherBody->IsTrigger())
+                    continue;
 
-                if(body->IsDynamic() && otherBody->IsDynamic())
+                if (body->IsDynamic() && otherBody->IsDynamic())
                 {
                     ResolveDynamicVsDynamic(body, otherBody);
                 }
-                else if(body->IsDynamic() && !otherBody->IsDynamic())
+                else if (body->IsDynamic() && !otherBody->IsDynamic())
                 {
                     ResolveDynamicVsStatic(body, otherBody);
                 }
-                else if(!body->IsDynamic() && otherBody->IsDynamic())
+                else if (!body->IsDynamic() && otherBody->IsDynamic())
                 {
                     ResolveDynamicVsStatic(otherBody, body);
                 }
@@ -122,20 +124,20 @@ namespace GamEncin
         }
     }
 
-    bool PhysicsManager::CheckForCollision(RigidBody* colliderA, RigidBody* colliderB)
+    bool PhysicsManager::CheckForCollision(RigidBody *colliderA, RigidBody *colliderB)
     {
-        if(!colliderA || !colliderB)
+        if (!colliderA || !colliderB)
         {
             Application::PrintLog(NullPointerErr, "RigidBody trying to check is null.");
             return false;
         }
 
-        //if(colliderA->IsTrigger() || colliderB->IsTrigger()) return false;
+        // if(colliderA->IsTrigger() || colliderB->IsTrigger()) return false;
 
         return (colliderA->GetOwnerObject()->GetTransform()->GetGlobalPosition() - colliderB->GetOwnerObject()->GetTransform()->GetGlobalPosition()).GetMagnitude() < (colliderA->GetRigidBodyRadius() + colliderB->GetRigidBodyRadius());
     }
 
-    void PhysicsManager::ResolveDynamicVsDynamic(RigidBody* colliderA, RigidBody* colliderB)
+    void PhysicsManager::ResolveDynamicVsDynamic(RigidBody *colliderA, RigidBody *colliderB)
     {
         Vector3 distance = colliderB->GetOwnerObject()->GetTransform()->GetGlobalPosition() - colliderA->GetOwnerObject()->GetTransform()->GetGlobalPosition();
 
@@ -157,14 +159,14 @@ namespace GamEncin
         Vector3 resolveVectorA = distance * massB * n;
         Vector3 resolveVectorB = distance * massA * -n;
 
-        colliderA->AddVelocity(resolveVectorA);
-        colliderB->AddVelocity(resolveVectorB);
+        colliderA->AddLinearVelocity(resolveVectorA);
+        colliderB->AddLinearVelocity(resolveVectorB);
 
         colliderA->RemoveCollision(colliderB);
         colliderB->RemoveCollision(colliderA);
     }
 
-    void PhysicsManager::ResolveDynamicVsStatic(RigidBody* colliderA, RigidBody* colliderB)
+    void PhysicsManager::ResolveDynamicVsStatic(RigidBody *colliderA, RigidBody *colliderB)
     {
         Vector3 distance = (colliderB->GetOwnerObject()->GetTransform()->GetGlobalPosition() - colliderA->GetOwnerObject()->GetTransform()->GetGlobalPosition());
 
@@ -178,7 +180,7 @@ namespace GamEncin
 
         Vector3 resolveVectorA = distance * -2 * (velocityA).Dot(distance) / Square(distance.GetMagnitude());
 
-        colliderA->AddVelocity(resolveVectorA);
+        colliderA->AddLinearVelocity(resolveVectorA);
 
         colliderA->RemoveCollision(colliderB);
         colliderB->RemoveCollision(colliderA);

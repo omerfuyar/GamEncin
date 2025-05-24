@@ -35,12 +35,12 @@ namespace GamEncin
 
     void RigidBody::SetDrag(float drag)
     {
-        this->drag = Clamp(drag, 0.0f, 1.0f);
+        this->dragMultiplier = Clamp(drag, 0.0f, 1.0f);
     }
 
     void RigidBody::SetAngularDrag(float angularDrag)
     {
-        this->angularDrag = Clamp(angularDrag, 0.0f, 1.0f);
+        this->angularDragMultiplier = Clamp(angularDrag, 0.0f, 1.0f);
     }
 
     void RigidBody::SetGravityScale(float gravityScale)
@@ -70,12 +70,12 @@ namespace GamEncin
 
     float RigidBody::GetDrag()
     {
-        return drag;
+        return dragMultiplier;
     }
 
     float RigidBody::GetAngularDrag()
     {
-        return angularDrag;
+        return angularDragMultiplier;
     }
 
     float RigidBody::GetGravityScale()
@@ -90,7 +90,7 @@ namespace GamEncin
 
     Vector3 RigidBody::GetVelocity()
     {
-        return velocity;
+        return linearVelocity;
     }
 
     Vector3 RigidBody::GetAngularVelocity()
@@ -100,7 +100,7 @@ namespace GamEncin
 
     Vector3 RigidBody::GetAcceleration()
     {
-        return acceleration;
+        return linearAcceleration;
     }
 
     Vector3 RigidBody::GetAngularAcceleration()
@@ -115,7 +115,7 @@ namespace GamEncin
 
     void RigidBody::AddForce(Vector3 force)
     {
-        acceleration += force / mass;
+        linearAcceleration += force / mass;
     }
 
     void RigidBody::AddTorque(Vector3 torque)
@@ -123,9 +123,9 @@ namespace GamEncin
         angularAcceleration += torque / (mass * Square(colliderRadius) * 0.4f);
     }
 
-    void RigidBody::AddVelocity(Vector3 velocity)
+    void RigidBody::AddLinearVelocity(Vector3 linearVelocity)
     {
-        this->velocity += velocity;
+        this->linearVelocity += linearVelocity;
     }
 
     void RigidBody::AddAngularVelocity(Vector3 angularVelocity)
@@ -221,31 +221,68 @@ namespace GamEncin
             return;
         }
 
-        // gravity and drag acceleration
-        // acceleration -= Vector3(0, GRAVITY, 0) * gravityScale + velocity.Normalized() * Square(velocity.GetMagnitude()) * drag / mass;
-        acceleration -= velocity * drag / mass;
+        // --- Linear ---
+        Vector3 netForce = Vector3::Zero();
 
-        Vector3 gravity = Vector3(0, -GRAVITY, 0) * gravityScale;
+        // gravity
+        Vector3 gravityForce = Vector3(0, -GRAVITY, 0) * gravityScale * mass;
+        netForce += gravityForce;
 
-        velocity += (acceleration + gravity) * Application::GetFixedDeltaTime();
-        object->GetTransform()->AddPosition(velocity * Application::GetFixedDeltaTime());
+        // linear drag
+        Vector3 dragForce = linearVelocity * -dragMultiplier;
+        netForce += dragForce;
 
-        // angular drag acceleration
-        // angularAcceleration -= angularVelocity.Normalized() * Square(angularVelocity.GetMagnitude()) * angularDrag / (0.4f * mass * Square(colliderRadius));
-        angularAcceleration -= angularVelocity * angularDrag / (0.4f * mass * Square(colliderRadius));
+        // custom linear acceleration
+        if (linearAcceleration.GetMagnitude() > MIN_RB_LINEAR_ACCELERATION)
+        {
+            netForce += linearAcceleration * mass;
+        }
+        linearAcceleration = Vector3::Zero();
 
-        angularVelocity += angularAcceleration * Application::GetFixedDeltaTime();
+        // apply net force to linear velocity and clamp it
+        linearVelocity += netForce / mass * Application::GetFixedDeltaTime();
+        if (linearVelocity.GetMagnitude() < MIN_RB_LINEAR_VELOCITY)
+        {
+            linearVelocity = Vector3::Zero();
+        }
+        else if (linearVelocity.GetMagnitude() > MAX_RB_LINEAR_VELOCITY)
+        {
+            linearVelocity = linearVelocity.Normalized() * MAX_RB_LINEAR_VELOCITY;
+        }
+
+        // apply linear velocity to position
+        object->GetTransform()->AddPosition(linearVelocity * Application::GetFixedDeltaTime());
+
+        // --- Angular ---
+        Vector3 netTorque = Vector3::Zero();
+
+        // moment of inertia
+        float momentOfInertia = 0.4f * mass * Square(colliderRadius);
+        momentOfInertia = Clamp(momentOfInertia, MIN_RB_ANGULAR_VELOCITY, MAX_RB_ANGULAR_VELOCITY);
+
+        // angular drag
+        Vector3 angularDragForce = Square(angularVelocity) * -angularDragMultiplier;
+        netTorque += angularDragForce;
+
+        // custom angular acceleration
+        if (angularAcceleration.GetMagnitude() > MIN_RB_ANGULAR_ACCELERATION)
+        {
+            netTorque += angularAcceleration * momentOfInertia;
+        }
+        angularAcceleration = Vector3::Zero();
+
+        // apply net torque to angular velocity and clamp it
+        angularVelocity += netTorque / momentOfInertia * Application::GetFixedDeltaTime();
+        if (angularVelocity.GetMagnitude() < MIN_RB_ANGULAR_VELOCITY)
+        {
+            angularVelocity = Vector3::Zero();
+        }
+        else if (angularVelocity.GetMagnitude() > MAX_RB_ANGULAR_VELOCITY)
+        {
+            angularVelocity = angularVelocity.Normalized() * MAX_RB_ANGULAR_VELOCITY;
+        }
+
+        // apply angular velocity to rotation
         object->GetTransform()->AddRotation(angularVelocity * Application::GetFixedDeltaTime());
-
-        // printf("\nFixUpdate RigidBody, %s\n", object->GetName().c_str());
-        // printf("velocity: %f, %f, %f\n", velocity.x, velocity.y, velocity.z);
-        // printf("angularVelocity: %f, %f, %f\n", angularVelocity.x, angularVelocity.y, angularVelocity.z);
-        // printf("acceleration: %f, %f, %f\n", acceleration.x, acceleration.y, acceleration.z);
-        // printf("angularAcceleration: %f, %f, %f\n", angularAcceleration.x, angularAcceleration.y, angularAcceleration.z);
-        // printf("drag: %f\n", drag);
-        // printf("angularDrag: %f\n", angularDrag);
-        // printf("gravityScale: %f\n", gravityScale);
-        // printf("mass: %f\n", mass);
-        // printf("pos : %f %f %f\n", object->GetTransform()->GetGlobalPosition().x, object->GetTransform()->GetGlobalPosition().y, object->GetTransform()->GetGlobalPosition().z);
     }
 }

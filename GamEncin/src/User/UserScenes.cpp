@@ -8,10 +8,10 @@ void TestScene1::BuildScene()
 {
     //////////////// resources
 
-    Font *myFont1 = FontManager::GetFont("GamEncin/Resources/Fonts/Garamond/garamond.bdf");
-    Font *myFont2 = FontManager::GetFont("GamEncin/Resources/Fonts/Tamzen/Tamzen10x20b.bdf");
-    Texture *texSamed = TextureManager::GetTexture("GamEncin/Resources/Textures/test.jpg");
-    Texture *texCheckBoard = TextureManager::GetTexture("GamEncin/Resources/Textures/test3.jpg");
+    Font *myFont1 = FontManager::GetFont(Input::GetExeFilePath() + "/Resources/Fonts/Garamond/garamond.bdf");
+    Font *myFont2 = FontManager::GetFont(Input::GetExeFilePath() + "/Resources/Fonts/Tamzen/Tamzen10x20b.bdf");
+    Texture *texSamed = TextureManager::GetTexture(Input::GetExeFilePath() + "/Resources/Textures/test.jpg");
+    Texture *texCheckBoard = TextureManager::GetTexture(Input::GetExeFilePath() + "/Resources/Textures/test3.jpg");
 
     /////////////// camera
 
@@ -112,13 +112,13 @@ void TestScene2::BuildScene()
 {
     //////////////// resources
 
-    Font *myFont1 = FontManager::GetFont("GamEncin/Resources/Fonts/Garamond/garamond.bdf");
-    Font *myFont2 = FontManager::GetFont("GamEncin/Resources/Fonts/Tamzen/Tamzen10x20b.bdf");
-    Texture *texSamed = TextureManager::GetTexture("GamEncin/Resources/Textures/test.jpg");
-    Texture *texCheckBoard = TextureManager::GetTexture("GamEncin/Resources/Textures/test3.jpg");
-    Texture *texPlayer = TextureManager::GetTexture("GamEncin/Resources/Textures/Player.png");
-    Texture *texOracle = TextureManager::GetTexture("GamEncin/Resources/Textures/Oracle.png");
-    Texture *texWall = TextureManager::GetTexture("GamEncin/Resources/Textures/Wall.png");
+    Font *myFont1 = FontManager::GetFont(Input::GetExeFilePath() + "/Resources/Fonts/Garamond/garamond.bdf");
+    Font *myFont2 = FontManager::GetFont(Input::GetExeFilePath() + "/Resources/Fonts/Tamzen/Tamzen10x20b.bdf");
+    Texture *texSamed = TextureManager::GetTexture(Input::GetExeFilePath() + "/Resources/Textures/test.jpg");
+    Texture *texCheckBoard = TextureManager::GetTexture(Input::GetExeFilePath() + "/Resources/Textures/test3.jpg");
+    Texture *texPlayer = TextureManager::GetTexture(Input::GetExeFilePath() + "/Resources/Textures/Player.png");
+    Texture *texOracle = TextureManager::GetTexture(Input::GetExeFilePath() + "/Resources/Textures/Oracle.png");
+    Texture *texWall = TextureManager::GetTexture(Input::GetExeFilePath() + "/Resources/Textures/Wall.png");
 
     texPlayer->SetWrapAndFilter(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_NEAREST, GL_NEAREST);
     texOracle->SetWrapAndFilter(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_NEAREST, GL_NEAREST);
@@ -276,7 +276,7 @@ void TestScene2::BuildScene()
 
 #pragma region Enemies
 
-    for (int i = 0; i < 3; ++i)
+    for (int i = 0; i < dialoguePanelController->enemiesToSpawn; ++i)
     {
         Object &enemyObj = CreateObject();
         enemyObj.GetTransform()->SetLocalPosition(Vector3(0, 0, 10));
@@ -289,7 +289,7 @@ void TestScene2::BuildScene()
 
         ModelMesh *enemyMesh = enemyObj.AddComponent<ModelMesh>();
         enemyMesh->SetMeshData(MeshBuilder::CreatePlane(Vector2::One()));
-        enemyMesh->SetTexture(TextureManager::GetTexture("GamEncin/Resources/Textures/Enemy.png"));
+        enemyMesh->SetTexture(TextureManager::GetTexture(Input::GetExeFilePath() + "/Resources/Textures/Enemy.png"));
 
         RigidBody *enemyRB = enemyObj.AddComponent<RigidBody>();
         enemyRB->SetTrigger(true);
@@ -316,6 +316,7 @@ void TestScene2::BuildScene()
     playerRB2->SetDynamic(true);
     playerRB2->SetGravityScale(0);
     playerRB2->SetColliderRadius(0.5f);
+    playerRB2->SetDrag(0.95f);
 
     Transform *playerTR2 = playerObj.GetTransform();
     cameraTR->SetParent(playerTR2);
@@ -375,7 +376,7 @@ void TestScene2::BuildScene()
     DialogueOption *question2DO = new DialogueOption("What must I do to be remembered?", ending2DP);
     DialogueOption *question3DO = new DialogueOption("Can I be free of fate?", ending3DP);
 
-    DialoguePiece *endQuestionDP = new DialoguePiece("You may ask one question.\nSpeak, and I shall answer — truthfully,\nbut only once.", question1DO, question2DO, question3DO);
+    DialoguePiece *endQuestionDP = new DialoguePiece("You may ask one question.\nSpeak, and I shall answer\ntruthfully, but only once.", question1DO, question2DO, question3DO);
     Dialogue *oracleFinalD = new Dialogue("Oracle Final", endQuestionDP, PlayerDialogueState::End);
     oracle->AddDialogue(PlayerDialogueState::AfterChallengeComplete, oracleFinalD);
 
@@ -420,15 +421,6 @@ void TestScene2::BuildScene()
     Dialogue *firstAreaD = new Dialogue("First Area Trigger", firstAreaDP, PlayerDialogueState::AfterFirstAreaTrigger);
     firstAreaTrigger->SetDialogueToShow(firstAreaD);
     firstAreaTrigger->SetStateToInteract(PlayerDialogueState::Start);
-
-    // - Strength: Spawn 3 enemies
-    // - Wisdom: Trigger riddle UI
-    // - Grace: Enable timed trap zone
-    // IMPLEMENTATION ACTION NEEDED:
-    // In dialogue system, hook these continueDO options to:
-    // - SpawnEnemies()
-    // - StartPuzzleRiddle()
-    // - ActivateTrapZone()
 
     //------------ Oracle Unavailable Dialogue (fallback)
     DialoguePiece *unavailableDP = new DialoguePiece("I have nothing more to say to you.", leaveDO);

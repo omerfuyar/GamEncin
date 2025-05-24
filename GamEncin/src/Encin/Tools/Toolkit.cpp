@@ -358,7 +358,7 @@ namespace GamEncin
                 i++; // Next line in BDF
             }
 
-            string outputDir = "GamEncin/Resources/Fonts/";
+            string outputDir = Input::GetExeFilePath() + "/Resources/Fonts/";
             string outputImagePath = outputDir + fontName + "_atlas.png";
 
             if (!stbi_write_png(outputImagePath.c_str(), atlasSize.x, atlasSize.y, 4, atlasData.data(), atlasSize.x * 4))

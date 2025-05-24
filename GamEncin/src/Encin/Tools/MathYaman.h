@@ -40,6 +40,12 @@ namespace GamEncin
 
 #pragma endregion
 
+        struct Vector2;
+        struct Vector3;
+        struct Vector4;
+        struct Vector2Int;
+        struct Vector4Int;
+
 #pragma region Basic Functions
 
         // Returns the factorial of the number
@@ -50,6 +56,12 @@ namespace GamEncin
 
         // Returns the absolute value of the float
         float Abs(float value);
+
+        // Returns 0.0f if the value is zero, 1.0f if the value is positive, and -1.0f if the value is negative
+        float Sign(float value);
+
+        // Returns 0 if the value is zero, 1 if the value is positive, and -1 if the value is negative
+        int Sign(int value);
 
         // Returns the rounded value of the float
         int Round(float value);
@@ -68,6 +80,21 @@ namespace GamEncin
 
         // Returns the Square of the float value
         float Square(float value);
+
+        // Returns the square of the vector
+        Vector2 Square(Vector2 vec);
+
+        // Returns the square of the vector
+        Vector3 Square(Vector3 vec);
+
+        // Returns the cube of the float value
+        float Cube(float value);
+
+        // Returns the cube of the vector
+        Vector2 Cube(Vector2 vec);
+
+        // Returns the cube of the vector
+        Vector3 Cube(Vector3 vec);
 
         // Returns the logarithm of the value to the base
         float Log(float value, float base);
@@ -416,20 +443,22 @@ namespace GamEncin
         float Clamp(float value, float min, float max);
 
         /// <summary>
-        /// Clamps the Vector2 magnitude between 0 and max value
+        /// Clamps the Vector2 magnitude between min and max values
         /// </summary>
         /// <param name="value:">Vector to clamp</param>
+        /// <param name="min:">Min magnitude</param>
         /// <param name="max:">Max magnitude</param>
-        /// <returns>Original vector or a Vector2 with max magnitude</returns>
-        Vector2 ClampVectorMagnitude(Vector2 vector, float max);
+        /// <returns>Min, max or in between Vector2</returns>
+        Vector2 ClampVectorMagnitude(Vector2 vector, float min, float max);
 
         /// <summary>
-        /// Clamps the Vector3 magnitude between 0 and max value
+        /// Clamps the Vector3 magnitude between min and max values
         /// </summary>
-        /// <param name="value:">Vector to restrict</param>
+        /// <param name="value:">Vector to clamp</param>
+        /// <param name="min:">Min magnitude</param>
         /// <param name="max:">Max magnitude</param>
-        /// <returns>Original vector or a Vector3 with max magnitude</returns>
-        Vector3 ClampVectorMagnitude(Vector3 vector, float max);
+        /// <returns>Min, max or in between Vector3</returns>
+        Vector3 ClampVectorMagnitude(Vector3 vector, float min, float max);
 
         /// <summary>
         /// Linear Interpolation between two float values

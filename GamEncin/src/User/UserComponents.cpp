@@ -58,15 +58,22 @@ PlayerDialogueState Dialogue::GetNextState()
 
 DialoguePanelController::DialoguePanelController(Object *obj) : Component(obj)
 {
-    Font *tamzenFont = FontManager::GetFont("GamEncin/Resources/Fonts/Tamzen/Tamzen10x20b.bdf");
-    Texture *texDialoguePanel = TextureManager::GetTexture("GamEncin/Resources/Textures/UI/DialoguePanel.png");
-    Texture *texAnswerPanel1 = TextureManager::GetTexture("GamEncin/Resources/Textures/UI/AnswerPanel1.png");
-    Texture *texAnswerPanel2 = TextureManager::GetTexture("GamEncin/Resources/Textures/UI/AnswerPanel2.png");
-    Texture *texAnswerPanel3 = TextureManager::GetTexture("GamEncin/Resources/Textures/UI/AnswerPanel3.png");
+    Font *tamzenFont = FontManager::GetFont(Input::GetExeFilePath() + "/Resources/Fonts/Tamzen/Tamzen10x20b.bdf");
+    Texture *texDialoguePanel = TextureManager::GetTexture(Input::GetExeFilePath() + "/Resources/Textures/UI/DialoguePanel.png");
+    Texture *texAnswerPanel1 = TextureManager::GetTexture(Input::GetExeFilePath() + "/Resources/Textures/UI/AnswerPanel1.png");
+    Texture *texAnswerPanel2 = TextureManager::GetTexture(Input::GetExeFilePath() + "/Resources/Textures/UI/AnswerPanel2.png");
+    Texture *texAnswerPanel3 = TextureManager::GetTexture(Input::GetExeFilePath() + "/Resources/Textures/UI/AnswerPanel3.png");
     texDialoguePanel->SetWrapAndFilter(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_NEAREST, GL_NEAREST);
     texAnswerPanel1->SetWrapAndFilter(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_NEAREST, GL_NEAREST);
     texAnswerPanel2->SetWrapAndFilter(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_NEAREST, GL_NEAREST);
     texAnswerPanel3->SetWrapAndFilter(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_NEAREST, GL_NEAREST);
+
+    Object &timerObj = object->CreateChildObject();
+    timerObj.SetName("Timer");
+    timerObj.GetTransform()->SetLocalPosition(Vector3(0, 3, 10));
+    timerMesh = timerObj.AddComponent<TextMesh>();
+    timerMesh->SetFont(tamzenFont);
+    timerMesh->SetTextSize(Vector2::One() * 3.0f);
 
     Object &textPanelObj = object->CreateChildObject();
     textPanelObj.SetName("TextPanel");
@@ -87,7 +94,7 @@ DialoguePanelController::DialoguePanelController(Object *obj) : Component(obj)
     answerPanelObj.GetTransform()->SetLocalPosition(Vector3(0, -1.5f, -0.1f));
     answerPanel = answerPanelObj.AddComponent<ModelMesh>();
     answerPanel->SetMeshData(MeshBuilder::CreatePlane(panelSize * 2));
-    answerPanel->SetTexture(TextureManager::GetTexture("GamEncin/Resources/Textures/UI/AnswerPanel3.png"));
+    answerPanel->SetTexture(TextureManager::GetTexture(Input::GetExeFilePath() + "/Resources/Textures/UI/AnswerPanel3.png"));
 
     float y_start_offset = 0.5f;
     float y_spacing = 0.5f;
@@ -131,7 +138,7 @@ void DialoguePanelController::EnemyKilled(Enemy *enemy)
 
     if (killedEnemies >= enemiesToSpawn)
     {
-        FinishEnemiesChallenge();
+        FinishEnemyChallenge();
     }
 }
 
@@ -159,7 +166,7 @@ void DialoguePanelController::BringPiece(DialoguePiece *piece)
         return;
     }
 
-    answerPanel->SetTexture(TextureManager::GetTexture("GamEncin/Resources/Textures/UI/AnswerPanel" + to_string(options.size()) + ".png"));
+    answerPanel->SetTexture(TextureManager::GetTexture(Input::GetExeFilePath() + "/Resources/Textures/UI/AnswerPanel" + to_string(options.size()) + ".png"));
 
     for (int i = 0; i < options.size() && i < 3; i++)
     {
@@ -174,11 +181,11 @@ void DialoguePanelController::SelectOption(DialogueOption *option)
 
     if (text == "Power (Strength)")
     {
-        SpawnEnemies();
+        StartStrengthChallenge();
     }
     else if (text == "Grace (Dexterity)")
     {
-        ActivateTrapZone();
+        StartGraceChallenge();
     }
     else if (text == "..." || text == "What!!?!")
     {
@@ -189,38 +196,46 @@ void DialoguePanelController::SelectOption(DialogueOption *option)
     BringPiece(option->GetNextDialogue());
 }
 
-void DialoguePanelController::SpawnEnemies()
+void DialoguePanelController::StartStrengthChallenge()
 {
     environmentObj->GetTransform()->SetLocalPosition(Vector3(0, 0, 10));
     player->SetDialogueState(PlayerDialogueState::AfterChoseStrength);
 
     for (Enemy *enemy : enemies)
     {
-        enemy->GetOwnerObject()->GetTransform()->SetLocalPosition(Vector3(RandomVector2Direction() * 2.0f + RandomVector2(), 0));
+        enemy->GetOwnerObject()->GetTransform()->SetLocalPosition(Vector3(player->GetOwnerObject()->GetTransform()->GetGlobalPosition() + RandomVector2Direction() * enemySpawnRange + RandomVector2(), 0.0f));
         enemy->SetIsFollowing(true);
     }
 }
 
-void DialoguePanelController::FinishEnemiesChallenge()
+void DialoguePanelController::FinishEnemyChallenge()
 {
-    environmentObj->GetTransform()->SetLocalPosition(Vector3(0, 0, 0));
+    // environmentObj->GetTransform()->SetLocalPosition(Vector3(0, 0, 0));
     player->SetDialogueState(PlayerDialogueState::AfterChallengeComplete);
+    isInGraceChallenge = false;
+    timerMesh->GetOwnerObject()->GetTransform()->SetLocalPosition(Vector3(0, 3, 10));
 }
 
-void DialoguePanelController::ActivateTrapZone()
+void DialoguePanelController::StartGraceChallenge()
 {
     environmentObj->GetTransform()->SetLocalPosition(Vector3(0, 0, 10));
     player->SetDialogueState(PlayerDialogueState::AfterChoseGrace);
+    isInGraceChallenge = true;
+    timer = graceDuration;
+    timerMesh->SetText(to_string(timer));
+    timerMesh->GetOwnerObject()->GetTransform()->SetLocalPosition(Vector3(0, 3, -10));
 
     for (Enemy *enemy : enemies)
     {
-        enemy->GetOwnerObject()->GetTransform()->SetLocalPosition(Vector3(RandomVector2Direction() * 2.0f + RandomVector2(), 0));
+        enemy->GetOwnerObject()->GetTransform()->SetLocalPosition(Vector3(player->GetOwnerObject()->GetTransform()->GetGlobalPosition() + RandomVector2Direction() * enemySpawnRange + RandomVector2(), 0.0f));
         enemy->SetIsFollowing(false);
+        enemy->SetSpeed(enemy->GetSpeed() * enemy->GetGraceSpeedMultiplier());
     }
 }
 
 void DialoguePanelController::Update()
 {
+
     if (Input::GetKey(Down, KeyCode::Num1) && currentOptions.size() > 0)
     {
         SelectOption(currentOptions[0]);
@@ -232,6 +247,27 @@ void DialoguePanelController::Update()
     else if (Input::GetKey(Down, KeyCode::Num3) && currentOptions.size() > 2)
     {
         SelectOption(currentOptions[2]);
+    }
+
+    if (player->IsInDialogue())
+    {
+        return;
+    }
+
+    timerMesh->SetText(to_string(timer));
+    if (isInGraceChallenge && timer <= 0.0f)
+    {
+        isInGraceChallenge = false;
+        FinishEnemyChallenge();
+        for (Enemy *enemy : enemies)
+        {
+            enemy->GetOwnerObject()->GetTransform()->SetLocalPosition(Vector3(0, 0, 10));
+        }
+        timer = graceDuration;
+    }
+    else
+    {
+        timer -= Application::GetDeltaTime();
     }
 }
 
@@ -275,6 +311,11 @@ void PlayerController::SetDialogueState(PlayerDialogueState state)
     currentDialogueState = state;
 }
 
+bool PlayerController::IsInDialogue()
+{
+    return isInDialogue;
+}
+
 void PlayerController::TakeDamage(int damage)
 {
     health -= damage;
@@ -282,20 +323,14 @@ void PlayerController::TakeDamage(int damage)
     if (health <= 0)
     {
         Application::Stop(Safe, "Application ended by user.");
+        StartDialogue(new Dialogue("You died", new DialoguePiece("You died", new DialogueOption("...", nullptr)), PlayerDialogueState::End));
         return;
     }
 }
 
 void PlayerController::OnCollisionEnter(RigidBody *enteredRigidBody)
 {
-    NPC *npc = enteredRigidBody->GetOwnerObject()->GetComponent<NPC>();
     AreaTrigger *areaTrigger = enteredRigidBody->GetOwnerObject()->GetComponent<AreaTrigger>();
-    Enemy *enemy = enteredRigidBody->GetOwnerObject()->GetComponent<Enemy>();
-
-    if (currentNPC == nullptr && npc != nullptr)
-    {
-        currentNPC = npc;
-    }
 
     if (areaTrigger != nullptr && currentDialogueState == areaTrigger->GetStateToInteract())
     {
@@ -305,6 +340,18 @@ void PlayerController::OnCollisionEnter(RigidBody *enteredRigidBody)
     if (enteredRigidBody->GetOwnerObject()->GetTag() == "EnemyCollider")
     {
         TakeDamage(1);
+        playerRB->AddForce((playerTR->GetGlobalPosition() - enteredRigidBody->GetOwnerObject()->GetTransform()->GetGlobalPosition()).Normalized() * enemyForce);
+    }
+}
+
+void PlayerController::OnCollisionStay(RigidBody *stayingRigidBody)
+{
+    NPC *npc = stayingRigidBody->GetOwnerObject()->GetComponent<NPC>();
+    Enemy *enemy = stayingRigidBody->GetOwnerObject()->GetComponent<Enemy>();
+
+    if (currentNPC == nullptr && npc != nullptr)
+    {
+        currentNPC = npc;
     }
 
     if (currentEnemy == nullptr && enemy != nullptr && enemy->IsKillable())
@@ -344,7 +391,7 @@ void PlayerController::Update()
         return;
     }
 
-    Vector3 input = Input::GetMovementVector();
+    Vector3 input = Input::GetMovementVector().Normalized();
     playerTR->AddPosition((Vector2)input * movementSpeed * Application::GetDeltaTime());
 
     if (currentNPC != nullptr && Input::GetKey(Down, KeyCode::E))
@@ -390,6 +437,21 @@ Dialogue *NPC::GetDialogue(PlayerDialogueState state)
 
 Enemy::Enemy(Object *obj) : Component(obj) {}
 
+float Enemy::GetSpeed()
+{
+    return speed;
+}
+
+float Enemy::GetGraceSpeedMultiplier()
+{
+    return graceSpeedMultiplier;
+}
+
+void Enemy::SetSpeed(float newSpeed)
+{
+    speed = newSpeed;
+}
+
 void Enemy::SetIsFollowing(bool isFollowing)
 {
     this->isFollowing = isFollowing;
@@ -413,27 +475,41 @@ void Enemy::Start()
 
 void Enemy::Update()
 {
+    if (player->GetOwnerObject()->GetComponent<PlayerController>()->IsInDialogue())
+    {
+        return;
+    }
+
     Vector2 pos = object->GetTransform()->GetGlobalPosition();
     Vector2 playerPos = player->GetGlobalPosition();
-
-    if (isFollowing)
+    if ((playerPos - pos).GetMagnitude() > 0.0f)
     {
         direction = (playerPos - pos).Normalized();
     }
+    else
+    {
+        return;
+    }
+
+    if (isFollowing)
+    {
+        object->GetTransform()->AddPosition(direction * speed * Application::GetDeltaTime());
+    }
     else if (canMove)
     {
-        direction = (pos - playerPos).Normalized();
         target = pos + (direction * moveRange);
         canMove = false;
+        object->GetTransform()->AddPosition(direction * speed * Application::GetDeltaTime());
     }
     else if (pos == target)
     {
         canMove = true;
-        return;
     }
-
-    Vector2 step = pos - MoveTowards(pos, target, speed * Application::GetDeltaTime());
-    object->GetTransform()->AddPosition(step);
+    else
+    {
+        Vector2 step = MoveTowards(pos, target, speed * Application::GetDeltaTime()) - pos;
+        object->GetTransform()->AddPosition(step);
+    }
 }
 
 CameraController::CameraController(Object *obj) : Component(obj) {}

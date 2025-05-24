@@ -69,6 +69,9 @@ private:
 class DialoguePanelController : public Component
 {
 public:
+    int enemiesToSpawn = 3;
+    float enemySpawnRange = 7.5f;
+
     DialoguePanelController(Object *obj);
 
     void BringPiece(DialoguePiece *piece);
@@ -81,11 +84,14 @@ public:
     void EnemyKilled(Enemy *enemy);
 
 private:
-    int enemiesToSpawn = 3;
+    float graceDuration = 20.0f;
+    float timer = 0.0f;
+    bool isInGraceChallenge = false;
     int killedEnemies = 0;
     PlayerController *player = nullptr;
     Vector2 panelSize = Vector2(2.0f, 1.0f);
     TextMesh *textMesh = nullptr;
+    TextMesh *timerMesh = nullptr;
     ModelMesh *textPanel = nullptr;
     ModelMesh *answerPanel = nullptr;
     array<TextMesh *, 3> optionPlaces = {nullptr, nullptr, nullptr};
@@ -93,9 +99,9 @@ private:
     Object *environmentObj = nullptr;
     vector<Enemy *> enemies;
 
-    void SpawnEnemies();
-    void FinishEnemiesChallenge();
-    void ActivateTrapZone();
+    void StartStrengthChallenge();
+    void FinishEnemyChallenge();
+    void StartGraceChallenge();
     void Update() override;
     void Start() override;
 };
@@ -113,10 +119,13 @@ public:
     void EndDialogue();
     void SetDialogueState(PlayerDialogueState state);
 
+    bool IsInDialogue();
+
 private:
     int health = 3;
     bool isInDialogue = false;
-    float movementSpeed = 2;
+    float enemyForce = 250.0f;
+    float movementSpeed = 2.0f;
     PlayerDialogueState currentDialogueState = PlayerDialogueState::Start;
     DialoguePanelController *playerDialoguePanel = nullptr;
     Transform *playerTR = nullptr;
@@ -127,6 +136,7 @@ private:
     void TakeDamage(int damage);
 
     void OnCollisionEnter(RigidBody *enteredRigidBody) override;
+    void OnCollisionStay(RigidBody *stayingRigidBody) override;
     void OnCollisionExit(RigidBody *exitedRigidBody) override;
     void Awake() override;
     void Start() override;
@@ -155,6 +165,11 @@ class Enemy : public Component
 {
 public:
     Enemy(Object *obj);
+
+    float GetSpeed();
+    float GetGraceSpeedMultiplier();
+
+    void SetSpeed(float newSpeed);
     void SetIsFollowing(bool isFollowing);
     void Die();
     bool IsKillable();
@@ -163,7 +178,8 @@ private:
     bool isFollowing;
     bool canMove = true;
     float speed = 1.5f;
-    float moveRange = 2.0f;
+    float graceSpeedMultiplier = 2.5f;
+    float moveRange = 8.0f;
     Transform *player = nullptr;
     Vector2 target;
     Vector2 direction;
