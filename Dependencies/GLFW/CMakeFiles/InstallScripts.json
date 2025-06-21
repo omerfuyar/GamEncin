@@ -1,0 +1,11 @@
+{
+	"InstallScripts" : 
+	[
+		"C:/Users/denem/Documents/Programming/C-C++/GamEncin/Dependencies/GLFW/build/cmake_install.cmake",
+		"C:/Users/denem/Documents/Programming/C-C++/GamEncin/Dependencies/GLFW/build/src/cmake_install.cmake",
+		"C:/Users/denem/Documents/Programming/C-C++/GamEncin/Dependencies/GLFW/build/examples/cmake_install.cmake",
+		"C:/Users/denem/Documents/Programming/C-C++/GamEncin/Dependencies/GLFW/build/tests/cmake_install.cmake",
+		"C:/Users/denem/Documents/Programming/C-C++/GamEncin/Dependencies/GLFW/build/docs/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

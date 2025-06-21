@@ -241,12 +241,12 @@ namespace GamEncin
         Start();
 
         fixedDeltaTime = 1.0f / (double)fixedFPS;
-        steady_clock::time_point lastFrame = high_resolution_clock::now();
+        high_resolution_clock::time_point lastFrame = high_resolution_clock::now();
         double fpsTimer = 0.0f;
 
         while (!Renderer::GetWindowCloseInput())
         {
-            steady_clock::time_point now = high_resolution_clock::now();
+            high_resolution_clock::time_point now = high_resolution_clock::now();
             deltaTime = duration<float>(now - lastFrame).count();
             lastFrame = now;
 

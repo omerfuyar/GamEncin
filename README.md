@@ -1,5 +1,8 @@
 ﻿# GamEncin
 
+## IMPORTANT
+This project is one of my old project. It's developed in a few months. I learned so much from this project I really respect it even though I find it disgusting when I look back to it. So that means this project is discontinued until further notice. Notice to huge void who is reading this. The last thing I did is configure build system and update how to use section in this file. But who knows, maybe I can come back and work on this project again.
+
 ## Description
 This is a simple game engine that I am developing for fun.
 It is written in C++ and uses OpenGL for rendering.
@@ -18,14 +21,12 @@ This message is written by AI 🤠🤠.
 -Nothing is done in one day in this world, so just trying something.
 
 ## How to use
--Project is probably not compatible with any other system than mine.
--Update: Looks like it also runs in windows visual studio 2022 because
-I uploaded all project files to here. All project settings are maintained in project files.
--I didn't use cmake for this because when I tried to use it, it went
-so bad just as like ECS for handling objects.
--In the main loop, first create the Application singleton.
--Then create a scene and build your scene.
--Then run the application 🥳🥳🥳🥳.
+-After I added cmake, you can build the project by using cmake.
+-Create a build folder in project directory.
+-Cd to it
+-Run "cmake .. -G "MinGW Makefiles""
+-Then run "cmake --build ."
+-And you should have your .exe file inside build bin
 
 ## Dependencies
 -GLFW

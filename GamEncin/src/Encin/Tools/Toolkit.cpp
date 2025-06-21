@@ -3,6 +3,7 @@
 #include <STB/stb_image.h>
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <STB/stb_image_write.h>
+#include <algorithm>
 
 namespace GamEncin
 {
@@ -655,14 +656,14 @@ namespace GamEncin
         unsigned int MeshBuilder::GenerateFaceId(Vertex *vertex1, Vertex *vertex2, Vertex *vertex3)
         {
             array<unsigned int, 3> ids = {vertex1->id, vertex2->id, vertex3->id};
-            sort(ids.begin(), ids.end());
+            std::sort(ids.begin(), ids.end());
             return ((ids[0] << 22) | (ids[1] << 11) | ids[2]);
         }
 
         unsigned int MeshBuilder::GenerateEdgeId(Vertex *vertex1, Vertex *vertex2)
         {
             array<unsigned int, 2> ids = {vertex1->id, vertex2->id};
-            sort(ids.begin(), ids.end());
+            std::sort(ids.begin(), ids.end());
             return ((ids[0] << 16) | ids[1]);
         }
 

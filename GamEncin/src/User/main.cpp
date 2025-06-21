@@ -1,4 +1,5 @@
 #include "GamEncin.h"
+#include <windows.h> // Include the header for DWORD definition
 
 #define GE_SELECT_OPTIMUM_GPU
 
@@ -35,7 +36,7 @@ int main()
 #ifdef GE_SELECT_OPTIMUM_GPU
 extern "C"
 {
-    _declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
-    _declspec(dllexport) DWORD AmdPowerXpressRequestHighPerformance = 0x00000001;
+    __declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
+    __declspec(dllexport) DWORD AmdPowerXpressRequestHighPerformance = 0x00000001;
 }
 #endif
