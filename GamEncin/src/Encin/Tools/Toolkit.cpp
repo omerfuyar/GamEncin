@@ -234,129 +234,152 @@ namespace GamEncin
             // Find font name in the BDF file and set the name of the font
             for (const string &line : lines)
             {
-                if (line.rfind("FONT ", 0) == 0)
+                string cleanLine = line;
+                if (!cleanLine.empty() && cleanLine.back() == '\r') {
+                    cleanLine.pop_back();
+                }
+                if (cleanLine.rfind("FONT ", 0) == 0)
                 {
-                    vector<string> parts = SplitString(line, " ");
-                    string xlfdName = parts[1];
-                    vector<string> tokens = SplitString(xlfdName, "-");
-                    fontName = tokens[1] + "_" + tokens[2] + "_" + tokens[3]; // Family_Weight_Slant
-                    break;
+                    vector<string> raw_parts = SplitString(cleanLine, " ");
+                    vector<string> parts;
+                    std::copy_if(raw_parts.begin(), raw_parts.end(), std::back_inserter(parts), [](const string& s){ return !s.empty(); });
+
+                    if (parts.size() >= 2)
+                    {
+                        string xlfdName = parts[1];
+                        vector<string> tokens = SplitString(xlfdName, "-");
+                        if (tokens.size() >= 4) {
+                            fontName = tokens[1] + "_" + tokens[2] + "_" + tokens[3]; // Family_Weight_Slant
+                        }
+                        break;
+                    }
                 }
             }
 
-            int i = 0;
-            while (i < lines.size()) // per line
+            for (size_t i = 0; i < lines.size(); ++i)
             {
-                if (lines[i].rfind("STARTCHAR", 0) == 0) // per char
+                string line = lines[i];
+                if (!line.empty() && line.back() == '\r') {
+                    line.pop_back();
+                }
+
+                if (line.rfind("STARTCHAR", 0) != 0) {
+                    continue;
+                }
+
+                // --- We are now inside a character block ---
+                char currentChar = '?';
+                Vector2Int bbxSize(0,0);
+                Vector2Int bbxOffset(0,0);
+                vector<string> bitmapLines;
+                string charNameStr = SplitString(line, " ")[1];
+
+                // Process properties until ENDCHAR
+                while (++i < lines.size())
                 {
-                    char currentChar = '?';
-                    Vector2Int bbxSize;
-                    Vector2Int bbxOffset;
-                    vector<string> bitmapLines;
-                    string charNameStr = SplitString(lines[i], " ")[1];
+                    line = lines[i];
+                    if (!line.empty() && line.back() == '\r') {
+                        line.pop_back();
+                    }
 
-                    int startCharLine = i;
-
-                    while (i < lines.size() && lines[i] != "ENDCHAR")
+                    if (line.rfind("ENCODING", 0) == 0)
                     {
-                        if (lines[i].rfind("ENCODING", 0) == 0)
-                        {
-                            currentChar = (char)StringToInt(SplitString(lines[i], " ")[1]);
+                        vector<string> words = SplitString(line, " ");
+                        if (words.size() >= 2) {
+                            currentChar = (char)StringToInt(words[1]);
                         }
-                        else if (lines[i].rfind("BBX", 0) == 0)
+                    }
+                    else if (line.rfind("BBX", 0) == 0)
+                    {
+                        vector<string> raw_words = SplitString(line, " ");
+                        vector<string> bbxWords;
+                        std::copy_if(raw_words.begin(), raw_words.end(), std::back_inserter(bbxWords), [](const string& s){ return !s.empty(); });
+                        if (bbxWords.size() >= 5)
                         {
-                            vector<string> bbxWords = SplitString(lines[i], " ");
-
                             bbxSize.x = StringToInt(bbxWords[1]);
                             bbxSize.y = StringToInt(bbxWords[2]);
                             bbxOffset.x = StringToInt(bbxWords[3]);
                             bbxOffset.y = StringToInt(bbxWords[4]);
                         }
-                        else if (lines[i] == "BITMAP")
+                    }
+                    else if (line == "BITMAP")
+                    {
+                        // Read all bitmap lines until ENDCHAR
+                        while (++i < lines.size())
                         {
-                            i++; // Move to first line of bitmap data
-
-                            while (i < lines.size() && lines[i] != "ENDCHAR")
-                            {
-                                bitmapLines.push_back(lines[i]);
-                                i++;
+                            line = lines[i];
+                            if (!line.empty() && line.back() == '\r') {
+                                line.pop_back();
                             }
-
-                            // process bitmap data after all bitmap lines of the char collected
-                            if (bbxSize.x > 0 && bbxSize.y > 0) // chars with bitmap data
-                            {
-                                // atlas packing
-                                if (cursor.x + bbxSize.x > atlasSize.x)
-                                {
-                                    cursor.x = 0;
-                                    cursor.y += rowHeight + 1; // Move to next row (1px padding)
-                                    rowHeight = 0;
-                                }
-
-                                if (cursor.y + bbxSize.y > atlasSize.y) // no vertical space, todo this can be removed
-                                {
-                                    Application::Stop(IOErr, "Font atlas full. Character '" + charNameStr + "' (Encoding: " + currentChar + ") for font: " + fontName + ". Increase the atlas resolution to be able to output atlas texture.");
-                                }
-
-                                // Write bitmap data to atlas
-                                for (int dataY = 0; dataY < bbxSize.y && dataY < bitmapLines.size(); dataY++)
-                                {
-                                    int bytesPerRow = (bbxSize.x + 7) / 8;
-                                    string hexRow = bitmapLines[dataY];
-                                    unsigned long long rowBits = 0;
-
-                                    try
-                                    {
-                                        rowBits = std::stoull(hexRow, nullptr, 16);
-                                    }
-                                    catch (const std::invalid_argument &ia)
-                                    {
-                                        Application::PrintLog(TypeMismatchErr, "Invalid hex in BDF bitmap for char " + charNameStr + ": " + hexRow);
-                                        continue; // Skip this row or char
-                                    }
-
-                                    for (int dataX = 0; dataX < bbxSize.x; dataX++)
-                                    {
-                                        int bitPosition = (bytesPerRow * 8) - 1 - dataX;
-                                        if (bbxSize.x <= 64 && (rowBits >> bitPosition) & 1)
-                                        {
-                                            int pixelBaseIndex = ((cursor.y + dataY) * atlasSize.x + (cursor.x + dataX)) * 4;
-
-                                            if (pixelBaseIndex + 3 < atlasData.size())
-                                            {
-                                                atlasData[pixelBaseIndex + 0] = 255; // R
-                                                atlasData[pixelBaseIndex + 1] = 255; // G
-                                                atlasData[pixelBaseIndex + 2] = 255; // B
-                                                atlasData[pixelBaseIndex + 3] = 255; // A
-                                            }
-                                        }
-                                    }
-                                }
-
-                                Vector2 uv = Vector2((float)cursor.x / atlasSize.x, (float)cursor.y / atlasSize.y);
-                                Vector2 size = Vector2((float)bbxSize.x / atlasSize.x, (float)bbxSize.y / atlasSize.y);
-                                Vector2 offset = Vector2((float)bbxOffset.x / atlasSize.x, (float)bbxOffset.y / atlasSize.y); // todo maybe dont make this normalized, but use the bbxSize instead
-                                // Vector2 offset = Vector2((float) bbxOffset.x, (float) bbxOffset.y);
-
-                                fontChars[currentChar] = Character(currentChar, uv, size, offset);
-
-                                cursor.x += bbxSize.x + 1; // Advance cursor (1px padding)
-                                rowHeight = Max(rowHeight, bbxSize.y);
-                            }
-                            else // chars with no bitmap data : ' ' etc.
-                            {
-                                Vector2 offset = Vector2((float)bbxOffset.x / atlasSize.x, (float)bbxOffset.y / atlasSize.y); // todo maybe dont make this normalized, but use the bbxSize instead
-                                fontChars[currentChar] = Character(currentChar, Vector2(0, 0), Vector2(0, 0), offset);
-                            }
-
-                            break;
+                            if (line == "ENDCHAR") break;
+                            bitmapLines.push_back(line);
                         }
+                    }
 
-                        i++;
+                    if (line == "ENDCHAR") {
+                        break; // Exit the inner property-processing loop
                     }
                 }
 
-                i++; // Next line in BDF
+                // --- Process the collected character data ---
+                if (bbxSize.x > 0 && bbxSize.y > 0) // Chars with bitmap data
+                {
+                    if (cursor.x + bbxSize.x > atlasSize.x)
+                    {
+                        cursor.x = 0;
+                        cursor.y += rowHeight + 1;
+                        rowHeight = 0;
+                    }
+
+                    if (cursor.y + bbxSize.y > atlasSize.y)
+                    {
+                        Application::Stop(IOErr, "Font atlas full. Increase atlas resolution.");
+                        return nullptr;
+                    }
+
+                    for (int dataY = 0; dataY < bbxSize.y && dataY < bitmapLines.size(); dataY++)
+                    {
+                        int bytesPerRow = (bbxSize.x + 7) / 8;
+                        string hexRow = bitmapLines[dataY];
+                        unsigned long long rowBits = 0;
+                        try {
+                            rowBits = std::stoull(hexRow, nullptr, 16);
+                        } catch (const std::exception&) {
+                            Application::PrintLog(TypeMismatchErr, "Invalid hex in BDF bitmap for char " + charNameStr + ": " + hexRow);
+                            continue;
+                        }
+
+                        for (int dataX = 0; dataX < bbxSize.x; dataX++)
+                        {
+                            int bitPosition = (bytesPerRow * 8) - 1 - dataX;
+                            if (bbxSize.x <= 64 && (rowBits >> bitPosition) & 1)
+                            {
+                                int pixelBaseIndex = ((cursor.y + dataY) * atlasSize.x + (cursor.x + dataX)) * 4;
+                                if (pixelBaseIndex + 3 < atlasData.size())
+                                {
+                                    atlasData[pixelBaseIndex + 0] = 255; // R
+                                    atlasData[pixelBaseIndex + 1] = 255; // G
+                                    atlasData[pixelBaseIndex + 2] = 255; // B
+                                    atlasData[pixelBaseIndex + 3] = 255; // A
+                                }
+                            }
+                        }
+                    }
+
+                    Vector2 uv = Vector2((float)cursor.x / atlasSize.x, (float)cursor.y / atlasSize.y);
+                    Vector2 size = Vector2((float)bbxSize.x / atlasSize.x, (float)bbxSize.y / atlasSize.y);
+                    Vector2 offset = Vector2((float)bbxOffset.x, (float)bbxOffset.y);
+
+                    fontChars[currentChar] = Character(currentChar, uv, size, offset);
+
+                    cursor.x += bbxSize.x + 1;
+                    rowHeight = Max(rowHeight, bbxSize.y);
+                }
+                else // Chars with no bitmap data (like space)
+                {
+                    Vector2 offset = Vector2((float)bbxOffset.x, (float)bbxOffset.y);
+                    fontChars[currentChar] = Character(currentChar, Vector2(0, 0), Vector2(0, 0), offset);
+                }
             }
 
             string outputDir = Input::GetExeFilePath() + "/Resources/Fonts/";
