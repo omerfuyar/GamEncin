@@ -27,6 +27,7 @@ The project is organized into the following main directories:
 ## The Game Controls
 -  **WASD**: Move around.
 -  **E**: Interact.
+-  **123**: Select option.
 -  **F**: Attack.
 
 ## How to use
